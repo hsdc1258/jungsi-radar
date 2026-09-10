@@ -37,9 +37,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
+      - id: pages
+        uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Pages가 꺼져 있을 때 안내
+        if: failure() && steps.pages.outcome == 'failure'
+        run: |
+          echo "::error::저장소 Settings → Pages → Source 를 'GitHub Actions' 로 한 번 켜 주세요."
+          echo "워크플로 토큰에는 Pages 사이트를 새로 만들 권한이 없습니다."
+          exit 1
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

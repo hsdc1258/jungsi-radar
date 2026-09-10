@@ -512,8 +512,15 @@
     const summary = callout('내 국·수·탐 평균',
       `${fmt(average, 2)} 백분위 · 조건에 맞는 모집단위 ${rows.length}곳 · 관심 ${state.favorites.size}곳`, 'informative');
 
+    const note = state.filters.track === '예체능'
+      ? banner('예체능은 실기 비중이 커서 수능 컷만으로는 판정이 어렵습니다. 참고로만 보세요.')
+      : null;
+
     if (rows.length === 0) {
-      return [summary, chips, filters, banner('조건에 맞는 모집단위가 없습니다. 필터를 넓혀 보세요.')];
+      const empty = state.filters.favOnly && state.favorites.size === 0
+        ? '관심 학과가 아직 없습니다. 목록에서 관심을 눌러 담아 보세요.'
+        : '조건에 맞는 모집단위가 없습니다. 필터를 넓혀 보세요.';
+      return [summary, chips, filters, note, banner(empty)].filter(Boolean);
     }
 
     const grouped = new Map(BAND_ORDER.map((key) => [key, []]));
@@ -561,7 +568,7 @@
       })])
       : null;
 
-    return [summary, chips, filters, ...blocks, more];
+    return [summary, chips, filters, note, ...blocks, more].filter(Boolean);
   }
 
   // ---------------------------------------------------------------- 목표 화면
@@ -692,7 +699,10 @@
       }));
     }
     if (rows.length === 0) {
-      return accordion('수시 참고', [muted('내신 등급을 입력하면 같은 학과의 수시 컷과 비교합니다.')]);
+      const gpa = ENGINE.normalizeProfile(state.scores, DATA.scales).gpa;
+      return accordion('수시 참고', [muted(gpa === null
+        ? '내신 등급을 입력하면 같은 학과의 수시 컷과 비교합니다.'
+        : '이 모집단위는 어디가에 공개된 수시 결과가 없습니다.')]);
     }
     return accordion('수시 참고', [el('div', { class: 'jr-list' }, rows)]);
   }

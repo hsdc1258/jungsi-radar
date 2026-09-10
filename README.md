@@ -43,11 +43,21 @@ npm run build   # source/*.json → assets/data.js
 npm test        # 엔진·데이터 불변식·렌더러 스모크 (node --test, 의존성 없음)
 ```
 
-브라우저 확인(선택, Playwright가 있는 환경에서):
+브라우저 확인(Playwright가 있는 환경에서):
 
 ```
-node scripts/shots.mjs   # 375×812·1280×800 × 라이트/다크로 다섯 탭을 _shots/ 에 저장
+npm run bundle  # dist/jungsi-radar.html — 한 파일짜리 사본(어디에나 붙여 넣는 조각)
+npm run check   # 320·375·414·768·1024·1280 × 라이트/다크 × 다섯 탭 + 번들 두 판을 실제로 열어
+                # 가로 넘침·고정바 겹침·잘린 텍스트·콘솔 오류·실패한 요청이 있으면 실패로 끝난다
+                # (스크린샷은 _shots/ 에 남는다)
 ```
+
+## 배포
+
+`main`에 밀면 `.github/workflows/pages.yml`이 테스트를 돌리고 GitHub Pages로 올립니다.
+**저장소에서 Pages를 한 번 켜 두어야 합니다** — Settings → Pages → Source를 `GitHub Actions`로.
+켜기 전에는 배포 작업이 `Create Pages site failed. Resource not accessible by integration`으로
+멈춥니다(워크플로의 토큰에는 Pages를 새로 만들 권한이 없습니다).
 
 ## 한계
 
