@@ -215,8 +215,11 @@
       }
     }
     const gpa = toNumber(source.gpa);
+    // 성적 출처(§4). 실제 수능이 아니면 결과에 '모의'·'목표' 뱃지가 붙는다. 기본값은 mock(수능 전).
+    const sourceKind = ['actual', 'mock', 'target'].includes(source.sourceKind) ? source.sourceKind : 'mock';
     return {
       mode,
+      sourceKind,
       year,
       kor: { elective: korElective, pct: korPct, std: mode === 'std' ? toNumber(source.kor) : null, read: stdReads['국어'] || null },
       math: { elective: mathElective, pct: mathPct, std: mode === 'std' ? toNumber(source.math) : null, read: stdReads['수학'] || null },
@@ -602,61 +605,290 @@
     return round(lowValue + (highValue - lowValue) * (pct - low), 4);
   }
 
-  // 입학처가 낸 산출식(conv.universities[id].formula)을 그대로 계산한다.
-  //   각 영역 = 지표(표준점수/변환점수/등급 배점) × 계수, 합에 scale(× multiply ÷ divide)을 걸고
-  //   한국사 감점을 뺀다. 대학이 적어 둔 반올림 자리수(roundTo)까지 맞춘다.
-  function formulaScore(profile, formula, deptTrack, table, std) {
-    const tracks = Array.isArray(formula?.tracks) ? formula.tracks : [];
-    const spec = tracks.find((row) => (row.appliesTo || []).includes(deptTrack)) || tracks[0];
-    if (!spec) return null;
-    const parts = [];
-    const areaValue = (area, config, best) => {
-      if (!config) return null;
-      const factor = Number(config.factor) || 1;
-      if (area === 'eng') {
-        const value = Number(config.table?.[String(profile.eng.grade)]);
-        return Number.isFinite(value) ? value : null;
+  // ------------------------------------------------- §1.3 백분위 → 표준점수 되읽기
+  // 도수분포는 표준점수 → 백분위 한 방향으로 만들어져 있다. 되읽기는 **표에 있는 값만** 쓴다:
+  // 그 백분위를 가진 표준점수가 여럿이면 최소~최대가 결과다. 하나도 없으면 이웃 백분위까지
+  // 넓히고 interpolated:true 를 남긴다 — 표에 없는 조합을 지어내지 않는다.
+  // target: '국어' · '수학' · '탐구-생활과윤리' 같은 과목 키, 또는 'social'/'science'(탐구 종류).
+  const SOCIAL_KEYS = Object.freeze(SOCIAL_SUBJECTS.map((name) => `탐구-${name}`));
+  const SCIENCE_KEYS = Object.freeze(SCIENCE_SUBJECTS.map((name) => `탐구-${name}`));
+
+  function stdSubjectKeys(std, target) {
+    const has = (key) => Boolean(std?.subjects?.[key]?.rows?.length);
+    if (!target) return [];
+    if (target === 'social') return SOCIAL_KEYS.filter(has);
+    if (target === 'science') return SCIENCE_KEYS.filter(has);
+    if (target === 'inq' || target === '탐구') return [...SOCIAL_KEYS, ...SCIENCE_KEYS].filter(has);
+    return has(target) ? [target] : [];
+  }
+
+  function stdRangeFromPercentile(std, target, pct) {
+    const keys = stdSubjectKeys(std, target);
+    if (keys.length === 0 || !isNumber(Number(pct))) return null;
+    const want = clamp(Math.round(Number(pct)), 0, 100);
+    const scan = (value) => {
+      let min = null;
+      let max = null;
+      const subjects = [];
+      for (const key of keys) {
+        for (const row of std.subjects[key].rows || []) {
+          if (row[2] !== value) continue;
+          min = min === null ? row[0] : Math.min(min, row[0]);
+          max = max === null ? row[0] : Math.max(max, row[0]);
+          if (!subjects.includes(key)) subjects.push(key);
+        }
       }
-      if (area === 'inq') {
-        const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct).slice(0, Number(config.count) || 2);
+      return min === null ? null : { min, max, subjects };
+    };
+    const hit = scan(want);
+    if (hit) {
+      return { min: hit.min, max: hit.max, mid: round((hit.min + hit.max) / 2, 2), pct: want, exact: true, interpolated: false, subjects: hit.subjects };
+    }
+    for (let radius = 1; radius <= 6; radius += 1) {
+      const low = want - radius >= 0 ? scan(want - radius) : null;
+      const high = want + radius <= 100 ? scan(want + radius) : null;
+      if (!low && !high) continue;
+      const min = low ? low.min : high.min;
+      const max = high ? high.max : low.max;
+      const subjects = [...new Set([...(low?.subjects || []), ...(high?.subjects || [])])];
+      const lo = Math.min(min, max);
+      const hi = Math.max(min, max);
+      return { min: lo, max: hi, mid: round((lo + hi) / 2, 2), pct: want, exact: false, interpolated: true, subjects };
+    }
+    return null;
+  }
+
+  // ------------------------------------------------- §1.2 산식 채점기
+  // 트랙 하나(rules-<year>.json tracks[])를 그대로 계산한다.
+  //   점수 = (Σ 영역값 × factor) × multiply ÷ divide − 한국사 감점, roundTo 자리 반올림.
+  // inputs 는 영역별 **구간**이다: { std, stdMin, stdMax, pct, pctMin, pctMax, kind }.
+  // 구간이 있으면 결과도 { value(중앙), min, max } 다 — 산식이 영역마다 단조증가라 끝점끼리 짝지으면 된다.
+  // 영역 순서는 옛 산출식 계산과 같게 둔다(부동소수 합의 순서까지 같아야 재현 값이 흔들리지 않는다).
+  const AREA_ORDER = Object.freeze(['kor', 'math', 'eng', 'inq', 'hist']);
+
+  const bonusList = (config) => {
+    const raw = config?.bonuses || config?.bonus || null;
+    if (!raw) return [];
+    return (Array.isArray(raw) ? raw : [raw]).filter((row) => row && Number(row.rate));
+  };
+
+  function spanPick(span, metric, pick) {
+    if (!span) return null;
+    const three = metric === 'std'
+      ? [span.stdMin, span.std, span.stdMax]
+      : [span.pctMin, span.pct, span.pctMax];
+    if (!isNumber(three[1])) return null;
+    if (pick === 'min') return isNumber(three[0]) ? three[0] : three[1];
+    if (pick === 'max') return isNumber(three[2]) ? three[2] : three[1];
+    return three[1];
+  }
+
+  function areaMetricValue(config, span, pick, convTable) {
+    const metric = config?.metric || 'std';
+    if (metric === 'conv') {
+      const pct = spanPick(span, 'pct', pick);
+      return pct === null ? null : convertedStd(pct, convTable);
+    }
+    if (metric === 'pct') return spanPick(span, 'pct', pick);
+    return spanPick(span, 'std', pick);
+  }
+
+  const tableValue = (table, grade) => {
+    if (!isNumber(Number(grade))) return null;
+    const value = Number(table?.[String(grade)] ?? table?.[grade]);
+    return Number.isFinite(value) ? value : null;
+  };
+
+  // 지원 자격(§1.2 eligibility). 걸리면 점수는 내되 blockers 로 알린다.
+  function trackBlockers(track, inputs) {
+    const need = track?.eligibility || {};
+    const out = [];
+    const electives = Array.isArray(need.requiredElectives) ? need.requiredElectives : null;
+    if (electives?.length > 0 && inputs?.mathElective && !electives.includes(inputs.mathElective)) {
+      out.push(`${electives.join('·')} 필수 모집단위 — ${inputs.mathElective}로는 지원 불가`);
+    }
+    if (need.requiredInquiryKind) {
+      const kinds = new Set((inputs?.inq || []).map((row) => row.kind));
+      if (!kinds.has(need.requiredInquiryKind)) {
+        out.push(`${need.requiredInquiryKind === 'science' ? '과탐' : '사탐'} 필수 모집단위`);
+      }
+    }
+    return out;
+  }
+
+  function formulaScore2(track, inputs, ctx = {}) {
+    if (!track || !inputs) return null;
+    const areas = track.areas || {};
+    if (Object.keys(areas).length === 0) return null;
+    const conversion = ctx.convTable
+      ? { kind: ctx.convKind || 'approx', table: ctx.convTable, name: null, note: null, source: null }
+      : conversionTable(ctx.conv, ctx.universityId ?? track.universityId ?? null);
+    const convTable = conversion?.table || null;
+    const roundTo = Number.isFinite(Number(track.roundTo)) ? Number(track.roundTo) : 4;
+    const scale = track.scale || {};
+    const multiply = Number(scale.multiply) || 1;
+    const divide = Number(scale.divide) || 1;
+
+    const contribution = (key, pick) => {
+      const config = areas[key];
+      if (!config) return null;
+      const factor = Number(config.factor ?? 1);
+      if (key === 'eng') {
+        const value = tableValue(config.table, inputs.eng?.grade);
+        return value === null ? null : { key, points: value * factor, raw: value, penalty: 0 };
+      }
+      if (key === 'hist') {
+        const value = tableValue(config.table, inputs.hist?.grade);
+        if (value === null) return { key, points: 0, raw: null, penalty: 0 };
+        return config.mode === 'penalty'
+          ? { key, points: 0, raw: value, penalty: value * factor }
+          : { key, points: value * factor, raw: value, penalty: 0 };
+      }
+      if (key === 'inq') {
+        const count = Number(config.count) || 2;
+        const rows = (inputs.inq || []).slice(0, count);
         if (rows.length === 0) return null;
+        const bonuses = bonusList(config);
         const each = rows.map((row) => {
-          const converted = best ? convertedStd(100, table) : convertedStd(row.pct, table);
-          if (converted === null) return null;
-          const bonus = row.kind === 'science' ? Number(config.scienceBonus) || 0 : Number(config.socialBonus) || 0;
-          return converted * (1 + bonus);
+          const base = areaMetricValue(config, row, pick, convTable);
+          if (base === null) return null;
+          const rate = bonuses
+            .filter((entry) => !entry.kind || entry.kind === row.kind)
+            .reduce((sum, entry) => sum + Number(entry.rate), 0);
+          return base * (1 + rate);
         });
         if (each.some((value) => value === null)) return null;
         const sum = each.reduce((total, value) => total + value, 0);
-        return factor * (config.aggregate === 'mean' ? sum / each.length : sum);
+        const agg = config.aggregate === 'mean' ? sum / each.length : sum;
+        return { key, points: agg * factor, raw: round(agg, 4), penalty: 0 };
       }
-      const source = area === 'kor' ? profile.kor : profile.math;
-      const value = best ? std?.subjects?.[stdKeyOf(area)]?.maxStd : source.std;
-      return isNumber(value) ? factor * value : null;
+      const base = areaMetricValue(config, inputs[key], pick, convTable);
+      if (base === null) return null;
+      const rate = bonusList(config)
+        .filter((entry) => !Array.isArray(entry.electives) || entry.electives.includes(inputs.mathElective))
+        .reduce((sum, entry) => sum + Number(entry.rate), 0);
+      return { key, points: rate === 0 ? base * factor : base * factor * (1 + rate), raw: base, penalty: 0 };
     };
-    const compute = (best) => {
-      let sum = 0;
-      for (const area of ['kor', 'math', 'eng', 'inq']) {
-        const config = area === 'eng' ? spec.eng : spec[area];
-        if (!config) continue;
-        const value = best && area === 'eng' ? Number(config.table?.['1']) : areaValue(area, config, best);
-        if (value === null || !Number.isFinite(value)) return null;
-        if (!best) parts.push({ key: area, label: SUBJECT_LABEL[area], points: round(value, 4) });
-        sum += value;
+
+    const run = (pick) => {
+      const rows = [];
+      for (const key of AREA_ORDER) {
+        if (!areas[key]) continue;
+        const row = contribution(key, pick);
+        if (!row) return null;
+        rows.push(row);
       }
-      const scale = spec.scale || {};
-      const multiply = Number(scale.multiply) || 1;
-      const divide = Number(scale.divide) || 1;
-      let scaled = (sum * multiply) / divide;
-      const history = best ? 0 : Number(spec.hist?.table?.[String(profile.hist.grade)]) || 0;
-      scaled -= history;
-      return { value: round(scaled, Number(formula.roundTo) || 4), history: round(history, 4) };
+      // 상위 영역 택1(조형대학 등). 고른 쪽만 남기고 나머지는 0으로 둔다.
+      const optional = track.optional;
+      if (optional?.pick === 'best' && Array.isArray(optional.of) && optional.of.length > 1) {
+        const pool = rows.filter((row) => optional.of.includes(row.key));
+        if (pool.length > 1) {
+          const best = pool.reduce((top, row) => (row.points > top.points ? row : top), pool[0]);
+          for (const row of pool) {
+            if (row === best) continue;
+            row.excluded = true;
+            row.points = 0;
+          }
+        }
+      }
+      const penalty = rows.reduce((sum, row) => sum + (Number(row.penalty) || 0), 0);
+      const sum = rows.reduce((total, row) => total + row.points, 0);
+      return { value: round(((sum * multiply) / divide) - penalty, roundTo), penalty: round(penalty, 4), rows };
     };
-    const mine = compute(false);
-    if (!mine) return null;
-    const top = compute(true);
+
+    const mid = run('mid');
+    if (!mid) return null;
+    const low = run('min');
+    const high = run('max');
+    const parts = mid.rows.map((row) => ({
+      area: row.key,
+      label: SUBJECT_LABEL[row.key],
+      metric: areas[row.key]?.metric || (row.key === 'hist' ? (areas.hist?.mode || 'penalty') : 'table'),
+      input: row.raw,
+      factorApplied: Number(areas[row.key]?.factor ?? 1),
+      points: round(row.points, 4),
+      excluded: row.excluded === true,
+    }));
     return {
-      basis: 'official', approx: false, track: spec.name, parts,
+      track: track.name || null,
+      total: isNumber(track.total) ? track.total : null,
+      roundTo,
+      basis: 'formula',
+      value: mid.value,
+      min: low ? Math.min(low.value, mid.value) : mid.value,
+      max: high ? Math.max(high.value, mid.value) : mid.value,
+      parts,
+      history: mid.penalty,
+      conversion: conversion ? { kind: conversion.kind, name: conversion.name || null, note: conversion.note || null, source: conversion.source || null } : null,
+      blockers: trackBlockers(track, inputs),
+      formulaYear: track.year ?? null,
+      formulaStatus: track.status || null,
+      sourceGrade: track.sourceGrade || null,
+      source: track.source || null,
+      note: track.note || null,
+    };
+  }
+
+  // 옛 형식(conv-2026.json universities[].formula)의 트랙을 §1.2 형식으로 옮긴다.
+  // 연세대 산출 예시(657.6518 · 639.7722)는 새 채점기가 그대로 재현한다.
+  function adaptLegacyFormulaTrack(spec, formula) {
+    if (!spec) return null;
+    const areas = {};
+    if (spec.kor) areas.kor = { metric: spec.kor.metric || 'std', factor: Number(spec.kor.factor) || 1 };
+    if (spec.math) areas.math = { metric: spec.math.metric || 'std', factor: Number(spec.math.factor) || 1 };
+    if (spec.eng) areas.eng = { metric: 'table', table: spec.eng.table, factor: Number(spec.eng.factor) || 1 };
+    if (spec.inq) {
+      const bonuses = [];
+      if (Number(spec.inq.scienceBonus)) bonuses.push({ kind: 'science', rate: Number(spec.inq.scienceBonus) });
+      if (Number(spec.inq.socialBonus)) bonuses.push({ kind: 'social', rate: Number(spec.inq.socialBonus) });
+      areas.inq = {
+        metric: spec.inq.metric || 'conv', factor: Number(spec.inq.factor) || 1,
+        count: Number(spec.inq.count) || 2, aggregate: spec.inq.aggregate || 'sum', bonuses,
+      };
+    }
+    if (spec.hist) areas.hist = { mode: spec.hist.mode || 'penalty', table: spec.hist.table, factor: Number(spec.hist.factor) || 1 };
+    return {
+      name: spec.name, appliesTo: spec.appliesTo, areas, scale: spec.scale || {},
+      total: spec.total ?? null, roundTo: spec.roundTo ?? formula?.roundTo ?? 4,
+      optional: spec.optional || null, eligibility: spec.eligibility || null,
+      note: spec.note || formula?.note || null,
+    };
+  }
+
+  // 정규화된 프로필 → 산식 입력. best 면 만점 성적(영역별 만점 표준점수·1등급)을 넣는다.
+  function profileFormulaInputs(profile, std, best = false) {
+    const rows = [...(profile?.inquiries || [])].sort((left, right) => right.pct - left.pct);
+    const spanOf = (area, source) => {
+      const value = best ? std?.subjects?.[stdKeyOf(area)]?.maxStd : source?.std;
+      return { std: isNumber(value) ? value : null, pct: best ? 100 : (isNumber(source?.pct) ? source.pct : null) };
+    };
+    return {
+      kor: spanOf('kor', profile?.kor),
+      math: spanOf('math', profile?.math),
+      inq: rows.map((row) => ({
+        kind: row.kind, subject: row.subject,
+        std: best ? (std?.subjects?.[`탐구-${row.subject}`]?.maxStd ?? null) : (isNumber(row.std) ? row.std : null),
+        pct: best ? 100 : row.pct,
+      })),
+      eng: { grade: best ? 1 : profile?.eng?.grade ?? null },
+      hist: { grade: best ? 1 : profile?.hist?.grade ?? null },
+      mathElective: profile?.math?.elective || null,
+    };
+  }
+
+  // 입학처가 낸 산출식(conv.universities[id].formula)을 그대로 계산한다 — 새 채점기의 얇은 껍질이다.
+  function formulaScore(profile, formula, deptTrack, table, std) {
+    const tracks = Array.isArray(formula?.tracks) ? formula.tracks : [];
+    const spec = tracks.find((row) => (row.appliesTo || []).includes(deptTrack)) || tracks[0];
+    const track = adaptLegacyFormulaTrack(spec, formula);
+    if (!track) return null;
+    const ctx = { convTable: table, convKind: 'official' };
+    const mine = formulaScore2(track, profileFormulaInputs(profile, std, false), ctx);
+    if (!mine) return null;
+    const top = formulaScore2(track, profileFormulaInputs(profile, std, true), ctx);
+    return {
+      basis: 'official', approx: false, track: spec.name,
+      parts: mine.parts.filter((row) => row.area !== 'hist').map((row) => ({ key: row.area, label: row.label, points: row.points })),
       value: mine.value, max: top ? top.value : null,
       history: mine.history, note: spec.note || formula.note || null,
     };
@@ -845,21 +1077,568 @@
     return bands.find((band) => gap >= band.min) || bands[bands.length - 1];
   }
 
+  // ---------------------------------------------------------------- §3 네 층위
+  // 합격선 비교의 중심은 **대학 환산점수**다(docs/MODEL.md). 평균 백분위는 보조로 내린다.
+  //   L1 환산 : 컷 학년도 산식이 formula-check 에서 verified 이고 어디가 환산점수 70%가 있을 때.
+  //             내 환산점수 − 컷 환산점수(점) → 산식의 국소 기울기로 백분위 상당(pctEq)을 만든다.
+  //   L2 지수 : 산식이 없고 반영비율만 있을 때. 70% 학생의 영역별 백분위와 **같은 비율**로 만든
+  //             가중 지수의 차이(백분위).
+  //   L3 참고 : 정의별 백분위 컷만 있을 때 — 지금까지의 판정이다. 불확실성 ±2.0.
+  //   L0 없음 : 집계 방식 unknown · 컷 없음 · 자격 미충족.
+  const APPLY_YEAR = 2027;
+  const LAYER_UNCERTAINTY = Object.freeze({ L1: 0.5, L2: 1, L3: 2, L0: null });
+  const INQ_KIND_ALIAS = Object.freeze({
+    사탐: 'social', 과탐: 'science', 직탐: 'vocational',
+    social: 'social', science: 'science', vocational: 'vocational',
+  });
+
+  const cutRowScore = (row, key) => {
+    if (!row) return null;
+    const direct = row.score ? row.score[key] : null;
+    if (isNumber(direct)) return direct;
+    const legacy = key === 'p70' ? row.score70 : key === 'p50' ? row.score50 : null;
+    return isNumber(legacy) ? legacy : null;
+  };
+
+  // 어디가 70%/50% 지점 **학생 한 명**의 성적표. 평균백분위가 영역별 값과 맞아야(±0.6)
+  // 그 행의 영역별 값을 한 학생 성적표로 쓴다(§1.1 consistent).
+  function normalizeCutStudent(raw) {
+    if (!raw) return null;
+    const num = (value) => (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) ? null : Number(value));
+    const inq = [];
+    for (const slot of ['inq1', 'inq2']) {
+      const row = raw[slot];
+      if (row === null || row === undefined) continue;
+      const pct = num(typeof row === 'object' ? row.pct : row);
+      if (pct === null) continue;
+      inq.push({
+        pct,
+        kind: INQ_KIND_ALIAS[String((typeof row === 'object' && row.kind) || '')] || null,
+        subject: (typeof row === 'object' && row.subject) || null,
+      });
+    }
+    inq.sort((left, right) => right.pct - left.pct);
+    const kor = num(raw.kor);
+    const math = num(raw.math);
+    const avg = num(raw.avg);
+    const computed = isNumber(kor) && isNumber(math) && inq.length > 0
+      ? (kor + math + inq.reduce((sum, row) => sum + row.pct, 0) / inq.length) / 3
+      : null;
+    const consistent = raw.consistent === true ? true
+      : raw.consistent === false ? false
+        : isNumber(avg) && isNumber(computed) ? Math.abs(avg - computed) <= 0.6
+          : isNumber(computed);
+    return {
+      kor, math, inq, avg, eng: num(raw.eng), hist: num(raw.hist),
+      computedAvg: computed === null ? null : round(computed, 2), consistent,
+    };
+  }
+
+  // 70% 학생 성적표 → 산식 입력(§1.3 되읽기).
+  function studentFormulaInputs(student, std) {
+    if (!student) return null;
+    const span = (target, pct) => {
+      const read = stdRangeFromPercentile(std, target, pct);
+      return {
+        pct: isNumber(pct) ? pct : null,
+        std: read ? read.mid : null, stdMin: read ? read.min : null, stdMax: read ? read.max : null, read,
+      };
+    };
+    return {
+      kor: span('국어', student.kor),
+      math: span('수학', student.math),
+      inq: student.inq.map((row) => ({
+        ...span(row.subject ? `탐구-${row.subject}` : (row.kind || 'inq'), row.pct),
+        kind: row.kind, subject: row.subject,
+      })),
+      eng: { grade: student.eng },
+      hist: { grade: student.hist },
+      mathElective: null,
+    };
+  }
+
+  // 내 성적 → 컷 학년도 산식 입력. 학년도가 다르면 §1.3 백분위 동등 가정으로 잇는다.
+  //   bump  : 모든 영역 백분위를 n점 올린 입력(국소 기울기 계산용)
+  //   force : 'min'|'max' — 등급 구간의 하한·상한만 쓰는 입력(민감도 계산용)
+  function myFormulaInputs(profile, std, options = {}) {
+    if (!profile) return null;
+    const sameYear = options.sameYear === true;
+    const gradeMode = (profile.mode || 'pct') === 'grade';
+    const bump = Number(options.bump) || 0;
+    const span = (target, pct, ownStd) => {
+      const value = isNumber(pct) ? clamp(pct + bump, 0, 100) : null;
+      const out = { pct: value, pctMin: null, pctMax: null, std: null, stdMin: null, stdMax: null };
+      if (value === null) return out;
+      if (gradeMode) {
+        const range = percentileRangeOfGrade(gradeFromPercentile(value));
+        out.pctMin = range.min;
+        out.pctMax = range.max;
+      }
+      if (sameYear && bump === 0 && isNumber(ownStd)) {
+        out.std = ownStd;
+        out.stdMin = ownStd;
+        out.stdMax = ownStd;
+        return out;
+      }
+      const read = stdRangeFromPercentile(std, target, value);
+      if (read) {
+        out.std = read.mid;
+        out.stdMin = read.min;
+        out.stdMax = read.max;
+        out.read = read;
+      }
+      if (gradeMode) {
+        const low = stdRangeFromPercentile(std, target, out.pctMin);
+        const high = stdRangeFromPercentile(std, target, out.pctMax);
+        if (low) out.stdMin = low.min;
+        if (high) out.stdMax = high.max;
+      }
+      return out;
+    };
+    const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct);
+    return {
+      kor: span('국어', profile.kor?.pct, profile.kor?.std),
+      math: span('수학', profile.math?.pct, profile.math?.std),
+      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std), kind: row.kind, subject: row.subject })),
+      eng: { grade: profile.eng?.grade ?? null },
+      hist: { grade: profile.hist?.grade ?? null },
+      mathElective: profile.math?.elective || null,
+    };
+  }
+
+  const rulesFor = (rules, universityId) => (rules ? (rules.universities?.[universityId] || rules[universityId] || null) : null);
+
+  // 모집단위에 맞는 산식 트랙. 모집단위를 못박은 트랙(appliesTo.depts)이 먼저다.
+  function pickModelTrack(rules, universityId, dept) {
+    const rule = rulesFor(rules, universityId);
+    const tracks = Array.isArray(rule?.tracks) ? rule.tracks : [];
+    if (tracks.length === 0) return null;
+    const stamp = (track) => ({
+      ...track,
+      universityId,
+      year: track.year ?? rule.year ?? null,
+      status: track.status || rule.status || null,
+      source: track.source || rule.source || null,
+      sourceGrade: track.sourceGrade || rule.sourceGrade || null,
+    });
+    const name = dept?.name || '';
+    const byDept = tracks.find((track) => Array.isArray(track.appliesTo?.depts) && track.appliesTo.depts.includes(name));
+    if (byDept) return stamp(byDept);
+    const wanted = [dept?.ruleTrack, dept?.track].filter(Boolean);
+    if (dept?.track === '상경') wanted.push('인문');
+    if (dept?.track === '의약') wanted.push('자연');
+    if (dept?.track === '자유전공') wanted.push('인문', '자연');
+    if (dept?.track === '예체능') wanted.push('인문');
+    for (const key of wanted) {
+      const hit = tracks.find((track) => (Array.isArray(track.appliesTo) ? track.appliesTo.includes(key) : String(track.appliesTo || '').includes(key))
+        || String(track.name || '').includes(key));
+      if (hit) return stamp(hit);
+    }
+    // 모집단위 지정 트랙만 있는 대학은 이름이 맞지 않으면 아무것도 고르지 않는다.
+    if (tracks.every((track) => Array.isArray(track.appliesTo?.depts))) return null;
+    return stamp(tracks[0]);
+  }
+
+  const trackHasFormula = (track) => Boolean(track && Object.values(track.areas || {}).some((area) => area?.metric || area?.mode));
+  const formulaVerified = (check, universityId, trackName) => (check?.tracks || {})[`${universityId}::${trackName}`]?.status === 'verified';
+
+  // L2 — 반영비율. 옛 형식(rules-2027.json weights)과 §1.2 형식(areas.factor) 둘 다 읽는다.
+  function ratioWeights(track) {
+    if (!track) return null;
+    if (track.weights) {
+      const kor = Number(track.weights.kor) || 0;
+      const math = Number(track.weights.math) || 0;
+      const inq = Number(track.weights.inq) || 0;
+      const eng = Number(track.weights.eng) || 0;
+      if (kor + math + inq <= 0) return null;
+      return {
+        kor, math, inq, eng, engTable: track.english?.table || null,
+        engByRatio: eng > 0 && (track.english?.method || '비율반영') === '비율반영',
+        count: Number(track.inquiry?.count) || 2, name: track.name || null,
+      };
+    }
+    const areas = track.areas || null;
+    if (!areas) return null;
+    const kor = Number(areas.kor?.factor) || 0;
+    const math = Number(areas.math?.factor) || 0;
+    const inq = Number(areas.inq?.factor) || 0;
+    if (kor + math + inq <= 0) return null;
+    return {
+      kor, math, inq, eng: 0, engTable: areas.eng?.table || null, engByRatio: false,
+      count: Number(areas.inq?.count) || 2, name: track.name || null,
+    };
+  }
+
+  const engPercentOf = (grade, table) => {
+    const top = tableValue(table, 1);
+    const mine = tableValue(table, grade);
+    if (isNumber(top) && top > 0 && isNumber(mine)) return clamp(mine / top, 0, 1) * 100;
+    return isNumber(grade) && grade === 1 ? 100 : null;
+  };
+
+  function ratioIndex(values, weights) {
+    if (!weights) return null;
+    const parts = [];
+    const push = (key, weight, value) => { if (weight > 0 && isNumber(value)) parts.push({ key, weight, value }); };
+    push('kor', weights.kor, values.kor);
+    push('math', weights.math, values.math);
+    push('inq', weights.inq, values.inq);
+    if (weights.engByRatio) push('eng', weights.eng, values.eng);
+    if (parts.length === 0) return null;
+    const total = parts.reduce((sum, part) => sum + part.weight, 0);
+    return {
+      value: round(parts.reduce((sum, part) => sum + part.weight * part.value, 0) / total, 2),
+      parts: parts.map((part) => ({ ...part, share: part.weight / total })),
+      total,
+    };
+  }
+
+  // 컷으로 쓸 학년도. 환산점수·학생 성적표가 있는 최근 해가 먼저다.
+  function pickCutYear(dept, reference) {
+    const years = Object.keys(dept?.jeongsi || {}).filter((key) => key !== 'alts').sort().reverse();
+    const rich = years.find((year) => {
+      const row = dept.jeongsi[year];
+      return isNumber(cutRowScore(row, 'p70')) || row?.student?.p70;
+    });
+    return rich || reference?.primary?.year || years[0] || null;
+  }
+
+  // §5 연도 계열 — 화면·계약이 쓰는 짧은 이력.
+  function historyRows(dept, reference) {
+    const rows = [];
+    for (const entry of reference?.series || []) {
+      const row = dept?.jeongsi?.[entry.year] || null;
+      rows.push({
+        year: entry.year,
+        score70: cutRowScore(row, 'p70'),
+        avg70: isNumber(entry.value) ? entry.value : null,
+        changed: Array.isArray(entry.changed) ? entry.changed : [],
+        comparable: true,
+      });
+    }
+    for (const entry of reference?.excluded || []) {
+      rows.push({ year: entry.year, score70: null, avg70: isNumber(entry.value) ? entry.value : null, changed: ['컷 정의'], comparable: false });
+    }
+    return rows.sort((left, right) => String(right.year).localeCompare(String(left.year)));
+  }
+
+  // §7 계약을 결과에 얹는다. 옛 필드는 그대로 두고 새 필드만 더한다 —
+  // 이름이 겹치는 mine·gap 은 result.model 안에 §7 모양으로 들어간다.
+  function attachModel(result, info) {
+    const { level, dept, reference, context, profile } = info;
+    const cutYear = info.cutYear || reference?.primary?.year || null;
+    const cutRow = cutYear ? dept?.jeongsi?.[cutYear] : null;
+    const flags = [...(info.flags || [])];
+    const add = (flag) => { if (flag && !flags.includes(flag)) flags.push(flag); };
+    if (profile?.mode === 'grade' || profile?.mode === 'raw') add('estimated');
+    if (profile?.sourceKind && profile.sourceKind !== 'actual') add(profile.sourceKind);
+    const sources = [...(info.sources || [])];
+    if (cutRow?.source) sources.push({ title: cutRow.source, url: cutRow.url || null });
+    else if (reference?.primary?.source) sources.push({ title: reference.primary.source, url: reference.primary.url || null });
+    const band = result.band ? { ...result.band, uncertainty: LAYER_UNCERTAINTY[level] ?? null, note: '70% 지점 대비' } : result.band;
+    const apply = info.apply || {
+      year: APPLY_YEAR, typeName: cutRow?.typeName || '',
+      group: result.group || cutRow?.group || null, formula: null,
+    };
+    const history = info.history || historyRows(dept, reference);
+    const model = {
+      level,
+      status: ['ok', 'blocked', 'hold'].includes(result.status) ? result.status : 'none',
+      apply,
+      mine: info.mineDetail || null,
+      cut: result.cut || null,
+      gap: info.gapDetail || null,
+      band: band || null,
+      areas: info.areas || [],
+      sensitivity: info.sensitivity || null,
+      history,
+      flags,
+      sources,
+    };
+    return {
+      ...result,
+      band,
+      level,
+      apply,
+      areas: model.areas,
+      sensitivity: model.sensitivity,
+      history,
+      flags,
+      sources,
+      assumptions: info.mineDetail?.assumptions || [],
+      mineDetail: model.mine,
+      gapDetail: model.gap,
+      uncertainty: LAYER_UNCERTAINTY[level] ?? null,
+      basisChanged: info.gapDetail?.basisChanged === true,
+      cut2027: info.cut2027 ?? null,
+      model,
+    };
+  }
+
+  // 데이터가 허락하는 가장 높은 층위 하나. L1 → L2 순으로 시도하고, 둘 다 안 되면 null(=L3/L0).
+  function resolveLayer(profile, university, dept, rule, reference, context) {
+    if (!profile || !context || !profileComplete(profile)) return null;
+    const universityId = university?.id ?? null;
+    if (!universityId) return null;
+    const std = context.std || null;
+    const cutYear = pickCutYear(dept, reference);
+    const cutRow = cutYear ? dept?.jeongsi?.[cutYear] : null;
+    if (!cutRow) return null;
+    const aggregation = String(cutRow.aggregation || 'adiga-score-rank');
+    // 집계 방식을 모르는 행은 정밀 판정을 내리지 않는다(§1.1) — L3 참고까지다.
+    if (aggregation === 'unknown') return null;
+    const student70 = normalizeCutStudent(cutRow.student?.p70);
+    const student50 = normalizeCutStudent(cutRow.student?.p50);
+    const score70 = cutRowScore(cutRow, 'p70');
+    const score50 = cutRowScore(cutRow, 'p50');
+    const sameYear = String(profile.year || '') === String(cutYear || '');
+    const base = {
+      cutYear, cutRow, aggregation, student70, student50, cutScore70: score70, cutScore50: score50,
+      flags: [], sources: [], blockers: [],
+    };
+
+    // ---------------------------------------------------------------- L1 환산
+    const track = pickModelTrack(context.rules2026, universityId, dept);
+    if (std && track && trackHasFormula(track) && isNumber(score70)
+      && formulaVerified(context.formulaCheck, universityId, track.name)) {
+      const ctx = { std, conv: context.conv, universityId, year: cutYear };
+      const inputs = myFormulaInputs(profile, std, { sameYear });
+      const mineScore = formulaScore2(track, inputs, ctx);
+      if (mineScore) {
+        const bumped = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx);
+        const slope = bumped && bumped.value > mineScore.value ? bumped.value - mineScore.value : null;
+        const toPct = (points) => (isNumber(points) && isNumber(slope) ? round(points / slope, VERDICT_DIGITS) : null);
+        const points = round(mineScore.value - score70, 4);
+        const flags = [];
+        if (!sameYear) flags.push('year-bridge');
+        if (mineScore.conversion?.kind === 'approx') flags.push('approx-conversion');
+        if (track.status === 'plan') flags.push('plan-formula');
+
+        // 유리·불리: 같은 산식으로 채점한 70% 학생과의 영역별 점수 차.
+        const cutParts = student70?.consistent ? formulaScore2(track, studentFormulaInputs(student70, std), ctx) : null;
+        const areas = [];
+        if (cutParts) {
+          for (const part of mineScore.parts) {
+            const twin = cutParts.parts.find((row) => row.area === part.area);
+            if (!twin) continue;
+            areas.push({ area: part.area, label: part.label, mine: part.points, cut: twin.points, contrib: round(part.points - twin.points, 2) });
+          }
+          areas.sort((left, right) => Math.abs(right.contrib) - Math.abs(left.contrib));
+        }
+
+        // 2027 산식이 따로 있고 다르면 70% 학생을 그 산식으로 다시 채점한다(§3).
+        let basisChanged = false;
+        let gap2027 = null;
+        let cut2027 = null;
+        const track2027 = pickModelTrack(context.rules2027, universityId, dept);
+        if (track2027 && trackHasFormula(track2027) && JSON.stringify(track2027.areas) + JSON.stringify(track2027.scale || {}) !== JSON.stringify(track.areas) + JSON.stringify(track.scale || {})) {
+          const cutRescored = student70?.consistent ? formulaScore2(track2027, studentFormulaInputs(student70, std), ctx) : null;
+          const mineRescored = formulaScore2(track2027, inputs, ctx);
+          if (cutRescored && mineRescored) {
+            cut2027 = { score: cutRescored.value, track: track2027.name, status: track2027.status || null };
+            const bumped2027 = formulaScore2(track2027, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx);
+            const slope2027 = bumped2027 && bumped2027.value > mineRescored.value ? bumped2027.value - mineRescored.value : null;
+            gap2027 = isNumber(slope2027) ? round((mineRescored.value - cutRescored.value) / slope2027, VERDICT_DIGITS) : null;
+            const left = bandOf(toPct(points), VERDICT_BANDS);
+            const right = bandOf(gap2027, VERDICT_BANDS);
+            basisChanged = Boolean(left && right && left.key !== right.key);
+            if (track2027.status === 'plan' && !flags.includes('plan-formula')) flags.push('plan-formula');
+          }
+        }
+
+        // §4 민감도 — 등급 입력에서 배점이 가장 큰 영역의 하한→상한 폭.
+        let sensitivity = null;
+        if (mineScore.max > mineScore.min) {
+          const biggest = [...mineScore.parts]
+            .filter((part) => ['kor', 'math', 'inq'].includes(part.area))
+            .sort((left, right) => right.factorApplied - left.factorApplied)[0] || null;
+          if (biggest) {
+            sensitivity = {
+              area: biggest.area, label: biggest.label,
+              low: mineScore.min, high: mineScore.max,
+              deltaPoints: round(mineScore.max - mineScore.min, 2),
+              deltaPctEq: toPct(round(mineScore.max - mineScore.min, 4)),
+            };
+          }
+        }
+
+        const pctEq = gap2027 !== null && basisChanged ? gap2027 : toPct(points);
+        return {
+          ...base, level: 'L1', track, mineScore, slope, points, pctEq,
+          gapMin: toPct(round(mineScore.min - score70, 4)),
+          gapMax: toPct(round(mineScore.max - score70, 4)),
+          gap2026: toPct(points), gap2027, basisChanged, cut2027,
+          above50: isNumber(score50) ? mineScore.value >= score50 : null,
+          areas, sensitivity, flags,
+          blockers: mineScore.blockers || [],
+          unit: 'points',
+        };
+      }
+    }
+
+    // ---------------------------------------------------------------- L2 지수
+    const ratioTrack = pickModelTrack(context.rules2027, universityId, dept) || pickTrack(rule, dept?.track, dept?.ruleTrack);
+    const weights = ratioWeights(ratioTrack);
+    if (weights && student70?.consistent) {
+      const cutInq = student70.inq.slice(0, weights.count);
+      const cutValues = {
+        kor: student70.kor, math: student70.math,
+        inq: cutInq.length > 0 ? cutInq.reduce((sum, row) => sum + row.pct, 0) / cutInq.length : null,
+        eng: engPercentOf(student70.eng, weights.engTable),
+      };
+      const myValues = {
+        kor: profile.kor?.pct, math: profile.math?.pct,
+        inq: inquiryPercentile(profile, weights.count),
+        eng: engPercentOf(profile.eng?.grade, weights.engTable),
+      };
+      const cutIndex = ratioIndex(cutValues, weights);
+      const myIndex = ratioIndex(myValues, weights);
+      if (cutIndex && myIndex) {
+        const areas = myIndex.parts.map((part) => {
+          const twin = cutIndex.parts.find((row) => row.key === part.key) || null;
+          return {
+            area: part.key, label: SUBJECT_LABEL[part.key],
+            mine: round(part.value, 2), cut: twin ? round(twin.value, 2) : null,
+            contrib: twin ? round((part.value - twin.value) * part.share, 2) : null,
+          };
+        }).sort((left, right) => Math.abs(right.contrib ?? 0) - Math.abs(left.contrib ?? 0));
+        const gap = round(myIndex.value - cutIndex.value, VERDICT_DIGITS);
+        const cut50Index = student50?.consistent
+          ? ratioIndex({
+            kor: student50.kor, math: student50.math,
+            inq: student50.inq.length > 0 ? student50.inq.slice(0, weights.count).reduce((sum, row) => sum + row.pct, 0) / Math.min(weights.count, student50.inq.length) : null,
+            eng: engPercentOf(student50.eng, weights.engTable),
+          }, weights)
+          : null;
+        return {
+          ...base, level: 'L2', track: ratioTrack, myIndex, cutIndex,
+          points: null, pctEq: gap, gapMin: gap, gapMax: gap, gap2026: gap, gap2027: null,
+          basisChanged: false, cut2027: null,
+          above50: cut50Index ? myIndex.value >= cut50Index.value : null,
+          areas, sensitivity: null,
+          flags: ratioTrack?.status === 'plan' ? ['plan-formula'] : [],
+          blockers: [], unit: 'pct',
+        };
+      }
+    }
+    return null;
+  }
+
+  // 층위 판정을 옛 계약 모양으로 옮긴다. mine − cut.value = gap 이 유지되도록,
+  // L1·L2의 컷은 **내 눈금의 백분위 상당**으로 적는다(실제 환산점수는 cut.score70에 그대로 있다).
+  function decorateLayer(layer, env) {
+    const { profile, dept, reference, shell, score, mine, std, context, university } = env;
+    const blockers = [...(score?.blockers || []), ...(layer.blockers || [])];
+    const status = blockers.length > 0 ? 'blocked' : 'ok';
+    const gap = layer.pctEq;
+    const estimateBand = bandOf(gap, VERDICT_BANDS);
+    // 70%컷은 보장선이 아니다 — 50% 지점을 넘지 못하면 '안정'을 '적정'으로 내린다.
+    const band = estimateBand?.key === 'safe' && layer.above50 === false
+      ? VERDICT_BANDS.find((row) => row.key === 'fit')
+      : estimateBand;
+    const gapRange = isNumber(layer.gapMin) && isNumber(layer.gapMax) && (layer.gapMin !== gap || layer.gapMax !== gap)
+      ? { min: layer.gapMin, max: layer.gapMax, minBand: bandOf(layer.gapMin, VERDICT_BANDS), maxBand: bandOf(layer.gapMax, VERDICT_BANDS) }
+      : null;
+    const mineValue = mine ? mine.value : null;
+    const cutValue = isNumber(mineValue) && isNumber(gap) ? round(mineValue - gap, 2) : null;
+    const row = layer.cutRow;
+    const avgGap = isNumber(mineValue) && isNumber(row?.cut70) ? round(mineValue - row.cut70, VERDICT_DIGITS) : null;
+    const floor = isNumber(row?.cut100) && isNumber(mineValue)
+      ? { year: layer.cutYear, value: row.cut100, cleared: mineValue >= row.cut100 } : null;
+    const fill = isNumber(row?.fill)
+      ? { year: layer.cutYear, count: row.fill, rate: isNumber(row.fillRate) ? row.fillRate : null, lastWait: isNumber(row.lastWait) ? row.lastWait : null }
+      : null;
+    const formula = layer.track
+      ? { year: layer.track.year ?? null, status: layer.track.status || null, sourceGrade: layer.track.sourceGrade || null, track: layer.track.name || null, source: layer.track.source || null }
+      : null;
+    const sources = [];
+    if (layer.track?.source?.title) sources.push({ title: layer.track.source.title, url: layer.track.source.url || null });
+    return attachModel({
+      ...shell,
+      status,
+      group: row?.group || null,
+      cut: {
+        year: layer.cutYear,
+        value: cutValue,
+        kind: layer.level === 'L1' ? '70% 지점 · 환산 상당' : '70% 지점 · 지수 상당',
+        basis: layer.level === 'L1' ? 'formula' : 'ratio',
+        aggregation: layer.aggregation,
+        score70: layer.cutScore70,
+        score50: layer.cutScore50,
+        student70: layer.student70,
+        avg70: isNumber(row?.cut70) ? row.cut70 : null,
+        verified: layer.level === 'L1',
+        percentileCut: reference?.primary?.value ?? null,
+        source: row?.source ?? reference?.primary?.source ?? null,
+        url: row?.url ?? reference?.primary?.url ?? null,
+      },
+      gap,
+      gapRange,
+      hold: null,
+      band: status === 'ok' ? band : null,
+      estimateBand,
+      estimated: mine ? mine.estimated : (profile?.mode === 'grade' || profile?.mode === 'raw'),
+      bounds: mine ? mine.bounds : null,
+      approxDef: reference?.approxDef ?? false,
+      spread: reference?.spread ?? null,
+      floor,
+      fill,
+      cut50: isNumber(row?.cut50) ? row.cut50 : null,
+    }, {
+      // 자격 미충족은 층위가 아니라 '없음'이다 (docs/MODEL.md §3 L0).
+      level: status === 'blocked' ? 'L0' : layer.level,
+      dept, university, reference, context, profile,
+      cutYear: layer.cutYear,
+      apply: { year: APPLY_YEAR, typeName: row?.typeName || '', group: row?.group || null, formula },
+      mineDetail: layer.mineScore
+        ? {
+          score: layer.mineScore.value, min: layer.mineScore.min, max: layer.mineScore.max,
+          parts: layer.mineScore.parts, adjustments: [],
+          assumptions: layer.flags.includes('year-bridge')
+            ? [`${profile.year || '내'} 수능 백분위를 ${std?.year || layer.cutYear} 수능 분포의 표준점수로 환산`]
+            : [],
+          unit: 'points',
+        }
+        : {
+          score: layer.myIndex ? layer.myIndex.value : null,
+          min: layer.myIndex ? layer.myIndex.value : null,
+          max: layer.myIndex ? layer.myIndex.value : null,
+          parts: layer.myIndex ? layer.myIndex.parts : [], adjustments: [], assumptions: [], unit: 'pct',
+        },
+      gapDetail: {
+        points: layer.points, pctEq: gap, min: layer.gapMin, max: layer.gapMax,
+        avgGap, basisChanged: layer.basisChanged === true, gap2026: layer.gap2026, gap2027: layer.gap2027,
+      },
+      areas: layer.areas || [],
+      sensitivity: layer.sensitivity || null,
+      cut2027: layer.cut2027 || null,
+      flags: layer.flags || [],
+      sources,
+    });
+  }
+
   // 한 모집단위에 대한 정시 판정.
-  //   mine  : **컷과 같은 정의**로 만든 내 비교값 (컷의 def가 정한다)
+  //   level : 'L1' | 'L2' | 'L3' | 'L0' — 데이터가 허락하는 가장 높은 층위 하나
+  //   mine  : (옛 계약) 컷과 같은 정의로 만든 내 백분위 비교값. §7 계약은 result.model.mine 이다.
+  //   gap   : (옛 계약) 백분위 상당 차이. L1은 환산점수 차 ÷ 국소 기울기다.
+  //   cut   : (옛 계약) { value, year, kind … } + §7 { aggregation, score70, score50, student70, verified }
   //   index : 대학 반영비율로 만든 앱 자체 지수 — 컷에서 빼지 않는다(눈금이 다르다)
   //   status: ok · blocked(지원 자격 미충족) ·
   //           hold(그 정의에 필요한 성적이 없음) · basis-mismatch(환산점수 눈금이라 계산 불가) ·
   //           no-cut(백분위 컷 없음) · no-profile(성적 미입력)
   // 등급 입력은 보류하지 않는다 — 구간 중앙 백분위로 판정하고 estimated·gapRange로 폭을 알린다.
-  function evaluateJeongsi(profile, university, dept, rule, fallbackSpread) {
+  // context = { std, conv, rules2026, rules2027, formulaCheck } — 없으면 L3까지만 간다.
+  function evaluateJeongsi(profile, university, dept, rule, fallbackSpread, context = {}) {
     const reference = jeongsiReference(dept, isNumber(fallbackSpread) ? fallbackSpread : university?.volatility);
     // 반영비율 가중값은 지원 자격(blockers)과 화면 표시에만 쓴다. 컷과 비교하지 않는다.
     const score = universityScore(profile, rule, dept.track, dept.ruleTrack);
     const def = reference.def || COMPARE_BASIS;
     const mine = comparableScore(profile, def);
+    const universityId = university?.id ?? null;
+    const std = context.std || null;
+    const layer = resolveLayer(profile, university, dept, rule, reference, context);
     const shell = {
-      universityId: university?.id ?? null,
+      universityId,
       universityName: university?.short || university?.name || null,
       dept: dept?.name ?? null,
       track: dept?.track ?? null,
@@ -871,27 +1650,30 @@
       defLabel: cutDefInfo(def).label,
       index: score ? { value: score.value, basis: 'app-weighted', label: '반영비율 가중 지수', weighted: score.weighted } : null,
     };
+    // L1·L2가 성립하면 그쪽이 이긴다 — 평균 백분위 컷이 없어도 판정이 나온다.
+    if (layer) return decorateLayer(layer, { profile, university, dept, reference, shell, score, mine, def, std, context });
+    const zero = (result) => attachModel(result, { level: 'L0', dept, university, reference, context, profile });
     if (!mine) {
       // 컷을 계산할 수 없는 두 가지를 가른다: 성적을 아예 안 넣었나(no-profile),
       // 이 정의에 필요한 영역만 비었나(hold).
       const missing = missingFor(profile, def);
       const entered = isNumber(profile?.kor?.pct) || isNumber(profile?.math?.pct) || (profile?.inquiries?.length > 0);
-      if (!entered || missing.length === 0) return { status: 'no-profile', ...shell, cut: null, gap: null, band: null };
+      if (!entered || missing.length === 0) return zero({ status: 'no-profile', ...shell, cut: null, gap: null, band: null });
       if (!reference.comparable) {
-        return {
+        return zero({
           status: 'basis-mismatch', ...shell, cut: null, gap: null, band: MISMATCH_BAND,
           hold: { reason: '환산점수 컷', need: '백분위 기준 입시결과' },
-        };
+        });
       }
-      return {
+      return zero({
         status: 'hold', ...shell, cut: null, gap: null, band: HOLD_BAND,
         hold: { reason: `${missing.join('·')} 미입력`, need: missing.join('·') },
-      };
+      });
     }
     if (!reference.primary) {
       // 컷이 없다. 환산점수로만 공개됐거나(계산 불가) 백분위 결과 자체가 없다.
       const mismatch = !reference.comparable || (reference.scoreRows || []).length > 0;
-      return {
+      return zero({
         status: mismatch ? 'basis-mismatch' : 'no-cut',
         ...shell,
         cut: null,
@@ -901,7 +1683,7 @@
           reason: mismatch ? '환산점수 컷' : '컷 없음',
           need: mismatch ? '백분위로 공개된 70%컷' : '백분위 기준 입시결과',
         },
-      };
+      });
     }
     const cutValue = reference.primary.value;
     // 반올림을 먼저 하고 그 값으로 판정한다 — 0.67을 '+0.7'로 적어 놓고 소신으로 부르지 않기 위해서다.
@@ -929,11 +1711,21 @@
         lastWait: isNumber(latest.lastWait) ? latest.lastWait : null,
       }
       : null;
-    return {
+    const cutYear = reference.primary.year;
+    return attachModel({
       ...shell,
       status,
-      group: dept.jeongsi?.[reference.primary.year]?.group || dept.jeongsi?.[Object.keys(dept.jeongsi || {}).sort().at(-1)]?.group || null,
-      cut: reference.primary,
+      group: dept.jeongsi?.[cutYear]?.group || dept.jeongsi?.[Object.keys(dept.jeongsi || {}).sort().at(-1)]?.group || null,
+      cut: {
+        ...reference.primary,
+        aggregation: String(latest?.aggregation || 'adiga-score-rank'),
+        score70: cutRowScore(latest, 'p70'),
+        score50: cutRowScore(latest, 'p50'),
+        student70: normalizeCutStudent(latest?.student?.p70),
+        avg70: isNumber(latest?.cut70) ? latest.cut70 : null,
+        verified: false,
+        percentileCut: reference.primary.value,
+      },
       gap,
       gapRange,
       hold: null,
@@ -947,7 +1739,16 @@
       floor,
       fill,
       cut50: latest && isNumber(latest.cut50) ? latest.cut50 : null,
-    };
+    }, {
+      level: status === 'blocked' ? 'L0' : 'L3',
+      dept, university, reference, context, profile,
+      mineDetail: { score: mine.value, min: mine.bounds?.min ?? mine.value, max: mine.bounds?.max ?? mine.value, parts: [], adjustments: [], assumptions: mine.assumptions || [], unit: 'pct' },
+      gapDetail: {
+        points: null, pctEq: gap, min: gapRange?.min ?? gap, max: gapRange?.max ?? gap,
+        avgGap: gap, basisChanged: false, gap2026: null,
+      },
+      cutYear,
+    });
   }
 
   // 수시(교과·학종) 판정. 내신 등급이 없으면 null.
@@ -1002,14 +1803,22 @@
 
   // 전체 진단: 모든 대학·모집단위를 판정해 정렬한다.
   // filters: { track, universities:Set, group, sort: 'cut' | 'gap' }
+  // 생성 데이터에서 층위 판정에 필요한 것만 뽑아 둔다. 없는 항목은 그냥 없다 —
+  // rules2026·formulaCheck가 아직 없으면 판정은 지금까지처럼 L3에서 난다.
+  function layerContext(data) {
+    if (!data) return {};
+    return { std: data.std || null, conv: data.conv || null, rules2026: data.rules2026 || null, rules2027: data.rules2027 || null, formulaCheck: data.formulaCheck || null };
+  }
+
   function diagnose(profile, data, filters = {}) {
     const rows = [];
+    const context = layerContext(data);
     for (const university of data.universities || []) {
       if (filters.universities && filters.universities.size > 0 && !filters.universities.has(university.id)) continue;
       const rule = data.rules?.[university.id];
       for (const dept of university.departments || []) {
         if (filters.track && filters.track !== '전체' && dept.track !== filters.track) continue;
-        const result = evaluateJeongsi(profile, university, dept, rule, university.volatility ?? data.volatility);
+        const result = evaluateJeongsi(profile, university, dept, rule, university.volatility ?? data.volatility, context);
         if (filters.group && filters.group !== '전체' && result.group && result.group !== filters.group) continue;
         rows.push({
           universityId: university.id,
@@ -1030,8 +1839,8 @@
   // 상승폭은 **비교 기준(국·수·탐(2) 평균)** 위에서 잰다 — 컷이 그 눈금이기 때문이다.
   // 그래서 세 영역의 비중은 대학 반영비율이 아니라 각각 1/3이고, 영어는 이 눈금에 들어가지
   // 않는다(대학 반영비율은 화면이 따로 적는다).
-  function analyzeTarget(profile, university, dept, rule, fallbackSpread) {
-    const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility);
+  function analyzeTarget(profile, university, dept, rule, fallbackSpread, context = {}) {
+    const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility, context);
     if (['no-profile', 'no-cut', 'basis-mismatch', 'hold'].includes(result.status)) return { ...result, plan: null };
     const { score } = result;
     const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - result.mine), 2);
@@ -1106,6 +1915,11 @@
     percentileFromStd, gradeFromStd, conversionTable, convertedStd, universityRawScore, stdKeyOf,
     jeongsiReference, evaluateJeongsi, evaluateSusi, diagnose, analyzeTarget, electiveSummary, round,
     byCutDesc, byGapAsc,
+    // 판정 모델 v3 (docs/MODEL.md)
+    stdRangeFromPercentile, stdSubjectKeys, formulaScore2, adaptLegacyFormulaTrack,
+    myFormulaInputs, studentFormulaInputs, profileFormulaInputs, normalizeCutStudent,
+    pickModelTrack, ratioWeights, ratioIndex, trackHasFormula, layerContext,
+    APPLY_YEAR, LAYER_UNCERTAINTY,
   });
   globalThis.IPSI_ENGINE = api;
 })();
