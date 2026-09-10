@@ -596,6 +596,37 @@ button.jr-row {
 .jr-value {
   font-variant-numeric: tabular-nums;
 }
+/* 근거 카드: 라벨은 접히지 않고 값이 줄바꿈한다 — 375px에서 '비교 입결'이 두 줄로 쪼개지지
+   않게 한다 (FRAME §10.2). */
+.jr-evidence .seed-list-item__title {
+  white-space: nowrap;
+}
+.jr-evidence .seed-list-item__suffix {
+  flex-shrink: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.jr-evidence .jr-value {
+  text-align: right;
+}
+/* 어디가 각주 원문 인용. 배치만 여기서 맡고 글자 색·크기는 Seed 토큰 그대로다 (FRAME §10.3). */
+.jr-quote {
+  margin: 0;
+  padding: 12px var(--jr-gutter);
+  background: var(--seed-color-bg-layer-fill);
+  border-radius: var(--jr-radius);
+  border-inline-start: 2px solid var(--seed-color-stroke-neutral-subtle);
+}
+.jr-quote p {
+  margin: 0;
+  color: var(--seed-color-fg-neutral-muted);
+  font-size: var(--seed-font-size-t4, 0.875rem);
+  line-height: 1.6;
+}
+.jr-quote p + p {
+  margin-top: 6px;
+}
 .jr-chevron {
   color: var(--seed-color-fg-neutral-muted);
 }

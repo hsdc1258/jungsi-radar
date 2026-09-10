@@ -282,8 +282,9 @@ test('판정별 보기에서만 머리글이 나오고 머리글과 그 안의 �
   assert.ok(named.length >= 2, `판정 머리글 묶음이 둘 이상이어야 한다 (${named.length})`);
   for (const block of named) {
     const head = block.querySelector('.seed-list-header').text.trim().split(' ')[0];
-    // 판정 뱃지 말고도 한 행에 추정·실기·이상이 함께 붙는다 (FRAME §9.4) — 판정 뱃지만 본다.
-    const EXTRA = new Set(['추정', '실기', '이상']);
+    // 판정 뱃지 말고도 한 행에 모의·추정·근사·참고·실기·이상이 함께 붙는다
+    // (FRAME §9.4·§10.1) — 판정 뱃지만 본다.
+    const EXTRA = new Set(['추정', '모의', '목표', '근사', '참고', '실기', '이상', '미확인']);
     const badges = block.querySelectorAll('.seed-badge__root')
       .map((node) => node.text.trim())
       .filter((label) => !EXTRA.has(label));
@@ -301,7 +302,8 @@ test('진단 목록의 차이 숫자와 뱃지가 판정 정의대로 맞는다'
   const verdictOf = (gap) => (gap >= 2 ? '안정' : gap >= 0.7 ? '적정' : gap >= -0.7 ? '소신' : gap >= -2 ? '상향' : '위험');
   for (const row of withGap.slice(0, 20)) {
     const gap = Number(row.querySelector('.jr-gap').text.trim().replace('\u2212', '-').replace('+', ''));
-    const label = row.querySelector('.seed-badge__root').text.trim();
+    // \ud310\uc815 \ubc43\uc9c0\ub294 \uc5b8\uc81c\ub098 \ub9c8\uc9c0\ub9c9\uc774\ub2e4 \u2014 \uc55e\uc5d0\ub294 \ubaa8\uc758\u00b7\ucc38\uace0 \uac19\uc740 \uc0c1\ud0dc \ubc43\uc9c0\uac00 \uc120\ub2e4 (FRAME \u00a710.1).
+    const label = row.querySelectorAll('.seed-badge__root').at(-1).text.trim();
     if (label === '불가') continue;
     assert.equal(label, verdictOf(gap), `차이 ${gap} 인데 뱃지가 ${label}`);
   }
@@ -640,4 +642,228 @@ test('정보 화면의 이상치는 표가 아니라 §8.2 행 목록이다', ()
   assert.ok(first, '누를 수 있는 이상치 행이 없다');
   first.dispatch('click');
   assert.equal(tabs.find((tab) => tab.getAttribute('data-view') === 'target').getAttribute('aria-selected'), 'true');
+});
+
+// ---------------------------------------------------------------- 판정 층위 (FRAME §10)
+// 지금 생성 데이터에는 어디가 원자료(영역별 성적표)도 산식 검산도 없어 L3·L0만 나온다.
+// 화면은 네 층위를 모두 그릴 수 있어야 하므로, 엔진이 돌려줄 결과 객체(docs/MODEL.md §7)를
+// 흉내 내어 한 모집단위에만 씌우고 그린다 — 데이터가 들어오면 같은 모양이 진짜로 나온다.
+const FIXTURE = { universityId: 'kookmin', dept: '자유전공(A)', title: '국민대 자유전공 (A)' };
+
+function bootLayered(scores, layer) {
+  const built = buildContext();
+  built.context.localStorage.setItem('jr.scores', JSON.stringify(scores));
+  // 목록에서 그 한 곳만 남긴다 — 라인마다 위에서 여덟 곳씩만 보여 주기 때문이다.
+  built.context.localStorage.setItem('jr.filters', JSON.stringify({ universities: [FIXTURE.universityId], query: FIXTURE.dept }));
+  const real = built.context.IPSI_ENGINE;
+  const mine = (universityId, deptName) => universityId === FIXTURE.universityId && deptName === FIXTURE.dept;
+  const dress = (result) => ({ ...result, ...layer(result) });
+  built.context.IPSI_ENGINE = {
+    ...real,
+    diagnose: (...args) => real.diagnose(...args)
+      .map((row) => (mine(row.universityId, row.dept.name) ? { ...row, jeongsi: dress(row.jeongsi) } : row)),
+    analyzeTarget: (profile, university, dept, ...rest) => {
+      const result = real.analyzeTarget(profile, university, dept, ...rest);
+      return mine(university.id, dept.name) ? dress(result) : result;
+    },
+  };
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
+  return built;
+}
+
+// 국민대 자유전공(A) — docs/MODEL.md §0의 검산 예시 그대로다(70% 환산 659.0, 50% 660.5).
+const L1 = (result) => ({
+  level: 'L1',
+  status: 'ok',
+  group: '가',
+  estimated: false,
+  band: { key: 'stretch', label: '상향', uncertainty: 0.5, note: '70% 지점 대비' },
+  gap: -1.9,
+  gapDetail: { points: -6.7, pctEq: -1.9, min: -3, max: -1, avgGap: 0.3, basisChanged: false, gap2026: -1.9, gap2027: null },
+  mineDetail: { score: 652.3, min: 648.1, max: 655, parts: [], adjustments: [], assumptions: [], unit: 'points' },
+  cut: {
+    ...result.cut, year: '2026', value: 654.2, aggregation: 'adiga-score-rank',
+    score70: 659, score50: 660.5, verified: true,
+  },
+  apply: {
+    year: 2027,
+    typeName: '수능(일반학생전형)',
+    group: '가',
+    formula: {
+      year: 2026, status: 'final', sourceGrade: 'A', track: '자유전공(A)',
+      source: { title: '국민대학교 2026학년도 정시모집요강', url: 'https://admission.kookmin.ac.kr/', page: '53~54' },
+    },
+  },
+  areas: [
+    { area: 'kor', label: '국어', mine: 262.1, cut: 255.9, contrib: 6.2 },
+    { area: 'math', label: '수학', mine: 180.2, cut: 189.2, contrib: -9 },
+  ],
+  sensitivity: null,
+  uncertainty: 0.5,
+  basisChanged: false,
+  cut2027: null,
+  flags: ['plan-formula'],
+  sources: [
+    { title: 'adiga-hakjum', url: 'https://hakjum.school/' },
+    { title: '국민대학교 2026학년도 정시모집요강', url: 'https://admission.kookmin.ac.kr/' },
+  ],
+});
+
+const L2 = (result) => ({
+  level: 'L2',
+  status: 'ok',
+  group: '가',
+  estimated: false,
+  band: { key: 'reach', label: '소신', uncertainty: 1, note: '70% 지점 대비' },
+  gap: -1.2,
+  gapDetail: { points: null, pctEq: -1.2, min: -1.2, max: -1.2, avgGap: -0.4, basisChanged: false, gap2026: -1.2, gap2027: null },
+  mineDetail: { score: 79.4, min: 79.4, max: 79.4, parts: [], adjustments: [], assumptions: [], unit: 'pct' },
+  cut: { ...result.cut, year: '2026', value: 80.6, aggregation: 'adiga-score-rank', score70: null, score50: null, verified: false },
+  apply: { year: 2027, typeName: '수능(일반학생전형)', group: '가', formula: { year: 2027, status: 'plan', track: '인문', source: null } },
+  areas: [{ area: 'math', label: '수학', mine: 93, cut: 96, contrib: -0.9 }],
+  sensitivity: null,
+  uncertainty: 1,
+  flags: ['plan-formula'],
+  sources: [{ title: 'adiga-hakjum', url: 'https://hakjum.school/' }],
+});
+
+const L0 = (result) => ({
+  level: 'L0',
+  status: 'ok',
+  band: null,
+  gap: null,
+  gapDetail: { points: null, pctEq: null, min: null, max: null, avgGap: null, basisChanged: false, gap2026: null, gap2027: null },
+  cut: { ...result.cut, aggregation: 'unknown' },
+  flags: [],
+  sources: [],
+});
+
+const fixtureRow = (panel) => panel.querySelectorAll('.jr-row')
+  .find((row) => row.querySelector('.seed-list-item__title')?.text.trim() === FIXTURE.title);
+const openFixture = (built) => {
+  built.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const row = fixtureRow(built.panel);
+  assert.ok(row, `${FIXTURE.title} 행이 없다`);
+  return row;
+};
+
+test('L1 진단 행은 점수 차와 괄호 백분위 상당, 값만 부제를 적는다', () => {
+  const built = bootLayered(FULL_SCORES, L1);
+  const row = openFixture(built);
+  assert.equal(row.querySelector('.jr-gap').text.trim(), '−6.7점 (−1.9)');
+  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(),
+    '2026 70% 659.0 · 내 652.3 (648~655) · 가군 · 2026 산식');
+  // 뱃지는 판정 하나뿐이다 — 실제 수능 성적이고 L1이라 모의·근사·참고가 붙지 않는다.
+  assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['상향']);
+});
+
+test('L1 목표 화면은 근거 카드에 라벨·값 행을 고정 순서로 적는다', () => {
+  const built = bootLayered(FULL_SCORES, L1);
+  openFixture(built).dispatch('click');
+  const evidence = built.panel.querySelectorAll('.jr-section')
+    .find((node) => node.querySelector('.seed-list-header')?.text.trim() === '근거');
+  assert.ok(evidence, '근거 그룹이 없다');
+  const labels = evidence.querySelectorAll('.seed-list-item__title').map((node) => node.text.trim());
+  assert.deepEqual(labels, ['지원', '산식', '내 환산점수', '비교 입결', '차이', '판정', '유리·불리', '불확실성', '출처']);
+  const text = evidence.text;
+  assert.match(text, /2027 · 수능\(일반학생전형\) · 가군/u);
+  // 산식은 요강 학년도 · 반영점수 · 눈금 · 검산 순이다(대조 행이 아직 없으면 '미대조').
+  assert.match(text, /2026 요강 · 국400 수300 영100 탐200 · 표준점수 · (검산 일치|미대조)/u);
+  assert.match(text, /652\.3 \(648\.1~655\.0\)/u);
+  assert.match(text, /2026 70% 지점 659\.0 · 50% 660\.5 · 환산점수 순/u);
+  assert.match(text, /−6\.7점 · 백분위 상당 −1\.9 · 평균 백분위로는 \+0\.3/u);
+  assert.match(text, /70% 지점 대비 · 불확실성 ±0\.5/u);
+  assert.match(text, /국어 \+6\.2 · 수학 −9\.0/u);
+  assert.match(text, /2027 시행계획/u);
+  assert.ok(evidence.querySelectorAll('.jr-link').length >= 1, '출처 링크 행이 없다');
+  // 층위 이름은 라벨로 쓰지 않고, 문장도 쓰지 않는다 (FRAME §10.2).
+  for (const gone of ['L1', '봅니다', '입니다']) assert.ok(!text.includes(gone), `'${gone}' 이 남아 있다`);
+});
+
+test('L2 행은 백분위 차 하나와 근사 뱃지를 붙인다', () => {
+  const built = bootLayered(FULL_SCORES, L2);
+  const row = openFixture(built);
+  assert.equal(row.querySelector('.jr-gap').text.trim(), '−1.2');
+  assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['근사', '소신']);
+  assert.match(row.querySelector('.seed-list-item__detail').text, /· 가군 · 반영비율$/u);
+});
+
+test('L3 행은 참고 뱃지를 붙이고 컷의 통계 정의를 부제 끝에 적는다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
+  const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
+  // 성적 출처 기본값(모의고사) → 모의, 층위 L3 → 참고, 그리고 판정.
+  assert.equal(badges[0], '모의');
+  assert.equal(badges[1], '참고');
+  assert.match(row.querySelector('.seed-list-item__detail').text,
+    /(평균 백분위|과목별 평균|상위 2영역|국·탐 평균|국·수·탐1 평균)$/u);
+});
+
+test('L0 행은 차이를 적지 않고 미확인 뱃지를 붙인다', () => {
+  const built = bootLayered(FULL_SCORES, L0);
+  const row = openFixture(built);
+  assert.equal(row.querySelector('.jr-gap').text.trim(), '—');
+  assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['미확인']);
+});
+
+test('성적 출처 세그먼트가 모의·목표 뱃지를 갈아 끼우고 저장된다', () => {
+  const { panel, tabs, context } = boot(FULL_SCORES);
+  const scores = () => tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
+  const diagnose = () => tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const control = () => panel.querySelectorAll('[role="radiogroup"]')
+    .find((node) => node.getAttribute('aria-label') === '성적 출처');
+  scores();
+  assert.ok(control(), '성적 출처 세그먼트가 없다');
+  const radios = control().querySelectorAll('[role="radio"]');
+  assert.deepEqual(radios.map((node) => node.text.trim()), ['실제 수능', '모의고사', '목표']);
+  // 기본값은 모의고사다 (docs/MODEL.md §4).
+  assert.equal(radios[1].getAttribute('aria-checked'), 'true');
+  diagnose();
+  assert.match(panel.text, /모의/u);
+
+  scores();
+  control().querySelectorAll('[role="radio"]')[2].dispatch('click');
+  assert.equal(JSON.parse(context.localStorage.getItem('jr.scores')).sourceKind, 'target');
+  diagnose();
+  assert.match(panel.text, /목표/u);
+
+  scores();
+  control().querySelectorAll('[role="radio"]')[0].dispatch('click');
+  assert.equal(JSON.parse(context.localStorage.getItem('jr.scores')).sourceKind, 'actual');
+  diagnose();
+  assert.ok(!/모의/u.test(panel.text), "실제 수능인데 '모의' 뱃지가 남아 있다");
+});
+
+test('등급 입력은 성적 출처가 모의여도 추정 뱃지가 먼저다', () => {
+  const { panel, tabs } = boot(GRADE_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
+  const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
+  assert.equal(badges[0], '추정');
+  assert.ok(!badges.includes('모의'), '추정과 모의가 함께 붙었다');
+});
+
+test('정보 탭에 층위 네 줄·산식 검산 절·어디가 각주 인용이 있다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  const verdictText = panel.querySelector('#jr-about-verdict').text;
+  for (const level of ['환산', '지수', '참고', '없음']) {
+    assert.ok(verdictText.includes(level), `판정 표에 층위 '${level}' 줄이 없다`);
+  }
+  assert.match(verdictText, /70% 지점 · 보장선 아님/u);
+  assert.match(verdictText, /합격 확률/u);
+
+  const check = panel.querySelector('#jr-about-formula-check');
+  assert.ok(check, '산식 검산 절이 없다');
+  assert.match(check.text, /산식 검산/u);
+  // 지금 데이터에는 대조 행이 없다 — 행이 없으면 한 줄로 끝난다.
+  assert.match(check.text, /대조 행 없음|일치율 \d+%/u);
+
+  const aggregation = panel.querySelector('#jr-about-aggregation');
+  assert.ok(aggregation, '집계 기준 절이 없다');
+  const quote = aggregation.querySelector('.jr-quote');
+  assert.ok(quote, '인용 블록이 없다');
+  assert.equal(quote.querySelectorAll('p').length, 4, '어디가 각주 네 줄');
+  assert.match(quote.text, /50% cut : 최종등록자 중 수능 환산점수 순으로 상위 50%에 해당하는 점수/u);
 });
