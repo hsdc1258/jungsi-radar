@@ -81,7 +81,9 @@ test('evaluateJeongsi bands the gap and reports the multi-year spread', () => {
   const profile = engine.normalizeProfile({ mode: 'pct', kor: 98, math: 97, eng: 1, inq1Subject: '사회문화', inq1: 97, inq2Subject: '생활과윤리', inq2: 95 });
   const result = engine.evaluateJeongsi(profile, UNIVERSITY, DEPT, RULE);
   assert.equal(result.status, 'ok');
-  assert.equal(result.cut.value, 95);
+  // 2026(95)·2025(94)의 최근 가중 평균 = (95*0.6 + 94*0.3) / 0.9 = 94.67.
+  assert.equal(result.cut.value, 94.67);
+  assert.equal(result.cut.kind, '2개년 가중 평균');
   assert.equal(result.mine, 97.2);
   assert.equal(result.band.label, '안정');
   assert.equal(result.spread, 0.5);

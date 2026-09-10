@@ -340,15 +340,29 @@
     };
   }
 
-  // 모집단위의 정시 기준값. 최신 연도의 백분위 컷을 우선하고, 환산점수만 있으면 사설 추정을 쓴다.
-  // 연도별 값 목록(백분위 단위만)을 함께 돌려주어 변동폭을 계산한다.
-  function jeongsiReference(dept) {
+  // 최근 연도에 준 가중치. 컷은 그해 수능 난이도를 타므로 최근 해를 크게 본다.
+  const YEAR_WEIGHTS = Object.freeze([0.6, 0.3, 0.1]);
+
+  // 모집단위의 정시 기준값.
+  //   expected : 비교 가능한 연도별 값(dept.series)의 최근 가중 평균 — 판정의 기준선
+  //   range    : 연도별 최소~최대. 화면의 "± 오차"는 이 폭의 절반이다.
+  //   한 해뿐이면 대학 전체의 대표 변동폭(fallbackSpread)을 오차로 쓴다.
+  // 환산점수만 있는 모집단위는 사설 백분위 추정이 있을 때만 판정한다.
+  function jeongsiReference(dept, fallbackSpread) {
     const years = Object.keys(dept?.jeongsi || {}).sort().reverse();
+    // 생성 데이터에는 series가 있다. 없으면(테스트·수기 데이터) jeongsi에서 만든다.
+    let series = (Array.isArray(dept?.series) ? dept.series : []).filter((row) => isNumber(row.value));
+    if (series.length === 0) {
+      series = years
+        .filter((year) => (dept.jeongsi[year].metric || 'pct') === 'pct' && isNumber(dept.jeongsi[year].cut70))
+        .map((year) => ({ year, value: dept.jeongsi[year].cut70, kind: '70%컷', basis: 'adiga', source: dept.jeongsi[year].source, url: dept.jeongsi[year].url }));
+    }
+    series = [...series].sort((left, right) => right.year.localeCompare(left.year));
+
     const history = [];
     for (const year of years) {
       const row = dept.jeongsi[year];
       if (!row || (row.metric || 'pct') !== 'pct') continue;
-      // 70% 컷이 없으면 평균, 그것도 없으면 최저를 쓰되 어떤 값인지 kind로 남긴다.
       const candidate = isNumber(row.cut70) ? { value: row.cut70, kind: '70%컷' }
         : isNumber(row.avg) ? { value: row.avg, kind: '평균' }
           : isNumber(row.min) ? { value: row.min, kind: '최저' } : null;
@@ -357,13 +371,29 @@
     const estimates = Object.keys(dept?.estimate || {}).sort().reverse()
       .map((year) => ({ year, ...dept.estimate[year] }))
       .filter((row) => isNumber(row.pct));
+
     let primary = null;
-    if (history.length > 0) primary = { year: history[0].year, value: history[0].value, kind: history[0].kind, basis: 'adiga', source: history[0].source, url: history[0].url };
-    else if (estimates.length > 0) primary = { year: estimates[0].year, value: estimates[0].pct, basis: 'estimate', source: estimates[0].source, url: estimates[0].url };
+    let range = null;
+    let spread = null;
+    if (series.length > 0) {
+      const used = series.slice(0, YEAR_WEIGHTS.length);
+      const weights = YEAR_WEIGHTS.slice(0, used.length);
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      const expected = round(used.reduce((sum, row, index) => sum + row.value * weights[index], 0) / total, 2);
+      const values = used.map((row) => row.value);
+      range = { min: Math.min(...values), max: Math.max(...values), years: used.map((row) => row.year) };
+      spread = used.length > 1 ? round((range.max - range.min) / 2, 1) : (isNumber(fallbackSpread) ? round(fallbackSpread, 1) : null);
+      primary = {
+        year: used[0].year, value: expected, kind: used.length > 1 ? `${used.length}개년 가중 평균` : used[0].kind,
+        basis: 'adiga', latest: used[0].value, latestYear: used[0].year,
+        source: used[0].source, url: used[0].url, derived: used.some((row) => row.basis === 'derived'),
+      };
+    } else if (estimates.length > 0) {
+      primary = { year: estimates[0].year, value: estimates[0].pct, kind: '사설 추정', basis: 'estimate', source: estimates[0].source, url: estimates[0].url };
+      spread = isNumber(fallbackSpread) ? round(fallbackSpread, 1) : null;
+    }
     const scoreRows = years.map((year) => ({ year, ...dept.jeongsi[year] })).filter((row) => row.metric === 'score' && isNumber(row.cut70));
-    const values = history.map((row) => row.value);
-    const range = values.length > 0 ? { min: Math.min(...values), max: Math.max(...values), years: history.map((row) => row.year) } : null;
-    return { primary, history, estimates, scoreRows, range };
+    return { primary, series, history, estimates, scoreRows, range, spread, official: dept.official || {} };
   }
 
   function bandOf(gap, bands) {
@@ -372,22 +402,22 @@
   }
 
   // 한 모집단위에 대한 정시 판정.
-  function evaluateJeongsi(profile, university, dept, rule) {
-    const reference = jeongsiReference(dept);
+  function evaluateJeongsi(profile, university, dept, rule, fallbackSpread) {
+    const reference = jeongsiReference(dept, isNumber(fallbackSpread) ? fallbackSpread : university?.volatility);
     const score = universityScore(profile, rule, dept.track, dept.ruleTrack);
     if (!score) return { status: 'no-profile', reference, score: null };
     if (!reference.primary) return { status: 'no-cut', reference, score };
     const gap = round(score.value - reference.primary.value, 2);
     const band = bandOf(gap, VERDICT_BANDS);
     // 연도별 변동폭 — 컷이 흔들린 만큼 판정도 흔들린다. 반값을 ± 오차로 보여준다.
-    const spread = reference.range ? round((reference.range.max - reference.range.min) / 2, 1) : null;
+    const spread = reference.spread;
     return {
       status: score.blockers.length > 0 ? 'blocked' : 'ok',
       universityId: university.id,
       universityName: university.short || university.name,
       dept: dept.name,
       track: dept.track,
-      group: dept.jeongsi?.[reference.primary.year]?.group || null,
+      group: dept.jeongsi?.[reference.primary.year]?.group || dept.jeongsi?.[Object.keys(dept.jeongsi || {}).sort().at(-1)]?.group || null,
       cut: reference.primary,
       mine: score.value,
       gap,
@@ -428,7 +458,7 @@
       const rule = data.rules?.[university.id];
       for (const dept of university.departments || []) {
         if (filters.track && filters.track !== '전체' && dept.track !== filters.track) continue;
-        const result = evaluateJeongsi(profile, university, dept, rule);
+        const result = evaluateJeongsi(profile, university, dept, rule, university.volatility ?? data.volatility);
         if (filters.group && filters.group !== '전체' && result.group && result.group !== filters.group) continue;
         rows.push({
           universityId: university.id,
@@ -452,8 +482,8 @@
   }
 
   // 목표 학과: 필요한 상승폭과 영역별 투자 효율.
-  function analyzeTarget(profile, university, dept, rule) {
-    const result = evaluateJeongsi(profile, university, dept, rule);
+  function analyzeTarget(profile, university, dept, rule, fallbackSpread) {
+    const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility);
     if (result.status === 'no-profile' || result.status === 'no-cut') return { ...result, plan: null };
     const { score } = result;
     const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - score.value), 2);

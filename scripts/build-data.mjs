@@ -63,6 +63,62 @@ export function classifyTrack(name) {
   return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
 }
 
+
+// 판정에 쓰는 **비교 가능한** 연도별 값(series)을 만든다.
+//   - 어디가 70%컷이 있는 해가 기준점(anchor)이다.
+//   - 대학이 스스로 낸 값(official)은 학교마다 정의가 달라(평균·80%평균·70%컷) 수준을 그대로 쓸 수 없다.
+//     같은 학과의 **연도 사이 변화량**만 빌려 기준점에서 평행이동한다 (basis 'derived').
+//   - 대학 값이 어디가 공개표준안과 같은 정의면(adigaStandard) 그대로 쓴다 (basis 'official').
+// 숫자를 새로 만들지 않는다 — 모든 값은 파일에 적힌 값이거나 그 값들의 차이다.
+function buildSeries(jeongsi, official) {
+  const series = [];
+  const pctYears = Object.keys(jeongsi).filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null).sort();
+  const anchorYear = pctYears.at(-1) || null;
+  for (const year of pctYears) {
+    series.push({ year, value: jeongsi[year].cut70, kind: '70%컷', basis: 'adiga', source: jeongsi[year].source, url: jeongsi[year].url });
+  }
+  const officialValue = (row) => (row && row.metric === 'pct' ? (row.cut70 ?? row.avg ?? null) : null);
+  const anchorOfficial = anchorYear ? officialValue(official[anchorYear]) : null;
+  for (const [year, row] of Object.entries(official).sort()) {
+    if (series.some((entry) => entry.year === year)) continue;
+    const value = officialValue(row);
+    if (value === null) continue;
+    if (row.adigaStandard) {
+      series.push({ year, value: round2(value), kind: row.kind || '70%컷', basis: 'official', source: row.source, url: row.url });
+    } else if (anchorYear && anchorOfficial !== null) {
+      // 기준 연도 대비 변화량만 옮긴다.
+      series.push({
+        year, value: round2(jeongsi[anchorYear].cut70 + (value - anchorOfficial)), kind: '70%컷 환산', basis: 'derived',
+        from: { kind: row.kind, value, anchorYear, anchorValue: anchorOfficial }, source: row.source, url: row.url,
+      });
+    }
+  }
+  return series.sort((left, right) => left.year.localeCompare(right.year));
+}
+const round2 = (value) => Math.round(value * 100) / 100;
+
+
+// 컷의 연도별 흔들림. 학과별 표준편차의 중앙값을 대학의 대표 변동폭으로 쓴다 —
+// 연도 값이 한 해뿐인 학과의 오차범위는 이 값으로 대신한다.
+function stdev(values) {
+  if (values.length < 2) return null;
+  const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+  return Math.sqrt(values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (values.length - 1));
+}
+function median(values) {
+  if (values.length === 0) return null;
+  const sorted = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+function volatilityOf(departments) {
+  const spreads = departments
+    .map((dept) => stdev((dept.series || []).map((row) => row.value)))
+    .filter((value) => typeof value === 'number' && Number.isFinite(value));
+  const value = median(spreads);
+  return value === null ? null : round2(value);
+}
+
 function buildUniversities(adiga, rules) {
   const byId = new Map(adiga.map((row) => [row.id, row]));
   const universities = [];
@@ -82,10 +138,13 @@ function buildUniversities(adiga, rules) {
             jeongsi[year] = {
               cut70: row.pct70 ?? null, cut50: row.pct50 ?? null, score70: row.score70 ?? null,
               metric: row.pct70 !== null && row.pct70 !== undefined ? 'pct' : 'score',
+              kind: '70%컷', basis: 'adiga',
               group: row.group || null, quota: row.quota ?? null, rate: row.rate ?? null, fill: row.fill ?? null,
               typeName: row.typeName || '', source: row.source, url: row.url,
             };
           }
+          const official = dept.official || {};
+          const series = buildSeries(jeongsi, official);
           const susi = (kind) => {
             const out = {};
             for (const [year, row] of Object.entries(dept[kind] || {})) {
@@ -93,12 +152,12 @@ function buildUniversities(adiga, rules) {
             }
             return out;
           };
-          return { name: dept.name, track, ruleTrack, jeongsi, gyogwa: susi('gyogwa'), hakjong: susi('hakjong') };
+          return { name: dept.name, track, ruleTrack, jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong') };
         })
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({
         id, name: rule?.name || source?.name || id, short: SHORT[id] || id, line: line.label, order,
-        resultUrl: source?.url || null, departments,
+        resultUrl: source?.url || null, volatility: volatilityOf(departments), departments,
       });
     }
   }
@@ -112,8 +171,10 @@ export function buildData() {
   const universities = buildUniversities(adiga, rules);
   const ruleMap = {};
   for (const [id, rule] of Object.entries(rules.universities)) ruleMap[id] = rule;
+  const volatilities = universities.map((university) => university.volatility).filter((value) => typeof value === 'number');
   return {
     generatedAt: new Date().toISOString().slice(0, 10),
+    volatility: volatilities.length > 0 ? round2(median(volatilities)) : 1,
     lines: LINES,
     universities,
     rules: ruleMap,
