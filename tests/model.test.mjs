@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
-import { checkPoint, verdictOf } from '../scripts/verify-formulas.mjs';
+import { bonusHeadroom, checkPoint, deptOf as adigaDeptOf, verdictOf } from '../scripts/verify-formulas.mjs';
 import { classifyAnomaly, errorReasons } from '../scripts/anomalies.mjs';
 
 const ROOT = process.cwd();
@@ -330,6 +330,197 @@ test('L2 — 산식이 없으면 같은 반영비율로 만든 가중 지수를 
   // 평균백분위가 영역별 값과 어긋나는 행(consistent=false)은 L2로 올라가지 않는다.
   const broken = deptOf('자유전공학부(A)', null, { student: { p70: { ...STUDENT_70, avg: 60 } } });
   assert.equal(judge(KOR_STRONG, broken, { rules2026: null, formulaCheck: null, rules2027 }).level, 'L3');
+});
+
+// ================================================================ §1.2 확장 필드
+// 2026 정시모집요강이 스스로 실은 **성적 산출 예시**를 그대로 재현한다. 여기 값들은 우리가
+// 만든 것이 아니라 대학이 요강에 인쇄한 숫자라, 산식 채점기가 확장 필드(denominator·base·
+// bonus.of·eng/hist mode·pickBest·optional·offset·div·cap·roundMode)를 제대로 소비하는지
+// 가리는 유일한 잣대다. 입력값은 _seed/rules-2026/<id>.txt 의 요강 원문 표에서 옮겼다.
+const RULES_ALL = readJson('source/rules-2026.json');
+const trackIn = (universityId, name) => {
+  const found = (RULES_ALL.universities[universityId]?.tracks || []).find((row) => row.name === name);
+  assert.ok(found, `${universityId}/${name} 트랙이 없다`);
+  return { ...found, universityId };
+};
+// pickBest 형제 트랙 — pickModelTrack 이 붙여 주는 모양 그대로 만든다.
+const siblingsIn = (universityId, names) => {
+  const family = names.map((name) => trackIn(universityId, name));
+  return { ...family[0], siblings: family };
+};
+const spanOf = (row) => ({ std: row.std ?? null, pct: row.pct ?? null, conv: row.conv ?? null });
+const inputsOf = (row) => ({
+  kor: spanOf(row.kor || {}),
+  math: spanOf(row.math || {}),
+  inq: (row.inq || []).map((one) => ({ ...spanOf(one), kind: one.kind ?? null, subject: one.subject ?? null })),
+  eng: { grade: row.eng ?? null },
+  hist: { grade: row.hist ?? null },
+  mathElective: row.mathElective || null,
+});
+const scoreOf = (track, row, stdOverride = null) => engine.formulaScore2(track, inputsOf(row), {
+  std: stdOverride || STD, conv: CONV, universityId: track.universityId,
+});
+// 전남대 예시는 요강이 지어낸 성적표라 전국 최고 표준점수도 그 표(139·140·77·69 …)를 쓴다.
+const maxima = (pairs) => ({ subjects: Object.fromEntries(Object.entries(pairs).map(([key, maxStd]) => [key, { maxStd }])) });
+
+test('요강 산출 예시 — 항공대(pickBest · 탐구 1과목 best · hist 가산은 scale 뒤)', () => {
+  const 홍길동 = { kor: { std: 130 }, math: { std: 123 }, eng: 2, hist: 1, inq: [{ std: 64, kind: 'social', subject: '한국지리' }, { std: 60, kind: 'science', subject: '지구과학Ⅰ' }] };
+  const 고길동 = { kor: { std: 134 }, math: { std: 131 }, eng: 2, hist: 2, inq: [{ std: 65, kind: 'science', subject: '화학Ⅰ' }, { std: 58, kind: 'science', subject: '지구과학Ⅰ' }] };
+  // 요강 p.58 「국어(130x20%) + 수학(123x35%) + 영어(134x20%) + 탐구(64x25%) = 111.85 → ×5 + 10 = 569.25」
+  const gong = scoreOf(trackIn('kau', '공학적성(공과·AI융합·스마트드론·AI자율주행·자유전공 공학)'), 홍길동);
+  assert.equal(gong.value, 569.25);
+  // 탐구는 2과목을 넣어도 상위 1과목(64)만 반영한다.
+  assert.equal(gong.parts.find((row) => row.area === 'inq').input, 64);
+  // 한국사 10점은 ×5 **뒤** 총점에 붙는다 — 안에 들었다면 50점이 된다.
+  assert.equal(gong.parts.find((row) => row.area === 'hist').points, 10);
+
+  const family = siblingsIn('kau', ['이학·사회적성 산출1', '이학·사회적성 산출2']);
+  const sa = scoreOf(family, 홍길동);
+  assert.equal(sa.value, 572.75, '산출1(112.20)보다 높은 산출2(112.55)를 써야 한다');
+  assert.equal(sa.picked.track, '이학·사회적성 산출2');
+  assert.deepEqual(sa.picked.from.map((row) => row.value), [571.00, 572.75]);
+  assert.equal(scoreOf(family, 고길동).value, 590.00);
+});
+
+test('요강 산출 예시 — 충남대(영어·한국사 감점 · 과탐 과목별 10% 가산)', () => {
+  const track = trackIn('cnu', '자연계');
+  // 요강 p.52 「[{116×75 + 123×135 + (63+68)×90} ÷ 200] − 5 − 1 = 179.475」
+  const 사탐 = { kor: { std: 116 }, math: { std: 123 }, eng: 3, hist: 4, inq: [{ std: 68, kind: 'social', subject: '지구과학Ⅱ' }, { std: 63, kind: 'social', subject: '화학Ⅰ' }] };
+  assert.equal(scoreOf(track, 사탐).value, 179.475);
+  // 같은 성적을 과탐으로 응시하면 과목별 표준점수에 10%가 붙어 185.37이다.
+  const 과탐 = { ...사탐, inq: 사탐.inq.map((row) => ({ ...row, kind: 'science' })) };
+  assert.equal(scoreOf(track, 과탐).value, 185.37);
+  // 영어는 배점이 아니라 감점(mode:'penalty')이라 배점 몫이 0이고 총점에서 5점을 뺀다.
+  assert.equal(scoreOf(track, { ...사탐, eng: 1 }).value - scoreOf(track, 사탐).value, 5);
+});
+
+test('요강 산출 예시 — 중앙대(변환표준점수 · 탐구 종류별 가산)', () => {
+  const conv = (value, kind, subject) => ({ conv: value, kind, subject });
+  const base = { kor: { std: 134 }, math: { std: 136 }, eng: 2, hist: 5 };
+  // ① 영어영문학과: 사탐 변환표준점수에만 5% — {(65.34×1.05)+67.24}×0.35×5 = 237.73225
+  assert.equal(scoreOf(trackIn('cau', '인문·예체능(인문대·사범대·공연영상·디자인)'), {
+    ...base, inq: [conv(65.34, 'social', '사회·문화'), conv(67.24, 'science', '화학Ⅰ')],
+  }).value, 783.832);
+  // ② 경영학부: 가산 없는 트랙
+  assert.equal(scoreOf(trackIn('cau', '인문(사회과학·경영경제·간호 인문)'), {
+    ...base, inq: [conv(65.34, 'social', '사회·문화'), conv(67.24, 'social', '생활과윤리')],
+  }).value, 779.47);
+  // ③ 기계공학부: 두 과목 모두 과탐이라 합에 5%
+  assert.equal(scoreOf(trackIn('cau', '자연'), {
+    ...base, inq: [conv(65.34, 'science', '화학Ⅰ'), conv(67.24, 'science', '물리학Ⅰ')],
+  }).value, 790.216);
+});
+
+test('요강 산출 예시 — 전북대(탐구 변환표준점수 평균 ×1.5 · 영어·한국사 가산)', () => {
+  // 요강 p.29 인문 「5 + 104 + 75 + 24 + 83.61525 = 291.62」
+  assert.equal(scoreOf(trackIn('jbnu', '인문·생활과학·환경생명자원·융합자율전공'), {
+    kor: { std: 104 }, math: { std: 100 }, eng: 3, hist: 2,
+    inq: [{ conv: 57.1675, kind: 'social', subject: '사회·문화' }, { conv: 54.3205, kind: 'social', subject: '생활과윤리' }],
+  }).value, 291.62);
+  // 자연 「4 + 68.25 + 104 + 27 + 94.990575 = 298.24」 — 요강 표의 변환표준점수는 과탐 10% 가산 뒤 값이다.
+  assert.equal(scoreOf(trackIn('jbnu', '자연·농업생명과학'), {
+    kor: { std: 91 }, math: { std: 104 }, eng: 2, hist: 6,
+    inq: [{ conv: 67.75785 / 1.1, kind: 'science', subject: '생명과학Ⅰ' }, { conv: 58.89625 / 1.1, kind: 'science', subject: '화학Ⅰ' }],
+  }).value, 298.24);
+});
+
+test('요강 산출 예시 — 홍익대(탐구 2과목 표준점수 합 · 영어 환산점수 ×15%)', () => {
+  // 요강 p.86 「(133×0.30 + 128×0.30 + 128×0.25 + 100×0.15) + 9.9 = 135.2」
+  assert.equal(scoreOf(trackIn('hongik', '인문계열·캠퍼스자율전공(인문·예능)'), {
+    kor: { std: 133 }, math: { std: 128 }, eng: 1, hist: 4,
+    inq: [{ std: 64, kind: 'social', subject: '윤리와사상' }, { std: 64, kind: 'social', subject: '세계사' }],
+  }).value, 135.2);
+});
+
+test('요강 산출 예시 — 전남대(전국 최고 표준점수로 나누는 denominator)', () => {
+  const 인문 = scoreOf(trackIn('jnu', '인문·인문/자연'), {
+    kor: { std: 128 }, math: { std: 128 }, eng: 2, hist: 1,
+    inq: [{ std: 62, kind: 'social', subject: '생활과윤리' }, { std: 63, kind: 'social', subject: '사회·문화' }],
+  }, maxima({ 국어: 139, 수학: 140, '탐구-생활과윤리': 77, '탐구-사회·문화': 69 }));
+  assert.equal(인문.value, 920.293, '요강 p.15 인문계열 산출 예시');
+  const 자연 = scoreOf(trackIn('jnu', '자연'), {
+    kor: { std: 127 }, math: { std: 125 }, eng: 1, hist: 2,
+    inq: [{ std: 59, kind: 'science', subject: '화학Ⅰ' }, { std: 65, kind: 'science', subject: '생명과학Ⅰ' }],
+  }, maxima({ 국어: 139, 수학: 140, '탐구-화학Ⅰ': 65, '탐구-생명과학Ⅰ': 70 }));
+  // 요강 자연계열 예시는 935.346이다. 우리 값은 935.347 — 요강이 영역마다 1단계 변환점수를
+  // 열째 자리, 비율 적용점수를 넷째 자리에서 **절사**하는데(요강 산출방법 1·2) 그 중간 절사가
+  // 트랙 JSON에 담겨 있지 않다. 차이는 0.001점이고 §1.4 허용폭(±1.0) 안이다.
+  assert.equal(자연.value, 935.347);
+  assert.ok(Math.abs(자연.value - 935.346) <= 0.005, `요강 935.346과 ${자연.value}`);
+});
+
+test('요강 산출 예시 — 부산대(div · 다섯째 자리 절사)와 서강대(영어·한국사 가산)', () => {
+  // 부산대 요강 「134×300÷200 + 118×250÷200 + (63.8252+63.4311)×250÷200 + 200 + 10 = 717.5703」
+  assert.equal(scoreOf(trackIn('pnu', '인문'), {
+    kor: { std: 134 }, math: { std: 118 }, eng: 1, hist: 1,
+    inq: [{ conv: 63.8252, kind: 'social', subject: '사회·문화' }, { conv: 63.4311, kind: 'social', subject: '생활과윤리' }],
+  }).value, 717.5703);
+  // 서강대 요강 「128×1.1 + 135×1.3 + (64.3+67.4)×0.6 + 99.5 + 10 = 504.82」
+  assert.equal(scoreOf(trackIn('sogang', '전 계열(A형)'), {
+    kor: { std: 128 }, math: { std: 135 }, eng: 2, hist: 1,
+    inq: [{ conv: 67.4, kind: 'social', subject: '사회·문화' }, { conv: 64.3, kind: 'social', subject: '생활과윤리' }],
+  }).value, 504.82);
+});
+
+test('§1.2 확장 필드 — base·optional·pctToTotal·hist mode·채점 불가 트랙', () => {
+  // 충북대: 영역별 기본점수 + (표준점수 ÷ 전국 최고) × 실질반영점수. 만점이면 300 + 200 + …
+  const cbnu = trackIn('cbnu', '인문');
+  assert.equal(cbnu.areas.kor.base, 240);
+  const top = scoreOf(cbnu, {
+    kor: { std: STD.subjects.국어.maxStd }, math: { std: STD.subjects.수학.maxStd }, eng: 1, hist: 1,
+    inq: [{ std: 70, kind: 'social', subject: '생활과윤리' }, { std: 70, kind: 'social', subject: '사회·문화' }],
+  });
+  const korPart = top.parts.find((row) => row.area === 'kor');
+  assert.equal(korPart.points, 300, '전국 최고 표준점수면 기본 240 + 실질 60 = 300');
+  assert.equal(top.parts.find((row) => row.area === 'eng').points, 200, '영어 기본 160 + 등급점수 10 × 4');
+  // 한국사를 계산에 넣지 않는 대학(mode:'none')은 등급이 몇이든 총점이 같다.
+  const same = (grade) => scoreOf(cbnu, { kor: { std: 130 }, math: { std: 120 }, eng: 2, hist: grade, inq: [{ std: 62, kind: 'social', subject: '생활과윤리' }, { std: 63, kind: 'social', subject: '사회·문화' }] }).value;
+  assert.equal(same(1), same(9));
+
+  // 홍익대 미술계열: 국·수·탐 중 상위 2개 영역만 각 40%(optional top2).
+  const art = trackIn('hongik', '미술계열');
+  const scored = scoreOf(art, {
+    kor: { std: 130 }, math: { std: 100 }, eng: 2, hist: 1,
+    inq: [{ std: 65, kind: 'social', subject: '생활과윤리' }, { std: 64, kind: 'social', subject: '사회·문화' }],
+  });
+  const dropped = scored.parts.filter((row) => row.excluded);
+  assert.equal(dropped.length, 1, '셋 중 하나는 빠져야 한다');
+  assert.equal(dropped[0].area, 'math', '가장 낮은 수학(100)이 빠진다');
+
+  // 숭실대: 탐구 백분위의 2.5%를 총점에 더하는 가산(of:'pctToTotal').
+  const ss = trackIn('soongsil', '인문');
+  const withBonus = scoreOf(ss, { kor: { std: 130 }, math: { std: 120 }, eng: 2, hist: 1, inq: [{ pct: 96, kind: 'social', subject: '생활과윤리' }, { pct: 92, kind: 'social', subject: '사회·문화' }] });
+  const without = scoreOf(ss, { kor: { std: 130 }, math: { std: 120 }, eng: 2, hist: 1, inq: [{ pct: 96, kind: 'science', subject: '화학Ⅰ' }, { pct: 92, kind: 'science', subject: '물리학Ⅰ' }] });
+  // 숭실대 총점은 정수 자리에서 반올림하므로(roundTo 0) 두 값의 차는 4.7 ± 반올림 한 칸이다.
+  assert.ok(Math.abs((withBonus.value - without.value) - (96 + 92) * 0.025) <= 1, `${without.value} → ${withBonus.value}`);
+  assert.ok(withBonus.flags.includes('approx-conversion'), '변환표 근사는 flags 에 남는다');
+
+  // 성균관대·한양대는 요강이 정규화 상수를 밝히지 않는다(factor·scale null) — 채점하지 않는다.
+  for (const [id, name] of [['skku', '가군 인문(A/B)'], ['hanyang', '자연계']]) {
+    const track = trackIn(id, name);
+    assert.equal(engine.trackHasFormula(track), false, `${id}/${name} 는 L1에 쓰면 안 된다`);
+    assert.equal(scoreOf(track, { kor: { std: 130 }, math: { std: 130 }, eng: 1, hist: 1, inq: [{ pct: 95, kind: 'social', subject: '생활과윤리' }, { pct: 95, kind: 'social', subject: '사회·문화' }] }), null);
+  }
+  // 반대로 영어가 감점만 하는 대학(고려·경희·서울대)은 영어 배점이 없어도 채점된다.
+  for (const [id, name] of [['korea', '인문'], ['khu', '인문'], ['snu', '인문']]) {
+    assert.equal(engine.trackHasFormula(trackIn(id, name)), true, `${id}/${name}`);
+  }
+});
+
+test('§1.4 검산 — 어디가 행이 산식을 못 채우면 mismatch 가 아니라 unchecked 다', () => {
+  const track = trackIn('hongik', '인문계열·캠퍼스자율전공(인문·예능)');
+  const ctxHongik = { std: STD, conv: CONV, universityId: 'hongik' };
+  // 탐구 2과목 산식인데 어디가 행에 탐구1만 있는 경우(홍익대 경영학부 실제 행).
+  const oneSubject = { kor: 78, math: 91, inq1: { kind: '사탐', pct: 97 }, inq2: null, avg: 89, hist: 1, eng: 2 };
+  const thin = checkPoint(engine, track, oneSubject, 130.9, ctxHongik);
+  assert.equal(thin.status, 'unchecked');
+  assert.match(thin.reason, /탐구 2과목/u);
+  // 반영총점(700)과 어디가 총점(710)의 차이가 한국사 가산폭 안이면 그것만으로 mismatch 로 보지 않는다.
+  assert.equal(bonusHeadroom(trackIn('hufs', '서울 인문(상경·사회·경영)')), 10);
+  assert.equal(bonusHeadroom(trackIn('kookmin', '자유전공(A)')), 0, '감점 방식 한국사는 총점을 늘리지 않는다');
+  // 계열은 빌드와 같은 규칙으로 정한다 — 어디가 행에는 계열이 없다.
+  assert.deepEqual(adigaDeptOf('hongik', '경영학부'), { name: '경영학부', track: '인문', ruleTrack: '상경' });
+  assert.equal(adigaDeptOf('cau', '기계공학부').track, '자연');
 });
 
 // ---------------------------------------------------------------- §3 안정 문턱

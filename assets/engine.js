@@ -664,13 +664,54 @@
   // inputs 는 영역별 **구간**이다: { std, stdMin, stdMax, pct, pctMin, pctMax, kind }.
   // 구간이 있으면 결과도 { value(중앙), min, max } 다 — 산식이 영역마다 단조증가라 끝점끼리 짝지으면 된다.
   // 영역 순서는 옛 산출식 계산과 같게 둔다(부동소수 합의 순서까지 같아야 재현 값이 흔들리지 않는다).
+  // 국·수·영·탐은 scale 안에서 더하고, 한국사는 **scale 뒤** 총점에 붙는다(§1.2 · 항공대 요강
+  // 산출 예시 「영역별 점수 합계 × 5 + 한국사 가산점」이 그 순서를 못박는다). 영어도 mode 가
+  // penalty·bonus 면 배점이 아니라 총점 가감이라 scale 뒤로 간다(충남대·서강대).
   const AREA_ORDER = Object.freeze(['kor', 'math', 'eng', 'inq', 'hist']);
+  const SCORED_AREAS = Object.freeze(['kor', 'math', 'eng', 'inq']);
+
+  // null 은 '없다'다 — Number(null) 이 0 이라 그냥 Number.isFinite 로 재면 배점 없는 칸이 0으로 변한다
+  // (경기대 round:null 이 반올림 자리 0으로 읽혀 소수점이 통째로 날아갔다).
+  const numOr = (value, fallback) => (
+    value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) ? fallback : Number(value)
+  );
+  const truncate = (value, digits) => {
+    const factor = 10 ** digits;
+    return Math.trunc(value * factor) / factor;
+  };
 
   const bonusList = (config) => {
     const raw = config?.bonuses || config?.bonus || null;
     if (!raw) return [];
-    return (Array.isArray(raw) ? raw : [raw]).filter((row) => row && Number(row.rate));
+    return (Array.isArray(raw) ? raw : [raw]).filter((row) => row && (Number(row.rate) || row.flat !== undefined));
   };
+
+  // 가산 한 줄을 한 모양으로 읽는다 — 등록자가 kind/type/electives, rate/flat, per/requireBoth 를
+  // 요강 문장에 맞춰 섞어 썼다(part-b.json _note). 여기서 정규화하고, 모집단위 조건(except·appliesTo)
+  // 처럼 이 자리에서 판정할 수 없는 단서는 limited 로 남겨 결과 notes 에 싣는다.
+  function normalizeBonus(entry) {
+    if (!entry) return null;
+    const rate = Number(entry.rate);
+    const flat = entry.flat === undefined ? null : entry.flat;
+    if (!Number.isFinite(rate) && flat === null) return null;
+    const type = entry.type || null;
+    let kind = entry.kind || null;
+    let electives = Array.isArray(entry.electives) ? entry.electives : null;
+    if (type === 'calcGeo') electives = electives || ['미적분', '기하'];
+    else if (type === 'science' || type === 'social' || type === 'scienceII') kind = kind || (type === 'scienceII' ? 'science' : type);
+    const requires = typeof entry.requires === 'string' ? entry.requires : null;
+    const per = entry.per || 'subject';
+    const requireBoth = entry.requireBoth === true || per === 'area' || (requires ? /2\s*과목/u.test(requires) : false);
+    const limited = Array.isArray(entry.except) ? `제외 모집단위 ${entry.except.join('·')}` : (typeof entry.appliesTo === 'string' ? entry.appliesTo : null);
+    return {
+      kind, electives, type, requires, limited, per, requireBoth,
+      rate: Number.isFinite(rate) ? rate : 0,
+      flat,
+      of: entry.of || (per === 'area' ? 'areaScore' : 'value'),
+      // per:'subject' 면 과목마다, 그 밖(area·combination·requireBoth)이면 영역 전체에 건다.
+      scope: per === 'subject' && !requireBoth ? 'subject' : 'area',
+    };
+  }
 
   function spanPick(span, metric, pick) {
     if (!span) return null;
@@ -683,14 +724,49 @@
     return three[1];
   }
 
+  // metric: std · pct · conv(변환표준점수) · stdRatio·convRatio(비율 — 분모가 metric 이름에 들어 있다).
+  // span.conv 가 있으면 표 대신 그 값을 쓴다(대학이 공개한 변환표준점수를 그대로 넣는 자리다).
   function areaMetricValue(config, span, pick, convTable) {
     const metric = config?.metric || 'std';
-    if (metric === 'conv') {
+    if (metric === 'conv' || metric === 'convRatio') {
+      if (isNumber(span?.conv)) return span.conv;
       const pct = spanPick(span, 'pct', pick);
       return pct === null ? null : convertedStd(pct, convTable);
     }
     if (metric === 'pct') return spanPick(span, 'pct', pick);
     return spanPick(span, 'std', pick);
+  }
+
+  // 영역값을 factor 앞에서 나누는 기준(§1.2 확장 필드). div 와 stdRatio·convRatio 는 같은 뜻의 축약형이다.
+  function areaDenominatorSpec(config, key) {
+    if (config?.denominator) return config.denominator;
+    if (Number.isFinite(Number(config?.div))) return { kind: 'const', value: Number(config.div) };
+    if (config?.metric === 'stdRatio') return { kind: 'maxStd', area: key, perSubject: key === 'inq' };
+    if (config?.metric === 'convRatio') return { kind: 'maxConv', multiplier: 1 };
+    return null;
+  }
+
+  // 전국 최고 표준점수 — std-<year>.json subjects[key].maxStd, 없으면 도수분포의 최댓값이다.
+  function maxStdOfSubject(std, subjectKey) {
+    const subject = std?.subjects?.[subjectKey];
+    if (!subject) return null;
+    if (isNumber(subject.maxStd)) return subject.maxStd;
+    const rows = subject.rows || [];
+    return rows.length > 0 ? Math.max(...rows.map((row) => row[0])) : null;
+  }
+  // 탐구는 과목마다 최고점이 다르다. 어디가 행처럼 **과목명을 모르면** 그 종류(사탐/과탐) 안에서
+  // 최소~최대 최고점을 분모 후보로 잡는다(§1.3의 "표에 없는 조합은 만들지 않는다"와 같은 태도).
+  // 분모가 작을수록 점수가 커지므로 상한(pick 'max')에는 가장 작은 최고점을 쓴다.
+  function maxStdOfArea(std, area, subjectKey, options = {}) {
+    if (area !== 'inq') return maxStdOfSubject(std, stdKeyOf(area));
+    if (subjectKey) {
+      const one = maxStdOfSubject(std, subjectKey);
+      if (isNumber(one)) return one;
+    }
+    const values = stdSubjectKeys(std, options.kind || 'inq').map((key) => maxStdOfSubject(std, key)).filter(isNumber);
+    if (values.length === 0) return null;
+    if (options.pick === 'max') return Math.min(...values);
+    return Math.max(...values);
   }
 
   const tableValue = (table, grade) => {
@@ -699,101 +775,296 @@
     return Number.isFinite(value) ? value : null;
   };
 
-  // 지원 자격(§1.2 eligibility). 걸리면 점수는 내되 blockers 로 알린다.
+  // 상위 n개 영역만 반영하는 규칙. bestOf{pool,factors} 와 optional{pick,of,weights|weight} 는
+  // 같은 것을 두 가지로 적은 것이라 하나로 읽는다. factors 의 null 은 '그 영역의 원래 배점을 쓴다'다.
+  function pickSpec(track) {
+    const best = track?.bestOf;
+    if (best && Array.isArray(best.pool) && best.pool.length > 1) {
+      return { pool: best.pool, factors: Array.isArray(best.factors) ? best.factors : [] };
+    }
+    const optional = track?.optional;
+    if (optional && Array.isArray(optional.of) && optional.of.length > 1) {
+      const weight = Number.isFinite(Number(optional.weight)) ? Number(optional.weight) : null;
+      if (optional.pick === 'rankedWeights' && Array.isArray(optional.weights)) return { pool: optional.of, factors: optional.weights };
+      if (optional.pick === 'top2') return { pool: optional.of, factors: [weight, weight] };
+      if (optional.pick === 'best') return { pool: optional.of, factors: [weight] };
+    }
+    return null;
+  }
+
+  // 채점 가능한 트랙인가. scale 이 **명시적 null** 이면 요강이 정규화 상수를 밝히지 않은 것이고
+  // (성균관 variants·한양 denominator:null), 배점 없는 영역이 상위-n 규칙에도 안 걸리면 못 센다.
+  const trackHasFormula = (track) => {
+    if (!track) return false;
+    if (Array.isArray(track.siblings) && track.siblings.length > 0) return track.siblings.some(trackHasFormula);
+    const areas = track.areas || {};
+    if (Object.keys(areas).length === 0) return false;
+    if (track.scale === null) return false;
+    const pool = pickSpec(track)?.pool || [];
+    let scored = 0;
+    for (const key of SCORED_AREAS) {
+      const config = areas[key];
+      if (!config || !(config.metric || config.mode)) continue;
+      // 영어가 배점 없이 감점·가산만 하는 대학(고려·경희·서울대·가톨릭)은 factor 가 없어도 계산된다.
+      const needsFactor = key !== 'eng' || !(config.mode === 'penalty' || config.mode === 'bonus');
+      if (needsFactor && config.factor === null && !pool.includes(key)) return false;
+      scored += 1;
+    }
+    return scored > 0;
+  };
+
+  // 지원 자격(§1.2 eligibility + 확장 필드 inq.allowed · math.restrict). 걸리면 점수는 내되 blockers 로 알린다.
   function trackBlockers(track, inputs) {
     const need = track?.eligibility || {};
     const out = [];
-    const electives = Array.isArray(need.requiredElectives) ? need.requiredElectives : null;
+    const areas = track?.areas || {};
+    const electives = Array.isArray(need.requiredElectives) ? need.requiredElectives
+      : Array.isArray(areas.math?.restrict) ? areas.math.restrict : null;
     if (electives?.length > 0 && inputs?.mathElective && !electives.includes(inputs.mathElective)) {
       out.push(`${electives.join('·')} 필수 모집단위 — ${inputs.mathElective}로는 지원 불가`);
     }
-    if (need.requiredInquiryKind) {
-      const kinds = new Set((inputs?.inq || []).map((row) => row.kind));
-      if (!kinds.has(need.requiredInquiryKind)) {
-        out.push(`${need.requiredInquiryKind === 'science' ? '과탐' : '사탐'} 필수 모집단위`);
-      }
+    const kinds = new Set((inputs?.inq || []).map((row) => row.kind));
+    if (need.requiredInquiryKind && !kinds.has(need.requiredInquiryKind)) {
+      out.push(`${need.requiredInquiryKind === 'science' ? '과탐' : '사탐'} 필수 모집단위`);
     }
+    if (areas.inq?.allowed === '과탐만' && kinds.size > 0 && !kinds.has('science')) out.push('과탐만 반영하는 모집단위');
     return out;
   }
 
   function formulaScore2(track, inputs, ctx = {}) {
     if (!track || !inputs) return null;
+    // pickBest 형제 트랙(인하 A/B · 항공 산출1·2 · 이화 간호·약학)은 전부 채점하고 높은 쪽을 쓴다.
+    const siblings = Array.isArray(track.siblings) ? track.siblings.filter(Boolean) : null;
+    if (siblings && siblings.length > 1) {
+      const scored = siblings
+        .map((row) => ({ name: row.name || null, result: formulaScore2({ ...row, siblings: null }, inputs, ctx) }))
+        .filter((row) => row.result);
+      if (scored.length === 0) return null;
+      const best = scored.reduce((top, row) => (row.result.value > top.result.value ? row : top), scored[0]);
+      return {
+        ...best.result,
+        picked: { track: best.name, from: scored.map((row) => ({ track: row.name, value: row.result.value })) },
+      };
+    }
+
     const areas = track.areas || {};
     if (Object.keys(areas).length === 0) return null;
+    if (track.scale === null) return null;
     const conversion = ctx.convTable
       ? { kind: ctx.convKind || 'approx', table: ctx.convTable, name: null, note: null, source: null }
       : conversionTable(ctx.conv, ctx.universityId ?? track.universityId ?? null);
     const convTable = conversion?.table || null;
-    const roundTo = Number.isFinite(Number(track.roundTo)) ? Number(track.roundTo) : 4;
+    const std = ctx.std || null;
+    const maxConv = convTable ? convertedStd(100, convTable) : null;
+    const roundTo = numOr(track.roundTo, numOr(track.round, 4));
     const scale = track.scale || {};
-    const multiply = Number(scale.multiply) || 1;
-    const divide = Number(scale.divide) || 1;
+    const multiply = numOr(scale.multiply, 1);
+    const divide = numOr(scale.divide, 1) || 1;
+    const cap = numOr(track.cap, null);
+    const picks = pickSpec(track);
+    const flags = [];
+    const notes = [];
+    const addNote = (text) => { if (text && !notes.includes(text)) notes.push(text); };
 
-    const contribution = (key, pick) => {
+    const denominatorOf = (spec, key, subjectKey, options = {}) => {
+      if (!spec) return 1;
+      if (spec.kind === 'const') return numOr(spec.value, 1) || 1;
+      if (spec.kind === 'maxConv') {
+        if (!isNumber(maxConv) || maxConv === 0) return null;
+        return maxConv * (numOr(spec.multiplier, 1) || 1);
+      }
+      if (spec.kind === 'maxStd') {
+        const value = maxStdOfArea(std, spec.area || key, subjectKey, options);
+        return isNumber(value) && value !== 0 ? value : null;
+      }
+      return 1;
+    };
+
+    // --- 국어·수학 (한 값)
+    const scalarArea = (key, pick) => {
       const config = areas[key];
-      if (!config) return null;
-      const factor = Number(config.factor ?? 1);
-      if (key === 'eng') {
-        const value = tableValue(config.table, inputs.eng?.grade);
-        return value === null ? null : { key, points: value * factor, raw: value, penalty: 0 };
+      const raw = areaMetricValue(config, inputs[key], pick, convTable);
+      if (raw === null) return null;
+      const bonuses = bonusList(config).map(normalizeBonus).filter(Boolean);
+      let value = raw;
+      let areaRate = 0;
+      for (const bonus of bonuses) {
+        if (bonus.limited) addNote(`${SUBJECT_LABEL[key]} 가산 조건(${bonus.limited})은 모집단위 단위라 여기서는 적용하지 않았다`);
+        if (Array.isArray(bonus.electives) && !bonus.electives.includes(inputs.mathElective)) continue;
+        if (bonus.of === 'areaScore') areaRate += bonus.rate;
+        else value *= 1 + bonus.rate;
       }
-      if (key === 'hist') {
-        const value = tableValue(config.table, inputs.hist?.grade);
-        if (value === null) return { key, points: 0, raw: null, penalty: 0 };
-        return config.mode === 'penalty'
-          ? { key, points: 0, raw: value, penalty: value * factor }
-          : { key, points: value * factor, raw: value, penalty: 0 };
+      const spec = areaDenominatorSpec(config, key);
+      const denominator = denominatorOf(spec, key, null);
+      if (denominator === null) return null;
+      if (spec?.kind === 'maxConv' || config.metric === 'conv' || config.metric === 'convRatio') {
+        if (conversion?.kind === 'approx' && !flags.includes('approx-conversion')) flags.push('approx-conversion');
       }
-      if (key === 'inq') {
-        const count = Number(config.count) || 2;
-        const rows = (inputs.inq || []).slice(0, count);
-        if (rows.length === 0) return null;
-        const bonuses = bonusList(config);
-        const each = rows.map((row) => {
-          const base = areaMetricValue(config, row, pick, convTable);
-          if (base === null) return null;
-          const rate = bonuses
-            .filter((entry) => !entry.kind || entry.kind === row.kind)
-            .reduce((sum, entry) => sum + Number(entry.rate), 0);
-          return base * (1 + rate);
-        });
-        if (each.some((value) => value === null)) return null;
-        const sum = each.reduce((total, value) => total + value, 0);
-        const agg = config.aggregate === 'mean' ? sum / each.length : sum;
-        return { key, points: agg * factor, raw: round(agg, 4), penalty: 0 };
+      const offset = numOr(config.offset, 0);
+      const factor = numOr(config.factor, config.factor === null ? null : 1);
+      const points = (numOr(config.base, 0) + ((value + offset) / denominator) * (factor ?? 1)) * (1 + areaRate);
+      return { key, value: (value + offset) / denominator, points, raw: round(value, 4), factor, ownFactor: factor };
+    };
+
+    // --- 탐구 (과목 여러 개)
+    const inquiryArea = (pick) => {
+      const config = areas.inq;
+      const count = numOr(config.count, 2);
+      if (count <= 0) return null;
+      const rows = inputs.inq || [];
+      const valued = rows
+        .map((row) => ({ row, base: areaMetricValue(config, row, pick, convTable) }))
+        .filter((row) => row.base !== null);
+      if (valued.length === 0) return null;
+      const aggregate = config.aggregate || 'sum';
+      const chosen = (aggregate === 'best' || aggregate === 'top1' || count === 1)
+        ? [[...valued].sort((left, right) => right.base - left.base)[0]]
+        : valued.slice(0, count);
+      const bonuses = bonusList(config).map(normalizeBonus).filter(Boolean);
+      const kinds = chosen.map((row) => row.row.kind);
+      const spec = areaDenominatorSpec(config, 'inq');
+      if (spec?.kind === 'maxConv' || config.metric === 'conv' || config.metric === 'convRatio') {
+        if (conversion?.kind === 'approx' && !flags.includes('approx-conversion')) flags.push('approx-conversion');
       }
-      const base = areaMetricValue(config, inputs[key], pick, convTable);
-      if (base === null) return null;
-      const rate = bonusList(config)
-        .filter((entry) => !Array.isArray(entry.electives) || entry.electives.includes(inputs.mathElective))
-        .reduce((sum, entry) => sum + Number(entry.rate), 0);
-      return { key, points: rate === 0 ? base * factor : base * factor * (1 + rate), raw: base, penalty: 0 };
+      let areaRate = 0;
+      let toTotal = 0;
+      for (const bonus of bonuses) {
+        if (bonus.limited) addNote(`탐구 가산 조건(${bonus.limited})은 모집단위 단위라 여기서는 적용하지 않았다`);
+        if (bonus.of === 'pctToTotal') {
+          for (const row of chosen) {
+            if (bonus.kind && row.row.kind !== bonus.kind) continue;
+            const pct = spanPick(row.row, 'pct', pick);
+            if (isNumber(pct)) toTotal += pct * bonus.rate;
+          }
+          continue;
+        }
+        if (bonus.per === 'combination' && bonus.flat && typeof bonus.flat === 'object') {
+          if (kinds.length === 2 && kinds.every((kind) => kind === (bonus.kind || 'science'))) {
+            const twos = chosen.filter((row) => /Ⅱ$/u.test(String(row.row.subject || ''))).length;
+            const key = twos === 2 ? 'Ⅱ+Ⅱ' : twos === 1 ? 'Ⅰ+Ⅱ' : 'Ⅰ+Ⅰ';
+            toTotal += numOr(bonus.flat[key], 0);
+          }
+          continue;
+        }
+        if (bonus.scope === 'area') {
+          if (bonus.kind && !(kinds.length > 0 && kinds.every((kind) => kind === bonus.kind))) continue;
+          areaRate += bonus.rate;
+        }
+      }
+      const perSubject = spec?.perSubject === true || config.perSubject === true;
+      const each = [];
+      for (const row of chosen) {
+        let value = row.base;
+        for (const bonus of bonuses) {
+          if (bonus.scope !== 'subject' || bonus.of === 'pctToTotal') continue;
+          if (bonus.kind && row.row.kind !== bonus.kind) continue;
+          value *= 1 + bonus.rate;
+          if (Number.isFinite(Number(bonus.flat))) value += Number(bonus.flat);
+        }
+        if (perSubject) {
+          const denominator = denominatorOf(spec, 'inq', row.row.subject ? `탐구-${row.row.subject}` : null, { pick, kind: row.row.kind });
+          if (denominator === null) return null;
+          value /= denominator;
+        }
+        each.push(value);
+      }
+      const sum = each.reduce((total, value) => total + value, 0);
+      const mean = aggregate === 'mean' || aggregate === 'avg' || aggregate === 'sumHalf';
+      let value = mean ? sum / each.length : sum;
+      if (!perSubject) {
+        if (spec?.sumOfTwo) {
+          const maxes = chosen
+            .map((row) => maxStdOfArea(std, 'inq', row.row.subject ? `탐구-${row.row.subject}` : null, { pick, kind: row.row.kind }))
+            .filter(isNumber);
+          const denominator = maxes.length > 0 ? maxes.reduce((total, one) => total + one, 0) : null;
+          if (denominator === null || denominator === 0) return null;
+          value /= denominator;
+        } else {
+          const denominator = denominatorOf(spec, 'inq', null, { pick });
+          if (denominator === null) return null;
+          value /= denominator;
+        }
+      }
+      value += numOr(config.offset, 0);
+      const factor = numOr(config.factor, config.factor === null ? null : 1);
+      const points = (numOr(config.base, 0) + value * (factor ?? 1)) * (1 + areaRate);
+      return { key: 'inq', value, points, raw: round(value, 4), factor, ownFactor: factor, toTotal };
+    };
+
+    // --- 영어 (등급 배점표 · 감점 · 가산)
+    const englishArea = (pick) => {
+      const config = areas.eng;
+      const mode = config.mode || 'table';
+      const raw = config.metric === 'conv' && !config.table
+        ? areaMetricValue(config, inputs.eng, pick, convTable)
+        : tableValue(config.table, inputs.eng?.grade);
+      if (raw === null) return null;
+      const factor = numOr(config.factor, config.factor === null ? null : 1);
+      if (mode === 'penalty') return { key: 'eng', value: raw, points: 0, raw, factor, ownFactor: factor, afterScale: -Math.abs(raw * Math.abs(factor ?? 1)) };
+      if (mode === 'bonus') return { key: 'eng', value: raw, points: 0, raw, factor, ownFactor: factor, afterScale: raw * (factor ?? 1) };
+      const denominator = denominatorOf(areaDenominatorSpec(config, 'eng'), 'eng', null);
+      if (denominator === null) return null;
+      const value = raw / denominator;
+      const points = numOr(config.base, 0) + value * (factor ?? 1);
+      return { key: 'eng', value, points, raw, factor, ownFactor: factor };
+    };
+
+    // --- 한국사 (언제나 scale 뒤)
+    const historyValue = () => {
+      const config = areas.hist;
+      if (!config || config.mode === 'none') return { delta: 0, raw: null };
+      const raw = tableValue(config.table, inputs.hist?.grade);
+      if (raw === null) return { delta: 0, raw: null };
+      const factor = numOr(config.factor, 1);
+      if (config.mode === 'penalty') return { delta: -Math.abs(raw * Math.abs(factor)), raw };
+      return { delta: raw * factor, raw };
     };
 
     const run = (pick) => {
       const rows = [];
-      for (const key of AREA_ORDER) {
-        if (!areas[key]) continue;
-        const row = contribution(key, pick);
-        if (!row) return null;
+      for (const key of SCORED_AREAS) {
+        if (!areas[key] || !(areas[key].metric || areas[key].mode)) continue;
+        const row = key === 'inq' ? inquiryArea(pick) : key === 'eng' ? englishArea(pick) : scalarArea(key, pick);
+        if (!row) {
+          // 상위-n 규칙의 후보는 빠져도 된다(건국대 예체능: 수학·탐구 중 한쪽 미응시 허용).
+          if (picks?.pool?.includes(key)) continue;
+          return null;
+        }
         rows.push(row);
       }
-      // 상위 영역 택1(조형대학 등). 고른 쪽만 남기고 나머지는 0으로 둔다.
-      const optional = track.optional;
-      if (optional?.pick === 'best' && Array.isArray(optional.of) && optional.of.length > 1) {
-        const pool = rows.filter((row) => optional.of.includes(row.key));
-        if (pool.length > 1) {
-          const best = pool.reduce((top, row) => (row.points > top.points ? row : top), pool[0]);
-          for (const row of pool) {
-            if (row === best) continue;
-            row.excluded = true;
-            row.points = 0;
-          }
+      if (rows.length === 0) return null;
+      // 상위 n개 영역만 반영. 영역값 내림차순으로 factors 를 배정하고 나머지는 0으로 둔다.
+      if (picks) {
+        const pool = rows.filter((row) => picks.pool.includes(row.key));
+        if (pool.length > 0) {
+          const ranked = [...pool].sort((left, right) => right.value - left.value);
+          const keep = picks.factors.length > 0 ? picks.factors.length : 1;
+          ranked.forEach((row, index) => {
+            if (index >= keep) {
+              row.excluded = true;
+              row.points = 0;
+              row.factor = 0;
+              return;
+            }
+            const assigned = picks.factors[index];
+            if (Number.isFinite(Number(assigned))) {
+              row.factor = Number(assigned);
+              row.points = numOr(areas[row.key]?.base, 0) + row.value * Number(assigned);
+            }
+          });
         }
       }
-      const penalty = rows.reduce((sum, row) => sum + (Number(row.penalty) || 0), 0);
       const sum = rows.reduce((total, row) => total + row.points, 0);
-      return { value: round(((sum * multiply) / divide) - penalty, roundTo), penalty: round(penalty, 4), rows };
+      let scaled = (sum * multiply) / divide;
+      if (cap !== null) scaled = Math.min(scaled, cap);
+      const after = rows.reduce((total, row) => total + (Number(row.afterScale) || 0), 0)
+        + rows.reduce((total, row) => total + (Number(row.toTotal) || 0), 0);
+      const history = historyValue();
+      const value = scaled + after + history.delta;
+      return {
+        value: track.roundMode === 'truncate5' ? truncate(value, 4) : round(value, roundTo),
+        history: history.delta, historyRaw: history.raw, rows,
+      };
     };
 
     const mid = run('mid');
@@ -803,12 +1074,19 @@
     const parts = mid.rows.map((row) => ({
       area: row.key,
       label: SUBJECT_LABEL[row.key],
-      metric: areas[row.key]?.metric || (row.key === 'hist' ? (areas.hist?.mode || 'penalty') : 'table'),
+      metric: areas[row.key]?.metric || areas[row.key]?.mode || 'table',
       input: row.raw,
-      factorApplied: Number(areas[row.key]?.factor ?? 1),
-      points: round(row.points, 4),
+      factorApplied: numOr(row.factor, 0),
+      points: round(row.points + (Number(row.afterScale) || 0), 4),
       excluded: row.excluded === true,
     }));
+    if (areas.hist && areas.hist.mode !== 'none') {
+      parts.push({
+        area: 'hist', label: SUBJECT_LABEL.hist, metric: areas.hist.mode || 'table',
+        input: mid.historyRaw, factorApplied: numOr(areas.hist.factor, 1),
+        points: round(mid.history, 4), excluded: false,
+      });
+    }
     return {
       track: track.name || null,
       total: isNumber(track.total) ? track.total : null,
@@ -818,7 +1096,9 @@
       min: low ? Math.min(low.value, mid.value) : mid.value,
       max: high ? Math.max(high.value, mid.value) : mid.value,
       parts,
-      history: mid.penalty,
+      history: mid.history,
+      flags,
+      notes,
       conversion: conversion ? { kind: conversion.kind, name: conversion.name || null, note: conversion.note || null, source: conversion.source || null } : null,
       blockers: trackBlockers(track, inputs),
       formulaYear: track.year ?? null,
@@ -1115,6 +1395,7 @@
         pct,
         kind: INQ_KIND_ALIAS[String((typeof row === 'object' && row.kind) || '')] || null,
         subject: (typeof row === 'object' && row.subject) || null,
+        conv: num(typeof row === 'object' ? row.conv : null),
       });
     }
     inq.sort((left, right) => right.pct - left.pct);
@@ -1130,11 +1411,14 @@
           : isNumber(computed);
     return {
       kor, math, inq, avg, eng: num(raw.eng), hist: num(raw.hist),
+      korConv: num(raw.korConv), mathConv: num(raw.mathConv),
+      mathElective: raw.mathElective || null,
       computedAvg: computed === null ? null : round(computed, 2), consistent,
     };
   }
 
   // 70% 학생 성적표 → 산식 입력(§1.3 되읽기).
+  //   행에 대학이 공개한 변환표준점수(conv)가 실려 있으면 그 값을 그대로 넘긴다 — 근사표를 쓰지 않는다.
   function studentFormulaInputs(student, std) {
     if (!student) return null;
     const span = (target, pct) => {
@@ -1145,15 +1429,15 @@
       };
     };
     return {
-      kor: span('국어', student.kor),
-      math: span('수학', student.math),
+      kor: { ...span('국어', student.kor), conv: isNumber(student.korConv) ? student.korConv : null },
+      math: { ...span('수학', student.math), conv: isNumber(student.mathConv) ? student.mathConv : null },
       inq: student.inq.map((row) => ({
         ...span(row.subject ? `탐구-${row.subject}` : (row.kind || 'inq'), row.pct),
-        kind: row.kind, subject: row.subject,
+        kind: row.kind, subject: row.subject, conv: isNumber(row.conv) ? row.conv : null,
       })),
       eng: { grade: student.eng },
       hist: { grade: student.hist },
-      mathElective: null,
+      mathElective: student.mathElective || null,
     };
   }
 
@@ -1196,10 +1480,13 @@
       return out;
     };
     const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct);
+    // 대학이 공개한 변환표준점수를 직접 넣은 성적은 근사표 대신 그 값을 쓴다(bump 는 백분위를 흔드는
+    // 계산이라 그때는 표로 되돌아간다 — 고정값에 +1을 줄 수 없다).
+    const conv = (value) => (bump === 0 && isNumber(value) ? value : null);
     return {
-      kor: span('국어', profile.kor?.pct, profile.kor?.std),
-      math: span('수학', profile.math?.pct, profile.math?.std),
-      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std), kind: row.kind, subject: row.subject })),
+      kor: { ...span('국어', profile.kor?.pct, profile.kor?.std), conv: conv(profile.kor?.conv) },
+      math: { ...span('수학', profile.math?.pct, profile.math?.std), conv: conv(profile.math?.conv) },
+      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std), kind: row.kind, subject: row.subject, conv: conv(row.conv) })),
       eng: { grade: profile.eng?.grade ?? null },
       hist: { grade: profile.hist?.grade ?? null },
       mathElective: profile.math?.elective || null,
@@ -1222,24 +1509,31 @@
       sourceGrade: track.sourceGrade || rule.sourceGrade || null,
     });
     const name = dept?.name || '';
+    // pickBest 트랙은 형제를 모두 달아 돌려준다 — 채점기가 전부 계산해 높은 쪽을 고른다(§1.2).
+    const withSiblings = (track, match) => {
+      const chosen = stamp(track);
+      if (track.pickBest !== true) return chosen;
+      const family = tracks.filter((row) => row.pickBest === true && match(row)).map(stamp);
+      return family.length > 1 ? { ...chosen, siblings: family } : chosen;
+    };
     const byDept = tracks.find((track) => Array.isArray(track.appliesTo?.depts) && track.appliesTo.depts.includes(name));
-    if (byDept) return stamp(byDept);
+    if (byDept) return withSiblings(byDept, (row) => Array.isArray(row.appliesTo?.depts) && row.appliesTo.depts.includes(name));
     const wanted = [dept?.ruleTrack, dept?.track].filter(Boolean);
     if (dept?.track === '상경') wanted.push('인문');
     if (dept?.track === '의약') wanted.push('자연');
     if (dept?.track === '자유전공') wanted.push('인문', '자연');
     if (dept?.track === '예체능') wanted.push('인문');
+    const matches = (track, key) => (Array.isArray(track.appliesTo) ? track.appliesTo.includes(key) : String(track.appliesTo || '').includes(key))
+      || String(track.name || '').includes(key);
     for (const key of wanted) {
-      const hit = tracks.find((track) => (Array.isArray(track.appliesTo) ? track.appliesTo.includes(key) : String(track.appliesTo || '').includes(key))
-        || String(track.name || '').includes(key));
-      if (hit) return stamp(hit);
+      const hit = tracks.find((track) => matches(track, key));
+      if (hit) return withSiblings(hit, (row) => matches(row, key));
     }
     // 모집단위 지정 트랙만 있는 대학은 이름이 맞지 않으면 아무것도 고르지 않는다.
     if (tracks.every((track) => Array.isArray(track.appliesTo?.depts))) return null;
     return stamp(tracks[0]);
   }
 
-  const trackHasFormula = (track) => Boolean(track && Object.values(track.areas || {}).some((area) => area?.metric || area?.mode));
   const formulaVerified = (check, universityId, trackName) => (check?.tracks || {})[`${universityId}::${trackName}`]?.status === 'verified';
 
   // L2 — 반영비율. 옛 형식(rules-2027.json weights)과 §1.2 형식(areas.factor) 둘 다 읽는다.
@@ -1404,9 +1698,11 @@
       const ctx = { std, conv: context.conv, universityId, year: cutYear };
       const inputs = myFormulaInputs(profile, std, { sameYear });
       const mineScore = formulaScore2(track, inputs, ctx);
-      if (mineScore) {
-        const bumped = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx);
-        const slope = bumped && bumped.value > mineScore.value ? bumped.value - mineScore.value : null;
+      const bumpedFirst = mineScore ? formulaScore2(track, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx) : null;
+      // 국소 기울기를 못 구하면 점수 차를 백분위로 옮길 수 없다 — L1로 올리지 않고 L2·L3로 내려간다.
+      if (mineScore && bumpedFirst && bumpedFirst.value > mineScore.value) {
+        const bumped = bumpedFirst;
+        const slope = bumped.value - mineScore.value;
         const toPct = (points) => (isNumber(points) && isNumber(slope) ? round(points / slope, VERDICT_DIGITS) : null);
         const points = round(mineScore.value - score70, 4);
         const flags = [];

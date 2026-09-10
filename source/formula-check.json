@@ -1,6 +1,3503 @@
 {
  "tolerance": 1,
- "tracks": {},
- "rows": [],
- "note": "source/adiga/ 입결이나 산식이 아직 없다 — 빈 결과다."
+ "tracks": {
+  "ajou::자연1": {
+   "university": "ajou",
+   "track": "자연1",
+   "year": 2026,
+   "depts": 71,
+   "match": 0,
+   "mismatch": 60,
+   "unchecked": 82,
+   "status": "mismatch"
+  },
+  "ajou::인문1(경영대학·간호학과 일반전형4)": {
+   "university": "ajou",
+   "track": "인문1(경영대학·간호학과 일반전형4)",
+   "year": 2026,
+   "depts": 7,
+   "match": 0,
+   "mismatch": 10,
+   "unchecked": 4,
+   "status": "mismatch"
+  },
+  "ajou::인문2": {
+   "university": "ajou",
+   "track": "인문2",
+   "year": 2026,
+   "depts": 21,
+   "match": 2,
+   "mismatch": 18,
+   "unchecked": 22,
+   "status": "mismatch"
+  },
+  "ajou::자연2(의학과·국방디지털융합학과)": {
+   "university": "ajou",
+   "track": "자연2(의학과·국방디지털융합학과)",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 2,
+   "status": "mismatch"
+  },
+  "catholic::인문": {
+   "university": "catholic",
+   "track": "인문",
+   "year": 2026,
+   "depts": 6,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 10,
+   "status": "mismatch"
+  },
+  "catholic::자연": {
+   "university": "catholic",
+   "track": "자연",
+   "year": 2026,
+   "depts": 14,
+   "match": 1,
+   "mismatch": 11,
+   "unchecked": 16,
+   "status": "mismatch"
+  },
+  "catholic::약학": {
+   "university": "catholic",
+   "track": "약학",
+   "year": 2026,
+   "depts": 3,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "verified"
+  },
+  "catholic::일반전형Ⅱ(계열모집)": {
+   "university": "catholic",
+   "track": "일반전형Ⅱ(계열모집)",
+   "year": 2026,
+   "depts": 8,
+   "match": 0,
+   "mismatch": 6,
+   "unchecked": 10,
+   "status": "mismatch"
+  },
+  "cau::인문(사회과학·경영경제·간호 인문)": {
+   "university": "cau",
+   "track": "인문(사회과학·경영경제·간호 인문)",
+   "year": 2026,
+   "depts": 15,
+   "match": 0,
+   "mismatch": 30,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "cau::자연": {
+   "university": "cau",
+   "track": "자연",
+   "year": 2026,
+   "depts": 18,
+   "match": 0,
+   "mismatch": 36,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "cau::인문·예체능(인문대·사범대·공연영상·디자인)": {
+   "university": "cau",
+   "track": "인문·예체능(인문대·사범대·공연영상·디자인)",
+   "year": 2026,
+   "depts": 11,
+   "match": 0,
+   "mismatch": 22,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "cbnu::자연": {
+   "university": "cbnu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 141,
+   "match": 106,
+   "mismatch": 0,
+   "unchecked": 176,
+   "status": "verified"
+  },
+  "cbnu::인문": {
+   "university": "cbnu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 63,
+   "match": 46,
+   "mismatch": 0,
+   "unchecked": 80,
+   "status": "verified"
+  },
+  "cbnu::예체능(체육교육과)": {
+   "university": "cbnu",
+   "track": "예체능(체육교육과)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "cnu::자연계": {
+   "university": "cnu",
+   "track": "자연계",
+   "year": 2026,
+   "depts": 118,
+   "match": 75,
+   "mismatch": 17,
+   "unchecked": 144,
+   "status": "mismatch"
+  },
+  "cnu::인문계": {
+   "university": "cnu",
+   "track": "인문계",
+   "year": 2026,
+   "depts": 80,
+   "match": 54,
+   "mismatch": 12,
+   "unchecked": 94,
+   "status": "mismatch"
+  },
+  "cnu::자율전공융합학부": {
+   "university": "cnu",
+   "track": "자율전공융합학부",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "cnu::체육계": {
+   "university": "cnu",
+   "track": "체육계",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "dankook::자연": {
+   "university": "dankook",
+   "track": "자연",
+   "year": 2026,
+   "depts": 54,
+   "match": 0,
+   "mismatch": 34,
+   "unchecked": 74,
+   "status": "mismatch"
+  },
+  "dankook::상경": {
+   "university": "dankook",
+   "track": "상경",
+   "year": 2026,
+   "depts": 18,
+   "match": 0,
+   "mismatch": 10,
+   "unchecked": 26,
+   "status": "mismatch"
+  },
+  "dankook::예체능": {
+   "university": "dankook",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 3,
+   "match": 0,
+   "mismatch": 6,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "dankook::인문": {
+   "university": "dankook",
+   "track": "인문",
+   "year": 2026,
+   "depts": 41,
+   "match": 2,
+   "mismatch": 20,
+   "unchecked": 60,
+   "status": "mismatch"
+  },
+  "dankook::자유전공(퇴계혁신칼리지·사회계열광역)": {
+   "university": "dankook",
+   "track": "자유전공(퇴계혁신칼리지·사회계열광역)",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 2,
+   "status": "mismatch"
+  },
+  "dongguk::자연": {
+   "university": "dongguk",
+   "track": "자연",
+   "year": 2026,
+   "depts": 59,
+   "match": 5,
+   "mismatch": 49,
+   "unchecked": 64,
+   "status": "mismatch"
+  },
+  "dongguk::인문": {
+   "university": "dongguk",
+   "track": "인문",
+   "year": 2026,
+   "depts": 59,
+   "match": 40,
+   "mismatch": 25,
+   "unchecked": 53,
+   "status": "mismatch"
+  },
+  "dongguk::예체능(조소전공)": {
+   "university": "dongguk",
+   "track": "예체능(조소전공)",
+   "year": 2026,
+   "depts": 2,
+   "match": 2,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "ewha::간호학부·미래산업약학전공(인문 비율)": {
+   "university": "ewha",
+   "track": "간호학부·미래산업약학전공(인문 비율)",
+   "year": 2026,
+   "depts": 5,
+   "match": 0,
+   "mismatch": 4,
+   "unchecked": 6,
+   "status": "mismatch"
+  },
+  "ewha::자연계열": {
+   "university": "ewha",
+   "track": "자연계열",
+   "year": 2026,
+   "depts": 89,
+   "match": 6,
+   "mismatch": 14,
+   "unchecked": 158,
+   "status": "mismatch"
+  },
+  "ewha::인문계열": {
+   "university": "ewha",
+   "track": "인문계열",
+   "year": 2026,
+   "depts": 71,
+   "match": 3,
+   "mismatch": 17,
+   "unchecked": 122,
+   "status": "mismatch"
+  },
+  "gachon::의약": {
+   "university": "gachon",
+   "track": "의약",
+   "year": 2026,
+   "depts": 16,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 32,
+   "status": "unchecked"
+  },
+  "gachon::자연": {
+   "university": "gachon",
+   "track": "자연",
+   "year": 2026,
+   "depts": 74,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 148,
+   "status": "unchecked"
+  },
+  "gachon::인문": {
+   "university": "gachon",
+   "track": "인문",
+   "year": 2026,
+   "depts": 40,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 80,
+   "status": "unchecked"
+  },
+  "gachon::한의예": {
+   "university": "gachon",
+   "track": "한의예",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "unchecked"
+  },
+  "gnu::의약": {
+   "university": "gnu",
+   "track": "의약",
+   "year": 2026,
+   "depts": 9,
+   "match": 14,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "verified"
+  },
+  "gnu::자연": {
+   "university": "gnu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 138,
+   "match": 98,
+   "mismatch": 2,
+   "unchecked": 176,
+   "status": "verified"
+  },
+  "gnu::인문": {
+   "university": "gnu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 76,
+   "match": 54,
+   "mismatch": 0,
+   "unchecked": 98,
+   "status": "verified"
+  },
+  "gnu::예체능": {
+   "university": "gnu",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 7,
+   "match": 2,
+   "mismatch": 3,
+   "unchecked": 9,
+   "status": "mismatch"
+  },
+  "hansung::인문(크리에이티브인문·사회과학·글로벌패션·ICT디자인 주간)": {
+   "university": "hansung",
+   "track": "인문(크리에이티브인문·사회과학·글로벌패션·ICT디자인 주간)",
+   "year": 2026,
+   "depts": 24,
+   "match": 0,
+   "mismatch": 6,
+   "unchecked": 42,
+   "status": "mismatch"
+  },
+  "hansung::자연(IT공과·AI응용·융합보안·미래모빌리티)": {
+   "university": "hansung",
+   "track": "자연(IT공과·AI응용·융합보안·미래모빌리티)",
+   "year": 2026,
+   "depts": 10,
+   "match": 0,
+   "mismatch": 5,
+   "unchecked": 15,
+   "status": "mismatch"
+  },
+  "hansung::상상력인재학부": {
+   "university": "hansung",
+   "track": "상상력인재학부",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "hanyang-erica::자연1(과탐 3% 가산)": {
+   "university": "hanyang-erica",
+   "track": "자연1(과탐 3% 가산)",
+   "year": 2026,
+   "depts": 51,
+   "match": 6,
+   "mismatch": 30,
+   "unchecked": 66,
+   "status": "mismatch"
+  },
+  "hanyang-erica::자연2(가산 없음)": {
+   "university": "hanyang-erica",
+   "track": "자연2(가산 없음)",
+   "year": 2026,
+   "depts": 27,
+   "match": 2,
+   "mismatch": 12,
+   "unchecked": 40,
+   "status": "mismatch"
+  },
+  "hanyang-erica::상경(가산 없음)": {
+   "university": "hanyang-erica",
+   "track": "상경(가산 없음)",
+   "year": 2026,
+   "depts": 16,
+   "match": 0,
+   "mismatch": 8,
+   "unchecked": 24,
+   "status": "mismatch"
+  },
+  "hanyang-erica::인문(사탐 3% 가산)": {
+   "university": "hanyang-erica",
+   "track": "인문(사탐 3% 가산)",
+   "year": 2026,
+   "depts": 9,
+   "match": 0,
+   "mismatch": 6,
+   "unchecked": 12,
+   "status": "mismatch"
+  },
+  "hanyang-erica::보험계리학과(과탐 3% 가산)": {
+   "university": "hanyang-erica",
+   "track": "보험계리학과(과탐 3% 가산)",
+   "year": 2026,
+   "depts": 3,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 4,
+   "status": "mismatch"
+  },
+  "hanyang-erica::예체능": {
+   "university": "hanyang-erica",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "hanyang-erica::LIONS자율전공학부(전계열)": {
+   "university": "hanyang-erica",
+   "track": "LIONS자율전공학부(전계열)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "hongik::자연계열·캠퍼스자율전공(자연·예능)": {
+   "university": "hongik",
+   "track": "자연계열·캠퍼스자율전공(자연·예능)",
+   "year": 2026,
+   "depts": 38,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 76,
+   "status": "unchecked"
+  },
+  "hongik::인문계열·캠퍼스자율전공(인문·예능)": {
+   "university": "hongik",
+   "track": "인문계열·캠퍼스자율전공(인문·예능)",
+   "year": 2026,
+   "depts": 57,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 114,
+   "status": "unchecked"
+  },
+  "hufs::서울 인문(상경·사회·경영)": {
+   "university": "hufs",
+   "track": "서울 인문(상경·사회·경영)",
+   "year": 2026,
+   "depts": 13,
+   "match": 0,
+   "mismatch": 10,
+   "unchecked": 16,
+   "status": "mismatch"
+  },
+  "hufs::서울 인문(어문·사범·자유전공)": {
+   "university": "hufs",
+   "track": "서울 인문(어문·사범·자유전공)",
+   "year": 2026,
+   "depts": 84,
+   "match": 2,
+   "mismatch": 80,
+   "unchecked": 86,
+   "status": "mismatch"
+  },
+  "hufs-global::글로벌 인문(인문·국가전략언어·Culture & Technology)": {
+   "university": "hufs-global",
+   "track": "글로벌 인문(인문·국가전략언어·Culture & Technology)",
+   "year": 2026,
+   "depts": 43,
+   "match": 3,
+   "mismatch": 47,
+   "unchecked": 36,
+   "status": "mismatch"
+  },
+  "hufs-global::글로벌 자연": {
+   "university": "hufs-global",
+   "track": "글로벌 자연",
+   "year": 2026,
+   "depts": 33,
+   "match": 0,
+   "mismatch": 34,
+   "unchecked": 32,
+   "status": "mismatch"
+  },
+  "incheon::자연": {
+   "university": "incheon",
+   "track": "자연",
+   "year": 2026,
+   "depts": 92,
+   "match": 54,
+   "mismatch": 4,
+   "unchecked": 126,
+   "status": "verified"
+  },
+  "incheon::인문": {
+   "university": "incheon",
+   "track": "인문",
+   "year": 2026,
+   "depts": 75,
+   "match": 52,
+   "mismatch": 0,
+   "unchecked": 98,
+   "status": "verified"
+  },
+  "incheon::디자인학부": {
+   "university": "incheon",
+   "track": "디자인학부",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "incheon::운동건강학부": {
+   "university": "incheon",
+   "track": "운동건강학부",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "incheon::체육교육과": {
+   "university": "incheon",
+   "track": "체육교육과",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "unchecked"
+  },
+  "inha::자연(융합학부 제외)": {
+   "university": "inha",
+   "track": "자연(융합학부 제외)",
+   "year": 2026,
+   "depts": 76,
+   "match": 0,
+   "mismatch": 72,
+   "unchecked": 80,
+   "status": "mismatch"
+  },
+  "inha::인문(융합학부 제외)": {
+   "university": "inha",
+   "track": "인문(융합학부 제외)",
+   "year": 2026,
+   "depts": 54,
+   "match": 6,
+   "mismatch": 44,
+   "unchecked": 58,
+   "status": "mismatch"
+  },
+  "inha::예체능(실기)": {
+   "university": "inha",
+   "track": "예체능(실기)",
+   "year": 2026,
+   "depts": 8,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 16,
+   "status": "unchecked"
+  },
+  "inha::체육교육과": {
+   "university": "inha",
+   "track": "체육교육과",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "unchecked"
+  },
+  "jbnu::의약(수의·약·의·치)": {
+   "university": "jbnu",
+   "track": "의약(수의·약·의·치)",
+   "year": 2026,
+   "depts": 8,
+   "match": 11,
+   "mismatch": 1,
+   "unchecked": 4,
+   "status": "verified"
+  },
+  "jbnu::인문·생활과학·환경생명자원·융합자율전공": {
+   "university": "jbnu",
+   "track": "인문·생활과학·환경생명자원·융합자율전공",
+   "year": 2026,
+   "depts": 11,
+   "match": 18,
+   "mismatch": 2,
+   "unchecked": 2,
+   "status": "verified"
+  },
+  "jbnu::자연·농업생명과학": {
+   "university": "jbnu",
+   "track": "자연·농업생명과학",
+   "year": 2026,
+   "depts": 9,
+   "match": 16,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "jbnu::과학교육학부": {
+   "university": "jbnu",
+   "track": "과학교육학부",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "jbnu::수학교육과": {
+   "university": "jbnu",
+   "track": "수학교육과",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "jbnu::스포츠과학과": {
+   "university": "jbnu",
+   "track": "스포츠과학과",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "jbnu::체육교육과": {
+   "university": "jbnu",
+   "track": "체육교육과",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "jejunu::의약(수의예·의예·약학)": {
+   "university": "jejunu",
+   "track": "의약(수의예·의예·약학)",
+   "year": 2026,
+   "depts": 16,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 32,
+   "status": "unchecked"
+  },
+  "jejunu::자연·공학계열": {
+   "university": "jejunu",
+   "track": "자연·공학계열",
+   "year": 2026,
+   "depts": 78,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 156,
+   "status": "unchecked"
+  },
+  "jejunu::인문·사회계열": {
+   "university": "jejunu",
+   "track": "인문·사회계열",
+   "year": 2026,
+   "depts": 53,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 106,
+   "status": "unchecked"
+  },
+  "jejunu::스포츠과학과": {
+   "university": "jejunu",
+   "track": "스포츠과학과",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "jejunu::자유전공": {
+   "university": "jejunu",
+   "track": "자유전공",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "jejunu::체육교육과": {
+   "university": "jejunu",
+   "track": "체육교육과",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "jejunu::초등교육학부": {
+   "university": "jejunu",
+   "track": "초등교육학부",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "unchecked"
+  },
+  "jnu::인문·인문/자연": {
+   "university": "jnu",
+   "track": "인문·인문/자연",
+   "year": 2026,
+   "depts": 156,
+   "match": 69,
+   "mismatch": 37,
+   "unchecked": 206,
+   "status": "mismatch"
+  },
+  "jnu::자연": {
+   "university": "jnu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 16,
+   "match": 15,
+   "mismatch": 1,
+   "unchecked": 16,
+   "status": "verified"
+  },
+  "jnu::미술학과(이론전공)": {
+   "university": "jnu",
+   "track": "미술학과(이론전공)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "kangwon::자연": {
+   "university": "kangwon",
+   "track": "자연",
+   "year": 2026,
+   "depts": 103,
+   "match": 14,
+   "mismatch": 90,
+   "unchecked": 102,
+   "status": "mismatch"
+  },
+  "kangwon::인문": {
+   "university": "kangwon",
+   "track": "인문",
+   "year": 2026,
+   "depts": 62,
+   "match": 61,
+   "mismatch": 3,
+   "unchecked": 60,
+   "status": "verified"
+  },
+  "kangwon::예체능(스포츠과학과)": {
+   "university": "kangwon",
+   "track": "예체능(스포츠과학과)",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "kangwon::예체능(체육교육과)": {
+   "university": "kangwon",
+   "track": "예체능(체육교육과)",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "unchecked"
+  },
+  "kau::공학적성(공과·AI융합·스마트드론·AI자율주행·자유전공 공학)": {
+   "university": "kau",
+   "track": "공학적성(공과·AI융합·스마트드론·AI자율주행·자유전공 공학)",
+   "year": 2026,
+   "depts": 13,
+   "match": 10,
+   "mismatch": 2,
+   "unchecked": 14,
+   "status": "mismatch"
+  },
+  "kau::이학·사회적성 산출1": {
+   "university": "kau",
+   "track": "이학·사회적성 산출1",
+   "year": 2026,
+   "depts": 9,
+   "match": 6,
+   "mismatch": 2,
+   "unchecked": 10,
+   "status": "mismatch"
+  },
+  "khu::자연": {
+   "university": "khu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 91,
+   "match": 58,
+   "mismatch": 26,
+   "unchecked": 98,
+   "status": "mismatch"
+  },
+  "khu::사회": {
+   "university": "khu",
+   "track": "사회",
+   "year": 2026,
+   "depts": 19,
+   "match": 12,
+   "mismatch": 8,
+   "unchecked": 18,
+   "status": "mismatch"
+  },
+  "khu::예술·체육": {
+   "university": "khu",
+   "track": "예술·체육",
+   "year": 2026,
+   "depts": 25,
+   "match": 12,
+   "mismatch": 2,
+   "unchecked": 36,
+   "status": "mismatch"
+  },
+  "khu::인문": {
+   "university": "khu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 60,
+   "match": 23,
+   "mismatch": 25,
+   "unchecked": 72,
+   "status": "mismatch"
+  },
+  "knu::자연": {
+   "university": "knu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 183,
+   "match": 60,
+   "mismatch": 80,
+   "unchecked": 226,
+   "status": "mismatch"
+  },
+  "knu::인문": {
+   "university": "knu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 84,
+   "match": 43,
+   "mismatch": 17,
+   "unchecked": 108,
+   "status": "mismatch"
+  },
+  "knu::예체능(미술·디자인 수능)": {
+   "university": "knu",
+   "track": "예체능(미술·디자인 수능)",
+   "year": 2026,
+   "depts": 8,
+   "match": 0,
+   "mismatch": 5,
+   "unchecked": 11,
+   "status": "mismatch"
+  },
+  "knu::생태환경·과학기술·자율미래인재(자연)": {
+   "university": "knu",
+   "track": "생태환경·과학기술·자율미래인재(자연)",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 2,
+   "status": "mismatch"
+  },
+  "knu::자율전공학부": {
+   "university": "knu",
+   "track": "자율전공학부",
+   "year": 2026,
+   "depts": 3,
+   "match": 1,
+   "mismatch": 1,
+   "unchecked": 4,
+   "status": "mismatch"
+  },
+  "konkuk::수리중심(B)": {
+   "university": "konkuk",
+   "track": "수리중심(B)",
+   "year": 2026,
+   "depts": 103,
+   "match": 55,
+   "mismatch": 23,
+   "unchecked": 128,
+   "status": "mismatch"
+  },
+  "konkuk::언어중심(A)": {
+   "university": "konkuk",
+   "track": "언어중심(A)",
+   "year": 2026,
+   "depts": 35,
+   "match": 13,
+   "mismatch": 5,
+   "unchecked": 52,
+   "status": "mismatch"
+  },
+  "konkuk::예체능": {
+   "university": "konkuk",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 9,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 16,
+   "status": "mismatch"
+  },
+  "kookmin::인문": {
+   "university": "kookmin",
+   "track": "인문",
+   "year": 2026,
+   "depts": 17,
+   "match": 26,
+   "mismatch": 0,
+   "unchecked": 8,
+   "status": "verified"
+  },
+  "kookmin::예체능(조형대학·회화전공)": {
+   "university": "kookmin",
+   "track": "예체능(조형대학·회화전공)",
+   "year": 2026,
+   "depts": 10,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 20,
+   "status": "unchecked"
+  },
+  "kookmin::자연": {
+   "university": "kookmin",
+   "track": "자연",
+   "year": 2026,
+   "depts": 12,
+   "match": 7,
+   "mismatch": 11,
+   "unchecked": 6,
+   "status": "mismatch"
+  },
+  "kookmin::자유전공(A)": {
+   "university": "kookmin",
+   "track": "자유전공(A)",
+   "year": 2026,
+   "depts": 2,
+   "match": 4,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "kookmin::자유전공(B)": {
+   "university": "kookmin",
+   "track": "자유전공(B)",
+   "year": 2026,
+   "depts": 2,
+   "match": 0,
+   "mismatch": 4,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "kookmin::미래융합전공(C)": {
+   "university": "kookmin",
+   "track": "미래융합전공(C)",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "kookmin::예체능(스포츠교육학과)": {
+   "university": "kookmin",
+   "track": "예체능(스포츠교육학과)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "kookmin::예체능(스포츠산업레저학과)": {
+   "university": "kookmin",
+   "track": "예체능(스포츠산업레저학과)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "korea::자연": {
+   "university": "korea",
+   "track": "자연",
+   "year": 2026,
+   "depts": 167,
+   "match": 20,
+   "mismatch": 106,
+   "unchecked": 208,
+   "status": "mismatch"
+  },
+  "korea::인문": {
+   "university": "korea",
+   "track": "인문",
+   "year": 2026,
+   "depts": 176,
+   "match": 22,
+   "mismatch": 100,
+   "unchecked": 230,
+   "status": "mismatch"
+  },
+  "kw::자연": {
+   "university": "kw",
+   "track": "자연",
+   "year": 2026,
+   "depts": 63,
+   "match": 6,
+   "mismatch": 64,
+   "unchecked": 56,
+   "status": "mismatch"
+  },
+  "kw::상경": {
+   "university": "kw",
+   "track": "상경",
+   "year": 2026,
+   "depts": 12,
+   "match": 10,
+   "mismatch": 2,
+   "unchecked": 12,
+   "status": "mismatch"
+  },
+  "kw::인문": {
+   "university": "kw",
+   "track": "인문",
+   "year": 2026,
+   "depts": 29,
+   "match": 20,
+   "mismatch": 16,
+   "unchecked": 22,
+   "status": "mismatch"
+  },
+  "kyonggi::자연(A형)": {
+   "university": "kyonggi",
+   "track": "자연(A형)",
+   "year": 2026,
+   "depts": 40,
+   "match": 38,
+   "mismatch": 4,
+   "unchecked": 38,
+   "status": "verified"
+  },
+  "kyonggi::인문(B형)": {
+   "university": "kyonggi",
+   "track": "인문(B형)",
+   "year": 2026,
+   "depts": 39,
+   "match": 34,
+   "mismatch": 0,
+   "unchecked": 44,
+   "status": "verified"
+  },
+  "kyonggi::예체능(수능전형)": {
+   "university": "kyonggi",
+   "track": "예체능(수능전형)",
+   "year": 2026,
+   "depts": 5,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 10,
+   "status": "unchecked"
+  },
+  "mju::자연": {
+   "university": "mju",
+   "track": "자연",
+   "year": 2026,
+   "depts": 7,
+   "match": 13,
+   "mismatch": 1,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "mju::상경": {
+   "university": "mju",
+   "track": "상경",
+   "year": 2026,
+   "depts": 1,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 0,
+   "status": "verified"
+  },
+  "mju::인문": {
+   "university": "mju",
+   "track": "인문",
+   "year": 2026,
+   "depts": 4,
+   "match": 7,
+   "mismatch": 1,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "mju::예체능(수능 실기전형)": {
+   "university": "mju",
+   "track": "예체능(수능 실기전형)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "pnu::의약": {
+   "university": "pnu",
+   "track": "의약",
+   "year": 2026,
+   "depts": 10,
+   "match": 8,
+   "mismatch": 6,
+   "unchecked": 6,
+   "status": "mismatch"
+  },
+  "pnu::자연": {
+   "university": "pnu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 43,
+   "match": 32,
+   "mismatch": 54,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "pnu::자연(과탐 5% 가산 단위)": {
+   "university": "pnu",
+   "track": "자연(과탐 5% 가산 단위)",
+   "year": 2026,
+   "depts": 13,
+   "match": 5,
+   "mismatch": 19,
+   "unchecked": 2,
+   "status": "mismatch"
+  },
+  "pnu::인문": {
+   "university": "pnu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 40,
+   "match": 26,
+   "mismatch": 54,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "pnu::예체능": {
+   "university": "pnu",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 8,
+   "match": 4,
+   "mismatch": 8,
+   "unchecked": 4,
+   "status": "mismatch"
+  },
+  "pnu::광역(자유전공학부)": {
+   "university": "pnu",
+   "track": "광역(자유전공학부)",
+   "year": 2026,
+   "depts": 1,
+   "match": 1,
+   "mismatch": 1,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "sejong::자연(IT·첨단융합·공과 3% 가산)": {
+   "university": "sejong",
+   "track": "자연(IT·첨단융합·공과 3% 가산)",
+   "year": 2026,
+   "depts": 37,
+   "match": 0,
+   "mismatch": 50,
+   "unchecked": 24,
+   "status": "mismatch"
+  },
+  "sejong::인문": {
+   "university": "sejong",
+   "track": "인문",
+   "year": 2026,
+   "depts": 17,
+   "match": 10,
+   "mismatch": 6,
+   "unchecked": 18,
+   "status": "mismatch"
+  },
+  "sejong::자연(자연생명계열 5% 가산)": {
+   "university": "sejong",
+   "track": "자연(자연생명계열 5% 가산)",
+   "year": 2026,
+   "depts": 14,
+   "match": 2,
+   "mismatch": 18,
+   "unchecked": 8,
+   "status": "mismatch"
+  },
+  "sejong::예체능(창의소프트학부 제외)": {
+   "university": "sejong",
+   "track": "예체능(창의소프트학부 제외)",
+   "year": 2026,
+   "depts": 6,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 12,
+   "status": "unchecked"
+  },
+  "sejong::자유전공·창의소프트학부": {
+   "university": "sejong",
+   "track": "자유전공·창의소프트학부",
+   "year": 2026,
+   "depts": 3,
+   "match": 4,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "smu::인문": {
+   "university": "smu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 37,
+   "match": 26,
+   "mismatch": 2,
+   "unchecked": 46,
+   "status": "verified"
+  },
+  "smu::자연": {
+   "university": "smu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 34,
+   "match": 1,
+   "mismatch": 23,
+   "unchecked": 44,
+   "status": "mismatch"
+  },
+  "smu::예체능(실기전형)": {
+   "university": "smu",
+   "track": "예체능(실기전형)",
+   "year": 2026,
+   "depts": 6,
+   "match": 0,
+   "mismatch": 4,
+   "unchecked": 8,
+   "status": "mismatch"
+  },
+  "snu::인문": {
+   "university": "snu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 105,
+   "match": 62,
+   "mismatch": 2,
+   "unchecked": 146,
+   "status": "verified"
+  },
+  "snu::자연": {
+   "university": "snu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 117,
+   "match": 86,
+   "mismatch": 14,
+   "unchecked": 134,
+   "status": "mismatch"
+  },
+  "sogang::전 계열(A형)": {
+   "university": "sogang",
+   "track": "전 계열(A형)",
+   "year": 2026,
+   "depts": 92,
+   "match": 1,
+   "mismatch": 45,
+   "unchecked": 138,
+   "status": "mismatch"
+  },
+  "sookmyung::인문": {
+   "university": "sookmyung",
+   "track": "인문",
+   "year": 2026,
+   "depts": 91,
+   "match": 4,
+   "mismatch": 46,
+   "unchecked": 132,
+   "status": "mismatch"
+  },
+  "sookmyung::예체능1(체육교육과·미술대학 회화과 제외)": {
+   "university": "sookmyung",
+   "track": "예체능1(체육교육과·미술대학 회화과 제외)",
+   "year": 2026,
+   "depts": 5,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 10,
+   "status": "unchecked"
+  },
+  "sookmyung::자연": {
+   "university": "sookmyung",
+   "track": "자연",
+   "year": 2026,
+   "depts": 46,
+   "match": 2,
+   "mismatch": 26,
+   "unchecked": 64,
+   "status": "mismatch"
+  },
+  "sookmyung::자유전공": {
+   "university": "sookmyung",
+   "track": "자유전공",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 1,
+   "unchecked": 1,
+   "status": "mismatch"
+  },
+  "soongsil::자연계열2·자유전공학부(자연)": {
+   "university": "soongsil",
+   "track": "자연계열2·자유전공학부(자연)",
+   "year": 2026,
+   "depts": 22,
+   "match": 0,
+   "mismatch": 44,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "soongsil::경상": {
+   "university": "soongsil",
+   "track": "경상",
+   "year": 2026,
+   "depts": 16,
+   "match": 2,
+   "mismatch": 30,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "soongsil::인문": {
+   "university": "soongsil",
+   "track": "인문",
+   "year": 2026,
+   "depts": 30,
+   "match": 2,
+   "mismatch": 54,
+   "unchecked": 4,
+   "status": "mismatch"
+  },
+  "soongsil::자연계열1": {
+   "university": "soongsil",
+   "track": "자연계열1",
+   "year": 2026,
+   "depts": 24,
+   "match": 0,
+   "mismatch": 48,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "soongsil::예체능": {
+   "university": "soongsil",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "soongsil::자유전공학부(인문)": {
+   "university": "soongsil",
+   "track": "자유전공학부(인문)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 2,
+   "unchecked": 0,
+   "status": "mismatch"
+  },
+  "syu::의약(약학과)": {
+   "university": "syu",
+   "track": "의약(약학과)",
+   "year": 2026,
+   "depts": 9,
+   "match": 0,
+   "mismatch": 4,
+   "unchecked": 14,
+   "status": "mismatch"
+  },
+  "syu::자연": {
+   "university": "syu",
+   "track": "자연",
+   "year": 2026,
+   "depts": 26,
+   "match": 9,
+   "mismatch": 7,
+   "unchecked": 36,
+   "status": "mismatch"
+  },
+  "syu::인문": {
+   "university": "syu",
+   "track": "인문",
+   "year": 2026,
+   "depts": 21,
+   "match": 8,
+   "mismatch": 0,
+   "unchecked": 34,
+   "status": "verified"
+  },
+  "syu::예체능": {
+   "university": "syu",
+   "track": "예체능",
+   "year": 2026,
+   "depts": 6,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 12,
+   "status": "unchecked"
+  },
+  "uos::자연Ⅰ": {
+   "university": "uos",
+   "track": "자연Ⅰ",
+   "year": 2026,
+   "depts": 82,
+   "match": 13,
+   "mismatch": 23,
+   "unchecked": 128,
+   "status": "mismatch"
+  },
+  "uos::인문Ⅰ": {
+   "university": "uos",
+   "track": "인문Ⅰ",
+   "year": 2026,
+   "depts": 23,
+   "match": 9,
+   "mismatch": 1,
+   "unchecked": 36,
+   "status": "verified"
+  },
+  "uos::자연Ⅱ": {
+   "university": "uos",
+   "track": "자연Ⅱ",
+   "year": 2026,
+   "depts": 18,
+   "match": 1,
+   "mismatch": 7,
+   "unchecked": 28,
+   "status": "mismatch"
+  },
+  "uos::인문Ⅱ": {
+   "university": "uos",
+   "track": "인문Ⅱ",
+   "year": 2026,
+   "depts": 36,
+   "match": 4,
+   "mismatch": 14,
+   "unchecked": 54,
+   "status": "mismatch"
+  },
+  "uos::예체능(스포츠과학과)": {
+   "university": "uos",
+   "track": "예체능(스포츠과학과)",
+   "year": 2026,
+   "depts": 1,
+   "match": 0,
+   "mismatch": 0,
+   "unchecked": 2,
+   "status": "unchecked"
+  },
+  "yonsei::유형Ⅱ(자연)": {
+   "university": "yonsei",
+   "track": "유형Ⅱ(자연)",
+   "year": 2026,
+   "depts": 111,
+   "match": 8,
+   "mismatch": 68,
+   "unchecked": 146,
+   "status": "mismatch"
+  },
+  "yonsei::유형Ⅰ(인문·사회)": {
+   "university": "yonsei",
+   "track": "유형Ⅰ(인문·사회)",
+   "year": 2026,
+   "depts": 100,
+   "match": 8,
+   "mismatch": 56,
+   "unchecked": 136,
+   "status": "mismatch"
+  },
+  "yonsei::유형Ⅲ(국제계열: 언더우드국제대학)": {
+   "university": "yonsei",
+   "track": "유형Ⅲ(국제계열: 언더우드국제대학)",
+   "year": 2026,
+   "depts": 3,
+   "match": 2,
+   "mismatch": 2,
+   "unchecked": 2,
+   "status": "mismatch"
+  },
+  "yonsei::유형Ⅱ(의예과)": {
+   "university": "yonsei",
+   "track": "유형Ⅱ(의예과)",
+   "year": 2026,
+   "depts": 3,
+   "match": 2,
+   "mismatch": 0,
+   "unchecked": 4,
+   "status": "verified"
+  }
+ },
+ "samples": {
+  "ajou::자연1": [
+   {
+    "dept": "간호학과",
+    "point": "p70",
+    "adiga": 917.49,
+    "min": 904.6524,
+    "max": 904.6524,
+    "off": 12.84,
+    "reason": null
+   },
+   {
+    "dept": "간호학과",
+    "point": "p50",
+    "adiga": 918.58,
+    "min": 902.8213,
+    "max": 902.8213,
+    "off": 15.76,
+    "reason": null
+   }
+  ],
+  "ajou::인문1(경영대학·간호학과 일반전형4)": [
+   {
+    "dept": "경영인텔리전스학과",
+    "point": "p70",
+    "adiga": 885.89,
+    "min": 882.5137,
+    "max": 882.5137,
+    "off": 3.38,
+    "reason": null
+   },
+   {
+    "dept": "경영인텔리전스학과",
+    "point": "p50",
+    "adiga": 886.06,
+    "min": 882.5422,
+    "max": 882.5422,
+    "off": 3.52,
+    "reason": null
+   }
+  ],
+  "ajou::인문2": [
+   {
+    "dept": "경제정치사회융합학부",
+    "point": "p70",
+    "adiga": 881.28,
+    "min": 878.7616,
+    "max": 878.7616,
+    "off": 2.52,
+    "reason": null
+   },
+   {
+    "dept": "경제정치사회융합학부",
+    "point": "p50",
+    "adiga": 882.93,
+    "min": 879.7602,
+    "max": 879.7602,
+    "off": 3.17,
+    "reason": null
+   }
+  ],
+  "ajou::자연2(의학과·국방디지털융합학과)": [
+   {
+    "dept": "의학과(예과)",
+    "point": "p70",
+    "adiga": 989.71,
+    "min": 974.9659,
+    "max": 984.9595,
+    "off": 4.75,
+    "reason": null
+   },
+   {
+    "dept": "의학과(예과)",
+    "point": "p50",
+    "adiga": 994.6,
+    "min": 973.8914,
+    "max": 983.885,
+    "off": 10.72,
+    "reason": null
+   }
+  ],
+  "catholic::인문": [
+   {
+    "dept": "특수교육과",
+    "point": "p70",
+    "adiga": 828,
+    "min": 847,
+    "max": 847,
+    "off": 19,
+    "reason": null
+   },
+   {
+    "dept": "특수교육과",
+    "point": "p50",
+    "adiga": 829,
+    "min": 842,
+    "max": 842,
+    "off": 13,
+    "reason": null
+   }
+  ],
+  "catholic::자연": [
+   {
+    "dept": "데이터사이언스학과",
+    "point": "p70",
+    "adiga": 849,
+    "min": 844,
+    "max": 844,
+    "off": 5,
+    "reason": null
+   },
+   {
+    "dept": "데이터사이언스학과",
+    "point": "p50",
+    "adiga": 852,
+    "min": 843,
+    "max": 843,
+    "off": 9,
+    "reason": null
+   }
+  ],
+  "catholic::일반전형Ⅱ(계열모집)": [
+   {
+    "dept": "인문사회계열",
+    "point": "p70",
+    "adiga": 837,
+    "min": 812,
+    "max": 812,
+    "off": 25,
+    "reason": null
+   },
+   {
+    "dept": "인문사회계열",
+    "point": "p50",
+    "adiga": 839,
+    "min": 847,
+    "max": 847,
+    "off": 8,
+    "reason": null
+   }
+  ],
+  "cau::인문(사회과학·경영경제·간호 인문)": [
+   {
+    "dept": "간호학과(인문)",
+    "point": "p70",
+    "adiga": 749.48,
+    "min": 746.3,
+    "max": 747.8,
+    "off": 1.68,
+    "reason": null
+   },
+   {
+    "dept": "간호학과(인문)",
+    "point": "p50",
+    "adiga": 751.87,
+    "min": 747.385,
+    "max": 748.885,
+    "off": 2.99,
+    "reason": null
+   }
+  ],
+  "cau::자연": [
+   {
+    "dept": "간호학과(자연)",
+    "point": "p70",
+    "adiga": 761.2,
+    "min": 752.358,
+    "max": 752.358,
+    "off": 8.84,
+    "reason": null
+   },
+   {
+    "dept": "간호학과(자연)",
+    "point": "p50",
+    "adiga": 762.61,
+    "min": 754.752,
+    "max": 756.252,
+    "off": 6.36,
+    "reason": null
+   }
+  ],
+  "cau::인문·예체능(인문대·사범대·공연영상·디자인)": [
+   {
+    "dept": "공연영상창작학부(영화전공)",
+    "point": "p70",
+    "adiga": 757,
+    "min": 761.203,
+    "max": 761.203,
+    "off": 4.2,
+    "reason": null
+   },
+   {
+    "dept": "공연영상창작학부(영화전공)",
+    "point": "p50",
+    "adiga": 757.41,
+    "min": 759.759,
+    "max": 759.759,
+    "off": 2.35,
+    "reason": null
+   }
+  ],
+  "cnu::자연계": [
+   {
+    "dept": "리더십과조직과학전공",
+    "point": "p70",
+    "adiga": 175,
+    "min": 169,
+    "max": 170.35,
+    "off": 4.65,
+    "reason": null
+   },
+   {
+    "dept": "리더십과조직과학전공",
+    "point": "p50",
+    "adiga": 175.5,
+    "min": 169,
+    "max": 170.35,
+    "off": 5.15,
+    "reason": null
+   }
+  ],
+  "cnu::인문계": [
+   {
+    "dept": "국제학부",
+    "point": "p70",
+    "adiga": 174,
+    "min": 175.225,
+    "max": 175.225,
+    "off": 1.22,
+    "reason": null
+   },
+   {
+    "dept": "문헌정보학과",
+    "point": "p70",
+    "adiga": 175.5,
+    "min": 177.025,
+    "max": 178.825,
+    "off": 1.53,
+    "reason": null
+   }
+  ],
+  "cnu::체육계": [
+   {
+    "dept": "체육교육과",
+    "point": "p70",
+    "adiga": 163.7,
+    "min": 166.25,
+    "max": 168.5,
+    "off": 2.55,
+    "reason": null
+   },
+   {
+    "dept": "체육교육과",
+    "point": "p50",
+    "adiga": 165.6,
+    "min": 162.45,
+    "max": 163.35,
+    "off": 2.25,
+    "reason": null
+   }
+  ],
+  "dankook::자연": [
+   {
+    "dept": "건축학부 건축공학전공",
+    "point": "p70",
+    "adiga": 871.75,
+    "min": 858.35,
+    "max": 858.35,
+    "off": 13.4,
+    "reason": null
+   },
+   {
+    "dept": "건축학부 건축공학전공",
+    "point": "p50",
+    "adiga": 874.81,
+    "min": 857.825,
+    "max": 857.825,
+    "off": 16.98,
+    "reason": null
+   }
+  ],
+  "dankook::상경": [
+   {
+    "dept": "경영학부",
+    "point": "p70",
+    "adiga": 868,
+    "min": 871,
+    "max": 871,
+    "off": 3,
+    "reason": null
+   },
+   {
+    "dept": "경영학부",
+    "point": "p50",
+    "adiga": 872,
+    "min": 875,
+    "max": 875,
+    "off": 3,
+    "reason": null
+   }
+  ],
+  "dankook::예체능": [
+   {
+    "dept": "공연영화학부 연극전공",
+    "point": "p70",
+    "adiga": 847,
+    "min": 833.5,
+    "max": 833.5,
+    "off": 13.5,
+    "reason": null
+   },
+   {
+    "dept": "공연영화학부 연극전공",
+    "point": "p50",
+    "adiga": 849.5,
+    "min": 859.5,
+    "max": 859.5,
+    "off": 10,
+    "reason": null
+   }
+  ],
+  "dankook::인문": [
+   {
+    "dept": "국어국문학과",
+    "point": "p70",
+    "adiga": 850,
+    "min": 854,
+    "max": 854,
+    "off": 4,
+    "reason": null
+   },
+   {
+    "dept": "국어국문학과",
+    "point": "p50",
+    "adiga": 851,
+    "min": 853,
+    "max": 853,
+    "off": 2,
+    "reason": null
+   }
+  ],
+  "dankook::자유전공(퇴계혁신칼리지·사회계열광역)": [
+   {
+    "dept": "퇴계혁신칼리지",
+    "point": "p70",
+    "adiga": 859,
+    "min": 862,
+    "max": 862,
+    "off": 3,
+    "reason": null
+   },
+   {
+    "dept": "퇴계혁신칼리지",
+    "point": "p50",
+    "adiga": 861,
+    "min": 865,
+    "max": 865,
+    "off": 4,
+    "reason": null
+   }
+  ],
+  "dongguk::자연": [
+   {
+    "dept": "가정교육과",
+    "point": "p70",
+    "adiga": 683.44,
+    "min": 680.313,
+    "max": 682.063,
+    "off": 1.38,
+    "reason": null
+   },
+   {
+    "dept": "건설환경공학과",
+    "point": "p70",
+    "adiga": 692.64,
+    "min": 685.02,
+    "max": 685.02,
+    "off": 7.62,
+    "reason": null
+   }
+  ],
+  "dongguk::인문": [
+   {
+    "dept": "경영대학(광역화 모집단위)",
+    "point": "p50",
+    "adiga": 688.93,
+    "min": 687.575,
+    "max": 687.575,
+    "off": 1.35,
+    "reason": null
+   },
+   {
+    "dept": "경영대학(광역화 모집단위)",
+    "point": "p70",
+    "adiga": 661.53,
+    "min": 660.063,
+    "max": 660.063,
+    "off": 1.47,
+    "reason": null
+   }
+  ],
+  "dongguk::예체능(조소전공)": [
+   {
+    "dept": "체육교육과",
+    "point": "p70",
+    "adiga": 368.57,
+    "min": 375.012,
+    "max": 375.012,
+    "off": 6.44,
+    "reason": null
+   },
+   {
+    "dept": "체육교육과",
+    "point": "p50",
+    "adiga": 370.07,
+    "min": 387.63,
+    "max": 387.63,
+    "off": 17.56,
+    "reason": null
+   }
+  ],
+  "ewha::간호학부·미래산업약학전공(인문 비율)": [
+   {
+    "dept": "간호학부",
+    "point": "p70",
+    "adiga": 937.81,
+    "min": 924.6601,
+    "max": 924.6601,
+    "off": 13.15,
+    "reason": null
+   },
+   {
+    "dept": "간호학부",
+    "point": "p50",
+    "adiga": 941.21,
+    "min": 924.2777,
+    "max": 924.2777,
+    "off": 16.93,
+    "reason": null
+   }
+  ],
+  "ewha::자연계열": [
+   {
+    "dept": "과학교육과",
+    "point": "p70",
+    "adiga": 931.09,
+    "min": 924.8826,
+    "max": 924.8826,
+    "off": 6.21,
+    "reason": null
+   },
+   {
+    "dept": "과학교육과",
+    "point": "p50",
+    "adiga": 933.13,
+    "min": 926.4993,
+    "max": 926.4993,
+    "off": 6.63,
+    "reason": null
+   }
+  ],
+  "ewha::인문계열": [
+   {
+    "dept": "교육학과",
+    "point": "p70",
+    "adiga": 920.82,
+    "min": 918.0493,
+    "max": 918.0493,
+    "off": 2.77,
+    "reason": null
+   },
+   {
+    "dept": "교육학과",
+    "point": "p50",
+    "adiga": 922.95,
+    "min": 918.9066,
+    "max": 920.9474,
+    "off": 2,
+    "reason": null
+   }
+  ],
+  "gnu::예체능": [
+   {
+    "dept": "미술교육과",
+    "point": "p70",
+    "adiga": 469.47,
+    "min": 778.75,
+    "max": 800.86,
+    "off": 309.28,
+    "reason": null
+   },
+   {
+    "dept": "스포츠헬스케어학과",
+    "point": "p70",
+    "adiga": 565.72,
+    "min": 797.85,
+    "max": 822.94,
+    "off": 232.13,
+    "reason": null
+   }
+  ],
+  "hansung::인문(크리에이티브인문·사회과학·글로벌패션·ICT디자인 주간)": [
+   {
+    "dept": "글로벌패션산업학부",
+    "point": "p70",
+    "adiga": 833.3,
+    "min": 798.4,
+    "max": 798.4,
+    "off": 34.9,
+    "reason": null
+   },
+   {
+    "dept": "글로벌패션산업학부",
+    "point": "p50",
+    "adiga": 836,
+    "min": 841.5,
+    "max": 841.5,
+    "off": 5.5,
+    "reason": null
+   }
+  ],
+  "hansung::자연(IT공과·AI응용·융합보안·미래모빌리티)": [
+   {
+    "dept": "미래모빌리티학과",
+    "point": "p70",
+    "adiga": 827.5,
+    "min": 797.6,
+    "max": 797.6,
+    "off": 29.9,
+    "reason": null
+   },
+   {
+    "dept": "융합보안학과",
+    "point": "p70",
+    "adiga": 825.55,
+    "min": 802.1,
+    "max": 802.1,
+    "off": 23.45,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::자연1(과탐 3% 가산)": [
+   {
+    "dept": "건설환경공학과",
+    "point": "p70",
+    "adiga": 886.81,
+    "min": 882.6908,
+    "max": 882.6908,
+    "off": 4.12,
+    "reason": null
+   },
+   {
+    "dept": "건설환경공학과",
+    "point": "p50",
+    "adiga": 887.66,
+    "min": 885.125,
+    "max": 885.125,
+    "off": 2.53,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::자연2(가산 없음)": [
+   {
+    "dept": "건축학전공",
+    "point": "p70",
+    "adiga": 888.32,
+    "min": 882.7344,
+    "max": 885.2524,
+    "off": 3.07,
+    "reason": null
+   },
+   {
+    "dept": "교통물류공학과",
+    "point": "p70",
+    "adiga": 886.48,
+    "min": 881.9537,
+    "max": 881.9537,
+    "off": 4.53,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::상경(가산 없음)": [
+   {
+    "dept": "경영학부",
+    "point": "p70",
+    "adiga": 885.27,
+    "min": 879.859,
+    "max": 879.859,
+    "off": 5.41,
+    "reason": null
+   },
+   {
+    "dept": "경영학부",
+    "point": "p50",
+    "adiga": 887.18,
+    "min": 884.0529,
+    "max": 884.0529,
+    "off": 3.13,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::인문(사탐 3% 가산)": [
+   {
+    "dept": "문화인류학과",
+    "point": "p70",
+    "adiga": 884.8,
+    "min": 878.853,
+    "max": 878.853,
+    "off": 5.95,
+    "reason": null
+   },
+   {
+    "dept": "문화인류학과",
+    "point": "p50",
+    "adiga": 885.51,
+    "min": 883.6421,
+    "max": 883.6421,
+    "off": 1.87,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::보험계리학과(과탐 3% 가산)": [
+   {
+    "dept": "보험계리학과",
+    "point": "p70",
+    "adiga": 886.57,
+    "min": 884.3543,
+    "max": 884.3543,
+    "off": 2.22,
+    "reason": null
+   },
+   {
+    "dept": "보험계리학과",
+    "point": "p50",
+    "adiga": 887.76,
+    "min": 882.5194,
+    "max": 882.5194,
+    "off": 5.24,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::예체능": [
+   {
+    "dept": "스포츠과학부",
+    "point": "p70",
+    "adiga": 894.22,
+    "min": 835.9198,
+    "max": 835.9198,
+    "off": 58.3,
+    "reason": null
+   },
+   {
+    "dept": "스포츠과학부",
+    "point": "p50",
+    "adiga": 904.02,
+    "min": 850.1343,
+    "max": 850.1343,
+    "off": 53.89,
+    "reason": null
+   }
+  ],
+  "hanyang-erica::LIONS자율전공학부(전계열)": [
+   {
+    "dept": "LIONS자율전공학부(전계열)",
+    "point": "p70",
+    "adiga": 882.71,
+    "min": 878.6725,
+    "max": 878.6725,
+    "off": 4.04,
+    "reason": null
+   },
+   {
+    "dept": "LIONS자율전공학부(전계열)",
+    "point": "p50",
+    "adiga": 884.09,
+    "min": 877.4581,
+    "max": 877.4581,
+    "off": 6.63,
+    "reason": null
+   }
+  ],
+  "hufs::서울 인문(상경·사회·경영)": [
+   {
+    "dept": "경영학부",
+    "point": "p70",
+    "adiga": 649.31,
+    "min": 642.5748,
+    "max": 642.5748,
+    "off": 6.74,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   },
+   {
+    "dept": "경영학부",
+    "point": "p50",
+    "adiga": 650.19,
+    "min": 644.0966,
+    "max": 644.0966,
+    "off": 6.09,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   }
+  ],
+  "hufs::서울 인문(어문·사범·자유전공)": [
+   {
+    "dept": "국제학부",
+    "point": "p70",
+    "adiga": 647.99,
+    "min": 644.8084,
+    "max": 644.8084,
+    "off": 3.18,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   },
+   {
+    "dept": "국제학부",
+    "point": "p50",
+    "adiga": 648.23,
+    "min": 644.9367,
+    "max": 644.9367,
+    "off": 3.29,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   }
+  ],
+  "hufs-global::글로벌 인문(인문·국가전략언어·Culture & Technology)": [
+   {
+    "dept": "경상대학[통합모집]",
+    "point": "p70",
+    "adiga": 617.31,
+    "min": 615.5447,
+    "max": 615.5447,
+    "off": 1.77,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   },
+   {
+    "dept": "경상대학[통합모집]",
+    "point": "p50",
+    "adiga": 618.3,
+    "min": 614.6532,
+    "max": 614.6532,
+    "off": 3.65,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   }
+  ],
+  "hufs-global::글로벌 자연": [
+   {
+    "dept": "공과계열",
+    "point": "p70",
+    "adiga": 624.53,
+    "min": 615.8465,
+    "max": 615.8465,
+    "off": 8.68,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   },
+   {
+    "dept": "공과계열",
+    "point": "p50",
+    "adiga": 625.4,
+    "min": 617.2019,
+    "max": 617.2019,
+    "off": 8.2,
+    "reason": "어디가 총점 710 = 반영총점 700 + 가산 10"
+   }
+  ],
+  "inha::자연(융합학부 제외)": [
+   {
+    "dept": "간호학과",
+    "point": "p70",
+    "adiga": 893.91,
+    "min": 879.47,
+    "max": 879.47,
+    "off": 14.44,
+    "reason": null
+   },
+   {
+    "dept": "간호학과",
+    "point": "p50",
+    "adiga": 897.85,
+    "min": 885.17,
+    "max": 891.97,
+    "off": 5.88,
+    "reason": null
+   }
+  ],
+  "inha::인문(융합학부 제외)": [
+   {
+    "dept": "경영융합학부",
+    "point": "p70",
+    "adiga": 885.6,
+    "min": 881.82,
+    "max": 881.82,
+    "off": 3.78,
+    "reason": null
+   },
+   {
+    "dept": "경영융합학부",
+    "point": "p50",
+    "adiga": 886.46,
+    "min": 881.55,
+    "max": 881.55,
+    "off": 4.91,
+    "reason": null
+   }
+  ],
+  "jbnu::자연·농업생명과학": [
+   {
+    "dept": "생활과학계열",
+    "point": "p70",
+    "adiga": 312.57,
+    "min": 317.96,
+    "max": 317.96,
+    "off": 5.39,
+    "reason": null
+   },
+   {
+    "dept": "자연과학계열 1",
+    "point": "p70",
+    "adiga": 317.88,
+    "min": 322.04,
+    "max": 322.04,
+    "off": 4.16,
+    "reason": null
+   }
+  ],
+  "jbnu::체육교육과": [
+   {
+    "dept": "체육교육과",
+    "point": "p70",
+    "adiga": 496.33,
+    "min": 584.37,
+    "max": 584.37,
+    "off": 88.04,
+    "reason": "총점 850 ≠ 산식 1000"
+   },
+   {
+    "dept": "체육교육과",
+    "point": "p50",
+    "adiga": 504.56,
+    "min": 592.74,
+    "max": 592.74,
+    "off": 88.18,
+    "reason": "총점 850 ≠ 산식 1000"
+   }
+  ],
+  "jnu::인문·인문/자연": [
+   {
+    "dept": "고분자융합소재공학부",
+    "point": "p70",
+    "adiga": 839.69,
+    "min": 807.039,
+    "max": 827.787,
+    "off": 11.9,
+    "reason": null
+   },
+   {
+    "dept": "교육학과",
+    "point": "p70",
+    "adiga": 852.77,
+    "min": 828.79,
+    "max": 847.068,
+    "off": 5.7,
+    "reason": null
+   }
+  ],
+  "kangwon::자연": [
+   {
+    "dept": "가정교육과",
+    "point": "p70",
+    "adiga": 395.35,
+    "min": 383.2,
+    "max": 383.2,
+    "off": 12.15,
+    "reason": "총점 531.5 ≠ 산식 500"
+   },
+   {
+    "dept": "가정교육과",
+    "point": "p50",
+    "adiga": 395.35,
+    "min": 383.2,
+    "max": 383.2,
+    "off": 12.15,
+    "reason": "총점 531.5 ≠ 산식 500"
+   }
+  ],
+  "kau::공학적성(공과·AI융합·스마트드론·AI자율주행·자유전공 공학)": [
+   {
+    "dept": "스마트드론공학과",
+    "point": "p50",
+    "adiga": 559.5,
+    "min": 560.75,
+    "max": 563.25,
+    "off": 1.25,
+    "reason": null
+   },
+   {
+    "dept": "AI자율주행시스템공학과",
+    "point": "p70",
+    "adiga": 560,
+    "min": 561.25,
+    "max": 562.5,
+    "off": 1.25,
+    "reason": null
+   }
+  ],
+  "kau::이학·사회적성 산출1": [
+   {
+    "dept": "자유전공학부(사회적성)",
+    "point": "p50",
+    "adiga": 569.75,
+    "min": 571,
+    "max": 572.25,
+    "off": 1.25,
+    "reason": null
+   },
+   {
+    "dept": "자유전공학부(이학적성)",
+    "point": "p70",
+    "adiga": 566.75,
+    "min": 562.75,
+    "max": 565.5,
+    "off": 1.25,
+    "reason": null
+   }
+  ],
+  "khu::자연": [
+   {
+    "dept": "미래정보디스플레이학부",
+    "point": "p70",
+    "adiga": 390.5,
+    "min": 389.1625,
+    "max": 389.1625,
+    "off": 1.34,
+    "reason": null
+   },
+   {
+    "dept": "빅데이터응용학과",
+    "point": "p70",
+    "adiga": 383.59,
+    "min": 386.3535,
+    "max": 386.3535,
+    "off": 2.76,
+    "reason": null
+   }
+  ],
+  "khu::사회": [
+   {
+    "dept": "경영회계계열",
+    "point": "p70",
+    "adiga": 362.71,
+    "min": 361.519,
+    "max": 361.519,
+    "off": 1.19,
+    "reason": null
+   },
+   {
+    "dept": "경영회계계열",
+    "point": "p50",
+    "adiga": 368.23,
+    "min": 366.922,
+    "max": 366.922,
+    "off": 1.31,
+    "reason": null
+   }
+  ],
+  "khu::예술·체육": [
+   {
+    "dept": "태권도학과",
+    "point": "p70",
+    "adiga": 642.02,
+    "min": 427.332,
+    "max": 427.332,
+    "off": 214.69,
+    "reason": "총점 900 ≠ 산식 600"
+   },
+   {
+    "dept": "태권도학과",
+    "point": "p50",
+    "adiga": 646.14,
+    "min": 429.256,
+    "max": 429.256,
+    "off": 216.88,
+    "reason": "총점 900 ≠ 산식 600"
+   }
+  ],
+  "khu::인문": [
+   {
+    "dept": "국어국문학과",
+    "point": "p70",
+    "adiga": 386.31,
+    "min": 385.173,
+    "max": 385.173,
+    "off": 1.14,
+    "reason": null
+   },
+   {
+    "dept": "국어국문학과",
+    "point": "p50",
+    "adiga": 386.75,
+    "min": 384.3925,
+    "max": 385.5925,
+    "off": 1.16,
+    "reason": null
+   }
+  ],
+  "knu::자연": [
+   {
+    "dept": "가정교육과",
+    "point": "p70",
+    "adiga": 661.28,
+    "min": 659.6875,
+    "max": 659.6875,
+    "off": 1.59,
+    "reason": null
+   },
+   {
+    "dept": "가정교육과",
+    "point": "p50",
+    "adiga": 661.28,
+    "min": 659.6875,
+    "max": 659.6875,
+    "off": 1.59,
+    "reason": null
+   }
+  ],
+  "knu::인문": [
+   {
+    "dept": "경상대학 자율학부",
+    "point": "p50",
+    "adiga": 672.31,
+    "min": 670.5875,
+    "max": 670.5875,
+    "off": 1.72,
+    "reason": null
+   },
+   {
+    "dept": "경영학부",
+    "point": "p70",
+    "adiga": 669.4,
+    "min": 667.8125,
+    "max": 667.8125,
+    "off": 1.59,
+    "reason": null
+   }
+  ],
+  "knu::예체능(미술·디자인 수능)": [
+   {
+    "dept": "디자인학과",
+    "point": "p50",
+    "adiga": 396.44,
+    "min": 655.22,
+    "max": 655.22,
+    "off": 258.78,
+    "reason": "총점 600 ≠ 산식 1000"
+   },
+   {
+    "dept": "체육교육과",
+    "point": "p70",
+    "adiga": 527.72,
+    "min": 679.98,
+    "max": 679.98,
+    "off": 152.26,
+    "reason": "총점 800 ≠ 산식 1000"
+   }
+  ],
+  "knu::생태환경·과학기술·자율미래인재(자연)": [
+   {
+    "dept": "자율미래인재학부",
+    "point": "p70",
+    "adiga": 664.66,
+    "min": 665.6844,
+    "max": 665.6844,
+    "off": 1.02,
+    "reason": null
+   },
+   {
+    "dept": "자율미래인재학부",
+    "point": "p50",
+    "adiga": 666.04,
+    "min": 664.36,
+    "max": 664.36,
+    "off": 1.68,
+    "reason": null
+   }
+  ],
+  "knu::자율전공학부": [
+   {
+    "dept": "자율전공학부",
+    "point": "p50",
+    "adiga": 675.18,
+    "min": 673.425,
+    "max": 673.425,
+    "off": 1.75,
+    "reason": null
+   }
+  ],
+  "konkuk::수리중심(B)": [
+   {
+    "dept": "건축학부",
+    "point": "p50",
+    "adiga": 668.31,
+    "min": 666.76,
+    "max": 666.76,
+    "off": 1.55,
+    "reason": null
+   },
+   {
+    "dept": "경제학과",
+    "point": "p50",
+    "adiga": 667.88,
+    "min": 666.53,
+    "max": 666.53,
+    "off": 1.35,
+    "reason": null
+   }
+  ],
+  "konkuk::언어중심(A)": [
+   {
+    "dept": "문화콘텐츠학과",
+    "point": "p50",
+    "adiga": 672.94,
+    "min": 671.85,
+    "max": 671.85,
+    "off": 1.09,
+    "reason": null
+   },
+   {
+    "dept": "영어영문학과",
+    "point": "p50",
+    "adiga": 671.88,
+    "min": 668.41,
+    "max": 670.41,
+    "off": 1.47,
+    "reason": null
+   }
+  ],
+  "konkuk::예체능": [
+   {
+    "dept": "의상디자인학과",
+    "point": "p70",
+    "adiga": 669.01,
+    "min": 729.25,
+    "max": 731.5,
+    "off": 60.24,
+    "reason": null
+   },
+   {
+    "dept": "의상디자인학과",
+    "point": "p50",
+    "adiga": 669.59,
+    "min": 732.97,
+    "max": 732.97,
+    "off": 63.38,
+    "reason": null
+   }
+  ],
+  "kookmin::자연": [
+   {
+    "dept": "기계공학부",
+    "point": "p70",
+    "adiga": 698.98,
+    "min": 691.72,
+    "max": 694.81,
+    "off": 4.17,
+    "reason": null
+   },
+   {
+    "dept": "나노소재전공",
+    "point": "p70",
+    "adiga": 699.89,
+    "min": 692.49,
+    "max": 698.67,
+    "off": 1.22,
+    "reason": null
+   }
+  ],
+  "kookmin::자유전공(B)": [
+   {
+    "dept": "미래융합전공(B)",
+    "point": "p70",
+    "adiga": 669.55,
+    "min": 654.75,
+    "max": 657.9,
+    "off": 11.65,
+    "reason": null
+   },
+   {
+    "dept": "미래융합전공(B)",
+    "point": "p50",
+    "adiga": 670.5,
+    "min": 652.15,
+    "max": 658.3,
+    "off": 12.2,
+    "reason": null
+   }
+  ],
+  "korea::자연": [
+   {
+    "dept": "가정교육과",
+    "point": "p70",
+    "adiga": 656.05,
+    "min": 641.8536,
+    "max": 643.4161,
+    "off": 12.63,
+    "reason": null
+   },
+   {
+    "dept": "가정교육과",
+    "point": "p50",
+    "adiga": 656.29,
+    "min": 657.6498,
+    "max": 659.2123,
+    "off": 1.36,
+    "reason": null
+   }
+  ],
+  "korea::인문": [
+   {
+    "dept": "경영대학",
+    "point": "p70",
+    "adiga": 641.89,
+    "min": 633.6571,
+    "max": 633.6571,
+    "off": 8.23,
+    "reason": null
+   },
+   {
+    "dept": "경영대학",
+    "point": "p50",
+    "adiga": 645,
+    "min": 641.3429,
+    "max": 643.1286,
+    "off": 1.87,
+    "reason": null
+   }
+  ],
+  "kw::자연": [
+   {
+    "dept": "건축공학과",
+    "point": "p70",
+    "adiga": 702.92,
+    "min": 695.901,
+    "max": 695.901,
+    "off": 7.02,
+    "reason": null
+   },
+   {
+    "dept": "건축공학과",
+    "point": "p50",
+    "adiga": 703.66,
+    "min": 696.1,
+    "max": 696.1,
+    "off": 7.56,
+    "reason": null
+   }
+  ],
+  "kw::상경": [
+   {
+    "dept": "경영학부 빅데이터경영전공",
+    "point": "p70",
+    "adiga": 677.23,
+    "min": 678.4,
+    "max": 679.9,
+    "off": 1.17,
+    "reason": null
+   },
+   {
+    "dept": "경영학부 빅데이터경영전공",
+    "point": "p50",
+    "adiga": 677.23,
+    "min": 678.4,
+    "max": 679.9,
+    "off": 1.17,
+    "reason": null
+   }
+  ],
+  "kw::인문": [
+   {
+    "dept": "국어국문학과",
+    "point": "p70",
+    "adiga": 694.49,
+    "min": 693.225,
+    "max": 693.225,
+    "off": 1.26,
+    "reason": null
+   },
+   {
+    "dept": "국어국문학과",
+    "point": "p50",
+    "adiga": 695.25,
+    "min": 693.338,
+    "max": 693.338,
+    "off": 1.91,
+    "reason": null
+   }
+  ],
+  "mju::인문": [
+   {
+    "dept": "인문대학",
+    "point": "p70",
+    "adiga": 851,
+    "min": 848,
+    "max": 848,
+    "off": 3,
+    "reason": null
+   }
+  ],
+  "mju::예체능(수능 실기전형)": [
+   {
+    "dept": "미술사・역사학전공",
+    "point": "p70",
+    "adiga": 800,
+    "min": 491,
+    "max": 491,
+    "off": 309,
+    "reason": "총점 1000 ≠ 산식 600"
+   },
+   {
+    "dept": "미술사・역사학전공",
+    "point": "p50",
+    "adiga": 800,
+    "min": 491,
+    "max": 491,
+    "off": 309,
+    "reason": "총점 1000 ≠ 산식 600"
+   }
+  ],
+  "pnu::의약": [
+   {
+    "dept": "간호학과",
+    "point": "p70",
+    "adiga": 677.49,
+    "min": 556.3916,
+    "max": 556.3916,
+    "off": 121.1,
+    "reason": "총점 1000 ≠ 산식 800"
+   },
+   {
+    "dept": "간호학과",
+    "point": "p50",
+    "adiga": 683.82,
+    "min": 551.8508,
+    "max": 551.8508,
+    "off": 131.97,
+    "reason": "총점 1000 ≠ 산식 800"
+   }
+  ],
+  "pnu::자연": [
+   {
+    "dept": "건축공학과",
+    "point": "p50",
+    "adiga": 681.88,
+    "min": 690.655,
+    "max": 690.655,
+    "off": 8.77,
+    "reason": null
+   },
+   {
+    "dept": "고분자공학과",
+    "point": "p70",
+    "adiga": 671.09,
+    "min": 665.37,
+    "max": 665.37,
+    "off": 5.72,
+    "reason": null
+   }
+  ],
+  "pnu::자연(과탐 5% 가산 단위)": [
+   {
+    "dept": "건축학과",
+    "point": "p50",
+    "adiga": 699.83,
+    "min": 694.485,
+    "max": 694.485,
+    "off": 5.35,
+    "reason": null
+   },
+   {
+    "dept": "도시공학과",
+    "point": "p70",
+    "adiga": 697.75,
+    "min": 696.295,
+    "max": 696.295,
+    "off": 1.46,
+    "reason": null
+   }
+  ],
+  "pnu::인문": [
+   {
+    "dept": "경영학과",
+    "point": "p70",
+    "adiga": 705.12,
+    "min": 703.5,
+    "max": 703.5,
+    "off": 1.62,
+    "reason": null
+   },
+   {
+    "dept": "경영학과",
+    "point": "p50",
+    "adiga": 706.66,
+    "min": 705.5125,
+    "max": 705.5125,
+    "off": 1.15,
+    "reason": null
+   }
+  ],
+  "pnu::예체능": [
+   {
+    "dept": "디자인학과(시각디자인전공)",
+    "point": "p70",
+    "adiga": 388.68,
+    "min": 400.39,
+    "max": 400.39,
+    "off": 11.71,
+    "reason": null
+   },
+   {
+    "dept": "디자인학과(시각디자인전공)",
+    "point": "p50",
+    "adiga": 399.74,
+    "min": 392.88,
+    "max": 392.88,
+    "off": 6.86,
+    "reason": null
+   }
+  ],
+  "pnu::광역(자유전공학부)": [
+   {
+    "dept": "자유전공학부",
+    "point": "p50",
+    "adiga": 704.81,
+    "min": 710.18,
+    "max": 710.18,
+    "off": 5.37,
+    "reason": null
+   }
+  ],
+  "sejong::자연(IT·첨단융합·공과 3% 가산)": [
+   {
+    "dept": "공과계열",
+    "point": "p70",
+    "adiga": 691.68,
+    "min": 684.8515,
+    "max": 684.8515,
+    "off": 6.83,
+    "reason": null
+   },
+   {
+    "dept": "공과계열",
+    "point": "p50",
+    "adiga": 693.73,
+    "min": 686.88425,
+    "max": 686.88425,
+    "off": 6.85,
+    "reason": null
+   }
+  ],
+  "sejong::인문": [
+   {
+    "dept": "경상호텔관광계열",
+    "point": "p70",
+    "adiga": 680.78,
+    "min": 679.68,
+    "max": 679.68,
+    "off": 1.1,
+    "reason": null
+   },
+   {
+    "dept": "경상호텔관광계열",
+    "point": "p70",
+    "adiga": 696.9,
+    "min": 695.53,
+    "max": 695.53,
+    "off": 1.37,
+    "reason": null
+   }
+  ],
+  "sejong::자연(자연생명계열 5% 가산)": [
+   {
+    "dept": "국방AI로봇융합공학과",
+    "point": "p70",
+    "adiga": 540.98,
+    "min": 683.1625,
+    "max": 683.1625,
+    "off": 142.18,
+    "reason": "총점 800 ≠ 산식 1000"
+   },
+   {
+    "dept": "국방AI로봇융합공학과",
+    "point": "p50",
+    "adiga": 545.72,
+    "min": 681.3125,
+    "max": 681.3125,
+    "off": 135.59,
+    "reason": "총점 800 ≠ 산식 1000"
+   }
+  ],
+  "sejong::자유전공·창의소프트학부": [
+   {
+    "dept": "창의소프트학부(만화애니메이션텍전공)",
+    "point": "p70",
+    "adiga": 694.12,
+    "min": 697.805,
+    "max": 699.555,
+    "off": 3.68,
+    "reason": null
+   },
+   {
+    "dept": "창의소프트학부(만화애니메이션텍전공)",
+    "point": "p50",
+    "adiga": 694.12,
+    "min": 697.805,
+    "max": 699.555,
+    "off": 3.68,
+    "reason": null
+   }
+  ],
+  "smu::자연": [
+   {
+    "dept": "공간환경학부",
+    "point": "p50",
+    "adiga": 866,
+    "min": 858,
+    "max": 858,
+    "off": 8,
+    "reason": null
+   },
+   {
+    "dept": "생명화학공학부 생명공학전공",
+    "point": "p70",
+    "adiga": 909.8,
+    "min": 879,
+    "max": 879,
+    "off": 30.8,
+    "reason": null
+   }
+  ],
+  "smu::예체능(실기전형)": [
+   {
+    "dept": "자유전공(예체능계열)",
+    "point": "p70",
+    "adiga": 858.5,
+    "min": 900,
+    "max": 900,
+    "off": 41.5,
+    "reason": null
+   },
+   {
+    "dept": "자유전공(예체능계열)",
+    "point": "p50",
+    "adiga": 862,
+    "min": 918,
+    "max": 918,
+    "off": 56,
+    "reason": null
+   }
+  ],
+  "snu::자연": [
+   {
+    "dept": "건축학과",
+    "point": "p50",
+    "adiga": 402.5,
+    "min": 395.7,
+    "max": 401.1,
+    "off": 1.4,
+    "reason": null
+   },
+   {
+    "dept": "기계공학부",
+    "point": "p50",
+    "adiga": 406.5,
+    "min": 396.9,
+    "max": 403.9,
+    "off": 2.6,
+    "reason": null
+   }
+  ],
+  "sogang::전 계열(A형)": [
+   {
+    "dept": "경영학부(경영학전공)",
+    "point": "p70",
+    "adiga": 504.06,
+    "min": 497.05,
+    "max": 498.15,
+    "off": 5.91,
+    "reason": null
+   },
+   {
+    "dept": "경영학부(경영학전공)",
+    "point": "p50",
+    "adiga": 505.31,
+    "min": 496.72,
+    "max": 497.82,
+    "off": 7.49,
+    "reason": null
+   }
+  ],
+  "sookmyung::인문": [
+   {
+    "dept": "가족자원경영학과",
+    "point": "p70",
+    "adiga": 895.39,
+    "min": 880.125,
+    "max": 880.125,
+    "off": 15.26,
+    "reason": null
+   },
+   {
+    "dept": "가족자원경영학과",
+    "point": "p50",
+    "adiga": 895.72,
+    "min": 890.4136,
+    "max": 890.4136,
+    "off": 5.31,
+    "reason": null
+   }
+  ],
+  "sookmyung::자연": [
+   {
+    "dept": "기계시스템학부",
+    "point": "p70",
+    "adiga": 899.81,
+    "min": 877.0575,
+    "max": 877.0575,
+    "off": 22.75,
+    "reason": null
+   },
+   {
+    "dept": "기계시스템학부",
+    "point": "p50",
+    "adiga": 900.36,
+    "min": 902.6515,
+    "max": 902.6515,
+    "off": 2.29,
+    "reason": null
+   }
+  ],
+  "sookmyung::자유전공": [
+   {
+    "dept": "자유전공학부",
+    "point": "p50",
+    "adiga": 892.96,
+    "min": 894.0698,
+    "max": 894.0698,
+    "off": 1.11,
+    "reason": null
+   }
+  ],
+  "soongsil::자연계열2·자유전공학부(자연)": [
+   {
+    "dept": "건축학부 건축학·건축공학전공",
+    "point": "p70",
+    "adiga": 854.99,
+    "min": 852.5421,
+    "max": 852.5421,
+    "off": 2.45,
+    "reason": null
+   },
+   {
+    "dept": "건축학부 건축학·건축공학전공",
+    "point": "p50",
+    "adiga": 888.01,
+    "min": 877.7316,
+    "max": 877.7316,
+    "off": 10.28,
+    "reason": null
+   }
+  ],
+  "soongsil::경상": [
+   {
+    "dept": "경영학부",
+    "point": "p70",
+    "adiga": 879.77,
+    "min": 875.4495,
+    "max": 875.4495,
+    "off": 4.32,
+    "reason": null
+   },
+   {
+    "dept": "경영학부",
+    "point": "p50",
+    "adiga": 880.82,
+    "min": 876.0456,
+    "max": 876.0456,
+    "off": 4.77,
+    "reason": null
+   }
+  ],
+  "soongsil::인문": [
+   {
+    "dept": "국어국문학과",
+    "point": "p70",
+    "adiga": 897.23,
+    "min": 894.5139,
+    "max": 894.5139,
+    "off": 2.72,
+    "reason": null
+   },
+   {
+    "dept": "국어국문학과",
+    "point": "p50",
+    "adiga": 897.36,
+    "min": 890.287,
+    "max": 892.6679,
+    "off": 4.69,
+    "reason": null
+   }
+  ],
+  "soongsil::자연계열1": [
+   {
+    "dept": "기계공학부",
+    "point": "p70",
+    "adiga": 871.77,
+    "min": 861.0515,
+    "max": 861.0515,
+    "off": 10.72,
+    "reason": null
+   },
+   {
+    "dept": "기계공학부",
+    "point": "p50",
+    "adiga": 872.55,
+    "min": 861.138,
+    "max": 861.138,
+    "off": 11.41,
+    "reason": null
+   }
+  ],
+  "soongsil::자유전공학부(인문)": [
+   {
+    "dept": "자유전공학부(인문)",
+    "point": "p70",
+    "adiga": 900.74,
+    "min": 896.9321,
+    "max": 896.9321,
+    "off": 3.81,
+    "reason": null
+   },
+   {
+    "dept": "자유전공학부(인문)",
+    "point": "p50",
+    "adiga": 902.34,
+    "min": 897.4474,
+    "max": 897.4474,
+    "off": 4.89,
+    "reason": null
+   }
+  ],
+  "syu::의약(약학과)": [
+   {
+    "dept": "약학과",
+    "point": "p70",
+    "adiga": 979.6,
+    "min": 965.08,
+    "max": 965.08,
+    "off": 14.52,
+    "reason": null
+   },
+   {
+    "dept": "약학과",
+    "point": "p50",
+    "adiga": 979.6,
+    "min": 965.08,
+    "max": 965.08,
+    "off": 14.52,
+    "reason": null
+   }
+  ],
+  "syu::자연": [
+   {
+    "dept": "데이터클라우드공학과",
+    "point": "p50",
+    "adiga": 861.6,
+    "min": 855,
+    "max": 855,
+    "off": 6.6,
+    "reason": null
+   },
+   {
+    "dept": "미래융합자유전공학부",
+    "point": "p70",
+    "adiga": 801.2,
+    "min": 795.5,
+    "max": 795.5,
+    "off": 5.7,
+    "reason": null
+   }
+  ],
+  "uos::자연Ⅰ": [
+   {
+    "dept": "건축학부 건축공학전공",
+    "point": "p50",
+    "adiga": 905.56,
+    "min": 903.9954,
+    "max": 903.9954,
+    "off": 1.56,
+    "reason": null
+   },
+   {
+    "dept": "건축학부 건축학전공(5년제)",
+    "point": "p70",
+    "adiga": 905.24,
+    "min": 901.1935,
+    "max": 903.2343,
+    "off": 2.01,
+    "reason": null
+   }
+  ],
+  "uos::자연Ⅱ": [
+   {
+    "dept": "교통공학과",
+    "point": "p70",
+    "adiga": 908.12,
+    "min": 905.5464,
+    "max": 905.5464,
+    "off": 2.57,
+    "reason": null
+   },
+   {
+    "dept": "교통공학과",
+    "point": "p50",
+    "adiga": 908.8,
+    "min": 906.8467,
+    "max": 906.8467,
+    "off": 1.95,
+    "reason": null
+   }
+  ],
+  "uos::인문Ⅱ": [
+   {
+    "dept": "국사학과",
+    "point": "p70",
+    "adiga": 912.48,
+    "min": 910.561,
+    "max": 910.561,
+    "off": 1.92,
+    "reason": null
+   },
+   {
+    "dept": "국제관계학과",
+    "point": "p70",
+    "adiga": 915.17,
+    "min": 913.8667,
+    "max": 913.8667,
+    "off": 1.3,
+    "reason": null
+   }
+  ],
+  "yonsei::유형Ⅱ(자연)": [
+   {
+    "dept": "간호학과",
+    "point": "p70",
+    "adiga": 672.46,
+    "min": 652.2103,
+    "max": 653.2658,
+    "off": 19.19,
+    "reason": null
+   },
+   {
+    "dept": "간호학과",
+    "point": "p50",
+    "adiga": 673.17,
+    "min": 655.9122,
+    "max": 656.9678,
+    "off": 16.2,
+    "reason": null
+   }
+  ],
+  "yonsei::유형Ⅰ(인문·사회)": [
+   {
+    "dept": "경영학과",
+    "point": "p70",
+    "adiga": 687.94,
+    "min": 650.7804,
+    "max": 650.7804,
+    "off": 37.16,
+    "reason": "총점 1000 ≠ 산식 950"
+   },
+   {
+    "dept": "경영학과",
+    "point": "p50",
+    "adiga": 692.34,
+    "min": 657.0872,
+    "max": 657.0872,
+    "off": 35.25,
+    "reason": "총점 1000 ≠ 산식 950"
+   }
+  ],
+  "yonsei::유형Ⅲ(국제계열: 언더우드국제대학)": [
+   {
+    "dept": "융합과학공학부",
+    "point": "p70",
+    "adiga": 639.89,
+    "min": 636.2775,
+    "max": 637.7775,
+    "off": 2.11,
+    "reason": null
+   },
+   {
+    "dept": "융합인문사회과학부",
+    "point": "p70",
+    "adiga": 635.4,
+    "min": 628.575,
+    "max": 630.075,
+    "off": 5.32,
+    "reason": null
+   }
+  ]
+ },
+ "skipped": [
+  {
+   "university": "hanyang",
+   "reason": "요강이 정규화 상수·배점을 밝히지 않음",
+   "rows": 183
+  },
+  {
+   "university": "konkuk",
+   "reason": "요강이 정규화 상수·배점을 밝히지 않음",
+   "rows": 5
+  },
+  {
+   "university": "kyonggi",
+   "reason": "요강이 정규화 상수·배점을 밝히지 않음",
+   "rows": 1
+  },
+  {
+   "university": "skku",
+   "reason": "요강이 정규화 상수·배점을 밝히지 않음",
+   "rows": 75
+  }
+ ]
 }
