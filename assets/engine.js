@@ -722,10 +722,13 @@
   }
 
   // 목록 정렬 두 가지.
-  //   byCutDesc : 예상 컷이 높은 곳부터 — "갈 수 있는 가장 높은 곳"을 먼저 본다.
-  //               같은 컷이면 대학 라인 순(서연고→…), 그다음 모집단위 이름 순.
+  //   byCutDesc : 라인 순위(서연고→서성한→…)가 1차 키, 예상 컷 내림차순이 2차 키다 (docs/FRAME.md §8.3).
+  //               같은 대학·같은 컷이면 모집단위 이름 순.
   //   byGapAsc  : 컷과의 차이가 작은(아슬아슬한) 곳부터 — 판정별 묶음 안의 순서.
   function byCutDesc(left, right) {
+    const lineLeft = left.universityOrder ?? 0;
+    const lineRight = right.universityOrder ?? 0;
+    if (lineLeft !== lineRight) return lineLeft - lineRight;
     const l = left.jeongsi?.cut?.value;
     const r = right.jeongsi?.cut?.value;
     if (isNumber(l) && isNumber(r)) {
@@ -733,7 +736,6 @@
     } else if (isNumber(l) !== isNumber(r)) {
       return isNumber(l) ? -1 : 1;
     }
-    if ((left.universityOrder ?? 0) !== (right.universityOrder ?? 0)) return (left.universityOrder ?? 0) - (right.universityOrder ?? 0);
     return String(left.dept?.name || '').localeCompare(String(right.dept?.name || ''), 'ko');
   }
   function byGapAsc(left, right) {

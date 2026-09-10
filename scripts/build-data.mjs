@@ -44,18 +44,18 @@ export function summarizeBasis(text) {
   return { metric, inquiry, short: metric === 'pct' ? '백분위' : '표점', label: `${base}${tail}`, text: raw, approxPercentile: metric !== 'pct' };
 }
 
-// 유명 대학 라인(서열 묶음). 화면의 대학 순서와 필터 묶음이 이 표를 쓴다.
+// 유명 대학 라인(서열 묶음). 화면의 대학 순서·머리글·필터가 모두 이 표 하나를 따른다.
+// 순서는 통용 라인 순위다 — 컷 중앙값이 아니라 이 표가 대학 정렬의 1차 키다 (docs/FRAME.md §8.3).
 export const LINES = [
   { label: '서연고', ids: ['snu', 'yonsei', 'korea'] },
   { label: '서성한', ids: ['sogang', 'skku', 'hanyang'] },
   { label: '중경외시', ids: ['cau', 'khu', 'hufs', 'uos'] },
   { label: '건동홍', ids: ['konkuk', 'dongguk', 'hongik'] },
-  { label: '인하아주', ids: ['inha', 'ajou'] },
   { label: '국숭세단', ids: ['kookmin', 'soongsil', 'sejong', 'dankook'] },
   { label: '광명상가', ids: ['kw', 'mju', 'smu', 'catholic'] },
   { label: '한서삼', ids: ['hansung', 'skuniv', 'syu'] },
-  { label: '인가경', ids: ['incheon', 'gachon', 'kyonggi'] },
-  { label: '경기·인천', ids: ['hanyang-erica', 'kau', 'hufs-global'] },
+  { label: '인하아주', ids: ['inha', 'ajou'] },
+  { label: '경기·인천', ids: ['hanyang-erica', 'kau', 'hufs-global', 'kyonggi', 'gachon', 'incheon'] },
   { label: '지거국', ids: ['pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu'] },
   { label: '여대', ids: ['ewha', 'sookmyung'] },
 ];
@@ -230,15 +230,7 @@ function buildUniversities(adiga, rules) {
       });
     }
   }
-  // 대표 컷 내림차순. 값이 없는 대학은 뒤로 보내고 라인 표 순서를 지킨다.
-  const lineIndex = new Map(LINES.flatMap((line, index) => line.ids.map((id) => [id, index])));
-  universities.sort((left, right) => {
-    const l = left.medianCut;
-    const r = right.medianCut;
-    if (typeof l === 'number' && typeof r === 'number' && l !== r) return r - l;
-    if (typeof l === 'number' !== (typeof r === 'number')) return typeof l === 'number' ? -1 : 1;
-    return (lineIndex.get(left.id) ?? 0) - (lineIndex.get(right.id) ?? 0);
-  });
+  // 순서는 라인 표 그대로다. 대표 컷(medianCut)은 값으로만 남겨 정보 탭 표가 쓴다.
   universities.forEach((university, index) => { university.order = index + 1; });
   return universities;
 }

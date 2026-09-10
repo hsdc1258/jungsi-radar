@@ -190,14 +190,20 @@ test('generated data.js exists, parses, and respects value ranges', { skip: !exi
   const lines = data.lines.map((row) => row.label);
   assert.ok(lines.includes('중경외시') && !lines.includes('중경외시이'), '중경외시');
   assert.ok(lines.includes('건동홍') && !lines.includes('건동홍숙'), '건동홍');
-  for (const label of ['인가경', '인하아주', '경기·인천', '지거국']) assert.ok(lines.includes(label), `라인 ${label}`);
-  // 대학 순서는 대표 컷(예체능·의약 제외 2026 70%컷 중앙값) 내림차순이다.
+  for (const label of ['인하아주', '경기·인천', '지거국', '여대']) assert.ok(lines.includes(label), `라인 ${label}`);
+  // 라인 표는 통용 라인 순위 그대로다 (docs/FRAME.md §8.3).
+  assert.deepEqual(lines, ['서연고', '서성한', '중경외시', '건동홍', '국숭세단', '광명상가', '한서삼',
+    '인하아주', '경기·인천', '지거국', '여대'], '라인 순위');
+  // 대학 순서는 컷 중앙값이 아니라 라인 순위다.
   const ordered = [...data.universities].sort((left, right) => left.order - right.order);
   assert.deepEqual(ordered.map((row) => row.id), data.universities.map((row) => row.id), 'order는 배열 순서와 같다');
-  const cuts = ordered.map((row) => row.medianCut).filter((value) => typeof value === 'number');
-  for (let index = 1; index < cuts.length; index += 1) {
-    assert.ok(cuts[index] <= cuts[index - 1], `대표 컷 내림차순 (${cuts[index - 1]} → ${cuts[index]})`);
+  assert.deepEqual(ordered.map((row) => row.id), data.lines.flatMap((line) => line.ids), '대학 순서는 라인 표 순서');
+  for (const university of data.universities) {
+    const line = data.lines.find((row) => row.ids.includes(university.id));
+    assert.equal(university.line, line.label, `${university.id}: 라인 이름`);
   }
+  // 컷 중앙값은 값으로 남아 정보 탭 표가 쓴다.
+  assert.ok(data.universities.filter((row) => typeof row.medianCut === 'number').length > 20, '대표 컷이 남아 있다');
   let departments = 0;
   for (const university of data.universities) {
     assert.ok(university.id && university.name && university.short, `university identity ${university.id}`);
