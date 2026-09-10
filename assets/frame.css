@@ -1,0 +1,136 @@
+/* 화면 틀 CSS — 배치와 간격만 담는다 (docs/FRAME.md §1).
+   색·글자·컴포넌트 모양은 전부 Seed Design 토큰과 recipe 클래스가 담당한다.
+   여기서 색 값(hex/rgb)을 쓰지 않는다 — 라이트/다크는 토큰이 알아서 바뀐다. */
+:root {
+  --jr-max-width: 640px;
+  --jr-gutter: var(--seed-dimension-spacing-x-global-gutter, 16px);
+  --jr-gap: var(--seed-dimension-spacing-y-component-default, 16px);
+}
+html, body {
+  margin: 0;
+  background: var(--seed-color-bg-layer-default);
+  color: var(--seed-color-fg-neutral);
+  font-family: var(--seed-font-family, -apple-system, BlinkMacSystemFont, "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+/* ---- 상단바 ---- */
+.jr-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--jr-max-width);
+  margin: 0 auto;
+  padding: 0 var(--jr-gutter);
+  background: var(--seed-color-bg-layer-default);
+}
+.jr-title {
+  margin: 0;
+  font-size: var(--seed-font-size-t6, 1.125rem);
+  font-weight: var(--seed-font-weight-bold, 700);
+}
+/* ---- 탭 (상단바 아래 고정) ---- */
+.jr-tabs {
+  position: sticky;
+  top: 56px;
+  z-index: 19;
+  max-width: var(--jr-max-width);
+  margin: 0 auto;
+  background: var(--seed-color-bg-layer-default);
+  border-bottom: 1px solid var(--seed-color-stroke-neutral-subtle);
+}
+/* ---- 본문: 한 열, 섹션 사이 간격 하나 ---- */
+.jr-main {
+  max-width: var(--jr-max-width);
+  margin: 0 auto;
+  padding: var(--jr-gap) var(--jr-gutter) calc(var(--jr-gap) * 4);
+}
+.jr-panel {
+  display: grid;
+  gap: var(--jr-gap);
+  align-content: start;
+}
+.jr-section {
+  display: grid;
+  gap: 8px;
+}
+/* 목록 그룹: list-header + list-item 반복. 경계선은 토큰 한 줄. */
+.jr-list {
+  display: grid;
+  border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
+}
+.jr-list > * + * {
+  border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
+}
+/* 입력 행: 제목 왼쪽, 컨트롤(셀렉트 + 숫자) 오른쪽. 좁으면 컨트롤이 아래로 내려간다. */
+.jr-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-height: 52px;
+  padding: 8px 0;
+}
+.jr-input-row > .jr-input-label {
+  flex: 1 0 6em;
+  font-weight: var(--seed-font-weight-medium, 500);
+}
+.jr-input-row > .jr-input-controls {
+  display: flex;
+  flex: 0 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+.jr-input-controls select {
+  max-width: 11em;
+}
+.jr-input-controls input[type="number"] {
+  width: 6em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* 판정 카드: 큰 숫자 하나 + 뱃지 하나. 카드 안에 카드를 넣지 않는다. */
+.jr-verdict {
+  display: grid;
+  gap: 4px;
+  padding: var(--jr-gap) 0;
+}
+.jr-verdict-number {
+  font-size: var(--seed-font-size-t9, 2rem);
+  font-weight: var(--seed-font-weight-bold, 700);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.jr-muted {
+  color: var(--seed-color-fg-neutral-subtle);
+  font-size: var(--seed-font-size-t3, 0.8125rem);
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+/* 하단 고정 기본 버튼 (성적 화면) */
+.jr-sticky-action {
+  position: sticky;
+  bottom: 0;
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+  background: var(--seed-color-bg-layer-default);
+}
+.jr-sticky-action > .seed-action-button {
+  width: 100%;
+}
+/* ---- 푸터 ---- */
+.jr-footer {
+  max-width: var(--jr-max-width);
+  margin: 0 auto;
+  padding: 0 var(--jr-gutter) var(--jr-gap);
+}
+.jr-footer-text {
+  margin: 0;
+  color: var(--seed-color-fg-neutral-subtle);
+  font-size: var(--seed-font-size-t2, 0.75rem);
+  line-height: 1.5;
+}

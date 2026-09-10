@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko" data-seed data-seed-color-mode="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="수능 백분위·등급으로 서울 주요 대학 정시 지원선을 진단합니다.">
+  <title>정시 레이더</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@seed-design/css@2.7.0/all.min.css">
+  <link rel="stylesheet" href="assets/frame.css">
+  <!-- 테마 복원은 첫 페인트 전에 동기로 돈다 (FRAME.md §2). -->
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem('jr.theme');
+        if (mode === 'light-only' || mode === 'dark-only') document.documentElement.setAttribute('data-seed-color-mode', mode);
+      } catch (error) { /* 저장소가 막혀 있으면 system 으로 둔다. */ }
+    })();
+  </script>
+</head>
+<body>
+  <header class="seed-app-bar__root jr-appbar" role="banner">
+    <div class="seed-app-bar__left jr-appbar-title"><h1 class="jr-title">정시 레이더</h1></div>
+    <div class="seed-app-bar__right">
+      <button id="themeToggle" class="seed-action-button seed-action-button--variant_ghost seed-action-button--size_small seed-action-button--layout_withText" type="button" aria-label="테마 바꾸기">시스템</button>
+    </div>
+  </header>
+
+  <nav class="seed-tabs__root seed-tabs__root--size_medium jr-tabs" aria-label="화면">
+    <div class="seed-tabs__list seed-tabs__list--size_medium seed-tabs__list--triggerLayout_fill" role="tablist">
+      <button class="seed-tabs__trigger seed-tabs__trigger--size_medium seed-tabs__trigger--triggerLayout_fill" role="tab" data-view="scores" data-selected aria-selected="true">성적</button>
+      <button class="seed-tabs__trigger seed-tabs__trigger--size_medium seed-tabs__trigger--triggerLayout_fill" role="tab" data-view="diagnose" aria-selected="false">진단</button>
+      <button class="seed-tabs__trigger seed-tabs__trigger--size_medium seed-tabs__trigger--triggerLayout_fill" role="tab" data-view="target" aria-selected="false">목표</button>
+      <button class="seed-tabs__trigger seed-tabs__trigger--size_medium seed-tabs__trigger--triggerLayout_fill" role="tab" data-view="rules" aria-selected="false">반영</button>
+      <button class="seed-tabs__trigger seed-tabs__trigger--size_medium seed-tabs__trigger--triggerLayout_fill" role="tab" data-view="about" aria-selected="false">정보</button>
+      <div class="seed-tabs__indicator seed-tabs__indicator--triggerLayout_fill" aria-hidden="true"></div>
+    </div>
+  </nav>
+
+  <main class="jr-main">
+    <!-- 탭 하나 = 패널 하나. app.js가 통째로 다시 그린다 (FRAME.md §3). -->
+    <section id="panel" class="jr-panel" role="tabpanel" aria-live="polite"></section>
+  </main>
+
+  <footer class="jr-footer">
+    <p class="jr-footer-text">입시 결과는 대입정보포털 어디가 공개값, 반영 방법은 각 대학 2027학년도 시행계획 기준입니다. 합격을 보장하지 않습니다.</p>
+  </footer>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/engine.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
