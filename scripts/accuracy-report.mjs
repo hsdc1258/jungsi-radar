@@ -52,7 +52,7 @@ const SOURCE_KINDS = [
   ['adigaExact', '어디가 원값(기사 인용)'],
   ['adigaInt', '어디가 집계 정수'],
   ['estimate', '사설 추정'],
-  ['none', '미공개(판정 보류)'],
+  ['none', '미공개(판정 못 함)'],
 ];
 function sourceKind(row) {
   const source = String(row?.source || '');
@@ -141,7 +141,7 @@ export function computeAccuracy(data, engine = loadEngine()) {
   }
   const columns = { rows: bothColumns, flipped, rate: round((flipped / (bothColumns || 1)) * 100, 1) };
 
-  // (c2) 컷의 통계 정의. 정의가 다른 값은 비교하지 않고 보류한다.
+  // (c2) 컷의 통계 정의. 정의마다 내 성적을 같은 정의로 계산해 뺀다 — 계산 불가일 때만 보류한다.
   const defCounts = new Map();
   let heldByDefinition = 0;
   for (const university of data.universities) {
@@ -152,6 +152,7 @@ export function computeAccuracy(data, engine = loadEngine()) {
         defCounts.set(key, (defCounts.get(key) || 0) + 1);
       }
       if ((dept.series || []).length === 0) heldByDefinition += 1;
+      // series 가 비는 것은 정의가 달라서가 아니라 비교 가능한 연도값이 없을 때다.
     }
   }
   const definitions = {
@@ -365,16 +366,16 @@ export function renderMarkdown(accuracy) {
   lines.push('');
   lines.push('## 3-2. 컷의 통계 정의');
   lines.push('');
-  lines.push('컷은 무엇을 재서 낸 값인지가 자료마다 다르다. 우리 비교값(국·수·탐(2) 백분위 단순평균)과');
-  lines.push('정의가 맞는 값만 컷에서 뺀다 — 정의가 다르면 판정을 보류한다.');
+  lines.push('컷은 무엇을 재서 낸 값인지가 자료마다 다르다. 정의가 다르면 **내 성적도 그 정의로 계산해**');
+  lines.push('같은 눈금에서 뺀다 — 정의가 달라서 보류하지는 않는다. 환산점수 눈금만 계산할 수 없다.');
   lines.push('');
   lines.push('| 통계 정의 | 모집단위 | 비교 |');
   lines.push('|---|---:|---|');
   for (const row of accuracy.definitions.rows) {
-    lines.push(`| ${row.label} | ${row.count} | ${row.comparable ? (row.approx ? '비교(근사)' : '비교') : '기준 불일치 — 보류'} |`);
+    lines.push(`| ${row.label} | ${row.count} | ${row.comparable ? (row.approx ? '같은 정의로 계산(근사)' : '같은 정의로 계산') : '기준 불일치 — 계산 불가'} |`);
   }
   lines.push('');
-  lines.push(`정의가 달라 판정을 보류하는 모집단위 ${accuracy.definitions.held}곳.`);
+  lines.push(`비교 가능한 연도값이 없어 판정하지 못하는 모집단위 ${accuracy.definitions.held}곳.`);
   lines.push('');
   lines.push('## 4. 컷이 흔들리면 판정도 흔들리나');
   lines.push('');
