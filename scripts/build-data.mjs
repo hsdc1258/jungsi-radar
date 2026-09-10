@@ -115,20 +115,27 @@ export function classifyTrack(name) {
   return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
 }
 
-// 컷의 **통계 정의**. 우리 비교는 어디가 표준인 '국·수·탐(2) 백분위 단순평균' 위에서만 한다 —
-// 과목 구성이나 산식이 다른 값은 같은 눈금이 아니므로 비교 계열(series)에 넣지 않는다.
+// 컷의 **통계 정의**. 정의마다 눈금(scale)이 다르므로 한 모집단위의 비교 계열(series)에는
+// 같은 눈금의 연도값만 넣는다. 정의가 표준(국·수·탐(2) 평균)과 달라도 버리지 않는다 —
+// 엔진(comparableScore)이 그 정의 그대로 내 성적을 계산해 같은 눈금에서 뺀다.
+// assets/engine.js의 CUT_DEFS와 같은 표다(생성물에 def로 실린다).
 export const CUT_DEFS = Object.freeze({
-  'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', comparable: true, approx: false },
+  'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', scale: 'ksi', comparable: true, approx: false },
   // 과목별 70%컷을 먼저 내고 평균한 값. 같은 과목·같은 척도이지만 산식 순서가 다르다 —
   // 어디가 집계 정수와의 실측 평균 절대차가 0.28점(docs/ACCURACY.md §2)이라 비교는 하되 '근사'로 적는다.
-  'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', comparable: true, approx: true },
-  // 국·수·탐 중 상위 2개만 평균한 값. 반영 과목 자체가 달라 우리 비교값과 뺄 수 없다.
-  'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', comparable: false, approx: false },
-  // 수학을 반영하지 않는 예체능 모집단위. 국어와 탐구 둘만 평균해 눈금이 다르다.
-  'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', comparable: false, approx: false },
-  // 국어·수학·탐구 상위 1과목만 평균한 값. 탐구 과목 수가 달라 우리 비교값과 뺄 수 없다.
-  'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', comparable: false, approx: false },
+  'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', scale: 'ksi', comparable: true, approx: true },
+  // 국·수·탐 중 상위 2개만 평균한 값(서경대). 내 성적도 같은 규칙으로 상위 2개를 평균해 뺀다.
+  'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', scale: 'top2', comparable: true, approx: false },
+  // 수학을 반영하지 않는 예체능 모집단위(건국대). 내 성적도 국·탐 둘만 평균해 뺀다.
+  'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', scale: 'kor-inq', comparable: true, approx: false },
+  // 국어·수학·탐구 상위 1과목만 평균한 값(명지대). 내 성적도 탐구 상위 1과목으로 뺀다.
+  'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', scale: 'ksi1', comparable: true, approx: false },
+  // 환산점수 눈금으로만 공개된 컷. 백분위로 되돌릴 수 없어 계산 자체가 불가능하다.
+  score: { label: '대학 환산점수', scale: 'score', comparable: false, approx: false },
 });
+// 이 눈금 위에서만 대학끼리 순서를 매긴다(medianCut). 정의가 다르면 비교하지 않고 비운다.
+export const ORDER_SCALE = 'ksi';
+export const scaleOf = (def) => CUT_DEFS[def]?.scale || ORDER_SCALE;
 export function cutDefinition(row) {
   const note = String(row?.note || '');
   if (/상위\s*2\s*개\s*영역/u.test(note)) return 'top2-mean';
@@ -159,10 +166,13 @@ export function matchOfficial(row, anchor) {
 
 function buildSeries(jeongsi, official) {
   const series = [];
-  const pctYears = Object.keys(jeongsi)
-    .filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null
-      && CUT_DEFS[jeongsi[year].def]?.comparable)
+  const allPct = Object.keys(jeongsi)
+    .filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null)
     .sort();
+  // 이 모집단위의 눈금은 **최근 연도의 정의**가 정한다. 눈금이 다른 해는 계열에 넣지 않는다 —
+  // 상위 2개 평균과 세 영역 평균을 한 줄에 세우면 연도 변화가 아니라 산식 차이를 재게 된다.
+  const anchorScale = allPct.length > 0 ? scaleOf(jeongsi[allPct.at(-1)].def) : null;
+  const pctYears = anchorScale === null ? [] : allPct.filter((year) => scaleOf(jeongsi[year].def) === anchorScale);
   const anchorYear = pctYears.at(-1) || null;
   for (const year of pctYears) {
     series.push({
@@ -180,7 +190,9 @@ function buildSeries(jeongsi, official) {
       // 통계 정의는 어디가 표준이라고 적혀 있어도 행의 note 가 말하는 대로 정한다 —
       // 비교할 수 없는 정의(탐구 1과목 평균 등)는 계열에 넣지 않는다.
       const def = cutDefinition(row);
-      if (value === null || !CUT_DEFS[def]?.comparable) continue;
+      // 계열의 눈금이 정해져 있으면 그 눈금만, 아직 없으면 이 행이 눈금을 정한다.
+      if (value === null || (anchorScale !== null && scaleOf(def) !== anchorScale)) continue;
+      if (!CUT_DEFS[def]?.comparable) continue;
       series.push({ year, value: round2(value), kind: row.kind || '70%컷', def, basis: 'official', source: row.source, url: row.url, sourceGrade: row.sourceGrade || 'E' });
       continue;
     }
@@ -232,9 +244,10 @@ function medianCutOf(departments) {
   for (const dept of departments) {
     if (ORDER_EXCLUDED_TRACKS.has(dept.track)) continue;
     const years = Object.keys(dept.jeongsi || {}).sort().reverse();
+    // 대학 순서는 하나의 눈금(국·수·탐(2) 평균) 위에서만 잰다 — 다른 정의의 값은 섞지 않는다.
     const year = years.find((key) => dept.jeongsi[key].metric === 'pct'
       && typeof dept.jeongsi[key].cut70 === 'number'
-      && CUT_DEFS[dept.jeongsi[key].def]?.comparable);
+      && scaleOf(dept.jeongsi[key].def) === ORDER_SCALE);
     if (year) values.push(dept.jeongsi[year].cut70);
   }
   const value = median(values);

@@ -100,7 +100,8 @@ test('evaluateJeongsi bands the gap and reports the multi-year spread', () => {
 test('score-only cuts are held back unless an estimate exists', () => {
   const profile = engine.normalizeProfile({ mode: 'pct', kor: 98, math: 97, eng: 1, inq1Subject: '사회문화', inq1: 97, inq2Subject: '생활과윤리', inq2: 95 });
   const scoreDept = { name: '기계공학부', track: '자연', jeongsi: { 2026: { cut70: 655.2, metric: 'score', maxScore: 700 } } };
-  assert.equal(engine.evaluateJeongsi(profile, UNIVERSITY, scoreDept, RULE).status, 'no-cut');
+  // 환산점수 눈금은 백분위로 되돌릴 수 없다 — 유일하게 남는 '기준 불일치'다.
+  assert.equal(engine.evaluateJeongsi(profile, UNIVERSITY, scoreDept, RULE).status, 'basis-mismatch');
   const withEstimate = { ...scoreDept, estimate: { 2026: { pct: 96.5, source: 'jinhak' } } };
   const result = engine.evaluateJeongsi(profile, UNIVERSITY, withEstimate, RULE);
   assert.equal(result.status, 'ok');
@@ -470,21 +471,60 @@ test('모든 대학에 반영 지표 요약이 붙는다', () => {
 // ---------------------------------------------------------------- 비교 기준 회귀 테스트
 // (2026-09-10 검수) 서로 다른 눈금의 값을 빼서 '적정'을 만들던 문제를 막는다.
 
-test('서로 다른 점수 기준은 빼지 않는다 — 컷 정의가 다르면 판정을 보류한다', () => {
-  const profile = engine.normalizeProfile({ mode: 'pct', kor: 90, math: 90, eng: 2, inq1Subject: '사회문화', inq1: 90, inq2Subject: '생활과윤리', inq2: 90 });
-  const mismatched = {
-    name: '미래융합학부', track: '인문',
-    jeongsi: { 2025: { cut70: 82.8, metric: 'pct', def: 'top2-mean' } },
+test('서로 다른 눈금을 빼지 않는다 — 컷 정의가 다르면 내 성적도 그 정의로 계산해 뺀다', () => {
+  // 국 95 · 수 70 · 탐 90/80(평균 85). 눈금마다 내 값이 달라야 한다.
+  const profile = engine.normalizeProfile({ mode: 'pct', kor: 95, math: 70, eng: 2, inq1Subject: '사회문화', inq1: 90, inq2Subject: '생활과윤리', inq2: 80 });
+  const at = (def) => engine.evaluateJeongsi(profile, UNIVERSITY, {
+    name: '미래융합학부', track: '인문', jeongsi: { 2025: { cut70: 82.8, metric: 'pct', def } },
+  }, RULE);
+  // 국·수·탐(2) 평균 = (95+70+85)/3 = 83.33
+  const ksi = at('ksi-mean');
+  assert.equal(ksi.status, 'ok');
+  assert.equal(ksi.mine, 83.33);
+  assert.equal(ksi.gap, 0.5);
+  // 상위 2개 영역 평균 = (95+85)/2 = 90 — 국·수·탐 평균을 이 컷에서 빼면 안 된다.
+  const top2 = at('top2-mean');
+  assert.equal(top2.status, 'ok');
+  assert.equal(top2.def, 'top2-mean');
+  assert.equal(top2.mine, 90);
+  assert.equal(top2.gap, 7.2);
+  assert.notEqual(top2.mine, ksi.mine, '다른 눈금이면 내 값도 달라야 한다');
+  assert.notEqual(top2.gap, ksi.gap);
+  // 국·탐 평균(수학 미반영) = (95+85)/2 = 90 · 상위 1과목 = (95+70+90)/3 = 85
+  assert.equal(at('kor-inq-mean').mine, 90);
+  assert.equal(at('ksi1-mean').mine, 85);
+  // 과목별 70%컷 평균은 같은 눈금(근사)이라 국·수·탐 평균 그대로 뺀다.
+  assert.equal(at('subject-mean70').mine, 83.33);
+  assert.equal(at('subject-mean70').approxDef, true);
+});
+
+test('컷 정의별 comparableScore는 손 계산과 같다 — 명지·건국 예체능·서경', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
+  const data = load(DATA_FILE, 'IPSI_DATA');
+  // 국 78 · 수 62 · 탐 80/77 (탐구 2과목 평균 78.5 · 상위 1과목 80)
+  const profile = engine.normalizeProfile({ mode: 'pct', kor: 78, math: 62, eng: 2, hist: 3, inq1Subject: '생활과윤리', inq1: 80, inq2Subject: '사회문화', inq2: 77 }, data.scales, data.std);
+  const pick = (id, def) => {
+    const university = data.universities.find((row) => row.id === id);
+    const dept = university.departments.find((row) => Object.values(row.jeongsi || {}).some((cut) => cut.def === def));
+    return engine.evaluateJeongsi(profile, university, dept, data.rules[id], university.volatility);
   };
-  const result = engine.evaluateJeongsi(profile, UNIVERSITY, mismatched, RULE);
-  assert.equal(result.status, 'basis-mismatch');
-  assert.equal(result.gap, null);
-  assert.equal(result.cut, null);
-  assert.equal(result.band.label, '기준 불일치');
-  assert.match(result.hold.reason, /상위 2개 영역/u);
-  // 같은 자리에 정의가 맞는 값이 있으면 그때는 판정한다.
-  const ok = { ...mismatched, jeongsi: { 2025: { cut70: 82.8, metric: 'pct', def: 'ksi-mean' } } };
-  assert.equal(engine.evaluateJeongsi(profile, UNIVERSITY, ok, RULE).status, 'ok');
+  // 명지대 — 국·수·탐(상위 1과목) 평균 = (78 + 62 + 80) / 3 = 73.33
+  const mju = pick('mju', 'ksi1-mean');
+  assert.equal(mju.def, 'ksi1-mean');
+  assert.equal(mju.mine, 73.33);
+  assert.equal(mju.status, 'ok');
+  // 건국대 예체능 — 국·탐 2영역 평균 = (78 + 78.5) / 2 = 78.25 (수학 미반영)
+  const konkuk = pick('konkuk', 'kor-inq-mean');
+  assert.equal(konkuk.def, 'kor-inq-mean');
+  assert.equal(konkuk.mine, 78.25);
+  assert.equal(konkuk.status, 'ok');
+  // 서경대 — 국·수·탐 중 상위 2개 평균 = (78.5 + 78) / 2 = 78.25
+  const skuniv = pick('skuniv', 'top2-mean');
+  assert.equal(skuniv.def, 'top2-mean');
+  assert.equal(skuniv.mine, 78.25);
+  assert.equal(skuniv.status, 'ok');
+  // 국·수·탐(2) 평균(73.0)을 세 곳 어디에도 그대로 쓰지 않는다.
+  assert.equal(engine.simpleAverage(profile), 72.83);
+  for (const result of [mju, konkuk, skuniv]) assert.notEqual(result.mine, 72.83);
 });
 
 test('반영비율 가중 지수는 컷에서 빼지 않는다 (비교값은 국·수·탐 단순평균 하나뿐)', () => {
@@ -502,25 +542,33 @@ test('반영비율 가중 지수는 컷에서 빼지 않는다 (비교값은 국
   assert.notEqual(result.gap, engine.round(result.index.value - 82.33, 1));
 });
 
-test('등급 입력과 실제 성적 입력을 다르게 다룬다 — 등급은 구간이 걸치면 보류', () => {
+test('등급 입력은 구간 중앙 백분위로 판정한다 — 보류하지 않는다', () => {
   const grades = engine.normalizeProfile({ mode: 'grade', kor: 3, math: 4, eng: 2, hist: 4, inq1Subject: '정치와법', inq1: 3, inq2Subject: '사회문화', inq2: 3 });
   const exact = engine.normalizeProfile({ mode: 'pct', kor: 83, math: 68.5, eng: 2, hist: 4, inq1Subject: '정치와법', inq1: 83, inq2Subject: '사회문화', inq2: 83 });
   const dept = { name: '사회복지학부', track: '인문', jeongsi: { 2026: { cut70: 82.33, metric: 'pct', def: 'ksi-mean' } } };
-  const held = engine.evaluateJeongsi(grades, UNIVERSITY, dept, RULE);
+  const guessed = engine.evaluateJeongsi(grades, UNIVERSITY, dept, RULE);
   const judged = engine.evaluateJeongsi(exact, UNIVERSITY, dept, RULE);
-  // 대표 백분위가 같으니 비교값도 같다 — 다른 것은 '얼마나 확신하는가'다.
-  assert.equal(held.mine, judged.mine);
-  assert.equal(held.status, 'hold');
-  assert.equal(held.band.label, '보류');
-  assert.equal(held.estimated, true);
-  assert.ok(held.compare.assumptions.length >= 4, '가정한 값을 그대로 보여 준다');
-  assert.ok(held.gapRange.min < held.gapRange.max);
-  assert.equal(judged.status, 'ok');
+  // 대표 백분위가 같으니 판정도 같다 — 다른 것은 '추정'이라고 적는지뿐이다.
+  assert.equal(guessed.mine, judged.mine);
+  assert.equal(guessed.status, 'ok');
+  assert.equal(guessed.band.label, judged.band.label);
+  assert.equal(guessed.hold, null);
+  assert.equal(guessed.estimated, true);
+  assert.ok(guessed.compare.assumptions.length >= 4, '가정한 값을 그대로 보여 준다');
+  // 구간은 그대로 돌려준다 — 판정을 접는 대신 하한·상한의 판정을 함께 알린다.
+  assert.equal(guessed.bounds.min, 71.33);
+  assert.equal(guessed.bounds.max, 84);
+  assert.ok(guessed.gapRange.min < guessed.gapRange.max);
+  assert.equal(guessed.gapRange.minBand.label, '위험');
+  assert.equal(guessed.gapRange.maxBand.label, '적정');
   assert.equal(judged.estimated, false);
   assert.equal(judged.gapRange, null);
   // 등급 구간은 제도가 정한 경계 그대로다(3등급 = 백분위 77~88).
   assert.deepEqual({ ...engine.percentileRangeOfGrade(3) }, { min: 77, max: 88 });
   assert.deepEqual({ ...engine.percentileRangeOfGrade(1) }, { min: 96, max: 100 });
+  // 중앙값은 구간의 정확한 가운데다.
+  assert.equal(engine.percentileFromGrade(3), 83);
+  assert.equal(engine.percentileFromGrade(4), 68.5);
 });
 
 test('등급 입력이라도 구간 전체가 한 판정에 들면 그 판정을 낸다', () => {
@@ -533,13 +581,21 @@ test('등급 입력이라도 구간 전체가 한 판정에 들면 그 판정을
   assert.equal(result.estimated, true);
 });
 
-test('필수 성적이 없으면 판정하지 않는다', () => {
+test('필요한 영역이 비면 그때만 보류한다', () => {
   const partial = engine.normalizeProfile({ mode: 'pct', kor: 90, math: '', eng: 2, inq1Subject: '사회문화', inq1: 90 });
   const result = engine.evaluateJeongsi(partial, UNIVERSITY, DEPT, RULE);
-  assert.equal(result.status, 'no-profile');
+  assert.equal(result.status, 'hold');
+  assert.equal(result.hold.reason, '수학 미입력');
   assert.equal(result.mine, null);
   assert.equal(result.gap, null);
   assert.equal(engine.comparableScore(partial), null);
+  assert.deepEqual([...engine.missingFor(partial, 'ksi-mean')], ['수학']);
+  // 수학을 반영하지 않는 눈금이면 같은 성적으로도 판정한다.
+  assert.deepEqual([...engine.missingFor(partial, 'kor-inq-mean')], []);
+  assert.equal(engine.comparableScore(partial, 'kor-inq-mean').value, 90);
+  // 아무것도 넣지 않았으면 보류가 아니라 '성적 미입력'이다.
+  const empty = engine.normalizeProfile({ mode: 'pct' });
+  assert.equal(engine.evaluateJeongsi(empty, UNIVERSITY, DEPT, RULE).status, 'no-profile');
 });
 
 test('공식 환산표가 없으면 공식 환산점수라고 말하지 않는다', () => {
@@ -567,10 +623,54 @@ test('재현 입력(3·4·2·3·3·4)에서 숭실대에 근거 없는 적정이
     const dept = soongsil.departments.find((row) => row.name === name);
     const result = engine.evaluateJeongsi(profile, soongsil, dept, data.rules.soongsil, soongsil.volatility);
     assert.equal(result.mine, 78.17, `${name}: 비교값은 국·수·탐 평균이어야 한다`);
-    assert.ok(result.status === 'hold', `${name}: 등급 입력이라 보류여야 한다 (지금 ${result.status})`);
+    assert.equal(result.status, 'ok', `${name}: 등급 입력도 구간 중앙값으로 판정한다 (지금 ${result.status})`);
+    assert.equal(result.estimated, true, `${name}: 추정이라고 밝힌다`);
     assert.notEqual(result.band.label, '적정', `${name}: 적정이 다시 뜨면 안 된다`);
+    assert.notEqual(result.band.label, '상향', `${name}: 상향도 아니다 — 차이가 −2.0보다 크게 벌어진다`);
     assert.ok(result.gap < 0, `${name}: 컷보다 낮다 (${result.gap})`);
+    // 구간 하한·상한의 판정을 함께 돌려준다(화면이 한 줄로 적는다).
+    assert.ok(result.gapRange && result.gapRange.minBand && result.gapRange.maxBand, `${name}: 구간 판정이 있어야 한다`);
+    assert.ok(result.bounds.min < result.mine && result.mine < result.bounds.max, `${name}: 가정값은 구간 안이다`);
   }
+  // 숭실대 사회복지학부는 컷 82.36, 차이 −4.2 → 위험이다.
+  const welfare = soongsil.departments.find((row) => row.name === '사회복지학부');
+  const result = engine.evaluateJeongsi(profile, soongsil, welfare, data.rules.soongsil, soongsil.volatility);
+  assert.equal(result.cut.value, 82.36);
+  assert.equal(result.gap, -4.2);
+  assert.equal(result.band.label, '위험');
+});
+
+test('상태 집계 회귀 — 등급 입력에서 보류·기준 불일치가 남지 않는다', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
+  const data = load(DATA_FILE, 'IPSI_DATA');
+  const base = { eng: 2, hist: 3, korElective: '화법과작문', mathElective: '미적분', inq1Subject: '물리학I', inq2Subject: '화학I' };
+  const cases = [
+    ['pct', { kor: 96, math: 93, inq1: 95, inq2: 92 }],
+    ['pct', { kor: 78, math: 62, inq1: 80, inq2: 77 }],
+    ['grade', { kor: 1, math: 2, inq1: 2, inq2: 2 }],
+    ['grade', { kor: 3, math: 4, inq1: 3, inq2: 3 }],
+    ['grade', { kor: 5, math: 5, inq1: 5, inq2: 5 }],
+    ['std', { kor: 131, math: 128, inq1: 65, inq2: 67 }],
+  ];
+  for (const [mode, scores] of cases) {
+    const profile = engine.normalizeProfile({ mode, ...base, ...scores }, data.scales, data.std);
+    const counts = {};
+    for (const row of engine.diagnose(profile, data, {})) {
+      counts[row.jeongsi.status] = (counts[row.jeongsi.status] || 0) + 1;
+    }
+    const label = `${mode} ${JSON.stringify(scores)}`;
+    assert.equal(counts.hold ?? 0, 0, `${label}: 보류가 남으면 안 된다`);
+    assert.equal(counts['basis-mismatch'] ?? 0, 0, `${label}: 기준 불일치가 남으면 안 된다`);
+    assert.equal(counts['no-cut'] ?? 0, 0, `${label}: 컷 없음이 남으면 안 된다`);
+    assert.equal(counts['no-profile'] ?? 0, 0, `${label}: 성적 미입력이 남으면 안 된다`);
+    // 과탐 필수 모집단위는 과탐을 넣었으므로 막히지 않는다.
+    assert.equal(counts.blocked ?? 0, 0, `${label}: 과탐 입력이면 불가가 없다`);
+    assert.ok(counts.ok > 1900, `${label}: 판정한 곳 ${counts.ok}`);
+  }
+  // 사탐만 넣으면 과탐 필수 모집단위는 정당하게 '불가'로 남는다.
+  const social = engine.normalizeProfile({ mode: 'grade', ...base, inq1Subject: '생활과윤리', inq2Subject: '사회문화', kor: 3, math: 4, inq1: 3, inq2: 3 }, data.scales, data.std);
+  const blocked = engine.diagnose(social, data, {}).filter((row) => row.jeongsi.status === 'blocked');
+  assert.ok(blocked.length > 0, '과탐 필수 모집단위는 불가로 남는다');
+  assert.match(blocked[0].jeongsi.score.blockers[0], /과탐/u);
 });
 
 test('반올림 경계값은 표시와 판정이 같은 값에서 나온다', () => {

@@ -97,7 +97,8 @@
     : result?.status === 'basis-mismatch' ? ENGINE.MISMATCH_BAND
     : result?.band || null);
   // 목록에 보여 주는 순서: 안정 → 적정 → 소신 → 상향 → 위험 → 불가.
-  const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked', 'hold', 'mismatch'];
+  // 판정별 보기의 순서. 보류·기준 불일치·불가는 판정이 아니라 상태라 맨 아래로 내린다.
+  const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'hold', 'mismatch', 'blocked'];
   // '높은 순' 정렬에서 앞쪽에 세우는 판정들. 머리글은 쓰지 않고 순서로만 구분한다.
   const REACHABLE_BANDS = Object.freeze(['safe', 'fit', 'reach']);
   const SORTS = Object.freeze([['cut', '높은 순'], ['band', '판정별']]);
@@ -273,6 +274,14 @@
     .replace(/(\S)([([])/gu, '$1 $2')
     .replace(/\s+/gu, ' ');
   const deptKey = (universityId, deptName) => `${universityId}::${deptName}`;
+  // 컷의 통계 정의마다 **내 성적을 같은 정의로** 만드는 산식. 정보 탭의 '비교 기준' 표가 그대로 적는다.
+  const SCALE_FORMULA = Object.freeze({
+    ksi: '(국어 + 수학 + 탐구2평균) / 3',
+    ksi1: '(국어 + 수학 + 탐구 상위1) / 3',
+    'kor-inq': '(국어 + 탐구2평균) / 2',
+    top2: '국어·수학·탐구2평균 중 상위 2개 평균',
+    score: '계산 불가',
+  });
   const TRACKS = ['전체', '인문', '자연', '의약', '자유전공', '예체능'];
   const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가', '보류', '기준 불일치'];
 
@@ -925,12 +934,15 @@
       const result = row.jeongsi;
       const band = bandOf(result);
       // 부제는 값만 한 줄 — 접두어는 쓰지 않는다 (FRAME §8.1).
-      const detail = result.status === 'basis-mismatch'
+      // 보류·기준 불일치가 남는 행은 사유 두세 단어만 적는다 (FRAME §8.1).
+      const detail = result.status === 'basis-mismatch' || result.status === 'hold'
         ? result.hold.reason
         : result.status === 'blocked'
           ? result.score.blockers[0]
-          : [spreadText(result), `내 ${fmt(result.mine, 1)}`,
-            result.status === 'hold' ? `등급 구간 ${signed(result.gapRange.min, 1)}~${signed(result.gapRange.max, 1)}` : null,
+          : [spreadText(result),
+            // 등급 입력은 구간 중앙 백분위를 가정값으로 쓴다 — 값과 구간만 적는다.
+            result.estimated ? `가정 ${fmt(result.mine, 1)}` : `내 ${fmt(result.mine, 1)}`,
+            result.estimated && result.bounds ? `구간 ${fmt(result.bounds.min, 1)}~${fmt(result.bounds.max, 1)}` : null,
             result.group ? `${result.group}군` : null, basisShort(row.universityId)].filter(Boolean).join(' · ');
       return listItem({
         title: `${row.universityName} ${deptLabel(row.dept.name)}`,
@@ -938,8 +950,9 @@
         suffix: [
           // 보류·기준 불일치에는 차이 숫자를 적지 않는다 — 판정한 것처럼 보인다.
           el('span', { class: 'jr-gap num', text: result.status === 'ok' || result.status === 'blocked' ? signed(result.gap, 1) : '—' }),
+          result.estimated && result.status === 'ok' ? badge('추정', 'warning') : null,
           badge(band.label, BAND_TONE[band.key]),
-        ],
+        ].filter(Boolean),
         onclick: () => {
           state.target = { university: row.universityId, dept: row.dept.name };
           go('target');
@@ -1071,26 +1084,30 @@
     ]);
 
     const target = ENGINE.analyzeTarget(profile(), university, dept, DATA.rules[university.id], university.volatility ?? DATA.volatility);
-    if (target.status === 'no-cut' || target.status === 'basis-mismatch') {
-      const why = target.status === 'basis-mismatch'
-        ? `${target.hold.reason} · 필요한 자료 ${target.hold.need}`
-        : '백분위로 공개된 정시 결과가 없습니다';
+    if (target.status === 'no-cut' || target.status === 'basis-mismatch' || target.status === 'hold') {
+      // 사유는 두세 단어만. 무엇이 있어야 판정하는지는 정보 탭의 표가 말한다 (FRAME §8.1).
+      const label = target.status === 'basis-mismatch' ? '기준 불일치' : '보류';
       return [screenHead(pickers, 'verdict'),
-        el('p', { class: 'jr-verdict-badges' }, [badge(target.status === 'basis-mismatch' ? '기준 불일치' : '보류', 'neutral')]),
-        banner(why, 'neutralWeak'), renderBasis(dept, target)];
+        el('p', { class: 'jr-verdict-badges' }, [badge(label, 'neutral')]),
+        banner(target.hold?.reason || '컷 없음', 'neutralWeak'), renderBasis(dept, target)];
     }
 
     const targetBand = bandOf(target);
     // 판정 카드: 큰 숫자 하나 + 뱃지 하나 + 값만 한 줄 (FRAME §8.2).
     const held = target.status === 'hold';
+    const mineLine = target.estimated
+      ? `가정 ${fmt(target.mine, 1)}${target.bounds ? ` · 구간 ${fmt(target.bounds.min, 1)}~${fmt(target.bounds.max, 1)}` : ''}`
+      : `내 ${target.defLabel === ENGINE.CUT_DEFS['ksi-mean'].label ? '국·수·탐' : '비교값'} ${fmt(target.mine, 1)}`;
     const verdict = el('div', { class: 'jr-verdict' }, [
-      el('p', { class: 'jr-verdict-number', text: held ? `${signed(target.gapRange.min, 1)}~${signed(target.gapRange.max, 1)}` : signed(target.gap, 1) }),
+      el('p', { class: 'jr-verdict-number', text: held ? '—' : signed(target.gap, 1) }),
       el('p', { class: 'jr-verdict-badges' }, [
         badge(targetBand.label, BAND_TONE[targetBand.key]),
         target.estimated ? badge('추정', 'warning') : null,
       ].filter(Boolean)),
-      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${spreadText(target)} · 내 국·수·탐 ${fmt(target.mine, 1)}` }),
-    ]);
+      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${spreadText(target)} · ${mineLine}` }),
+      // 등급 입력일 때만: 구간 하한·상한에서의 판정을 값으로만 한 줄 (FRAME §8.1).
+      target.gapRange ? el('p', { class: 'jr-muted', text: `구간 하한 ${target.gapRange.minBand.label} · 상한 ${target.gapRange.maxBand.label}` }) : null,
+    ].filter(Boolean));
 
     const plan = target.plan;
     const planBlock = plan ? section([
@@ -1143,9 +1160,12 @@
         suffix: badge('참고', 'neutral'),
       }));
     }
-    if (held) conditions.push(listItem({ title: '판정 보류', detail: `${target.hold.reason} · 필요한 자료 ${target.hold.need}`, suffix: badge('보류', 'neutral') }));
+    if (held) conditions.push(listItem({ title: '보류', detail: target.hold.reason, suffix: badge('보류', 'neutral') }));
     if ((target.compare?.assumptions || []).length > 0) {
-      conditions.push(listItem({ title: '가정한 값', detail: target.compare.assumptions.join(' · ') }));
+      conditions.push(listItem({ title: '가정한 값', detail: target.compare.assumptions.join(' · '), suffix: badge('추정', 'warning') }));
+    }
+    if (target.defLabel && target.defLabel !== ENGINE.CUT_DEFS['ksi-mean'].label) {
+      conditions.push(listItem({ title: '컷 정의', detail: target.defLabel, suffix: badge('같은 정의', 'neutral') }));
     }
     conditions.push(listItem({ title: '반영 지표', detail: basisOf(university.id)?.text || '미확인', suffix: badge(basisShort(university.id), isApproxBasis(university.id) ? 'warning' : 'neutral') }));
     const conditionBlock = section([listHeader('조건'), el('div', { class: 'jr-list' }, conditions)]);
@@ -1362,6 +1382,41 @@
   }
 
   // ---------------------------------------------------------------- 정보 화면
+  // 지금 성적으로 판정이 안 나오는 곳을 사유별로 센다. 정보 탭의 '남는 상태' 표가 쓴다.
+  // 사유는 네 가지뿐이다 — 그 밖의 이유로는 보류하지 않는다.
+  const STATUS_REASON = Object.freeze({
+    blocked: ['불가', '과탐 필수·미적분 필수 미충족'],
+    hold: ['보류', '그 정의에 필요한 영역 미입력'],
+    'basis-mismatch': ['기준 불일치', '환산점수 눈금으로만 공개된 컷'],
+    'no-cut': ['컷 없음', '백분위 정시 결과 미공개'],
+    'no-profile': ['성적 미입력', '국어·수학·탐구를 넣으면 판정'],
+  });
+  const STATUS_ORDER = ['hold', 'basis-mismatch', 'no-cut', 'no-profile', 'blocked'];
+  // 전수 집계는 필터를 걸지 않는다 — 성적이 그대로면 지난 결과를 쓴다(진단 캐시와 따로 둔다).
+  let statusCache = { key: null, counts: null };
+  function statusCounts() {
+    const key = JSON.stringify(state.scores);
+    if (statusCache.key === key) return statusCache.counts;
+    const counts = { total: 0, ok: 0 };
+    if (!profileReady()) {
+      const total = DATA.universities.reduce((sum, row) => sum + row.departments.length, 0);
+      statusCache = { key, counts: { total, ok: 0, 'no-profile': total } };
+      return statusCache.counts;
+    }
+    for (const row of ENGINE.diagnose(profile(), DATA, {})) {
+      counts.total += 1;
+      counts[row.jeongsi.status] = (counts[row.jeongsi.status] || 0) + 1;
+    }
+    statusCache = { key, counts };
+    return counts;
+  }
+  function statusRows() {
+    const counts = statusCounts();
+    return STATUS_ORDER
+      .filter((key) => (counts[key] || 0) > 0)
+      .map((key) => [STATUS_REASON[key][0], STATUS_REASON[key][1], `${counts[key]}곳`]);
+  }
+
   // 컷의 통계 정의별 모집단위 수. 정보 탭의 '비교 기준' 표가 쓴다.
   function cutDefCounts() {
     const counts = {};
@@ -1510,17 +1565,20 @@
             ? `${signed(all[index - 1].min, 1)} 미만`
             : index === 0 ? `${signed(band.min, 1)} 이상` : `${signed(band.min, 1)} ~ ${signed(all[index - 1].min, 1)}`,
         ]).concat([
+          ['추정', '등급 입력 · 구간 중앙 백분위로 판정'],
           ['불가', '지원 자격 미충족'],
-          ['보류', '등급 입력 · 구간이 두 판정에 걸침'],
-          ['기준 불일치', '컷의 통계 정의가 달라 뺄 수 없음'],
+          ['보류', '필요한 영역 미입력'],
+          ['기준 불일치', '환산점수 눈금 · 계산 불가'],
         ])),
       ]),
       aboutSection('scale', [
         listHeader('비교 기준'),
         table(['항목', '값'], [
-          ['척도', '국·수·탐(2) 백분위 단순평균'],
+          ['척도', '컷의 통계 정의 그대로 · 기본은 국·수·탐(2) 백분위 단순평균'],
           ['기준값', '어디가 70%컷 (최근 순 0.6·0.3·0.1 가중)'],
-          ['차이', '국·수·탐 평균 − 예상 컷'],
+          ['차이', '같은 정의로 계산한 내 값 − 예상 컷'],
+          ['등급 입력', '등급 구간의 중앙 백분위로 판정 · 뱃지 추정'],
+          ['백분위 입력', '추정 없이 판정'],
           ['관측 범위', '연도별 최소~최대 · 과거 관측값 · 판정을 바꾸지 않음'],
           ['추가합격·충원율', '참고 · 판정에 쓰지 않음'],
         ]),
@@ -1530,11 +1588,16 @@
           ['대학 공식 환산점수', '빼지 않는다'],
           ['배점 근사 환산점수', '빼지 않는다'],
         ]),
-        table(['컷의 통계 정의', '모집단위', '비교'], Object.entries(cutDefCounts()).map(([key, count]) => [
+        // 정의마다 내 성적을 **같은 정의로** 만들어 뺀다. 정의가 다르다는 이유로 보류하지 않는다.
+        table(['컷의 통계 정의', '모집단위', '내 계산'], Object.entries(cutDefCounts()).map(([key, count]) => [
           ENGINE.cutDefInfo(key).label,
           `${count}곳`,
-          ENGINE.cutDefInfo(key).comparable ? (ENGINE.cutDefInfo(key).approx ? '근사' : '비교') : '보류',
+          ENGINE.cutDefInfo(key).comparable
+            ? `${SCALE_FORMULA[ENGINE.cutScale(key)] || '—'}${ENGINE.cutDefInfo(key).approx ? ' · 근사' : ''}`
+            : '계산 불가',
         ])),
+        listHeader('남는 상태', `${statusCounts().total}곳 기준`),
+        table(['상태', '사유', '곳'], statusRows()),
       ]),
       aboutSection('convert', [
         listHeader('등급 → 백분위'),
@@ -1586,7 +1649,7 @@
         ].filter(Boolean), { description: `정수뿐 ${precision.integerOnly.length}곳` }),
         accordion('그 밖의 한계', [
           el('div', { class: 'jr-list' }, [
-            listItem({ title: '환산점수만 공개된 모집단위', detail: '판정 보류' }),
+            listItem({ title: '환산점수만 공개된 모집단위', detail: '기준 불일치 · 계산 불가' }),
             listItem({ title: '탐구 변환표준점수', detail: '대학 표가 없으면 가산 규칙으로만 반영' }),
             listItem({ title: '대학 공식값과 어디가 값', detail: '수준을 섞지 않고 변화량만 사용' }),
             listItem({ title: '모집단위 개편', detail: '이름이 바뀐 곳은 연도를 잇지 못함' }),

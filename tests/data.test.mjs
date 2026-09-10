@@ -85,27 +85,33 @@ test('평균과 70%컷을 섞지 않는다 — 연도 평행이동은 같은 통
   assert.ok(checked > 100, `파생값이 100건 이상이어야 한다 (지금 ${checked})`);
 });
 
-test('비교 계열(series)에는 컷 정의가 같은 값만 들어간다', () => {
-  let mismatched = 0;
-  let held = 0;
+test('비교 계열(series)에는 눈금이 같은 값만 들어간다', () => {
+  // 계약: 정의가 표준과 달라도 버리지 않는다. 다만 **한 계열에 두 눈금을 섞지 않는다** —
+  // 상위 2개 평균과 세 영역 평균을 한 줄에 세우면 연도 변화가 아니라 산식 차이를 재게 된다.
+  const nonStandard = {};
   for (const university of DATA.universities) {
     for (const dept of university.departments) {
+      const scales = new Set((dept.series || []).map((row) => ENGINE.cutScale(row.def)));
+      assert.ok(scales.size <= 1, `${university.id} ${dept.name}: 계열에 눈금이 ${scales.size}개 섞였다`);
       for (const row of dept.series || []) {
         const info = ENGINE.cutDefInfo(row.def);
-        assert.ok(info.comparable, `${university.id} ${dept.name} ${row.year}: ${info.label}은 비교할 수 없는 정의다`);
+        assert.ok(info.comparable, `${university.id} ${dept.name} ${row.year}: ${info.label}은 계산할 수 없는 정의다`);
       }
       const pct = Object.values(dept.jeongsi || {}).filter((row) => (row.metric || 'pct') === 'pct' && isNumber(row.cut70));
       assert.ok(pct.every((row) => typeof row.def === 'string'), `${university.id} ${dept.name}: 모든 컷에 통계 정의가 붙어 있어야 한다`);
-      if (pct.length > 0 && pct.every((row) => !ENGINE.cutDefInfo(row.def).comparable)) {
-        mismatched += 1;
-        assert.equal((dept.series || []).length, 0, `${university.id} ${dept.name}: 비교 불가 값은 계열에 들어가면 안 된다`);
-        held += 1;
+      const defs = new Set(pct.map((row) => row.def));
+      for (const def of defs) {
+        if (ENGINE.cutScale(def) === 'ksi') continue;
+        nonStandard[def] = (nonStandard[def] || 0) + 1;
+        // 표준이 아닌 정의도 계열에 들어간다 — 엔진이 같은 정의로 내 성적을 계산해 뺀다.
+        assert.ok((dept.series || []).length > 0, `${university.id} ${dept.name}: ${def} 도 계열에 들어가야 한다`);
       }
     }
   }
-  // 서경대 '상위 2개 영역 평균' 5곳 — 판정을 내지 않고 보류한다.
-  assert.equal(mismatched, held);
-  assert.ok(mismatched >= 5, `기준 불일치로 보류하는 모집단위가 있어야 한다 (지금 ${mismatched})`);
+  // 서경대 상위 2개 평균 5곳 · 건국대 예체능 국·탐 평균 7곳 · 명지대 상위 1과목 22곳.
+  assert.ok((nonStandard['top2-mean'] || 0) >= 5, `서경대 상위 2개 평균 (지금 ${nonStandard['top2-mean']})`);
+  assert.ok((nonStandard['kor-inq-mean'] || 0) >= 7, `건국대 국·탐 평균 (지금 ${nonStandard['kor-inq-mean']})`);
+  assert.ok((nonStandard['ksi1-mean'] || 0) >= 20, `명지대 상위 1과목 (지금 ${nonStandard['ksi1-mean']})`);
 });
 
 test('대학 변동폭과 전체 변동폭은 양수이거나 없음이다', () => {

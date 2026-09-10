@@ -476,20 +476,58 @@ const GRADE_SCORES = {
   eng: '2', hist: '4', inq1Subject: '정치와법', inq1: '3', inq2Subject: '사회문화', inq2: '3',
 };
 
-test('등급만 넣으면 진단 화면이 보류를 세어 보여 준다', () => {
+test('등급만 넣으면 진단 화면이 추정 뱃지와 가정값·구간을 보여 준다', () => {
   const { panel, tabs } = boot(GRADE_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   const text = panel.text;
-  // 스탯 줄이 등급 추정임을 밝히고 보류 수를 센다.
+  // 스탯 줄이 등급 추정임을 밝힌다.
   assert.match(text, /국·수·탐 평균 \(등급\)/u);
   assert.match(text, /78\.17/u);
-  const held = Number(/보류\s*(\d+)곳/u.exec(text)[1]);
-  assert.ok(held > 100, `등급 입력이면 보류가 많아야 한다 (지금 ${held})`);
+  // 등급 입력은 보류하지 않는다 — 구간 중앙 백분위로 판정하고 '추정'이라 적는다.
+  assert.ok(!/보류\s*\d+곳/u.test(text), '등급 입력에 보류 묶음이 남아 있다');
+  assert.match(text, /추정/u);
+  // 부제는 값만 — 가정값과 구간이 숫자로만 실린다.
+  assert.match(text, /가정 78\.2/u);
+  assert.match(text, /구간 71\.3~84\.0/u);
   // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다.
   assert.ok(!/컷 \d+\.\d ±/u.test(text), '± 표기가 남아 있다');
   assert.match(text, /관측 \d+\.\d~\d+\.\d/u);
-  // 판정 셀렉트에 보류·기준 불일치가 있다.
+  // 판정 셀렉트에는 보류·기준 불일치가 그대로 남는다(성적이 비면 쓰인다).
   assert.match(text, /기준 불일치/u);
+});
+
+test('등급 입력의 목표 화면은 구간 하한·상한의 판정을 한 줄로 적는다', () => {
+  const { panel, tabs } = boot(GRADE_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const search = panel.querySelector('[type="search"]');
+  search.value = '숭실대 사회복지';
+  search.dispatch('input');
+  const row = panel.querySelectorAll('.jr-row').find((node) => node.text.includes('숭실대 사회복지'));
+  assert.ok(row, '숭실대 사회복지학부 행이 없다');
+  row.dispatch('click');
+  const text = panel.text;
+  assert.match(text, /가정 78\.2/u);
+  assert.match(text, /구간 71\.3~84\.0/u);
+  assert.match(text, /구간 하한 위험 · 상한 적정/u);
+  assert.match(text, /추정/u);
+  assert.ok(!/판정 보류/u.test(text), '등급 입력에 보류 카드가 남아 있다');
+});
+
+test('정보 화면이 컷 정의별 내 계산과 남는 상태를 표로 적는다', () => {
+  const { panel, tabs } = boot(GRADE_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  const text = panel.text;
+  // 정의마다 내 성적을 같은 정의로 만든다.
+  assert.match(text, /\(국어 \+ 수학 \+ 탐구2평균\) \/ 3/u);
+  assert.match(text, /\(국어 \+ 수학 \+ 탐구 상위1\) \/ 3/u);
+  assert.match(text, /\(국어 \+ 탐구2평균\) \/ 2/u);
+  assert.match(text, /국어·수학·탐구2평균 중 상위 2개 평균/u);
+  // 등급 입력 안내는 정보 탭에만 둔다.
+  assert.match(text, /등급 구간의 중앙 백분위로 판정/u);
+  assert.match(text, /백분위 입력/u);
+  // 남는 상태는 사유 한 줄씩.
+  assert.match(text, /남는 상태/u);
+  assert.match(text, /과탐 필수·미적분 필수 미충족/u);
 });
 
 test('목표 화면은 반영비율 지수를 컷과 빼지 않는다고 적는다', () => {

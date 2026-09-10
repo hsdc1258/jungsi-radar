@@ -8,9 +8,14 @@
 //     평균(metric 'pct')으로 내거나 환산점수(metric 'score')로 낸다. 환산점수만 있는 모집단위는
 //     사설 기관의 백분위 추정(estimate)이 있을 때만 판정하고, 없으면 판정을 보류한다 —
 //     표준점수 기반 환산을 백분위로 되돌리는 것은 오차가 커서 숫자를 지어내는 셈이 된다.
-//   - **차이를 낼 수 있는 값은 하나뿐이다.** 컷이 '국·수·탐(2) 백분위 단순평균'이므로 우리도
-//     같은 정의의 값(comparableScore)만 컷에서 뺀다. 정의가 다른 값(상위 2개 영역 평균 등)은
-//     빼지 않고 'basis-mismatch'로 보류한다.
+//   - **컷과 같은 정의로 계산한 값만 뺀다.** 컷의 통계 정의(def)는 모집단위마다 다르다 —
+//     국·수·탐(2) 평균이 기본이고, 상위 1과목 평균(명지대)·국·탐 평균(건국대 예체능)·
+//     상위 2개 영역 평균(서경대)도 있다. comparableScore(profile, def)가 **그 정의 그대로**
+//     내 성적을 계산해 같은 눈금에서 뺀다. 정의가 다르다는 이유로 보류하지 않는다.
+//     'basis-mismatch'는 계산 자체가 불가능할 때만 쓴다(환산점수 눈금 컷 등).
+//   - **등급 입력은 구간 중앙 백분위로 판정한다.** 등급 하나가 덮는 백분위 구간의 중앙값을
+//     대표값으로 삼아 다른 입력과 같은 길을 간다. 구간이 판정 띠 둘에 걸쳐도 보류하지 않고,
+//     '추정'이라고 적고 구간 하한·상한의 판정을 함께 돌려준다(gapRange).
 //   - 대학 반영 방법(rules)으로 만든 가중값(universityScore)은 **앱 자체 지수**다. 반영 과목·
 //     비율·척도가 컷과 달라(영어 포함, 국·수·탐 비대칭) 컷에서 뺄 수 없다 — 화면에 따로 적기만
 //     하고 판정에는 쓰지 않는다. 지원 자격(과탐 필수·미적분 필수)만 이 계산에서 가져온다.
@@ -60,15 +65,29 @@
 
   // 컷의 **통계 정의**. scripts/build-data.mjs의 CUT_DEFS와 같은 표다(생성물에 def로 실린다).
   // 비교는 'ksi-mean' 눈금에서만 한다.
+  // scale = 내 성적을 어떤 산식으로 만들어야 컷과 같은 눈금이 되는가. 같은 scale 끼리만 뺀다.
+  //   ksi     (국어 + 수학 + 탐구2평균) / 3
+  //   ksi1    (국어 + 수학 + 탐구 상위 1과목) / 3
+  //   kor-inq (국어 + 탐구2평균) / 2
+  //   top2    국어·수학·탐구2평균 중 상위 2개의 평균
+  // comparable = 그 눈금의 값을 우리가 만들 수 있는가. 환산점수 눈금 컷만 false다.
   const CUT_DEFS = Object.freeze({
-    'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', comparable: true, approx: false },
-    'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', comparable: true, approx: true },
-    'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', comparable: false, approx: false },
-    'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', comparable: false, approx: false },
-    'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', comparable: false, approx: false },
+    'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', scale: 'ksi', comparable: true, approx: false },
+    'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', scale: 'ksi', comparable: true, approx: true },
+    'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', scale: 'top2', comparable: true, approx: false },
+    'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', scale: 'kor-inq', comparable: true, approx: false },
+    'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', scale: 'ksi1', comparable: true, approx: false },
+    // 환산점수 눈금으로만 공개된 컷. 백분위로 되돌릴 수 없어 계산 자체가 불가능하다.
+    'score': { label: '대학 환산점수', scale: 'score', comparable: false, approx: false },
   });
   const COMPARE_BASIS = 'ksi-mean';
   const cutDefInfo = (key) => CUT_DEFS[key] || CUT_DEFS[COMPARE_BASIS];
+  const cutScale = (key) => cutDefInfo(key).scale;
+  // 눈금별로 어떤 영역이 필요한가. 없는 영역이 있으면 그 눈금의 값을 만들 수 없다.
+  const SCALE_NEEDS = Object.freeze({
+    ksi: ['kor', 'math', 'inq'], ksi1: ['kor', 'math', 'inq'],
+    'kor-inq': ['kor', 'inq'], top2: ['kor', 'math', 'inq'],
+  });
   // 수시(내신 등급) 판정 띠. 값은 "컷 등급 − 내 등급" (등급, 클수록 유리).
   const SUSI_BANDS = Object.freeze([
     { key: 'safe', label: '안정', min: 0.3 },
@@ -232,53 +251,127 @@
     const index = clamp(Math.round(Number(grade)) - 1, 0, 8);
     return { min: GRADE_FLOORS[index], max: index === 0 ? 100 : GRADE_FLOORS[index - 1] - 1 };
   }
-  // 등급 입력 프로필의 비교값이 놓일 수 있는 구간(국·수·탐(2) 평균 기준).
-  function gradeBounds(profile) {
-    const rangeOf = (pct) => percentileRangeOfGrade(gradeFromPercentile(pct));
-    const kor = rangeOf(profile.kor.pct);
-    const math = rangeOf(profile.math.pct);
-    const rows = [...(profile.inquiries || [])].slice(0, 2).map((row) => rangeOf(row.pct));
-    if (rows.length === 0) return null;
-    const inqMin = rows.reduce((sum, row) => sum + row.min, 0) / rows.length;
-    const inqMax = rows.reduce((sum, row) => sum + row.max, 0) / rows.length;
+
+  // 영역별 값 세 벌. 어떤 눈금이든 이 셋(국어·수학·탐구)에서 만든다.
+  //   inq2 = 탐구 상위 2과목 평균(한 과목뿐이면 그 과목) · inq1 = 탐구 상위 1과목
+  function areaValues(profile) {
+    const rows = [...(profile?.inquiries || [])].sort((left, right) => right.pct - left.pct).slice(0, 2);
+    if (rows.length === 0) return { kor: profile?.kor?.pct ?? null, math: profile?.math?.pct ?? null, inq2: null, inq1: null, rows };
     return {
-      min: round((kor.min + math.min + inqMin) / 3, 2),
-      max: round((kor.max + math.max + inqMax) / 3, 2),
+      kor: profile?.kor?.pct ?? null,
+      math: profile?.math?.pct ?? null,
+      inq2: rows.reduce((sum, row) => sum + row.pct, 0) / rows.length,
+      inq1: rows[0].pct,
+      rows,
+    };
+  }
+  // 눈금 하나의 산식. 인자는 이미 영역값으로 정리된 숫자들이다.
+  function scaleValue(scale, kor, math, inq2, inq1) {
+    if (scale === 'kor-inq') return (kor + inq2) / 2;
+    if (scale === 'ksi1') return (kor + math + inq1) / 3;
+    if (scale === 'top2') {
+      const areas = [kor, math, inq2].sort((left, right) => right - left);
+      return (areas[0] + areas[1]) / 2;
+    }
+    return (kor + math + inq2) / 3;
+  }
+  // 이 눈금을 만들려면 있어야 하는데 없는 영역. 비면 계산할 수 있다.
+  function missingFor(profile, def = COMPARE_BASIS) {
+    const info = cutDefInfo(def);
+    if (!info.comparable) return ['환산점수'];
+    const needs = SCALE_NEEDS[info.scale] || SCALE_NEEDS.ksi;
+    const out = [];
+    if (needs.includes('kor') && !isNumber(profile?.kor?.pct)) out.push('국어');
+    if (needs.includes('math') && !isNumber(profile?.math?.pct)) out.push('수학');
+    if (needs.includes('inq') && !(profile?.inquiries?.length > 0)) out.push('탐구');
+    return out;
+  }
+
+  // 등급 입력 프로필의 비교값이 놓일 수 있는 구간. 산식이 영역마다 단조증가라
+  // 하한은 영역 하한들로, 상한은 영역 상한들로 만든다(상위 n개 고르기도 단조증가다).
+  function gradeBounds(profile, def = COMPARE_BASIS) {
+    const scale = cutScale(def);
+    const rangeOf = (pct) => (isNumber(pct) ? percentileRangeOfGrade(gradeFromPercentile(pct)) : null);
+    const kor = rangeOf(profile?.kor?.pct);
+    const math = rangeOf(profile?.math?.pct);
+    const rows = [...(profile?.inquiries || [])].sort((left, right) => right.pct - left.pct).slice(0, 2).map((row) => rangeOf(row.pct));
+    if (rows.length === 0 || !kor) return null;
+    if ((SCALE_NEEDS[scale] || SCALE_NEEDS.ksi).includes('math') && !math) return null;
+    const low = {
+      kor: kor.min, math: math ? math.min : 0,
+      inq2: rows.reduce((sum, row) => sum + row.min, 0) / rows.length,
+      inq1: Math.max(...rows.map((row) => row.min)),
+    };
+    const high = {
+      kor: kor.max, math: math ? math.max : 0,
+      inq2: rows.reduce((sum, row) => sum + row.max, 0) / rows.length,
+      inq1: Math.max(...rows.map((row) => row.max)),
+    };
+    return {
+      min: round(scaleValue(scale, low.kor, low.math, low.inq2, low.inq1), 2),
+      max: round(scaleValue(scale, high.kor, high.math, high.inq2, high.inq1), 2),
     };
   }
 
-  // 판정에 쓰는 **비교값**. 컷과 같은 정의(국·수·탐(2) 백분위 단순평균) 하나뿐이다.
-  //   value      : 컷에서 뺄 수 있는 값
+  // 판정에 쓰는 **비교값**. 컷의 통계 정의(def)를 받아 **그 정의 그대로** 내 성적을 계산한다.
+  //   value      : 컷에서 뺄 수 있는 값 (같은 눈금)
   //   estimated  : 등급·원점수 입력이라 대표값을 가정한 경우 true
   //   bounds     : 등급 입력일 때 값이 놓일 수 있는 구간(등급 경계에서 나온다)
-  //   assumptions: 무엇을 무엇으로 가정했는지 (화면이 그대로 적는다)
-  function comparableScore(profile) {
-    if (!profileComplete(profile)) return null;
+  //   assumptions: 무엇을 무엇으로 가정했는지 (화면이 값만 그대로 적는다)
+  // 필요한 영역이 없으면 null이다 — 정의가 다르다는 이유로는 null이 되지 않는다.
+  function comparableScore(profile, def = COMPARE_BASIS) {
+    if (!profile) return null;
+    if (missingFor(profile, def).length > 0) return null;
+    const info = cutDefInfo(def);
+    const scale = info.scale;
     const mode = profile.mode || 'pct';
-    const inq = inquiryPercentile(profile, 2);
-    const value = round((profile.kor.pct + profile.math.pct + inq) / 3, 2);
+    const area = areaValues(profile);
+    const value = round(scaleValue(scale, area.kor, area.math, area.inq2, area.inq1), 2);
     const assumptions = [];
     if (mode === 'grade') {
+      // 등급 → 그 등급 구간의 **중앙 백분위**. 화면이 값만 적을 수 있게 짧게 남긴다.
       const say = (label, pct) => {
-        const grade = gradeFromPercentile(pct);
-        const span = percentileRangeOfGrade(grade);
-        assumptions.push(`${label} ${grade}등급 → ${pct} (구간 ${span.min}~${span.max}의 중앙)`);
+        if (!isNumber(pct)) return;
+        assumptions.push(`${label} ${gradeFromPercentile(pct)}등급 ${round(pct, 1)}`);
       };
-      say('국어', profile.kor.pct);
-      say('수학', profile.math.pct);
-      for (const row of (profile.inquiries || []).slice(0, 2)) say(`탐구 ${row.subject}`, row.pct);
+      say('국어', profile.kor?.pct);
+      if (scale !== 'kor-inq') say('수학', profile.math?.pct);
+      for (const row of area.rows.slice(0, scale === 'ksi1' ? 1 : 2)) say(`탐구 ${row.subject}`, row.pct);
     } else if (mode === 'raw') {
-      assumptions.push('원점수 → 백분위는 등급컷 표 사이를 이은 추정값입니다');
+      assumptions.push('원점수 → 백분위 추정');
     }
     return {
-      basis: COMPARE_BASIS,
-      label: CUT_DEFS[COMPARE_BASIS].label,
+      basis: def,
+      def,
+      scale,
+      label: info.label,
       value,
       mode,
       estimated: mode === 'grade' || mode === 'raw',
-      bounds: mode === 'grade' ? gradeBounds(profile) : null,
+      bounds: mode === 'grade' ? gradeBounds(profile, def) : null,
       assumptions,
     };
+  }
+
+  // 이 눈금에서 영역 하나가 차지하는 몫(합이 1). 목표 화면의 '필요한 상승'이 쓴다.
+  // 반영하지 않는 영역은 0이라 화면에 나오지 않는다(예체능 국·탐 눈금의 수학).
+  function scaleShares(def, profile) {
+    const scale = cutScale(def);
+    const area = areaValues(profile);
+    const count = Math.max(1, area.rows.length);
+    if (scale === 'kor-inq') return { kor: 1 / 2, math: 0, inq: (1 / 2) / count, inqUse: count };
+    if (scale === 'ksi1') return { kor: 1 / 3, math: 1 / 3, inq: 1 / 3, inqUse: 1 };
+    if (scale === 'top2') {
+      const ranked = [['kor', area.kor], ['math', area.math], ['inq', area.inq2]]
+        .filter(([, pct]) => isNumber(pct)).sort((left, right) => right[1] - left[1]).slice(0, 2).map(([key]) => key);
+      return {
+        kor: ranked.includes('kor') ? 1 / 2 : 0,
+        math: ranked.includes('math') ? 1 / 2 : 0,
+        inq: ranked.includes('inq') ? (1 / 2) / count : 0,
+        inqUse: count,
+      };
+    }
+    return { kor: 1 / 3, math: 1 / 3, inq: (1 / 3) / count, inqUse: count };
   }
 
   // rules[uni].tracks 중 모집단위 계열에 맞는 트랙. 'appliesTo'/name에 계열 이름이 들어 있으면 그것,
@@ -685,19 +778,24 @@
     let series = (Array.isArray(dept?.series) ? dept.series : []).filter((row) => isNumber(row.value));
     if (!Array.isArray(dept?.series)) {
       series = years
-        .filter((year) => (dept.jeongsi[year].metric || 'pct') === 'pct' && isNumber(dept.jeongsi[year].cut70)
-          && cutDefInfo(dept.jeongsi[year].def).comparable)
+        .filter((year) => (dept.jeongsi[year].metric || 'pct') === 'pct' && isNumber(dept.jeongsi[year].cut70))
         .map((year) => ({ year, value: dept.jeongsi[year].cut70, kind: '70%컷', def: dept.jeongsi[year].def || COMPARE_BASIS, basis: 'adiga', source: dept.jeongsi[year].source, url: dept.jeongsi[year].url }));
     }
     series = [...series].sort((left, right) => right.year.localeCompare(left.year));
-    // 비교 기준(정의)이 섞이지 않았는지 여기서 한 번 더 본다 — 생성물이 바뀌어도 엔진이 막는다.
+    // 이 모집단위의 컷 정의는 **최근 연도의 것 하나**다. 눈금이 다른 해는 섞지 않고 뺀다 —
+    // 정의가 다르다고 판정을 접는 것이 아니라, 그 정의 그대로 내 성적을 만들어 비교한다.
+    const def = series.length > 0 ? (series[0].def || COMPARE_BASIS)
+      : (years.map((year) => dept.jeongsi[year]).find((row) => (row.metric || 'pct') === 'pct' && isNumber(row.cut70))?.def || COMPARE_BASIS);
+    const scale = cutScale(def);
+    const mixed = series.filter((row) => cutScale(row.def || COMPARE_BASIS) !== scale);
+    series = series.filter((row) => cutScale(row.def || COMPARE_BASIS) === scale);
     const defs = [...new Set(series.map((row) => row.def || COMPARE_BASIS))];
-    const comparable = defs.every((key) => cutDefInfo(key).comparable);
+    // comparable = 그 정의의 값을 우리가 만들 수 있는가(환산점수 눈금만 false).
+    const comparable = cutDefInfo(def).comparable;
     const approxDef = defs.some((key) => cutDefInfo(key).approx);
-    const excluded = years
-      .map((year) => ({ year, row: dept.jeongsi[year] }))
-      .filter(({ row }) => row && (row.metric || 'pct') === 'pct' && isNumber(row.cut70) && !cutDefInfo(row.def).comparable)
-      .map(({ year, row }) => ({ year, def: row.def, label: cutDefInfo(row.def).label, value: row.cut70, source: row.source, url: row.url }));
+    // 눈금이 달라 계열에서 뺀 연도값. 화면이 참고로만 적는다.
+    const excluded = mixed
+      .map((row) => ({ year: row.year, def: row.def, label: cutDefInfo(row.def).label, value: row.value, source: row.source, url: row.url }));
 
     const history = [];
     for (const year of years) {
@@ -735,7 +833,8 @@
     const scoreRows = years.map((year) => ({ year, ...dept.jeongsi[year] })).filter((row) => row.metric === 'score' && isNumber(row.cut70));
     if (primary && !comparable) primary = null;
     return {
-      basis: COMPARE_BASIS, basisLabel: CUT_DEFS[COMPARE_BASIS].label,
+      basis: def, basisLabel: cutDefInfo(def).label,
+      def, defLabel: cutDefInfo(def).label, scale,
       defs, comparable, approxDef, excluded,
       primary, series, history, estimates, scoreRows, range, spread, official: dept.official || {},
     };
@@ -747,15 +846,18 @@
   }
 
   // 한 모집단위에 대한 정시 판정.
-  //   mine  : 컷과 같은 정의의 비교값(국·수·탐(2) 백분위 단순평균)
+  //   mine  : **컷과 같은 정의**로 만든 내 비교값 (컷의 def가 정한다)
   //   index : 대학 반영비율로 만든 앱 자체 지수 — 컷에서 빼지 않는다(눈금이 다르다)
-  //   status: ok · hold(등급만이라 판정 보류) · basis-mismatch(컷 정의 불일치) ·
-  //           no-cut(비교 가능한 컷 없음) · no-profile · blocked(지원 자격 미충족)
+  //   status: ok · blocked(지원 자격 미충족) ·
+  //           hold(그 정의에 필요한 성적이 없음) · basis-mismatch(환산점수 눈금이라 계산 불가) ·
+  //           no-cut(백분위 컷 없음) · no-profile(성적 미입력)
+  // 등급 입력은 보류하지 않는다 — 구간 중앙 백분위로 판정하고 estimated·gapRange로 폭을 알린다.
   function evaluateJeongsi(profile, university, dept, rule, fallbackSpread) {
     const reference = jeongsiReference(dept, isNumber(fallbackSpread) ? fallbackSpread : university?.volatility);
     // 반영비율 가중값은 지원 자격(blockers)과 화면 표시에만 쓴다. 컷과 비교하지 않는다.
     const score = universityScore(profile, rule, dept.track, dept.ruleTrack);
-    const mine = comparableScore(profile);
+    const def = reference.def || COMPARE_BASIS;
+    const mine = comparableScore(profile, def);
     const shell = {
       universityId: university?.id ?? null,
       universityName: university?.short || university?.name || null,
@@ -765,11 +867,30 @@
       score,
       compare: mine,
       mine: mine ? mine.value : null,
+      def,
+      defLabel: cutDefInfo(def).label,
       index: score ? { value: score.value, basis: 'app-weighted', label: '반영비율 가중 지수', weighted: score.weighted } : null,
     };
-    if (!score || !mine) return { status: 'no-profile', ...shell, cut: null, gap: null, band: null };
+    if (!mine) {
+      // 컷을 계산할 수 없는 두 가지를 가른다: 성적을 아예 안 넣었나(no-profile),
+      // 이 정의에 필요한 영역만 비었나(hold).
+      const missing = missingFor(profile, def);
+      const entered = isNumber(profile?.kor?.pct) || isNumber(profile?.math?.pct) || (profile?.inquiries?.length > 0);
+      if (!entered || missing.length === 0) return { status: 'no-profile', ...shell, cut: null, gap: null, band: null };
+      if (!reference.comparable) {
+        return {
+          status: 'basis-mismatch', ...shell, cut: null, gap: null, band: MISMATCH_BAND,
+          hold: { reason: '환산점수 컷', need: '백분위 기준 입시결과' },
+        };
+      }
+      return {
+        status: 'hold', ...shell, cut: null, gap: null, band: HOLD_BAND,
+        hold: { reason: `${missing.join('·')} 미입력`, need: missing.join('·') },
+      };
+    }
     if (!reference.primary) {
-      const mismatch = reference.excluded.length > 0;
+      // 컷이 없다. 환산점수로만 공개됐거나(계산 불가) 백분위 결과 자체가 없다.
+      const mismatch = !reference.comparable || (reference.scoreRows || []).length > 0;
       return {
         status: mismatch ? 'basis-mismatch' : 'no-cut',
         ...shell,
@@ -777,10 +898,8 @@
         gap: null,
         band: mismatch ? MISMATCH_BAND : null,
         hold: {
-          reason: mismatch
-            ? `컷이 ${reference.excluded[0].label}이라 국·수·탐 평균과 뺄 수 없습니다`
-            : '백분위로 공개된 정시 결과가 없습니다',
-          need: mismatch ? '같은 정의(국·수·탐(2) 평균)의 공개값' : '백분위 기준 입시결과',
+          reason: mismatch ? '환산점수 컷' : '컷 없음',
+          need: mismatch ? '백분위로 공개된 70%컷' : '백분위 기준 입시결과',
         },
       };
     }
@@ -788,26 +907,16 @@
     // 반올림을 먼저 하고 그 값으로 판정한다 — 0.67을 '+0.7'로 적어 놓고 소신으로 부르지 않기 위해서다.
     const gap = round(mine.value - cutValue, VERDICT_DIGITS);
     const estimateBand = bandOf(gap, VERDICT_BANDS);
-    // 등급만 넣었으면 값이 놓일 수 있는 구간이 판정 띠 하나보다 훨씬 넓다. 구간이 두 띠 이상에
-    // 걸치면 한 띠를 고르지 않고 보류한다 — 대표 백분위 하나로 정밀한 판정을 내리지 않는다.
+    // 등급만 넣었으면 값이 놓일 수 있는 구간이 넓다. 판정은 구간 **중앙값** 하나로 내고,
+    // 하한·상한에서의 판정을 함께 돌려준다 — 화면이 폭을 값으로만 적는다.
     let gapRange = null;
-    let hold = null;
     if (mine.bounds) {
       const low = round(mine.bounds.min - cutValue, VERDICT_DIGITS);
       const high = round(mine.bounds.max - cutValue, VERDICT_DIGITS);
-      const lowBand = bandOf(low, VERDICT_BANDS);
-      const highBand = bandOf(high, VERDICT_BANDS);
-      gapRange = { min: low, max: high, minBand: lowBand, maxBand: highBand };
-      if (lowBand.key !== highBand.key) {
-        hold = {
-          reason: '등급만으로는 백분위 구간이 넓어 판정을 보류합니다',
-          need: '국어·수학·탐구 백분위(또는 표준점수)',
-          span: `${highBand.label} ~ ${lowBand.label}`,
-        };
-      }
+      gapRange = { min: low, max: high, minBand: bandOf(low, VERDICT_BANDS), maxBand: bandOf(high, VERDICT_BANDS) };
     }
-    const blocked = score.blockers.length > 0;
-    const status = blocked ? 'blocked' : hold ? 'hold' : 'ok';
+    const blocked = (score?.blockers || []).length > 0;
+    const status = blocked ? 'blocked' : 'ok';
     // 판정은 70%컷만 본다. 100%컷(최종등록자 최저)과 추가합격은 옆에 적기만 하는 참고값이다.
     const latest = dept.jeongsi?.[reference.primary.year] || null;
     const floor = latest && isNumber(latest.cut100)
@@ -827,11 +936,12 @@
       cut: reference.primary,
       gap,
       gapRange,
-      hold,
-      // 보류·불가에는 판정 띠를 주지 않는다. 화면이 상태 뱃지를 쓰게 한다.
-      band: status === 'ok' ? estimateBand : status === 'hold' ? HOLD_BAND : null,
+      hold: null,
+      // 불가에는 판정 띠를 주지 않는다. 화면이 상태 뱃지를 쓰게 한다.
+      band: status === 'ok' ? estimateBand : null,
       estimateBand,
       estimated: mine.estimated,
+      bounds: mine.bounds,
       approxDef: reference.approxDef,
       spread: reference.spread,
       floor,
@@ -922,7 +1032,7 @@
   // 않는다(대학 반영비율은 화면이 따로 적는다).
   function analyzeTarget(profile, university, dept, rule, fallbackSpread) {
     const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility);
-    if (['no-profile', 'no-cut', 'basis-mismatch'].includes(result.status)) return { ...result, plan: null };
+    if (['no-profile', 'no-cut', 'basis-mismatch', 'hold'].includes(result.status)) return { ...result, plan: null };
     const { score } = result;
     const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - result.mine), 2);
     const subjects = [];
@@ -942,11 +1052,11 @@
       const shortfall = need > 0 ? round(Math.max(0, need - headroom * share), 1) : 0;
       subjects.push({ key, label, current: round(current, 1), share: perPoint, needed, reachable, shortfall, targetPct, currentGrade, targetGrade, gradesUp: Math.max(0, currentGrade - targetGrade), efficiency: round(efficiency, 3) });
     };
-    const third = 1 / 3;
-    addSubject('kor', `국어(${profile.kor.elective})`, profile.kor.pct, third);
-    addSubject('math', `수학(${profile.math.elective})`, profile.math.pct, third);
-    const inqShareEach = third / Math.max(1, inquiryRows.length);
-    for (const row of inquiryRows) addSubject(row.slot, `탐구 ${row.subject}`, row.pct, inqShareEach);
+    // 몫은 컷의 통계 정의가 정한다 — 국·탐 눈금이면 수학 몫은 0이라 화면에 나오지 않는다.
+    const shares = scaleShares(result.def || COMPARE_BASIS, profile);
+    addSubject('kor', `국어(${profile.kor.elective})`, profile.kor.pct, shares.kor);
+    addSubject('math', `수학(${profile.math.elective})`, profile.math.pct, shares.math);
+    for (const row of inquiryRows.slice(0, shares.inqUse)) addSubject(row.slot, `탐구 ${row.subject}`, row.pct, shares.inq);
     const ranked = [...subjects].sort((left, right) => right.efficiency - left.efficiency);
     // 세 영역을 같은 폭으로 올릴 때 필요한 상승폭(단순평균이므로 = need).
     const uniform = need > 0 ? round(need, 1) : 0;
@@ -955,8 +1065,8 @@
       plan: {
         need,
         margin: TARGET_MARGIN,
-        basis: COMPARE_BASIS,
-        basisLabel: CUT_DEFS[COMPARE_BASIS].label,
+        basis: result.def || COMPARE_BASIS,
+        basisLabel: cutDefInfo(result.def || COMPARE_BASIS).label,
         subjects,
         ranked,
         best: ranked[0] || null,
@@ -991,7 +1101,8 @@
     VERDICT_BANDS, SUSI_BANDS, TARGET_MARGIN, VERDICT_DIGITS, bandOf,
     gradeFromPercentile, percentileFromGrade, percentileFloorOfGrade, percentileFromRaw, inquiryKind,
     normalizeProfile, profileComplete, inquiryPercentile, simpleAverage, pickTrack, universityScore,
-    CUT_DEFS, COMPARE_BASIS, cutDefInfo, HOLD_BAND, MISMATCH_BAND, comparableScore, percentileRangeOfGrade, gradeBounds,
+    CUT_DEFS, COMPARE_BASIS, cutDefInfo, cutScale, SCALE_NEEDS, HOLD_BAND, MISMATCH_BAND,
+    comparableScore, missingFor, areaValues, scaleValue, scaleShares, percentileRangeOfGrade, gradeBounds,
     percentileFromStd, gradeFromStd, conversionTable, convertedStd, universityRawScore, stdKeyOf,
     jeongsiReference, evaluateJeongsi, evaluateSusi, diagnose, analyzeTarget, electiveSummary, round,
     byCutDesc, byGapAsc,
