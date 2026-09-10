@@ -210,7 +210,8 @@ test('generated data.js exists, parses, and respects value ranges', { skip: !exi
         // 실기 비중이 큰 예체능은 수능 백분위 컷이 아주 낮게 잡힌다.
         if (row.metric === 'pct') assert.ok(row.cut70 > 0 && row.cut70 <= 100, `${university.id} ${dept.name} ${year}: pct cut ${row.cut70}`);
         if (row.metric === 'score') assert.ok(row.cut70 > 0 && row.maxScore >= row.cut70, `${university.id} ${dept.name} ${year}: score cut`);
-        assert.ok(typeof row.url === 'string' && /^https?:/u.test(row.url), `${university.id} ${dept.name} ${year}: jeongsi url`);
+        const sourced = typeof row.url === 'string' && /^https?:/u.test(row.url);
+        assert.ok(sourced || /확인하지 못|비워/u.test(String(row.note || '')), `${university.id} ${dept.name} ${year}: jeongsi url`);
       }
       for (const kind of ['gyogwa', 'hakjong']) {
         for (const [year, row] of Object.entries(dept[kind] || {})) {
@@ -307,5 +308,145 @@ test('오차(spread)는 판정을 바꾸지 않는다', { skip: !existsSync(path
   assert.ok(withSpread.length > 50, '오차가 붙은 행이 많아야 한다');
   for (const row of withSpread.slice(0, 200)) {
     assert.equal(row.jeongsi.band.label, verdictOf(row.jeongsi.gap));
+  }
+});
+
+// ---------------------------------------------------------------- 표준점수
+const STD = JSON.parse(readFileSync(path.join(ROOT, 'source/std-2026.json'), 'utf8'));
+const CONV = JSON.parse(readFileSync(path.join(ROOT, 'source/conv-2026.json'), 'utf8'));
+const RULES_2027 = JSON.parse(readFileSync(path.join(ROOT, 'source/rules-2027.json'), 'utf8')).universities;
+
+test('도수분포가 평가원 원자료와 어긋나지 않는다 (인원 합 = 응시자, 백분위 정의)', () => {
+  for (const [key, subject] of Object.entries(STD.subjects)) {
+    const sum = subject.rows.reduce((total, row) => total + row[1], 0);
+    assert.equal(sum, subject.n, `${key}: 인원 합 ${sum} ≠ ${subject.n}`);
+    assert.equal(subject.rows[0][0], subject.maxStd, `${key}: 첫 줄이 만점 표준점수가 아니다`);
+    // 백분위 = (미만 인원 + 동점 인원/2) / 전체 × 100, 반올림.
+    const ascending = [...subject.rows].reverse();
+    let below = 0;
+    for (const [std, count, pct] of ascending) {
+      assert.equal(pct, Math.round((below + count / 2) / subject.n * 100), `${key} 표준점수 ${std}`);
+      below += count;
+    }
+    // 표준점수가 오르면 백분위도 오른다.
+    for (let index = 0; index < subject.rows.length - 1; index += 1) {
+      assert.ok(subject.rows[index][2] >= subject.rows[index + 1][2], `${key}: 백분위가 뒤집혔다`);
+    }
+  }
+});
+
+test('percentileFromStd가 연세대 2026 산출 안내의 예시를 그대로 낸다', () => {
+  // 안내문이 표준점수와 백분위를 나란히 적어 둔 여섯 점 — 우리 표가 그 값을 그대로 내야 한다.
+  const cases = [['국어', 131, 94], ['수학', 128, 96], ['탐구-생활과윤리', 65, 92],
+    ['탐구-한국지리', 67, 94], ['탐구-물리학I', 63, 88], ['탐구-화학II', 68, 96]];
+  for (const [key, std, pct] of cases) {
+    const read = engine.percentileFromStd(key, std, STD);
+    assert.equal(read.pct, pct, `${key} 표준점수 ${std}`);
+    assert.equal(read.exact, true, `${key}: 원자료에 있는 점수인데 근사로 나왔다`);
+  }
+  // 등급 구분 표준점수는 그대로 그 등급의 첫 점이다.
+  assert.equal(engine.percentileFromStd('국어', 133, STD).grade, 1);
+  assert.equal(engine.percentileFromStd('국어', 132, STD).grade, 2);
+  // 표에 없는 점수는 근사로 표시한다.
+  const between = engine.percentileFromStd('국어', 146, STD);
+  assert.equal(between.exact, false);
+  assert.ok(between.pct >= 99 && between.pct <= 100);
+  // 없는 과목은 null.
+  assert.equal(engine.percentileFromStd('탐구-없는과목', 60, STD), null);
+});
+
+test('표준점수 입력이 백분위로 흘러 기존 계산과 같은 길을 간다', () => {
+  const profile = engine.normalizeProfile({
+    mode: 'std', kor: 131, math: 128, eng: '2', hist: '1',
+    inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
+  }, null, STD);
+  assert.equal(profile.kor.pct, 94);
+  assert.equal(profile.math.pct, 96);
+  assert.equal(profile.kor.std, 131);
+  assert.equal(engine.simpleAverage(profile), engine.round((94 + 96 + 93) / 3, 2));
+  assert.equal(profile.stdReads['탐구-한국지리'].pct, 94);
+});
+
+test('universityRawScore가 연세대 2026 산출 예시를 소수 넷째 자리까지 재현한다', () => {
+  const options = { std: STD, conv: CONV, universityId: 'yonsei' };
+  // 유형Ⅰ(인문): 국어 131 · 수학 128 · 영어 2등급 · 사탐 65/67 → (196.5+128+95+134.312) × 950/800
+  const humanities = engine.normalizeProfile({
+    mode: 'std', kor: 131, math: 128, eng: '2', hist: '3',
+    inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
+  }, null, STD);
+  const first = engine.universityRawScore(humanities, RULES_2027.yonsei, '인문', options);
+  assert.equal(first.basis, 'official');
+  assert.equal(first.approx, false);
+  assert.equal(first.value, 657.6518);
+  // 유형Ⅱ(자연): 같은 성적에 영어 3등급 → (131+192+87.5+195.6) × 950/900
+  const natural = engine.normalizeProfile({
+    mode: 'std', kor: 131, math: 128, eng: '3', hist: '3',
+    inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
+  }, null, STD);
+  assert.equal(engine.universityRawScore(natural, RULES_2027.yonsei, '자연', options).value, 639.7722);
+  // 한국사 5등급이면 0.2점을 뺀다.
+  const penalised = engine.normalizeProfile({
+    mode: 'std', kor: 131, math: 128, eng: '2', hist: '5',
+    inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
+  }, null, STD);
+  // 감점은 척도를 걸고 난 뒤에 뺀다 — (…)×950/800 = 657.65185 에서 0.2를 빼고 반올림한다.
+  assert.equal(engine.universityRawScore(penalised, RULES_2027.yonsei, '인문', options).value, 657.4517);
+});
+
+test('입학처 산식이 없는 대학은 배점 근사값을 내고 근사라고 말한다', () => {
+  const profile = engine.normalizeProfile({
+    mode: 'std', kor: 131, math: 128, eng: '2', hist: '1',
+    inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
+  }, null, STD);
+  const raw = engine.universityRawScore(profile, RULES_2027.khu, '인문', { std: STD, conv: CONV, universityId: 'khu' });
+  assert.equal(raw.basis, 'rules');
+  assert.equal(raw.approx, true);
+  assert.ok(raw.value > 0 && raw.value <= raw.max, `${raw.value} / ${raw.max}`);
+  // 탐구 변환표가 없는 대학은 통합 근사표를 쓴다.
+  assert.equal(raw.conversion.kind, 'approx');
+  // 만점 성적은 만점 근처를 낸다.
+  const perfect = engine.normalizeProfile({
+    mode: 'std', kor: STD.subjects['국어'].maxStd, math: STD.subjects['수학'].maxStd, eng: '1', hist: '1',
+    inq1Subject: '생활과윤리', inq1: STD.subjects['탐구-생활과윤리'].maxStd,
+    inq2Subject: '한국지리', inq2: STD.subjects['탐구-한국지리'].maxStd,
+  }, null, STD);
+  const top = engine.universityRawScore(perfect, RULES_2027.khu, '인문', { std: STD, conv: CONV, universityId: 'khu' });
+  assert.ok(top.value > raw.value, '만점이 더 높아야 한다');
+  assert.ok(top.value <= top.max + 0.01, `${top.value} > ${top.max}`);
+});
+
+test('탐구 변환표는 백분위가 오르면 값도 오른다', () => {
+  for (const [id, table] of [['approx', CONV.approx.table], ...Object.entries(CONV.universities).map(([key, row]) => [key, row.table])]) {
+    for (let pct = 0; pct < 100; pct += 1) {
+      assert.ok(Number(table[String(pct + 1)]) >= Number(table[String(pct)]), `${id}: 백분위 ${pct} → ${pct + 1}`);
+    }
+    assert.equal(engine.convertedStd(100, table), Number(table['100']));
+  }
+});
+
+test('정확도 보고서 숫자가 데이터와 맞는다', () => {
+  const accuracy = load(DATA_FILE, 'IPSI_DATA').accuracy;
+  assert.ok(accuracy, 'data.accuracy 가 없다');
+  const total = Object.values(accuracy.coverage).reduce((sum, row) => sum + row.count, 0);
+  assert.equal(total, accuracy.departments);
+  assert.ok(accuracy.gap.pairs > 0, '원값 ↔ 집계 정수 짝이 하나도 없다');
+  assert.ok(accuracy.gap.meanAbs >= 0 && accuracy.gap.maxAbs >= accuracy.gap.meanAbs);
+  assert.equal(accuracy.columns.rows > 0, true);
+  assert.equal(accuracy.sensitivity.length, 3);
+  for (const row of accuracy.sensitivity) {
+    assert.ok(row.judged > 0);
+    // 컷을 더 많이 흔들수록 판정이 바뀌는 곳이 늘어난다.
+    assert.ok(row.shifts[1].changed >= row.shifts[0].changed, row.label);
+  }
+});
+
+test('모든 대학에 반영 지표 요약이 붙는다', () => {
+  for (const [id, rule] of Object.entries(load(DATA_FILE, 'IPSI_DATA').rules)) {
+    const summary = rule.basisSummary;
+    assert.ok(summary, `${id}: basisSummary 없음`);
+    assert.ok(summary.label.length > 0, `${id}: 라벨이 비었다`);
+    assert.ok([null, 'std', 'pct', 'grade'].includes(summary.metric), `${id}: metric ${summary.metric}`);
+    // 백분위 반영 대학에는 '백분위 근사' 딱지를 붙이지 않는다.
+    assert.equal(summary.approxPercentile, summary.metric !== null && summary.metric !== 'pct', id);
   }
 });

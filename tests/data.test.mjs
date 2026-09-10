@@ -111,11 +111,13 @@ test('반영 규칙의 영어·한국사 표는 등급 1~9 밖의 값을 담지 
   }
 });
 
-test('모든 정시 결과 행에 출처 주소가 있다', () => {
+// 주소가 없는 행은 note가 왜 없는지 적어야 한다 — 값만 남고 출처가 사라지는 일을 막는다.
+test('모든 정시 결과 행에 출처 주소가 있거나, 없는 이유가 note에 적혀 있다', () => {
   for (const university of DATA.universities) {
     for (const dept of university.departments) {
       for (const [year, row] of Object.entries(dept.jeongsi || {})) {
-        assert.match(String(row.url || ''), /^https?:/u, `${university.id} ${dept.name} ${year}`);
+        if (/^https?:/u.test(String(row.url || ''))) continue;
+        assert.match(String(row.note || ''), /확인하지 못|비워/u, `${university.id} ${dept.name} ${year}: url도 사유도 없음`);
       }
       for (const [year, row] of Object.entries(dept.official || {})) {
         assert.match(String(row.url || ''), /^https?:/u, `${university.id} ${dept.name} official ${year}`);
@@ -191,4 +193,31 @@ test('캠퍼스가 갈린 대학은 같은 이름의 모집단위를 나눠 갖�
   // 한국외대는 시행계획의 캠퍼스 열대로 갈랐다 — 두 항목 모두 모집단위가 남아 있어야 한다.
   assert.ok(byId.get('hufs').departments.length > 20, '한국외대 서울');
   assert.ok(byId.get('hufs-global').departments.length > 20, '한국외대 글로벌');
+});
+
+test('생성물이 도수분포·변환표·정확도를 함께 싣는다', () => {
+  assert.ok(DATA.std?.subjects?.['국어']?.rows?.length > 0, '표준점수 도수분포가 없다');
+  assert.equal(Object.keys(DATA.std.subjects).length, 19, '국어·수학·사탐 9·과탐 8 = 19개 과목이어야 한다');
+  assert.ok(DATA.conv?.approx?.table?.['100'] > 0, '탐구 변환 근사표가 없다');
+  for (const [id, row] of Object.entries(DATA.conv.universities || {})) {
+    assert.match(String(row.source?.url || ''), /^https?:/u, `${id}: 변환표 출처 주소가 없다`);
+  }
+  assert.ok(DATA.accuracy?.departments > 0, '정확도 숫자가 없다');
+  // 도수분포 출처는 평가원·교육부 문서 하나뿐이다.
+  assert.match(String(DATA.sources?.std?.url || ''), /moe\.go\.kr|kice\.re\.kr|suneung\.re\.kr/u);
+});
+
+test('어디가 집계 정수와 짝지은 원값은 실제로 정수가 아니다', () => {
+  let pairs = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        if (typeof row.adigaCut70 !== 'number') continue;
+        pairs += 1;
+        assert.ok(Number.isInteger(row.adigaCut70), `${university.id} ${dept.name} ${year}: 집계값이 정수가 아니다`);
+        assert.ok(typeof row.cut70 === 'number', `${university.id} ${dept.name} ${year}: 짝지을 원값이 없다`);
+      }
+    }
+  }
+  assert.ok(pairs > 100, `짝이 너무 적다 (${pairs})`);
 });

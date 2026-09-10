@@ -10,12 +10,39 @@
 // 애매한 이름은 인문으로 둔다(자연계 가산점을 잘못 얹는 쪽보다 안전하다).
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { computeAccuracy } from './accuracy-report.mjs';
 
 const ROOT = process.cwd();
 const SOURCE = path.join(ROOT, 'source');
 const OUTPUT = path.join(ROOT, 'assets/data.js');
 
 const read = (file) => JSON.parse(readFileSync(path.join(SOURCE, file), 'utf8'));
+
+// 대학이 실제로 반영하는 지표(rules[].basis 한 줄)를 화면이 쓸 수 있는 짧은 라벨로 바꾼다.
+//   metric  'std' 표준점수 · 'pct' 백분위 · 'grade' 등급 배점 · null 미확인
+//   inquiry 'conv' 변환표준점수 · 'std' 표준점수 · 'pct' 백분위 · null 적혀 있지 않음
+// 우리 판정은 언제나 백분위 척도에서 하므로, metric 'std' 대학에는 화면이 '백분위 근사'를 덧붙인다.
+export function summarizeBasis(text) {
+  const raw = String(text || '').trim();
+  if (raw === '' || /미확인/u.test(raw)) {
+    return { metric: null, inquiry: null, short: '미확인', label: '반영 지표 미확인', text: raw, approxPercentile: false };
+  }
+  if (/등급\s*환산\s*배점/u.test(raw)) {
+    return { metric: 'grade', inquiry: null, short: '등급 배점', label: '등급 배점 반영', text: raw, approxPercentile: true };
+  }
+  const lead = raw.split(/[(,—]/u)[0];
+  const metric = /백분위/u.test(lead) ? 'pct' : /표준점수|변환점수/u.test(lead) ? 'std' : /백분위/u.test(raw) ? 'pct' : 'std';
+  const inquiry = /탐구\s*변환\s*없음/u.test(raw) ? 'std'
+    : /탐구[^,)]*변환|변환표준점수|자체변환/u.test(raw) ? 'conv'
+      : /탐구[^,)]*백분위/u.test(raw) ? 'pct' : null;
+  const mixed = metric === 'pct' && /표준점수/u.test(raw);
+  const base = metric === 'pct' ? '백분위 반영' : '표점 반영';
+  const tail = metric === 'std'
+    ? (inquiry === 'conv' ? ' · 탐구 변환표점' : inquiry === 'pct' ? ' · 탐구 백분위' : inquiry === 'std' ? ' · 탐구 표점' : '')
+    : (mixed ? ' · 일부 표점' : '');
+  // short 는 뱃지처럼 좁은 자리에 넣는 두 글자짜리다 — 긴 label 은 부제·설명 줄에 쓴다.
+  return { metric, inquiry, short: metric === 'pct' ? '백분위' : '표점', label: `${base}${tail}`, text: raw, approxPercentile: metric !== 'pct' };
+}
 
 // 유명 대학 라인(서열 묶음). 화면의 대학 순서와 필터 묶음이 이 표를 쓴다.
 export const LINES = [
@@ -170,6 +197,8 @@ function buildUniversities(adiga, rules) {
             const fill = row.fill ?? null;
             jeongsi[year] = {
               cut70: row.pct70 ?? null, cut50: row.pct50 ?? null, cut100: row.pct100 ?? null,
+              // 같은 모집단위를 학점나비가 정수로 실은 값. 정확도 보고서가 원값과 짝지어 센다.
+              adigaCut70: row.adigaCut70 ?? null,
               score70: row.score70 ?? null,
               metric: row.pct70 !== null && row.pct70 !== undefined ? 'pct' : 'score',
               kind: row.kind || '70%컷', basis: row.source === 'adiga-hakjum' ? 'adiga' : 'official',
@@ -238,24 +267,34 @@ export function buildData() {
   const adiga = read('results.json');
   const rules = read('rules-2027.json');
   const scales = read('scales-2026.json');
+  const std = read('std-2026.json');
+  const conv = read('conv-2026.json');
   const universities = buildUniversities(adiga, rules);
   // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};
-  for (const [id, rule] of Object.entries(rules.universities)) if (listed.has(id)) ruleMap[id] = rule;
+  for (const [id, rule] of Object.entries(rules.universities)) {
+    if (listed.has(id)) ruleMap[id] = { ...rule, basisSummary: summarizeBasis(rule.basis) };
+  }
   const volatilities = universities.map((university) => university.volatility).filter((value) => typeof value === 'number');
-  return {
+  const data = {
     generatedAt: generatedAt(),
     volatility: volatilities.length > 0 ? round2(median(volatilities)) : 1,
     lines: LINES,
     universities,
     rules: ruleMap,
     scales,
+    std,
+    conv,
     sources: {
       results: { title: '대입정보포털 어디가 2026학년도 입시결과(학점나비 집계 페이지 경유)', url: 'https://www.adiga.kr/', note: '최종등록자 상위 70% 컷. 정시는 국·수·탐(2) 백분위 평균, 수시는 학생부 등급.' },
       rules: { title: '각 대학 2027학년도 대학입학전형 시행계획(2025.4~5)', url: 'https://www.kcue.or.kr/', note: '영역별 반영비율·영어/한국사 처리·선택과목 가산.' },
+      std: std.sources?.[0] || null,
     },
   };
+  // 정확도 숫자는 데이터에서 세어 만든다 — 화면과 docs/ACCURACY.md 가 같은 값을 쓴다.
+  data.accuracy = computeAccuracy(data);
+  return data;
 }
 
 function render(data) {

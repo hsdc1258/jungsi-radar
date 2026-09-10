@@ -122,9 +122,9 @@
 
   // 화면 입력(문자열 섞임)을 정규화한 프로필로 만든다. 비어 있는 영역은 null이다.
   // scales는 원점수 입력을 백분위로 바꿀 때만 필요하다 (scales.exams[year].subjects[key].grades).
-  function normalizeProfile(input, scales) {
+  function normalizeProfile(input, scales, std) {
     const source = input || {};
-    const mode = ['pct', 'grade', 'raw'].includes(source.mode) ? source.mode : 'pct';
+    const mode = ['pct', 'grade', 'raw', 'std'].includes(source.mode) ? source.mode : 'pct';
     const year = String(source.year || (scales && Object.keys(scales.exams || {}).sort().at(-1)) || '');
     const table = scales?.exams?.[year]?.subjects || {};
     const toNumber = (value) => {
@@ -132,7 +132,10 @@
       const number = Number(value);
       return Number.isFinite(number) ? number : null;
     };
-    const relative = (value, subjectKey) => {
+    // 표준점수 입력은 여기서 백분위로 바뀌어 나머지 화면과 같은 길을 간다.
+    // 도수분포(std)가 있으면 평가원 원자료 그대로, 없으면 등급컷 표준점수만으로 선형 보간한다.
+    const stdReads = {};
+    const relative = (value, subjectKey, stdKey) => {
       const number = toNumber(value);
       if (number === null) return null;
       if (mode === 'grade') return percentileFromGrade(clamp(number, 1, 9));
@@ -140,6 +143,16 @@
         const rows = table[subjectKey]?.grades;
         const pct = percentileFromRaw(clamp(number, 0, 100), rows);
         return pct === null ? null : pct;
+      }
+      if (mode === 'std') {
+        const read = percentileFromStd(stdKey, number, std);
+        if (read) { stdReads[stdKey] = read; return read.pct; }
+        // 도수분포가 없는 과목: 등급컷 표(표준점수·백분위)만으로 보간하고 '근사'로 남긴다.
+        const rows = (table[subjectKey]?.grades || []).filter((row) => isNumber(row.std) && isNumber(row.pct));
+        const pct = percentileFromRaw(number, rows.map((row) => ({ raw: row.std, pct: row.pct })));
+        if (pct === null) return null;
+        stdReads[stdKey] = { subject: stdKey, pct, grade: null, exact: false, count: 0, fallback: true };
+        return pct;
       }
       return clamp(number, 0, 100);
     };
@@ -151,23 +164,28 @@
     };
     const korElective = KOR_ELECTIVES.includes(source.korElective) ? source.korElective : KOR_ELECTIVES[0];
     const mathElective = MATH_ELECTIVES.includes(source.mathElective) ? source.mathElective : MATH_ELECTIVES[0];
+    const korPct = relative(source.kor, `국어-${korElective}`, '국어');
+    const mathPct = relative(source.math, `수학-${mathElective}`, '수학');
     const inquiries = [];
     for (const slot of ['inq1', 'inq2']) {
       const subject = source[`${slot}Subject`];
       const kind = inquiryKind(subject);
-      const pct = kind ? relative(source[slot], subject) : null;
-      if (kind && pct !== null) inquiries.push({ slot, subject, kind, pct });
+      const pct = kind ? relative(source[slot], `탐구-${subject}`, `탐구-${subject}`) : null;
+      if (kind && pct !== null) {
+        inquiries.push({ slot, subject, kind, pct, std: mode === 'std' ? toNumber(source[slot]) : null, read: stdReads[`탐구-${subject}`] || null });
+      }
     }
     const gpa = toNumber(source.gpa);
     return {
       mode,
       year,
-      kor: { elective: korElective, pct: relative(source.kor, `국어-${korElective}`) },
-      math: { elective: mathElective, pct: relative(source.math, `수학-${mathElective}`) },
+      kor: { elective: korElective, pct: korPct, std: mode === 'std' ? toNumber(source.kor) : null, read: stdReads['국어'] || null },
+      math: { elective: mathElective, pct: mathPct, std: mode === 'std' ? toNumber(source.math) : null, read: stdReads['수학'] || null },
       eng: { grade: absolute(source.eng, ENGLISH_RAW_FLOORS) },
       hist: { grade: absolute(source.hist, HISTORY_RAW_FLOORS) },
       inquiries,
       gpa: gpa === null ? null : clamp(gpa, 1, 9),
+      stdReads,
     };
   }
 
@@ -349,6 +367,231 @@
       englishByRatio,
       engRows,
       baseTotal,
+    };
+  }
+
+
+  // ---------------------------------------------------------------- 표준점수
+  // std = source/std-2026.json (생성물에서는 data.std). 평가원 도수분포 원자료다.
+  //   subjects['국어' | '수학' | '탐구-생활과윤리' …] = { n, maxStd, gradeCuts[8], rows }
+  //   rows = [표준점수, 인원, 백분위] 내림차순. 백분위는 평가원 정의
+  //     (해당 표준점수 미만 인원 + 동점 인원의 1/2) ÷ 전체 × 100, 반올림 — 을 미리 계산해 둔 값이다.
+  // 국어·수학의 백분위는 선택과목이 아니라 영역 전체에서 매겨진다 — 그래서 키에 선택과목이 없다.
+  const stdKeyOf = (area, subject) => (area === 'inq' ? `탐구-${subject}` : area === 'kor' ? '국어' : '수학');
+
+  function gradeFromStd(value, cuts) {
+    if (!isNumber(value) || !Array.isArray(cuts)) return null;
+    for (let index = 0; index < cuts.length; index += 1) {
+      if (isNumber(cuts[index]) && value >= cuts[index]) return index + 1;
+    }
+    return cuts.length + 1;
+  }
+
+  // 표준점수 하나 → { pct, grade, exact }. 표에 있는 점수면 exact:true(원자료 그대로),
+  // 표에 없으면 이웃한 두 점을 선형 보간하고 exact:false로 알린다(화면이 '근사'라고 적는다).
+  function percentileFromStd(subjectKey, value, std) {
+    const subject = std?.subjects?.[subjectKey];
+    const score = Number(value);
+    if (!subject || !Number.isFinite(score)) return null;
+    const rows = subject.rows || [];
+    if (rows.length === 0) return null;
+    const grade = gradeFromStd(score, subject.gradeCuts);
+    const hit = rows.find((row) => row[0] === score);
+    if (hit) return { subject: subjectKey, pct: hit[2], grade, exact: true, count: hit[1] };
+    if (score >= rows[0][0]) return { subject: subjectKey, pct: rows[0][2], grade, exact: false, count: 0 };
+    const last = rows[rows.length - 1];
+    if (score <= last[0]) return { subject: subjectKey, pct: last[2], grade, exact: false, count: 0 };
+    for (let index = 0; index < rows.length - 1; index += 1) {
+      const upper = rows[index];
+      const lower = rows[index + 1];
+      if (score < upper[0] && score > lower[0]) {
+        const ratio = (score - lower[0]) / (upper[0] - lower[0]);
+        return { subject: subjectKey, pct: round(lower[2] + (upper[2] - lower[2]) * ratio, 1), grade, exact: false, count: 0 };
+      }
+    }
+    return null;
+  }
+
+  // 탐구 변환표준점수 표. 입학처가 낸 표가 있으면 그것(kind 'official'), 없으면
+  // 17개 사탐·과탐 도수분포를 합쳐 만든 통합 근사표(kind 'approx')를 쓴다.
+  function conversionTable(conv, universityId) {
+    const official = conv?.universities?.[universityId];
+    if (official?.table) {
+      return { kind: 'official', table: official.table, name: official.name, note: official.note, source: official.source, formula: official.formula || null };
+    }
+    if (conv?.approx?.table) return { kind: 'approx', table: conv.approx.table, note: conv.approx.note, source: null, formula: null };
+    return null;
+  }
+  // 백분위 → 변환표준점수. 표는 백분위 0~100 한 칸마다 값이 있고, 사이는 선형 보간한다.
+  function convertedStd(pct, table) {
+    if (!table || !isNumber(pct)) return null;
+    const low = Math.floor(clamp(pct, 0, 100));
+    const high = Math.min(100, low + 1);
+    const lowValue = Number(table[String(low)]);
+    if (!Number.isFinite(lowValue)) return null;
+    const highValue = Number(table[String(high)]);
+    if (!Number.isFinite(highValue) || high === low) return round(lowValue, 4);
+    return round(lowValue + (highValue - lowValue) * (pct - low), 4);
+  }
+
+  // 입학처가 낸 산출식(conv.universities[id].formula)을 그대로 계산한다.
+  //   각 영역 = 지표(표준점수/변환점수/등급 배점) × 계수, 합에 scale(× multiply ÷ divide)을 걸고
+  //   한국사 감점을 뺀다. 대학이 적어 둔 반올림 자리수(roundTo)까지 맞춘다.
+  function formulaScore(profile, formula, deptTrack, table, std) {
+    const tracks = Array.isArray(formula?.tracks) ? formula.tracks : [];
+    const spec = tracks.find((row) => (row.appliesTo || []).includes(deptTrack)) || tracks[0];
+    if (!spec) return null;
+    const parts = [];
+    const areaValue = (area, config, best) => {
+      if (!config) return null;
+      const factor = Number(config.factor) || 1;
+      if (area === 'eng') {
+        const value = Number(config.table?.[String(profile.eng.grade)]);
+        return Number.isFinite(value) ? value : null;
+      }
+      if (area === 'inq') {
+        const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct).slice(0, Number(config.count) || 2);
+        if (rows.length === 0) return null;
+        const each = rows.map((row) => {
+          const converted = best ? convertedStd(100, table) : convertedStd(row.pct, table);
+          if (converted === null) return null;
+          const bonus = row.kind === 'science' ? Number(config.scienceBonus) || 0 : Number(config.socialBonus) || 0;
+          return converted * (1 + bonus);
+        });
+        if (each.some((value) => value === null)) return null;
+        const sum = each.reduce((total, value) => total + value, 0);
+        return factor * (config.aggregate === 'mean' ? sum / each.length : sum);
+      }
+      const source = area === 'kor' ? profile.kor : profile.math;
+      const value = best ? std?.subjects?.[stdKeyOf(area)]?.maxStd : source.std;
+      return isNumber(value) ? factor * value : null;
+    };
+    const compute = (best) => {
+      let sum = 0;
+      for (const area of ['kor', 'math', 'eng', 'inq']) {
+        const config = area === 'eng' ? spec.eng : spec[area];
+        if (!config) continue;
+        const value = best && area === 'eng' ? Number(config.table?.['1']) : areaValue(area, config, best);
+        if (value === null || !Number.isFinite(value)) return null;
+        if (!best) parts.push({ key: area, label: SUBJECT_LABEL[area], points: round(value, 4) });
+        sum += value;
+      }
+      const scale = spec.scale || {};
+      const multiply = Number(scale.multiply) || 1;
+      const divide = Number(scale.divide) || 1;
+      let scaled = (sum * multiply) / divide;
+      const history = best ? 0 : Number(spec.hist?.table?.[String(profile.hist.grade)]) || 0;
+      scaled -= history;
+      return { value: round(scaled, Number(formula.roundTo) || 4), history: round(history, 4) };
+    };
+    const mine = compute(false);
+    if (!mine) return null;
+    const top = compute(true);
+    return {
+      basis: 'official', approx: false, track: spec.name, parts,
+      value: mine.value, max: top ? top.value : null,
+      history: mine.history, note: spec.note || formula.note || null,
+    };
+  }
+
+  // 대학 환산점수. 입학처 산출식이 있으면 그대로, 없으면 rules 의 배점으로 만든 근사값이다.
+  //   근사 규칙 하나뿐이다 — 영역별 '만점 대비 채움 비율'에 배점을 곱해 더한다.
+  //   대학마다 다른 실제 산식을 지어내지 않는다. approx:true 로 화면이 그렇게 적는다.
+  function universityRawScore(profile, rule, deptTrack, options = {}) {
+    if (!profileComplete(profile)) return null;
+    const { std = null, conv = null, universityId = null, ruleTrack = null } = options;
+    const conversion = conversionTable(conv, universityId);
+    // 화면에 돌려주는 conversion 에는 표 자체를 넣지 않는다(101줄짜리다) — 출처만 남긴다.
+    const conversionMeta = conversion
+      ? { kind: conversion.kind, name: conversion.name || null, note: conversion.note || null, source: conversion.source || null }
+      : null;
+    if (conversion?.formula) {
+      const exact = formulaScore(profile, conversion.formula, deptTrack, conversion.table, std);
+      if (exact) return { ...exact, conversion: conversionMeta, unit: 'points' };
+    }
+    const track = pickTrack(rule, deptTrack, ruleTrack);
+    if (!track) return null;
+    const weights = track.weights || {};
+    const wKor = Number(weights.kor) || 0;
+    const wMath = Number(weights.math) || 0;
+    const wInq = Number(weights.inq) || 0;
+    const wEng = Number(weights.eng) || 0;
+    if (wKor + wMath + wInq <= 0) return null;
+    const metric = options.metric === 'pct' ? 'pct' : 'std';
+    const inquiryCount = Number(track.inquiry?.count) || 2;
+    const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct).slice(0, inquiryCount);
+    // 채움 비율: 표점 대학은 표준점수/만점 표준점수(탐구는 변환표점/변환표 최고점), 백분위 대학은 백분위/100.
+    const fillOf = (area) => {
+      if (metric === 'pct') {
+        if (area === 'kor') return isNumber(profile.kor.pct) ? profile.kor.pct / 100 : null;
+        if (area === 'math') return isNumber(profile.math.pct) ? profile.math.pct / 100 : null;
+        const value = inquiryPercentile(profile, inquiryCount);
+        return isNumber(value) ? value / 100 : null;
+      }
+      if (area === 'inq') {
+        if (!conversion || rows.length === 0) return null;
+        const top = Number(conversion.table['100']);
+        const each = rows.map((row) => convertedStd(row.pct, conversion.table));
+        if (each.some((value) => value === null) || !Number.isFinite(top) || top <= 0) return null;
+        return (each.reduce((sum, value) => sum + value, 0) / each.length) / top;
+      }
+      const source = area === 'kor' ? profile.kor : profile.math;
+      const max = std?.subjects?.[stdKeyOf(area)]?.maxStd;
+      return isNumber(source.std) && isNumber(max) && max > 0 ? source.std / max : null;
+    };
+    const engRows = englishTable(track.english);
+    const englishByRatio = wEng > 0 && (track.english?.method || '비율반영') === '비율반영';
+    const engFill = isNumber(engRows[1]) && engRows[1] > 0 && isNumber(engRows[profile.eng.grade])
+      ? clamp(engRows[profile.eng.grade] / engRows[1], 0, 1) : null;
+
+    const mathBonus = Number(track.mathBonus) || 0;
+    const mathAdvanced = profile.math.elective === '미적분' || profile.math.elective === '기하';
+    const kinds = new Set(rows.map((row) => row.kind));
+    const scienceBonus = Number(track.inquiry?.scienceBonus) || 0;
+    const socialBonus = Number(track.inquiry?.socialBonus) || 0;
+    const inqBonus = (scienceBonus > 0 && kinds.has('science') && !kinds.has('social')) ? scienceBonus
+      : (socialBonus > 0 && kinds.has('social') && !kinds.has('science')) ? socialBonus : 0;
+
+    const unit = track.unit === 'points' ? 'points' : 'percent';
+    const total = unit === 'points' ? (wKor + wMath + wInq + (englishByRatio ? wEng : 0)) : (Number(track.total) || 1000);
+    const weightSum = wKor + wMath + wInq + (englishByRatio ? wEng : 0);
+    const share = (weight) => (unit === 'points' ? weight : (weight / weightSum) * total);
+
+    const parts = [];
+    let value = 0;
+    let max = 0;
+    const push = (key, weight, fill, bonus = 0) => {
+      if (weight <= 0) return;
+      const points = share(weight);
+      max += points;
+      if (fill === null) return;
+      const got = points * clamp(fill * (1 + bonus), 0, 1 + bonus);
+      value += got;
+      parts.push({ key, label: SUBJECT_LABEL[key], points: round(got, 2), max: round(points, 2), fill: round(fill, 4), bonus });
+    };
+    push('kor', wKor, fillOf('kor'));
+    push('math', wMath, fillOf('math'), mathBonus > 0 && mathAdvanced ? mathBonus : 0);
+    push('inq', wInq, fillOf('inq'), inqBonus);
+    if (englishByRatio) push('eng', wEng, engFill);
+
+    // 영어·한국사 가감점은 대학 총점 척도의 점수다. 규칙이 다른 총점을 적어 두었으면 그 비율로 옮긴다.
+    const adjustments = [];
+    const scaleTo = (points, base) => (isNumber(base) && base > 0 ? (points * max) / base : points);
+    if (!englishByRatio && isNumber(profile.eng.grade) && isNumber(engRows[1]) && isNumber(engRows[profile.eng.grade])) {
+      const delta = round(scaleTo(engRows[profile.eng.grade] - engRows[1], Number(track.english?.total) || max), 2);
+      if (delta !== 0) adjustments.push({ key: 'eng', label: `영어 ${profile.eng.grade}등급`, delta });
+    }
+    const histRows = englishTable(track.history);
+    if (isNumber(profile.hist.grade) && isNumber(histRows[1]) && isNumber(histRows[profile.hist.grade])) {
+      const delta = round(scaleTo(histRows[profile.hist.grade] - histRows[1], Number(track.history?.total) || max), 2);
+      if (delta !== 0) adjustments.push({ key: 'hist', label: `한국사 ${profile.hist.grade}등급`, delta });
+    }
+    const missing = parts.length < (englishByRatio ? 4 : 3);
+    return {
+      basis: 'rules', approx: true, track: track.name || null, unit, parts, adjustments, conversion: conversionMeta,
+      metric, incomplete: missing,
+      value: round(value + adjustments.reduce((sum, row) => sum + row.delta, 0), 2),
+      max: round(max, 2),
     };
   }
 
@@ -612,6 +855,7 @@
     VERDICT_BANDS, SUSI_BANDS, TARGET_MARGIN, VERDICT_DIGITS, bandOf,
     gradeFromPercentile, percentileFromGrade, percentileFloorOfGrade, percentileFromRaw, inquiryKind,
     normalizeProfile, profileComplete, inquiryPercentile, simpleAverage, pickTrack, universityScore,
+    percentileFromStd, gradeFromStd, conversionTable, convertedStd, universityRawScore, stdKeyOf,
     jeongsiReference, evaluateJeongsi, evaluateSusi, diagnose, analyzeTarget, electiveSummary, round,
     byCutDesc, byGapAsc,
   });
