@@ -9,6 +9,7 @@
 - **입력은 짧게, 결과는 먼저.** 성적 입력은 한 화면에서 끝나고, 결과 화면은 첫 뷰포트에 판정이 보인다.
 - **글은 적게.** 헤드라인 20자 이내, 설명문 한 문장. 안내는 `callout` 하나, 그 이상은 접는다(`accordion`).
 - **이모지·색 타일·그라디언트 없음.** 상태는 `badge`의 tone(positive/brand/neutral/warning/critical)으로만 말한다.
+- **뱃지 글자는 짧게.** 좁은 폭에서 잘리지 않도록 뱃지에는 두세 글자(`표점`·`백분위`·`근사`)만 넣고, 긴 설명은 부제나 `muted` 줄로 내린다.
 - **모바일 우선.** 콘텐츠 폭 최대 640px 중앙 정렬. 데스크톱에서도 같은 한 열이다(당근 앱 화면과 같은 어법).
 
 ## 2. 테마
@@ -34,11 +35,11 @@ footer         출처·면책 한 줄
 
 | 화면 | 구성 (위에서 아래로) | Seed 컴포넌트 |
 |---|---|---|
-| 성적 | ① 입력 기준 세그먼트(백분위/등급) ② 영역별 필드 6개(국어·수학은 선택과목 셀렉트 + 숫자, 영어·한국사는 등급 셀렉트, 탐구 2개는 과목 셀렉트 + 숫자) ③ 내신 등급(선택) ④ 하단 고정 기본 버튼 "진단 보기" | `segmented-control`, `field` + `text-input`(outline), 네이티브 `<select>`에 `select-trigger` 스타일, `action-button` brandSolid large |
-| 진단 | ① 요약 한 줄(국수탐 평균·대상 수) ② 필터: 계열 `chip-tabs`, 라인·판정 `select`, 검색 `text-input` ③ 판정별 그룹: `list-header` + `list-item` 반복 (제목=대학·학과, 부제=컷·군, 우측=내 점수와 `badge`) ④ "더 보기" neutralWeak 버튼 | `chip-tabs`, `list-header`, `list-item`, `badge`, `action-button` |
-| 목표 | ① 대학·학과 셀렉트 2개 ② 판정 카드 한 장: 큰 숫자(차이) + `badge` + 오차 한 줄 ③ "필요한 상승" 리스트(영역별 행, 추천은 `badge` brand) ④ 선택과목·가감점 `callout` ⑤ 기준(연도별 컷·경쟁률) `accordion` ⑥ 수시 참고 `accordion` | `list-item`, `badge`, `callout`, `accordion` |
-| 반영 | ① 대학 셀렉트 ② 계열별 `accordion`(비율·영어·한국사·탐구·가산) ③ 선택과목 원점수 컷 표 `list-item` | `accordion`, `list-item` |
-| 정보 | ① 판정 기준 `callout` ② 출처 링크 `list-item` 목록 ③ 데이터 생성일 | `callout`, `list-item` |
+| 성적 | ① 입력 기준 세그먼트(백분위/등급/표준점수) ② 영역별 필드 6개(국어·수학은 선택과목 셀렉트 + 숫자, 영어·한국사는 등급 셀렉트, 탐구 2개는 과목 셀렉트 + 숫자) ③ 내신 등급(선택) ④ 표준점수일 때만: 기준 `callout` + "표준점수 → 백분위" 목록 + "대학별 환산점수" `accordion` ⑤ 관심 대학 `accordion` ⑥ 하단 고정 기본 버튼 "진단 보기" | `segmented-control`, `field` + `text-input`(outline), 네이티브 `<select>`에 `select-trigger` 스타일, `accordion`, `action-button` brandSolid large |
+| 진단 | ① 요약 한 줄(국수탐 평균·대상 수) ② 필터: 계열 `chip-tabs`, 라인·판정 `select`, 검색 `text-input`, 관심 학과만 / 관심 대학만 토글 ③ 관심 대학 `accordion`(대학 칩) ④ 관심 대학 묶음이 맨 위, 그 아래 나머지: `list-header` + `list-item` 반복 (제목=대학·학과, 부제=컷·군·반영 지표, 우측=내 점수와 `badge`) ⑤ "더 보기" neutralWeak 버튼 | `chip-tabs`, `accordion`, `list-header`, `list-item`, `badge`, `action-button` |
+| 목표 | ① 대학·학과 셀렉트 2개(관심 대학은 `optgroup`으로 위에) ② 판정 카드 한 장: 큰 숫자(차이) + `badge` + 반영 지표 한 줄 ③ 비교 기준 `callout` ④ "필요한 상승" 리스트(영역별 행, 추천은 `badge` brand) ⑤ 선택과목·가감점 `callout` ⑥ 표준점수 모드일 때 대학 환산점수 `accordion` ⑦ 기준(연도별 컷·경쟁률) `accordion` ⑧ 수시 참고 `accordion` | `list-item`, `badge`, `callout`, `accordion` |
+| 반영 | ① 대학 셀렉트 ② 반영 지표 `callout` ③ 계열별 `accordion`(비율·영어·한국사·탐구·가산) ④ 선택과목 원점수 컷 표 `list-item` | `callout`, `accordion`, `list-item` |
+| 정보 | ① 판정 기준·비교 기준 `callout` 둘 ② 판정 표·계산 방법 ③ 정확도 `accordion`(커버리지·차이 분포·민감도 표) ④ 대학별 반영 지표 목록 ⑤ 관심 대학 `accordion` ⑥ 출처 링크 `list-item` 목록 ⑦ 한계 `accordion` ⑧ 데이터 생성일 | `callout`, `accordion`, `list-item`, `badge` |
 
 ## 5. 상태·피드백
 
@@ -54,7 +55,7 @@ footer         출처·면책 한 줄
 
 ## 7. 하지 않는 것
 
-- 차트·그래프 (숫자와 뱃지로 충분하다)
+- 차트·그래프 (숫자와 뱃지로 충분하다 — 정확도 수치도 표로만 적는다)
 - 카드 안의 카드, 3연속 카드
 - 모달·바텀시트 (모든 것은 패널 안에서 끝난다)
 - 마케팅 문구("완벽한", "지금 바로")

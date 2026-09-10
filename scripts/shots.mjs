@@ -18,6 +18,12 @@ const SCORES = {
   eng: '2', hist: '1', inq1Subject: '사회문화', inq1: '95', inq2Subject: '생활과윤리', inq2: '92', gpa: '2.1',
 };
 const FAVORITES = ['korea::경영대학', 'yonsei::경영학과', 'hanyang::경영학부'];
+// 표준점수 모드(표점 계산기)와 관심 대학 묶음도 실제 브라우저에서 한 번씩 연다.
+const STD_SCORES = {
+  mode: 'std', korElective: '언어와매체', kor: '131', mathElective: '미적분', math: '128',
+  eng: '2', hist: '1', inq1Subject: '생활과윤리', inq1: '65', inq2Subject: '한국지리', inq2: '67', gpa: '',
+};
+const FAV_UNIVERSITIES = ['khu', 'cau', 'konkuk'];
 
 const SEED_CDN = 'https://cdn.jsdelivr.net/npm/@seed-design/css@2.7.0/all.min.css';
 mkdirSync(OUT, { recursive: true });
@@ -126,6 +132,26 @@ try {
     }
   }
 
+  // 표점 모드 + 관심 대학. 기본 상태에서는 열리지 않는 화면들을 좁은 폭·넓은 폭에서 한 번씩 본다.
+  for (const width of [320, 375, 1280]) {
+    const page = await browser.newPage({ viewport: { width, height: 812 }, colorScheme: 'light' });
+    const tag = `표점모드/${width}px`;
+    watch(page, tag);
+    await page.route(SEED_CDN, (route) => route.fulfill({ status: 200, contentType: 'text/css', body: seedCss }));
+    await page.addInitScript(([scores, favorites, universities]) => {
+      localStorage.setItem('jr.scores', JSON.stringify(scores));
+      localStorage.setItem('jr.theme', JSON.stringify('light-only'));
+      localStorage.setItem('jr.favorites', JSON.stringify(favorites));
+      localStorage.setItem('jr.favUniversities', JSON.stringify(universities));
+    }, [STD_SCORES, FAVORITES, FAV_UNIVERSITIES]);
+    await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
+    await page.waitForSelector('#panel .seed-segmented-control__root');
+    // 접혀 있는 아코디언(대학별 환산점수·관심 대학)까지 펼쳐 놓고 잰다.
+    await page.evaluate(() => { for (const item of document.querySelectorAll('details')) item.open = true; });
+    await auditPage(page, tag, { shots: width === 375, prefix: 'std-' });
+    await page.close();
+  }
+
   // 단일 파일 번들. 호스트가 감싼 문서 안에서(테마를 찍은 경우와 아닌 경우) 같은 점검을 한다.
   const bundleFile = path.join(ROOT, 'dist', 'jungsi-radar.html');
   if (existsSync(bundleFile)) {
@@ -168,5 +194,5 @@ try {
   web.kill();
 }
 
-console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 번들 4판 통과 (${OUT})`);
+console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 번들 4판 통과 (${OUT})`);
 process.exit(problems.length ? 1 : 0);

@@ -8,7 +8,10 @@
   const EXAM_YEAR = '2026';
 
   // ---------------------------------------------------------------- 저장소
-  const STORE = { scores: 'jr.scores', filters: 'jr.filters', favorites: 'jr.favorites', theme: 'jr.theme', view: 'jr.view' };
+  const STORE = {
+    scores: 'jr.scores', filters: 'jr.filters', favorites: 'jr.favorites',
+    favUniversities: 'jr.favUniversities', theme: 'jr.theme', view: 'jr.view',
+  };
   const readStore = (key, fallback) => {
     try {
       const raw = localStorage.getItem(key);
@@ -32,8 +35,10 @@
   const state = {
     view: readStore(STORE.view, 'scores'),
     scores: { ...EMPTY_SCORES, ...readStore(STORE.scores, {}) },
-    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, sort: 'cut', noArts: true, noDream: true, noWomen: true, limit: 8, ...readStore(STORE.filters, {}) },
+    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, favUniOnly: false, sort: 'cut', noArts: true, noDream: true, noWomen: true, limit: 8, ...readStore(STORE.filters, {}) },
     favorites: new Set(readStore(STORE.favorites, [])),
+    // 관심 대학은 관심 학과와 따로 저장한다 — 대학을 담아도 학과 별표는 그대로다.
+    favUniversities: new Set(readStore(STORE.favUniversities, [])),
     target: { university: '', dept: '' },
     rulesUniversity: 'snu',
     copied: false,
@@ -113,6 +118,25 @@
     for (const option of options) {
       const [optionValue, optionLabel] = Array.isArray(option) ? option : [option, option];
       node.append(el('option', { value: optionValue, selected: String(optionValue) === String(value) }, [optionLabel]));
+    }
+    return node;
+  };
+
+  // 묶음이 있는 셀렉트. 네이티브 <optgroup>이 묶음 이름을 맡는다.
+  const groupedSelect = (groups, value, onchange, label, id) => {
+    const node = el('select', {
+      class: 'seed-select-trigger__root seed-select-trigger__root--size_medium jr-select',
+      'aria-label': label,
+      id,
+      onchange: (event) => onchange(event.target.value),
+    });
+    for (const group of groups) {
+      if (!group.options || group.options.length === 0) continue;
+      const holder = el('optgroup', { label: group.label });
+      for (const [optionValue, optionLabel] of group.options) {
+        holder.append(el('option', { value: optionValue, selected: String(optionValue) === String(value) }, [optionLabel]));
+      }
+      node.append(holder);
     }
     return node;
   };
@@ -253,8 +277,22 @@
     || (state.target.university === universityId && state.target.dept === deptName);
   const hiddenNow = (universityId, dept) => (pinned(universityId, dept.name) ? null : hiddenBy(universityId, dept));
 
-  const profile = () => ENGINE.normalizeProfile(state.scores, DATA.scales);
+  const profile = () => ENGINE.normalizeProfile(state.scores, DATA.scales, DATA.std);
   const profileReady = () => ENGINE.profileComplete(profile());
+
+  // 대학이 실제로 반영하는 지표. 생성물이 rules[id].basisSummary 로 이미 짧은 라벨을 갖고 있다.
+  const basisOf = (universityId) => DATA.rules?.[universityId]?.basisSummary || null;
+  const basisLabel = (universityId) => basisOf(universityId)?.label || '반영 지표 미확인';
+  // 표점(또는 등급 배점) 기준 대학은 우리가 백분위로 바꿔 비교한다 — 그 사실을 옆에 적는다.
+  const isApproxBasis = (universityId) => Boolean(basisOf(universityId)?.approxPercentile);
+  const basisShort = (universityId) => basisOf(universityId)?.short || '미확인';
+  // 좁은 자리에는 짧게, 그 옆 설명 줄에 길게 적는다.
+  const APPROX_BADGE = '백분위 근사';
+  const APPROX_NOTE = '표점 기준 대학 — 백분위로 환산해 견줍니다.';
+  // 우리 계산이 무엇을 기준으로 하는지 한 문장. 정보 탭과 목표 탭이 같은 문장을 쓴다.
+  const SCALE_SENTENCE = '판정은 어디가 70%컷과 같은 국·수·탐 백분위 평균 척도에서 비교하며, '
+    + '대학이 표준점수를 반영하더라도 백분위로 환산해 비교합니다. '
+    + '표준점수 기반 대학은 표점 계산기의 환산점수로 보정할 수 있습니다.';
 
   const lineUniversities = () => {
     if (state.filters.line === '전체') return null;
@@ -286,6 +324,14 @@
   // 더 보기로 늘린 개수(limit)는 저장하지 않는다 — 새로고침했더니 목록이 수백 줄인 일을 막는다.
   const saveFilters = () => writeStore(STORE.filters, { ...state.filters, limit: undefined });
   const saveFavorites = () => writeStore(STORE.favorites, [...state.favorites]);
+  const saveFavUniversities = () => writeStore(STORE.favUniversities, [...state.favUniversities]);
+  const isFavUniversity = (universityId) => state.favUniversities.has(universityId);
+  function toggleFavUniversity(universityId) {
+    if (state.favUniversities.has(universityId)) state.favUniversities.delete(universityId);
+    else state.favUniversities.add(universityId);
+    saveFavUniversities();
+    diagnoseCache.key = null;
+  }
 
   // ---------------------------------------------------------------- URL 공유
   const QUERY_KEYS = {
@@ -344,24 +390,56 @@
 
   // 입력 기준을 바꾸면 이미 적은 값도 같이 바꿔 준다 (백분위 96 ↔ 1등급).
   // 등급으로 갔다가 그대로 돌아오면 원래 백분위를 되살린다 — 96이 98로 바뀌어 있으면 안 된다.
-  const modeBackup = { pct: null, grade: null };
+  const modeBackup = { pct: null, grade: null, std: null };
+  // 영역 키 (도수분포표의 이름). 국어·수학의 백분위는 선택과목이 아니라 영역 전체에서 매겨진다.
+  const stdKeyFor = (field) => (field === 'kor' ? '국어' : field === 'math' ? '수학' : `탐구-${state.scores[`${field}Subject`]}`);
+  // 백분위 → 표준점수. 도수분포에서 그 백분위에 가장 가까운 점을 되찾는다(같은 백분위가 여럿이면 낮은 쪽).
+  function stdFromPercentile(field, pct) {
+    const subject = DATA.std?.subjects?.[stdKeyFor(field)];
+    const rows = subject?.rows || [];
+    if (rows.length === 0 || !Number.isFinite(pct)) return null;
+    let best = null;
+    for (const [std, , rowPct] of rows) {
+      const distance = Math.abs(rowPct - pct);
+      if (best === null || distance < best.distance || (distance === best.distance && std < best.std)) {
+        best = { std, distance };
+      }
+    }
+    return best ? best.std : null;
+  }
+  function percentileOfScore(field, value) {
+    const read = ENGINE.percentileFromStd(stdKeyFor(field), value, DATA.std);
+    return read ? read.pct : null;
+  }
   function convertScores(from, to) {
     if (from === to) return;
     const fields = ['kor', 'math', 'inq1', 'inq2'];
     const before = {};
     for (const field of fields) before[field] = state.scores[field];
     const saved = modeBackup[to];
+    // 어느 기준으로 가든 백분위를 가운데 두고 옮긴다.
     for (const field of fields) {
       const raw = before[field];
       const number = Number(raw);
+      modeBackup[from] = before;
       if (raw === '' || raw === null || raw === undefined || !Number.isFinite(number)) { state.scores[field] = ''; continue; }
-      if (to === 'grade') {
-        state.scores[field] = String(ENGINE.gradeFromPercentile(Math.min(100, Math.max(0, number))));
+      const pct = from === 'grade' ? ENGINE.percentileFromGrade(number)
+        : from === 'std' ? percentileOfScore(field, number)
+          : Math.min(100, Math.max(0, number));
+      if (pct === null) { state.scores[field] = ''; continue; }
+      if (to === 'grade') { state.scores[field] = String(ENGINE.gradeFromPercentile(pct)); continue; }
+      if (to === 'std') {
+        // 표준점수로 갔다가 그대로 돌아왔다 다시 오면 원래 표준점수를 되살린다.
+        const back = Number(saved?.[field]);
+        const untouched = Number.isFinite(back) && percentileOfScore(field, back) === pct;
+        const converted = untouched ? back : stdFromPercentile(field, pct);
+        state.scores[field] = converted === null ? '' : String(converted);
         continue;
       }
       const back = Number(saved?.[field]);
-      const untouched = Number.isFinite(back) && String(ENGINE.gradeFromPercentile(back)) === String(Math.round(number));
-      state.scores[field] = untouched ? String(saved[field]) : String(ENGINE.percentileFromGrade(number));
+      const untouched = Number.isFinite(back)
+        && (from === 'grade' ? String(ENGINE.gradeFromPercentile(back)) === String(Math.round(number)) : back === pct);
+      state.scores[field] = untouched ? String(saved[field]) : String(pct);
     }
     modeBackup[from] = before;
   }
@@ -386,17 +464,21 @@
     } catch (error) { return false; }
   }
 
+  const MODES = [['pct', '백분위'], ['grade', '등급'], ['std', '표준점수']];
+
   function renderScores() {
     const isGrade = state.scores.mode === 'grade';
-    const unit = isGrade ? '등급' : '백분위';
+    const isStd = state.scores.mode === 'std';
+    const unit = isGrade ? '등급' : isStd ? '표준점수' : '백분위';
+    const modeIndex = Math.max(0, MODES.findIndex(([value]) => value === state.scores.mode));
     const modeControl = el('div', {
       class: 'seed-segmented-control__root jr-segmented',
       role: 'radiogroup',
       'aria-label': '입력 기준',
-      style: '--segment-count:2;--segment-index:' + (isGrade ? 1 : 0),
+      style: `--segment-count:${MODES.length};--segment-index:${modeIndex}`,
     }, [
       el('span', { class: 'seed-segmented-control__indicator', 'aria-hidden': 'true' }),
-      ...[['pct', '백분위'], ['grade', '등급']].map(([value, label]) => el('button', {
+      ...MODES.map(([value, label]) => el('button', {
         type: 'button', role: 'radio', 'aria-checked': String(state.scores.mode === value),
         class: 'seed-segmented-control__item',
         'data-checked': state.scores.mode === value ? '' : null,
@@ -409,12 +491,17 @@
       }, [label])),
     ]);
 
+    // 표준점수는 영역마다 최고점이 다르다 — 그 해 실제 만점 표준점수를 범위로 쓴다.
+    const stdMax = (field) => {
+      const key = field === 'kor' ? '국어' : field === 'math' ? '수학' : `탐구-${state.scores[`${field}Subject`]}`;
+      return DATA.std?.subjects?.[key]?.maxStd ?? (field === 'kor' || field === 'math' ? 150 : 80);
+    };
     const numberFor = (field, label) => numberInput(state.scores[field], (value) => setScore(field, value), {
       id: `jr-${field}`,
       label: `${label} ${unit}`,
       min: isGrade ? 1 : 0,
-      max: isGrade ? 9 : 100,
-      step: isGrade ? 1 : 0.5,
+      max: isGrade ? 9 : isStd ? stdMax(field) : 100,
+      step: isGrade ? 1 : isStd ? 1 : 0.5,
       placeholder: unit,
     });
 
@@ -469,7 +556,9 @@
       const average = ENGINE.simpleAverage(current);
       const note = state.scores.mode === 'grade'
         ? '등급 구간의 정중앙 백분위로 바꾼 값입니다.'
-        : '어디가 공개값과 같은 기준입니다.';
+        : state.scores.mode === 'std'
+          ? '평가원 도수분포로 표준점수를 백분위로 바꾼 값입니다.'
+          : '어디가 공개값과 같은 기준입니다.';
       summary.replaceChildren(average === null
         ? banner('국어·수학·탐구를 채우면 진단이 열립니다.')
         : callout('국·수·탐 평균', `${fmt(average, 2)} 백분위 — ${note}`, 'informative'));
@@ -520,7 +609,112 @@
     const action = el('div', { class: 'jr-sticky-action' }, [actionButton]);
 
     liveRefresh();
-    return [modeControl, summary, conversion, gradeTable, rows, gpa, share, fallback, action].filter(Boolean);
+    const stdBlocks = isStd
+      ? [callout('무엇을 기준으로 비교하나', SCALE_SENTENCE, 'informative'), renderStdReadout(), renderStdScoreList()]
+      : [];
+    return [modeControl, summary, conversion, gradeTable, rows, gpa, ...stdBlocks,
+      favUniversityPicker(), share, fallback, action].filter(Boolean);
+  }
+
+
+  // ---------------------------------------------------------------- 표준점수 계산기
+  // 표준점수 입력을 백분위·등급으로 되읽고, 대학이 쓰는 산식으로 환산점수를 낸다.
+  // 백분위는 평가원 도수분포 원자료 그대로다 — 표에 없는 점수만 '근사'로 적는다.
+  const rawScoreOf = (university, dept) => ENGINE.universityRawScore(
+    profile(), DATA.rules[university.id], dept ? dept.track : '인문',
+    { std: DATA.std, conv: DATA.conv, universityId: university.id, ruleTrack: dept ? dept.ruleTrack : null,
+      metric: basisOf(university.id)?.metric === 'pct' ? 'pct' : 'std' },
+  );
+
+  const AREA_LABELS = [['kor', '국어'], ['math', '수학'], ['inq1', '탐구 1'], ['inq2', '탐구 2']];
+
+  // 영역별 표준점수 → 백분위·등급 표. 한 줄이 한 영역이다.
+  function stdReadoutRows() {
+    const current = profile();
+    const rows = [];
+    const pick = (field) => {
+      if (field === 'kor') return { read: current.kor.read, std: current.kor.std, name: `국어(${current.kor.elective})` };
+      if (field === 'math') return { read: current.math.read, std: current.math.std, name: `수학(${current.math.elective})` };
+      const slot = current.inquiries.find((row) => row.slot === field);
+      return slot ? { read: slot.read, std: slot.std, name: `탐구 ${slot.subject}` } : null;
+    };
+    for (const [field] of AREA_LABELS) {
+      const found = pick(field);
+      if (!found || !found.read) continue;
+      rows.push({ field, ...found });
+    }
+    return rows;
+  }
+
+  function renderStdReadout() {
+    const rows = stdReadoutRows();
+    if (rows.length === 0) {
+      return section([listHeader('표준점수 → 백분위'), banner('표준점수를 넣으면 평가원 도수분포로 백분위와 등급을 되읽습니다.')]);
+    }
+    const approx = rows.filter((row) => !row.read.exact);
+    return section([
+      listHeader('표준점수 → 백분위', `${DATA.std?.year || EXAM_YEAR}학년도 도수분포`),
+      el('div', { class: 'jr-list' }, rows.map((row) => listItem({
+        title: row.name,
+        detail: `표준점수 ${fmt(row.std, 0)} · 백분위 ${fmt(row.read.pct, 0)}${row.read.grade ? ` · ${row.read.grade}등급` : ''}`
+          + (row.read.exact ? ` · 같은 점수 ${row.read.count.toLocaleString('ko')}명` : ' · 표에 없는 점수라 이웃 두 점 사이를 보간'),
+        suffix: row.read.exact ? badge('원자료', 'positive') : badge('근사', 'warning'),
+      }))),
+      approx.length > 0 ? muted('표에 없는 표준점수는 이웃한 두 점을 선형 보간합니다.') : null,
+    ].filter(Boolean));
+  }
+
+  // 대학 하나의 환산점수 한 줄.
+  function rawScoreDetail(university, dept, raw) {
+    if (!raw) return null;
+    const parts = raw.parts.map((part) => `${part.label} ${fmt(part.points, part.points % 1 === 0 ? 0 : 2)}`).join(' + ');
+    const scale = raw.max === null ? '' : ` / 만점 ${fmt(raw.max, 2)}`;
+    const adjust = (raw.adjustments || []).map((row) => `${row.label} ${signed(row.delta, 2)}`).join(' · ');
+    return [parts + scale, adjust, raw.track ? `${raw.track} 기준` : null].filter(Boolean).join(' · ');
+  }
+
+  // 목표 탭에 붙는 한 대학짜리 환산점수. 표준점수 모드일 때만 나온다.
+  function renderStdScore(university, dept) {
+    if (state.scores.mode !== 'std') return null;
+    const raw = rawScoreOf(university, dept);
+    if (!raw) {
+      return accordion('대학 환산점수', [muted('이 대학은 반영비율을 확인하지 못해 환산점수를 내지 않습니다.')]);
+    }
+    return accordion('대학 환산점수', [
+      el('div', { class: 'jr-list' }, [listItem({
+        title: `${university.short} ${fmt(raw.value, raw.basis === 'official' ? 4 : 2)}`,
+        detail: rawScoreDetail(university, dept, raw),
+        suffix: raw.basis === 'official' ? badge('입학처 산식', 'positive') : badge('배점 근사', 'warning'),
+      })]),
+      muted(raw.basis === 'official'
+        ? `${raw.conversion?.name || university.short} 입학처가 낸 산출식과 탐구 변환표준점수 표를 그대로 씁니다.`
+        : '입학처 산식을 구하지 못해 반영비율(배점)만으로 만든 값입니다. 대학끼리 견주는 용도가 아니라 그 대학 만점 대비 위치를 보는 값입니다.'),
+      raw.conversion ? muted(raw.conversion.kind === 'official'
+        ? `탐구 변환표준점수: ${raw.conversion.name} 공개 표`
+        : '탐구 변환표준점수: 통합 도수분포에서 만든 근사표(대학 표를 구하지 못함)') : null,
+    ].filter(Boolean), { open: true });
+  }
+
+  // 성적 탭의 대학별 환산점수 목록. 반영비율을 확인한 대학만 줄이 생긴다.
+  function renderStdScoreList() {
+    const rows = [];
+    for (const university of DATA.universities) {
+      const dept = university.departments.find((row) => row.track === '인문') || university.departments[0];
+      const raw = rawScoreOf(university, dept);
+      if (!raw) continue;
+      rows.push({ university, dept, raw });
+    }
+    if (rows.length === 0) return null;
+    const official = rows.filter((row) => row.raw.basis === 'official').length;
+    return accordion(`대학별 환산점수 ${rows.length}곳`, [
+      muted(`입학처가 낸 산출식으로 계산한 대학 ${official}곳, 나머지는 시행계획의 반영비율(배점)만으로 만든 근사값입니다. `
+        + '계열마다 배점이 다른 대학은 인문계 트랙을 기준으로 보여 줍니다 — 목표 탭에서 모집단위를 고르면 그 계열로 다시 계산합니다.'),
+      el('div', { class: 'jr-list' }, rows.map(({ university, dept, raw }) => listItem({
+        title: `${university.short} ${fmt(raw.value, raw.basis === 'official' ? 4 : 2)}`,
+        detail: rawScoreDetail(university, dept, raw),
+        suffix: raw.basis === 'official' ? badge('입학처 산식', 'positive') : badge('배점 근사', 'warning'),
+      }))),
+    ], { open: false });
   }
 
   // ---------------------------------------------------------------- 진단 화면
@@ -552,9 +746,31 @@
       if (hiddenNow(row.universityId, row.dept)) return false;
       if (state.filters.band !== '전체' && bandOf(row.jeongsi)?.label !== state.filters.band) return false;
       if (state.filters.favOnly && !state.favorites.has(deptKey(row.universityId, row.dept.name))) return false;
+      if (state.filters.favUniOnly && !isFavUniversity(row.universityId)) return false;
       if (query && !(`${row.universityName} ${row.dept.name}`).includes(query)) return false;
       return true;
     });
+  }
+
+  // 관심 대학 고르기. 대학 이름 칩을 눌러 담고, localStorage에 대학 아이디만 남긴다.
+  // 진단·성적·정보 세 화면이 이 하나를 그대로 쓴다.
+  function favUniversityPicker({ open = false } = {}) {
+    const chips = el('div', { class: 'jr-chips' }, DATA.universities.map((university) => el('button', {
+      type: 'button',
+      'aria-pressed': String(isFavUniversity(university.id)),
+      'data-selected': isFavUniversity(university.id) ? '' : null,
+      class: 'seed-chip-tabs__trigger seed-chip-tabs__trigger--size_medium seed-chip-tabs__trigger--variant_neutralOutline',
+      onclick: () => { toggleFavUniversity(university.id); render(); },
+    }, [university.short])));
+    const count = state.favUniversities.size;
+    return accordion(`관심 대학 ${count}곳`, [
+      muted('담아 둔 대학은 진단 목록 맨 위에 따로 묶여 나옵니다. 관심 학과(별표)는 그 묶음 안에서도 맨 위입니다.'),
+      chips,
+      count > 0 ? el('div', { class: 'jr-actions' }, [button('모두 지우기', {
+        variant: 'ghost', size: 'small',
+        onclick: () => { state.favUniversities.clear(); saveFavUniversities(); diagnoseCache.key = null; render(); },
+      })]) : null,
+    ].filter(Boolean), { open, description: count > 0 ? [...state.favUniversities].map((id) => universityById.get(id)?.short || id).join(' · ') : '아직 없습니다' });
   }
 
   function favoriteButton(universityId, deptName) {
@@ -579,7 +795,7 @@
       return [banner('성적 탭에서 국어·수학·탐구를 먼저 입력하세요.', 'criticalWeak'),
         el('div', { class: 'jr-actions' }, [button('성적 입력하러 가기', { variant: 'brandSolid', onclick: () => go('scores') })])];
     }
-    const rows = diagnoseRows();
+    let rows = diagnoseRows();
     const average = ENGINE.simpleAverage(profile());
 
     const trackTabs = el('div', { class: 'seed-chip-tabs__list seed-chip-tabs__list--size_medium jr-chips-tabs', role: 'tablist', 'aria-label': '계열' }, TRACKS.map((track) => el('button', {
@@ -643,10 +859,15 @@
           renderPanel({ keepFocus: 'search' });
         },
       }, 'jr-search'),
-      button(state.filters.favOnly ? '관심만 보기 켬' : '관심만 보기', {
+      button(state.filters.favOnly ? '관심 학과만 켬' : '관심 학과만', {
         variant: state.filters.favOnly ? 'neutralSolid' : 'neutralOutline', size: 'small',
-        onclick: () => { state.filters.favOnly = !state.filters.favOnly; saveFilters(); render(); },
+        onclick: () => { state.filters.favOnly = !state.filters.favOnly; state.filters.limit = 8; saveFilters(); render(); },
         attrs: { 'aria-pressed': String(state.filters.favOnly) },
+      }),
+      button(state.filters.favUniOnly ? '관심 대학만 켬' : '관심 대학만', {
+        variant: state.filters.favUniOnly ? 'neutralSolid' : 'neutralOutline', size: 'small',
+        onclick: () => { state.filters.favUniOnly = !state.filters.favUniOnly; state.filters.limit = 8; saveFilters(); render(); },
+        attrs: { 'aria-pressed': String(state.filters.favUniOnly) },
       }),
     ]);
 
@@ -670,7 +891,7 @@
         : off.length > 0
           ? `조건에 맞는 모집단위가 없습니다. 필터를 넓히거나 ${off.join('·')} 토글을 꺼 보세요.`
           : '조건에 맞는 모집단위가 없습니다. 필터를 넓혀 보세요.';
-      return [summary, chips, filters, note, banner(empty)].filter(Boolean);
+      return [summary, chips, filters, favUniversityPicker(), note, banner(empty)].filter(Boolean);
     }
 
     const rowItem = (row) => {
@@ -679,7 +900,7 @@
       const extra = extraCutText(result);
       const detail = result.status === 'blocked'
         ? `${result.score.blockers[0]} · ${spreadText(result)}`
-        : [`${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`, extra]
+        : [`${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`, extra, basisLabel(row.universityId)]
           .filter(Boolean).join(' · ');
       return listItem({
         title: `${row.universityName} ${deptLabel(row.dept.name)}`,
@@ -696,10 +917,29 @@
       });
     };
 
+    // 관심 대학 묶음. 담아 둔 대학의 모집단위를 맨 위로 올리고, 그 안에서 관심 학과를 앞세운다.
+    // 묶음 안팎 모두 기존 정렬 규칙(컷 높은 순 또는 판정별)을 그대로 지킨다.
+    const starred = (row) => state.favorites.has(deptKey(row.universityId, row.dept.name));
+    const favFirst = (list) => [...list.filter(starred), ...list.filter((row) => !starred(row))];
+    const favRows = state.favUniversities.size > 0 && !state.filters.favUniOnly
+      ? favFirst(rows.filter((row) => isFavUniversity(row.universityId)))
+      : [];
+    const restRows = favRows.length > 0 ? rows.filter((row) => !isFavUniversity(row.universityId)) : rows;
+
     const total = rows.length;
     const blocks = [];
     let shown = 0;
     let moreLabel = '';
+
+    if (favRows.length > 0) {
+      const slice = favRows.slice(0, state.filters.limit * 2);
+      shown += slice.length;
+      blocks.push(el('div', { class: 'jr-section' }, [
+        listHeader('관심 대학', `${favRows.length}곳`),
+        el('div', { class: 'jr-list' }, slice.map(rowItem)),
+      ]));
+    }
+    rows = restRows;
 
     if (state.filters.sort === 'band') {
       // 판정별 보기에서만 머리글을 쓴다. 머리글과 그 안의 뱃지는 언제나 같은 판정이다.
@@ -723,7 +963,7 @@
       const hard = rows.filter((row) => !REACHABLE_BANDS.includes(bandOf(row.jeongsi).key));
       const ordered = [...reachable, ...hard];
       const slice = ordered.slice(0, state.filters.limit * 2);
-      shown = slice.length;
+      shown += slice.length;
       if (slice.length > 0) blocks.push(el('div', { class: 'jr-section' }, [el('div', { class: 'jr-list' }, slice.map(rowItem))]));
       moreLabel = `더 보기 (남은 ${total - shown}곳)`;
     }
@@ -735,7 +975,7 @@
       })])
       : null;
 
-    return [summary, legend, chips, filters, note, ...blocks, more].filter(Boolean);
+    return [summary, legend, chips, filters, favUniversityPicker(), note, ...blocks, more].filter(Boolean);
   }
 
   // ---------------------------------------------------------------- 목표 화면
@@ -775,11 +1015,21 @@
     if (!universityOptions.some((row) => row.id === university.id)) universityOptions.unshift(university);
     const deptOptions = targetDepartments(university);
     if (!deptOptions.some((row) => row.name === dept.name)) deptOptions.unshift(dept);
-    const pickers = el('div', { class: 'jr-filters' }, [
-      select(universityOptions.map((row) => [row.id, `${row.short} (${row.line})`]), university.id, (value) => {
+    const universityLabel = (row) => `${row.short} (${row.line})`;
+    // 관심 대학은 셀렉트 맨 위 묶음으로 올린다.
+    const favPicks = universityOptions.filter((row) => isFavUniversity(row.id));
+    const restPicks = universityOptions.filter((row) => !isFavUniversity(row.id));
+    const universitySelect = favPicks.length > 0
+      ? groupedSelect([
+        { label: '관심 대학', options: favPicks.map((row) => [row.id, universityLabel(row)]) },
+        { label: '그 밖의 대학', options: restPicks.map((row) => [row.id, universityLabel(row)]) },
+      ], university.id, (value) => { state.target = { university: value, dept: '' }; render(); }, '대학')
+      : select(universityOptions.map((row) => [row.id, universityLabel(row)]), university.id, (value) => {
         state.target = { university: value, dept: '' };
         render();
-      }, '대학'),
+      }, '대학');
+    const pickers = el('div', { class: 'jr-filters' }, [
+      universitySelect,
       select(deptOptions.map((row) => [row.name, deptLabel(row.name)]), dept.name, (value) => {
         state.target = { university: university.id, dept: value };
         render();
@@ -796,9 +1046,14 @@
     const verdict = el('div', { class: 'jr-verdict' }, [
       el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${dept.track}` }),
       el('p', { class: 'jr-verdict-number', text: signed(target.gap, 1) }),
-      el('p', {}, [badge(targetBand.label, BAND_TONE[targetBand.key]), el('span', { class: 'jr-verdict-note', text: ` 내 환산 ${fmt(target.mine, 1)} · ${spreadText(target)}` })]),
-      el('p', { class: 'jr-muted', text: `${target.cut.kind} 기준${target.cut.derived ? ' (지난해 값은 대학 공식 발표의 연도 변화량으로 맞춘 값)' : ''}` }),
+      el('p', {}, [
+        badge(targetBand.label, BAND_TONE[targetBand.key]),
+        isApproxBasis(university.id) ? badge(APPROX_BADGE, 'warning') : null,
+        el('span', { class: 'jr-verdict-note', text: ` 내 환산 ${fmt(target.mine, 1)} · ${spreadText(target)}` }),
+      ].filter(Boolean)),
+      el('p', { class: 'jr-muted', text: `${target.cut.kind} 기준${target.cut.derived ? ' (지난해 값은 대학 공식 발표의 연도 변화량으로 맞춘 값)' : ''} · ${university.short}는 ${basisLabel(university.id)}${isApproxBasis(university.id) ? ` — ${APPROX_NOTE}` : ''}` }),
     ]);
+    const scaleNote = callout('무엇을 기준으로 비교하나', SCALE_SENTENCE, 'informative');
 
     const plan = target.plan;
     const planBlock = plan ? section([
@@ -844,7 +1099,8 @@
 
     const compare = renderCompare(university, dept);
 
-    return [pickers, verdict, planBlock, ...notes, renderBasis(dept, target), renderSusi(target), compare].filter(Boolean);
+    return [pickers, verdict, scaleNote, planBlock, ...notes, renderStdScore(university, dept),
+      renderBasis(dept, target), renderSusi(target), compare].filter(Boolean);
   }
 
   function renderBasis(dept, target) {
@@ -918,6 +1174,15 @@
       const otherDept = other?.departments.find((row) => row.name === deptName);
       if (other && otherDept) picks.push({ university: other, dept: otherDept });
     }
+    // 관심 학과가 모자라면 관심 대학에서 같은 계열의 대표 모집단위를 채워 넣는다.
+    for (const universityId of state.favUniversities) {
+      if (picks.length >= 3) break;
+      const other = universityById.get(universityId);
+      if (!other || picks.some((row) => row.university.id === universityId)) continue;
+      const sameTrack = other.departments.filter((row) => row.track === dept.track && Object.keys(row.jeongsi || {}).length > 0);
+      const otherDept = sameTrack[0] || other.departments[0];
+      if (otherDept) picks.push({ university: other, dept: otherDept });
+    }
     if (!picks.some((row) => row.university.id === university.id && row.dept.name === dept.name) && picks.length < 3) {
       picks.unshift({ university, dept });
     }
@@ -928,7 +1193,7 @@
     if (picks.length < 2) {
       return section([
         listHeader('비교'),
-        banner('진단 화면에서 관심 학과를 두 곳 이상 저장하면 같은 성적으로 나란히 비교합니다.'),
+        banner('진단 화면에서 관심 학과나 관심 대학을 담으면 같은 성적으로 나란히 비교합니다.'),
       ]);
     }
     // 진단 목록과 같은 정렬 — 예상 컷이 높은 곳부터, 같으면 대학 라인 순.
@@ -1016,8 +1281,12 @@
     }
 
     const source = (rule.sources || [])[0];
+    const summary = basisOf(university.id);
     return [
       picker,
+      callout(`${university.short} 반영 지표`,
+        `${summary?.label || '반영 지표 미확인'}${summary?.text ? ` — 시행계획 표기: ${summary.text}` : ''}`,
+        summary?.approxPercentile ? 'warning' : 'informative'),
       section([listHeader(`${university.name} 정시 수능 반영`, `${rule.year || 2027}학년도`), ...trackBlocks]),
       rule.changes2027 ? callout('2027학년도 변경', prose(rule.changes2027), 'informative') : null,
       cutRows.length > 0 ? section([
@@ -1087,6 +1356,47 @@
     return { total, exact, integerOnly, partial };
   }
 
+  // 정확도 아코디언. 숫자는 scripts/accuracy-report.mjs가 데이터에서 세어 넣은 DATA.accuracy 뿐이다.
+  function renderAccuracy() {
+    const accuracy = DATA.accuracy;
+    if (!accuracy) return null;
+    const percent = (value) => `${fmt(value, 1)}%`;
+    const coverage = Object.values(accuracy.coverage).filter((row) => row.count > 0);
+    const gap = accuracy.gap;
+    return accordion('정확도 — 어디가 값과 얼마나 다른가', [
+      muted(`정시 결과가 있는 모집단위 ${accuracy.departments}곳을 세어 만든 숫자입니다. 문서 판은 docs/ACCURACY.md 에 있습니다.`),
+      table(['기준값 출처', '모집단위', '비율'],
+        coverage.map((row) => [row.label, String(row.count), percent(row.rate)])),
+      el('div', {}, coverage.map((row) => el('p', { class: 'jr-muted', text: `${row.label} — ${row.universities.join(' · ')}` }))),
+      gap.pairs > 0 ? el('div', {}, [
+        el('p', { class: 'jr-muted', text: `원값과 집계 정수가 둘 다 있는 ${gap.pairs}곳의 차이 (백분위 점)` }),
+        table(['지표', '값'], [
+          ['평균 절대차', fmt(gap.meanAbs, 2)],
+          ['중앙값 절대차', fmt(gap.medianAbs, 2)],
+          ['절대차 95번째 백분위', fmt(gap.p95Abs, 2)],
+          ['최대 절대차', fmt(gap.maxAbs, 2)],
+          ['부호 있는 차이 95% 구간', `${numText(fmt(gap.low, 2))} ~ ${numText(fmt(gap.high, 2))}`],
+        ]),
+        table(['대학', '짝', '평균 절대차', '최대'],
+          gap.byUniversity.map((row) => [row.short, String(row.pairs), fmt(row.meanAbs, 2), fmt(row.maxAbs, 2)])),
+      ]) : null,
+      el('p', { class: 'jr-muted', text: `50%컷과 70%컷이 함께 있는 ${accuracy.columns.rows}행 가운데 ${accuracy.columns.flipped}행(${percent(accuracy.columns.rate)})은 50%컷이 70%컷보다 낮습니다. 두 열이 어긋나 있다는 뜻이라 판정은 70%컷만 씁니다.` }),
+      el('div', {}, [
+        el('p', { class: 'jr-muted', text: '컷이 흔들릴 때 판정이 바뀌는 모집단위' }),
+        table(['성적', '판정한 곳', '±0.5', '±1.0'], accuracy.sensitivity.map((row) => [
+          row.label, String(row.judged),
+          `${row.shifts[0].changed} (${percent(row.shifts[0].rate)})`,
+          `${row.shifts[1].changed} (${percent(row.shifts[1].rate)})`,
+        ])),
+      ]),
+      el('p', { class: 'jr-muted', text: `반영 규칙: 대학 ${accuracy.rules.universities}곳 · 계열 트랙 ${accuracy.rules.tracks}개 가운데 ${accuracy.rules.weightedTracks}개는 반영비율을 확인했고, 원문에서 값을 찾지 못한 항목이 ${accuracy.rules.unconfirmed}건 남아 있습니다.` }),
+      table(['반영 지표', '대학 수'],
+        Object.entries(accuracy.rules.basisCounts).sort((left, right) => right[1] - left[1]).map(([label, count]) => [label, String(count)])),
+      el('p', { class: 'jr-muted', text: `${accuracy.exams.year}학년도 수능 등급컷은 ${accuracy.exams.final ? '실채점 확정' : '미확정'}(${accuracy.exams.announcedOn})이고, 표준점수 도수분포는 ${accuracy.exams.distributionSubjects}개 과목을 원자료로 갖고 있습니다.` }),
+      el('p', { class: 'jr-muted', text: accuracy.thirdParty.note }),
+    ].filter(Boolean));
+  }
+
   function renderAbout() {
     const sources = [
       DATA.sources?.results && { title: DATA.sources.results.title, url: DATA.sources.results.url, note: DATA.sources.results.note },
@@ -1103,6 +1413,7 @@
 
     return [
       callout('판정 기준', verdictLegend(), 'informative'),
+      callout('무엇을 기준으로 비교하나', SCALE_SENTENCE, 'informative'),
       section([
         listHeader('판정 표', '경계값은 위쪽 판정에 든다'),
         table(['판정', '차이 (내 환산 − 예상 컷)'], ENGINE.VERDICT_BANDS.map((band, index, all) => [
@@ -1139,6 +1450,16 @@
         listHeader('대학 공식 입시결과를 함께 쓴 대학'),
         universitySources.length > 0 ? muted(universitySources.join(' · ')) : muted('없음'),
       ]),
+      renderAccuracy(),
+      section([
+        listHeader('대학별 반영 지표', `표점 기준 ${DATA.universities.filter((row) => isApproxBasis(row.id)).length}곳`),
+        el('div', { class: 'jr-list' }, DATA.universities.map((university) => listItem({
+          title: university.short,
+          detail: `${basisLabel(university.id)} — ${basisOf(university.id)?.text || '미확인'}`,
+          suffix: badge(basisShort(university.id), isApproxBasis(university.id) ? 'warning' : 'neutral'),
+        }))),
+      ]),
+      favUniversityPicker(),
       accordion(`한계 — 아직 확인하지 못한 규칙 ${unconfirmed.length}건`, [
         muted('아래 항목은 시행계획 원문에서 값을 찾지 못해 비워 두거나 가정했습니다. 판정에 그만큼 오차가 있습니다.'),
         el('div', { class: 'jr-list' }, unconfirmed.map((note) => listItem({ title: note }))),

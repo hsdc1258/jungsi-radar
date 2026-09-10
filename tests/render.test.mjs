@@ -306,3 +306,71 @@ test('더 보기를 누르면 목록이 늘고 다시 그려도 느려지지 않
   const elapsed = Date.now() - start;
   assert.ok(elapsed < 2000, `다시 그리기 5번이 2초 안에 끝나야 한다 (${elapsed}ms)`);
 });
+
+const STD_SCORES = {
+  mode: 'std', korElective: '언어와매체', kor: '131', mathElective: '미적분', math: '128',
+  eng: '2', hist: '1', inq1Subject: '생활과윤리', inq1: '65', inq2Subject: '한국지리', inq2: '67', gpa: '',
+};
+
+test('표준점수 모드는 백분위·등급을 되읽고 대학 환산점수를 보여 준다', () => {
+  const { panel, tabs } = boot(STD_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /표준점수 → 백분위/u);
+  // 연세대 안내문 예시와 같은 값이 화면에 그대로 있다.
+  assert.match(text, /표준점수 131 · 백분위 94/u);
+  assert.match(text, /표준점수 65 · 백분위 92/u);
+  assert.match(text, /대학별 환산점수/u);
+  assert.match(text, /판정은 어디가 70%컷과 같은 국·수·탐 백분위 평균 척도에서 비교하며/u);
+  // 표준점수로 넣어도 진단이 열린다 (백분위로 흘러 들어간다).
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  assert.match(panel.text, /조건에 맞는 모집단위/u);
+});
+
+test('반영 지표가 진단 부제·목표 카드·반영 탭에 적힌다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  const view = (name) => {
+    tabs.find((tab) => tab.getAttribute('data-view') === name).dispatch('click');
+    return panel.text;
+  };
+  assert.ok(/표점 반영|백분위 반영|등급 배점 반영|반영 지표 미확인/u.test(view('diagnose')), '진단 부제에 반영 지표가 없다');
+  const target = view('target');
+  assert.ok(/표점 반영|백분위 반영|등급 배점 반영/u.test(target), '목표 카드에 반영 지표가 없다');
+  assert.match(target, /판정은 어디가 70%컷과 같은 국·수·탐 백분위 평균 척도에서 비교하며/u);
+  assert.match(view('rules'), /반영 지표/u);
+  const about = view('about');
+  assert.match(about, /정확도 — 어디가 값과 얼마나 다른가/u);
+  assert.match(about, /원값과 집계 정수가 둘 다 있는/u);
+});
+
+test('관심 대학을 담으면 진단 목록 맨 위에 따로 묶인다', () => {
+  const { panel, tabs, context } = boot(FULL_SCORES);
+  const diagnose = () => {
+    tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+    return panel;
+  };
+  diagnose();
+  assert.ok(!panel.querySelectorAll('.seed-list-header').some((node) => node.text.includes('관심 대학')),
+    '관심 대학이 0곳이면 묶음이 없어야 한다');
+  // 관심 대학 칩(아코디언 안)에서 한 곳을 고른다.
+  const target = context.IPSI_DATA.universities.find((row) => !['snu', 'yonsei', 'korea'].includes(row.id)
+    && !row.womenOnly && row.departments.length > 3);
+  const chip = panel.querySelectorAll('.seed-chip-tabs__trigger').find((node) => node.text === target.short);
+  assert.ok(chip, `${target.short} 칩이 없다`);
+  chip.dispatch('click');
+  const headers = panel.querySelectorAll('.seed-list-header').map((node) => node.text);
+  assert.ok(headers.some((head) => head.includes('관심 대학')), `관심 대학 묶음이 없다: ${headers}`);
+  // 저장은 관심 학과와 따로 남는다.
+  assert.equal(JSON.parse(context.localStorage.getItem('jr.favUniversities'))[0], target.id);
+  assert.equal(context.localStorage.getItem('jr.favorites'), null);
+  // 묶음이 목록 맨 위다 — 첫 번째 머리글이 '관심 대학'이다.
+  assert.match(headers[0], /관심 대학/u);
+});
+
+test('관심 학과만 / 관심 대학만 토글이 서로 다른 이름으로 있다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const labels = panel.querySelectorAll('.seed-action-button').map((node) => node.text);
+  assert.ok(labels.some((label) => label.includes('관심 학과만')), labels.join(' / '));
+  assert.ok(labels.some((label) => label.includes('관심 대학만')), labels.join(' / '));
+});
