@@ -6,3 +6,4 @@ _seed/work/
 scripts/source-parsers/official.json
 dist/
 __pycache__/
+.claude/
