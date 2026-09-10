@@ -1,13 +1,14 @@
-// 이상치 탐지 — 설명이 필요한 2026학년도 70%컷을 찾아 분류한다.
+// 이상치 탐지 — 설명이 필요한 2026학년도 입결을 찾아 분류한다 (docs/MODEL.md §6).
 //   source/results.json → source/anomalies.json
 // `npm run anomalies` 가 이 파일을 돌리고, `npm run build` 는 그 결과를 읽기만 한다
 // (scripts/build-data.mjs readAnomalies). 판정 규칙은 여기 한 곳에만 있다.
 //
-// 왜 두 갈래인가: 같은 대학 같은 계열에서 혼자 낮은 값은 그 자체로는 아무것도 말해 주지 않는다.
-// 축산학과·농학과·야간 경영·간호처럼 **원래 컷이 낮은 모집단위**가 대부분이기 때문이다.
-// 그래서 (a) 계열 중앙값에서 떨어진 값은 후보로만 두고, 판정은 (b) 그 모집단위 **자신의 이력**과
-// 견줘서만 내린다. 이력이 없으면 `미확인`이고 뱃지도 달지 않는다 — 근거 없는 단일값을 오류라고
-// 부르지 않는다 (docs/FRAME.md §9.4, docs/AUDIT.md §13).
+// v3에서 바뀐 것 — 어디가 입결은 **환산점수 순으로 줄 세운 뒤 그 지점 학생 한 명**의 값이다.
+// 그래서 평균백분위 50% < 70% 는 모순이 아니다(국어가 강한 학생이 평균은 낮아도 위에 선다).
+// 종전 규칙(50%컷 < 70%컷 = 오류)은 폐기했다. 남은 오류는 셋뿐이다:
+//   환산점수 50% < 70% · 환산점수가 총점 초과 · 백분위가 0~100 밖.
+// 펑크는 값 하나로 부르지 않는다 — **같은 선발 조건**에서 전년보다 문턱 이상 낮고, 경쟁률 하락이나
+// 충원 ≥ 모집인원이 함께 있을 때만이다. 그 밖은 `undetermined`(판단 불가)이고 뱃지도 붙지 않는다.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { buildData } from './build-data.mjs';
@@ -19,7 +20,11 @@ export const YEAR = '2026';
 // 문턱. 값이 촘촘하면 MAD 가 0에 가까워지므로 절대 하한 3점을 함께 둔다.
 export const FLOOR = 3;
 export const K = 2.5;
-export const THRESHOLD_TEXT = '계열 (중앙값 − 값) > max(3, 2.5 × MAD) · 이력 |값 − 이력 중앙값| > max(3, 2.5 × MAD)';
+// 환산점수 하락 문턱은 대학마다 총점이 달라 비율로 잡는다(총점의 0.5%, 최소 1점).
+export const SCORE_DROP_RATE = 0.005;
+// 같은 선발 조건으로 보는 모집인원 변화 폭(§5). 이보다 크게 바뀌면 연속 비교를 끊는다.
+export const QUOTA_TOLERANCE = 0.3;
+export const THRESHOLD_TEXT = '오류 = 환산 50% < 70% · 총점 초과 · 백분위 범위 밖 / 펑크 = 같은 선발 조건에서 전년 대비 하락 + (경쟁률 하락 또는 충원 ≥ 모집인원)';
 
 const isNum = (value) => typeof value === 'number' && Number.isFinite(value);
 const round2 = (value) => Math.round(value * 100) / 100;
@@ -57,49 +62,93 @@ export function priorValues(row) {
     .map((entry) => entry.value);
 }
 
-// 이력 통계. 값이 하나뿐이면 MAD 가 0이라 문턱은 절대 하한 3점이 된다.
 export function priorStats(row) {
   const values = priorValues(row);
   if (values.length === 0) return null;
   return { center: median(values), spread: mad(values), count: values.length };
 }
 
-// (b) 이력 후보인가. 후보로는 양쪽을 본다 — 다만 판정에서 이력보다 크게 낮으면 펑크,
-// 크게 높으면 실제 상승이라 정상이다.
+// (b) 이력 후보인가. 후보로는 양쪽을 본다 — 판정(펑크)은 아래쪽만 본다.
 export function isPriorCandidate(value, stats) {
   if (!isNum(value) || !stats) return false;
   return Math.abs(value - stats.center) > threshold(stats.spread);
 }
 
-// 값 자체가 말이 되는가. 이것만은 이력이 없어도 오류라고 부를 수 있다 —
-// 백분위가 0~100 밖이거나, 70%컷이 50%컷보다 높은(상위 절반의 컷보다 높은) 자기모순이다.
-export function isImpossible(row) {
-  if (!isNum(row.value)) return true;
-  if (row.value < 0 || row.value > 100) return true;
-  if (isNum(row.cut50) && row.value > row.cut50) return true;
-  return false;
+// §5 — 연속 비교가 가능한 선발 조건인가. 모집군이 바뀌었거나 모집인원이 크게 달라졌으면 끊는다.
+export function sameConditions(row) {
+  if (row.conditionsSame === false) return false;
+  const prior = row.prior || null;
+  if (!prior) return true;
+  if (row.group && prior.group && row.group !== prior.group) return false;
+  if (isNum(row.quota) && isNum(prior.quota) && prior.quota > 0) {
+    if (Math.abs(row.quota - prior.quota) / prior.quota > QUOTA_TOLERANCE) return false;
+  }
+  return true;
 }
 
-// 후보의 분류. 순수 함수 — tests/anomalies.test.mjs 가 합성 입력으로 검사한다. 후보에만 부른다.
-//   error       오류 의심 — 값 자체가 말이 되지 않는다(백분위 범위 밖 · 70%컷 > 50%컷). 자기모순만 남는다.
-//   punk        펑크 의심 — 이력이 있는데 2026이 이력보다 크게 **낮다**.
-//   practical   실기 혼입 — 예체능 실기 모집단위는 수능 컷이 낮은 것이 정상이다.
-//   unverified  미확인 — 이력이 없는 단일값. 계열에서 떨어져 있을 뿐 근거가 없다. 뱃지 없음.
-//   normal      설명 가능 — 이력이 있고 2026이 그 이력대로이거나, 이력보다 높다(실제 상승).
-export function classifyAnomaly(row) {
-  if (isImpossible(row)) return 'error';
-  const stats = priorStats(row);
-  if (stats) {
-    const limit = threshold(stats.spread);
-    if (stats.center - row.value > limit) return 'punk';
-    // 이력보다 크게 **높은** 값은 오류가 아니다. 이 이력은 2026 기준값에 대학 공식 변화량을 더해
-    // 만든 줄(scripts/build-data.mjs buildSeries)이라, 그보다 높다는 것은 실제 상승을 뜻한다.
-    if (row.value - stats.center > limit) return 'normal';
+// 값 자체가 말이 되지 않는 경우. 이것만은 이력이 없어도 오류라고 부를 수 있다.
+//   - 환산점수 50% < 70% : 환산점수 순 정렬에서 불가능하다.
+//   - 환산점수가 총점을 넘는다.
+//   - 백분위가 0~100 밖이다.
+// **평균백분위 50% < 70% 는 오류가 아니다** — 환산점수 순 정렬의 정상적인 결과다(§0 미래융합전공(C)).
+export function errorReasons(row) {
+  const out = [];
+  if (isNum(row.score50) && isNum(row.score70) && row.score50 < row.score70) out.push('환산 50% < 70%');
+  if (isNum(row.total) && row.total > 0) {
+    if (isNum(row.score70) && row.score70 > row.total) out.push('70% 환산점수가 총점 초과');
+    if (isNum(row.score50) && row.score50 > row.total) out.push('50% 환산점수가 총점 초과');
   }
+  for (const [label, value] of [['70%컷', row.value], ['50%컷', row.cut50], ['100%컷', row.cut100]]) {
+    if (value === null || value === undefined) continue;
+    if (!isNum(value) || value < 0 || value > 100) out.push(`${label} 백분위 범위 밖`);
+  }
+  return out;
+}
+export const isError = (row) => errorReasons(row).length > 0;
+
+// 전년 대비 하락 폭. 평균백분위(이력 중앙값)와 환산점수 둘 다 본다.
+export function dropOf(row) {
+  const stats = priorStats(row);
+  const byPct = stats && isNum(row.value) ? round2(stats.center - row.value) : null;
+  const byScore = isNum(row.score70) && isNum(row.prior?.score70) ? round2(row.prior.score70 - row.score70) : null;
+  const pctHit = isNum(byPct) && byPct > threshold(stats.spread);
+  const scoreLimit = isNum(row.total) && row.total > 0 ? Math.max(1, row.total * SCORE_DROP_RATE) : 1;
+  const scoreHit = isNum(byScore) && byScore > scoreLimit;
+  return { byPct, byScore, dropped: pctHit || scoreHit };
+}
+
+// 펑크 의심. 하락 하나만으로는 부르지 않는다 — 경쟁률 하락이나 충원 ≥ 모집인원이 함께 있어야 한다.
+export function punkReasons(row) {
+  if (!sameConditions(row)) return [];
+  const drop = dropOf(row);
+  if (!drop.dropped) return [];
+  const signals = [];
+  if (isNum(row.rate) && isNum(row.prior?.rate) && row.rate < row.prior.rate) signals.push('경쟁률 하락');
+  if (isNum(row.fill) && isNum(row.quota) && row.quota > 0 && row.fill >= row.quota) signals.push('충원 ≥ 모집인원');
+  if (signals.length === 0) return [];
+  return ['전년 대비 하락', ...signals];
+}
+export const isPunk = (row) => punkReasons(row).length > 0;
+
+// 후보의 분류. 순수 함수 — tests/anomalies.test.mjs 가 합성 입력으로 검사한다.
+//   error         값 자체가 말이 되지 않는다.
+//   punk          같은 선발 조건에서 전년보다 낮고, 경쟁률·충원 신호가 함께 있다.
+//   practical     실기 예체능 — 수능 컷이 낮은 것이 정상이다.
+//   undetermined  판단 불가. 뱃지 없음.
+export function classifyAnomaly(row) {
+  if (isError(row)) return 'error';
+  if (isPunk(row)) return 'punk';
   if (row.practical === true) return 'practical';
-  // 이력이 없는 후보는 (a) 계열 기준에서만 온 값이다 — 이력이 없으면 (b)가 켜지지 않는다.
-  if (!stats) return 'unverified';
-  return 'normal';
+  return 'undetermined';
+}
+
+export function reasonsOf(row) {
+  const error = errorReasons(row);
+  if (error.length > 0) return error;
+  const punk = punkReasons(row);
+  if (punk.length > 0) return punk;
+  if (row.practical === true) return ['실기 반영 모집단위'];
+  return [];
 }
 
 // 대학 × 계열 묶음. 한 묶음의 2026 70%컷들이 서로의 기준이 된다.
@@ -114,14 +163,37 @@ export function rowsOf(universities) {
   for (const university of universities) {
     for (const dept of university.departments || []) {
       const current = (dept.jeongsi || {})[YEAR];
-      if (!current || current.metric !== 'pct' || !isNum(current.cut70)) continue;
+      if (!current) continue;
+      const priorYear = Object.keys(dept.jeongsi || {}).filter((year) => year < YEAR).sort().at(-1) || null;
+      const priorRow = priorYear ? dept.jeongsi[priorYear] : null;
+      const score = current.score || {};
+      const priorScore = priorRow?.score || {};
+      if (!isNum(current.cut70) && !isNum(score.p70) && !isNum(current.score70)) continue;
       rows.push({
         id: university.id,
         name: dept.name,
         track: dept.track,
         practical: dept.practical === true,
-        value: current.cut70,
+        value: isNum(current.cut70) ? current.cut70 : null,
         cut50: isNum(current.cut50) ? current.cut50 : null,
+        cut100: isNum(current.cut100) ? current.cut100 : null,
+        score70: isNum(score.p70) ? score.p70 : (isNum(current.score70) ? current.score70 : null),
+        score50: isNum(score.p50) ? score.p50 : (isNum(current.score50) ? current.score50 : null),
+        total: isNum(score.total) ? score.total : null,
+        group: current.group || null,
+        quota: isNum(current.quota) ? current.quota : null,
+        rate: isNum(current.rate) ? current.rate : null,
+        fill: isNum(current.fill) ? current.fill : null,
+        prior: priorRow
+          ? {
+            year: priorYear,
+            value: isNum(priorRow.cut70) ? priorRow.cut70 : null,
+            score70: isNum(priorScore.p70) ? priorScore.p70 : (isNum(priorRow.score70) ? priorRow.score70 : null),
+            group: priorRow.group || null,
+            quota: isNum(priorRow.quota) ? priorRow.quota : null,
+            rate: isNum(priorRow.rate) ? priorRow.rate : null,
+          }
+          : null,
         series: (dept.series || []).map((entry) => ({ year: entry.year, value: entry.value })),
       });
     }
@@ -130,7 +202,8 @@ export function rowsOf(universities) {
 }
 
 // 후보 목록. 순수 함수 — 입력은 rowsOf 가 만든 행 배열이다.
-// 계열(a)에서 떨어졌거나 자기 이력(b)에서 떨어진 행을 모두 담고, 분류로 갈라 놓는다.
+// 오류·펑크는 후보 여부와 무관하게 싣는다. 그 밖은 계열(a)이나 자기 이력(b)에서 벗어난 행만
+// `undetermined`(또는 실기)로 남긴다 — 판정이 아니라 "설명이 필요한 곳" 목록이다.
 export function detect(rows) {
   const groups = new Map();
   for (const row of rows) {
@@ -142,29 +215,34 @@ export function detect(rows) {
   for (const group of groups.values()) {
     // 두 곳뿐인 묶음은 중앙값이 곧 두 값의 평균이라 서로를 이상치로 만든다 — 셋부터 계열 기준을 쓴다.
     const usable = group.length >= 3;
-    const values = group.map((row) => row.value);
-    const center = usable ? median(values) : null;
-    const spread = usable ? mad(values) : null;
+    const values = group.map((row) => row.value).filter(isNum);
+    const center = usable && values.length > 0 ? median(values) : null;
+    const spread = usable && values.length > 0 ? mad(values) : null;
     for (const row of group) {
+      const kind = classifyAnomaly(row);
       const prior = priorStats(row);
       const groupHit = usable && isCandidate(row.value, center, spread);
       const priorHit = isPriorCandidate(row.value, prior);
-      if (!groupHit && !priorHit) continue;
+      const flagged = kind === 'error' || kind === 'punk';
+      if (!flagged && !groupHit && !priorHit) continue;
       items.push({
         id: row.id,
         name: row.name,
         track: row.track,
-        value: round2(row.value),
-        median: usable ? round2(center) : null,
-        mad: usable ? round2(spread) : null,
-        gap: usable ? round2(center - row.value) : null,
+        value: isNum(row.value) ? round2(row.value) : null,
+        score70: row.score70,
+        score50: row.score50,
+        median: center === null ? null : round2(center),
+        mad: spread === null ? null : round2(spread),
+        gap: center === null || !isNum(row.value) ? null : round2(center - row.value),
         priorMedian: prior ? round2(prior.center) : null,
         priorMad: prior ? round2(prior.spread) : null,
         // 양수면 이력보다 낮다(펑크 쪽), 음수면 이력보다 높다(상승 쪽).
-        priorGap: prior ? round2(prior.center - row.value) : null,
+        priorGap: prior && isNum(row.value) ? round2(prior.center - row.value) : null,
         priorCount: prior ? prior.count : 0,
-        basis: groupHit && priorHit ? 'both' : groupHit ? 'group' : 'prior',
-        kind: classifyAnomaly(row),
+        basis: groupHit && priorHit ? 'both' : groupHit ? 'group' : priorHit ? 'prior' : 'value',
+        kind,
+        reasons: reasonsOf(row),
       });
     }
   }
@@ -173,8 +251,9 @@ export function detect(rows) {
     || String(left.name).localeCompare(String(right.name), 'ko'));
 }
 
-// 정렬 세기. 계열과 이력 중 더 크게 벌어진 쪽을 쓴다.
+// 정렬 세기. 계열과 이력 중 더 크게 벌어진 쪽을 쓴다. 오류는 언제나 맨 위다.
 export function strength(item) {
+  if (item.kind === 'error') return Number.MAX_SAFE_INTEGER;
   const group = isNum(item.gap) ? Math.abs(item.gap) : 0;
   const prior = isNum(item.priorGap) ? Math.abs(item.priorGap) : 0;
   return Math.max(group, prior);
