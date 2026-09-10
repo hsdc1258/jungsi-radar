@@ -990,7 +990,7 @@
    "priorGap": -6.23,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "kyonggi",
@@ -1080,7 +1080,7 @@
    "priorGap": -5.89,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "kw",
@@ -1095,7 +1095,7 @@
    "priorGap": -5.87,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "mju",
@@ -1110,7 +1110,7 @@
    "priorGap": -5.6,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "smu",
@@ -1185,7 +1185,7 @@
    "priorGap": -4,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "sookmyung",
@@ -1245,7 +1245,7 @@
    "priorGap": -4.8,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "kw",
@@ -1275,7 +1275,7 @@
    "priorGap": -4.67,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "hanyang",
@@ -1305,7 +1305,7 @@
    "priorGap": -4.5,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "knu",
@@ -1335,7 +1335,7 @@
    "priorGap": -4.48,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "khu",
@@ -1350,7 +1350,7 @@
    "priorGap": -4.41,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "kw",
@@ -1365,7 +1365,7 @@
    "priorGap": -4.3,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "skku",
@@ -1380,7 +1380,7 @@
    "priorGap": -4.17,
    "priorCount": 1,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "kw",
@@ -1395,7 +1395,7 @@
    "priorGap": -4.06,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "cau",
@@ -1500,7 +1500,7 @@
    "priorGap": -3.75,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "ajou",
@@ -1530,7 +1530,7 @@
    "priorGap": -3.76,
    "priorCount": 3,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "mju",
@@ -1560,7 +1560,7 @@
    "priorGap": -3.13,
    "priorCount": 2,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   },
   {
    "id": "mju",
@@ -1605,7 +1605,7 @@
    "priorGap": -3.2,
    "priorCount": 3,
    "basis": "prior",
-   "kind": "error"
+   "kind": "normal"
   }
  ]
 }

@@ -65,11 +65,17 @@ test('분류 — 이력보다 크게 낮으면 펑크 의심', () => {
   assert.equal(classifyAnomaly(row({ value: 80, series: [{ year: '2025', value: 84 }] })), 'punk');
 });
 
-test('분류 — 이력보다 크게 높거나 값이 자기모순이면 오류 의심', () => {
-  assert.equal(classifyAnomaly(row({ value: 90, series: [{ year: '2025', value: 80 }] })), 'error');
-  // 자기모순은 이력이 없어도, 이력이 맞아떨어져도 오류다.
+test('분류 — 이력보다 높으면 정상이다. 오류는 자기모순뿐이다', () => {
+  // 이력은 2026 기준값에 대학 공식 변화량을 더해 만든 줄이라, 그보다 높다는 것은 실제 상승이다.
+  assert.equal(classifyAnomaly(row({ value: 90, series: [{ year: '2025', value: 80 }] })), 'normal');
+  // 실기 예체능이어도 이력이 있고 그보다 높으면 정상이다.
+  assert.equal(classifyAnomaly(row({
+    track: '예체능', practical: true, value: 90, series: [{ year: '2025', value: 80 }],
+  })), 'normal');
+  // 자기모순은 이력이 없어도, 이력이 맞아떨어져도, 이력보다 높아도 오류다.
   assert.equal(classifyAnomaly(row({ value: 80, cut50: 76 })), 'error');
   assert.equal(classifyAnomaly(row({ value: 80, cut50: 76, series: [{ year: '2025', value: 80 }] })), 'error');
+  assert.equal(classifyAnomaly(row({ value: 90, cut50: 86, series: [{ year: '2025', value: 80 }] })), 'error');
 });
 
 test('분류 — 이력이 없는 단일 저값은 오류가 아니라 미확인이다', () => {
@@ -131,7 +137,7 @@ test('묶음 탐지 — 계열에 걸리지 않아도 자기 이력에서 벗어
   const items = detect(rows);
   assert.equal(items.length, 1);
   assert.equal(items[0].name, '가');
-  assert.equal(items[0].kind, 'error');
+  assert.equal(items[0].kind, 'normal', '이력보다 높은 값은 후보로만 실리고 판정은 정상이다');
   assert.equal(items[0].median, null, '셋 미만 묶음은 계열 중앙값을 내지 않는다');
   assert.equal(items[0].gap, null);
   assert.equal(items[0].priorGap, -10);

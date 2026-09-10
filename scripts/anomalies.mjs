@@ -64,7 +64,8 @@ export function priorStats(row) {
   return { center: median(values), spread: mad(values), count: values.length };
 }
 
-// (b) 이력 후보인가. 이쪽은 양쪽을 본다 — 이력보다 크게 낮으면 펑크, 크게 높으면 오류다.
+// (b) 이력 후보인가. 후보로는 양쪽을 본다 — 다만 판정에서 이력보다 크게 낮으면 펑크,
+// 크게 높으면 실제 상승이라 정상이다.
 export function isPriorCandidate(value, stats) {
   if (!isNum(value) || !stats) return false;
   return Math.abs(value - stats.center) > threshold(stats.spread);
@@ -80,18 +81,20 @@ export function isImpossible(row) {
 }
 
 // 후보의 분류. 순수 함수 — tests/anomalies.test.mjs 가 합성 입력으로 검사한다. 후보에만 부른다.
-//   error       오류 의심 — 값이 범위·자기 정합을 깨거나, 이력이 있는데 2026이 이력보다 크게 **높다**.
+//   error       오류 의심 — 값 자체가 말이 되지 않는다(백분위 범위 밖 · 70%컷 > 50%컷). 자기모순만 남는다.
 //   punk        펑크 의심 — 이력이 있는데 2026이 이력보다 크게 **낮다**.
 //   practical   실기 혼입 — 예체능 실기 모집단위는 수능 컷이 낮은 것이 정상이다.
 //   unverified  미확인 — 이력이 없는 단일값. 계열에서 떨어져 있을 뿐 근거가 없다. 뱃지 없음.
-//   normal      설명 가능 — 이력이 있고 2026이 그 이력대로다(원래 낮은 모집단위).
+//   normal      설명 가능 — 이력이 있고 2026이 그 이력대로이거나, 이력보다 높다(실제 상승).
 export function classifyAnomaly(row) {
   if (isImpossible(row)) return 'error';
   const stats = priorStats(row);
   if (stats) {
     const limit = threshold(stats.spread);
     if (stats.center - row.value > limit) return 'punk';
-    if (row.value - stats.center > limit) return 'error';
+    // 이력보다 크게 **높은** 값은 오류가 아니다. 이 이력은 2026 기준값에 대학 공식 변화량을 더해
+    // 만든 줄(scripts/build-data.mjs buildSeries)이라, 그보다 높다는 것은 실제 상승을 뜻한다.
+    if (row.value - stats.center > limit) return 'normal';
   }
   if (row.practical === true) return 'practical';
   // 이력이 없는 후보는 (a) 계열 기준에서만 온 값이다 — 이력이 없으면 (b)가 켜지지 않는다.
@@ -157,7 +160,7 @@ export function detect(rows) {
         gap: usable ? round2(center - row.value) : null,
         priorMedian: prior ? round2(prior.center) : null,
         priorMad: prior ? round2(prior.spread) : null,
-        // 양수면 이력보다 낮다(펑크 쪽), 음수면 이력보다 높다(오류 쪽).
+        // 양수면 이력보다 낮다(펑크 쪽), 음수면 이력보다 높다(상승 쪽).
         priorGap: prior ? round2(prior.center - row.value) : null,
         priorCount: prior ? prior.count : 0,
         basis: groupHit && priorHit ? 'both' : groupHit ? 'group' : 'prior',
