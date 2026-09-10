@@ -20,10 +20,11 @@
   </script>
 </head>
 <body>
-  <header class="seed-app-bar__root jr-appbar" role="banner">
+<div class="jr-head">
+  <header class="seed-app-bar__root seed-app-bar__root--theme_android jr-appbar" role="banner">
     <div class="seed-app-bar__left jr-appbar-title"><h1 class="jr-title">정시 레이더</h1></div>
     <div class="seed-app-bar__right">
-      <button id="themeToggle" class="seed-action-button seed-action-button--variant_ghost seed-action-button--size_small seed-action-button--layout_withText" type="button" aria-label="테마 바꾸기">시스템</button>
+      <button id="themeToggle" class="seed-action-button seed-action-button--variant_ghost seed-action-button--size_small seed-action-button--layout_withText seed-action-button--size_small-layout_withText" type="button" aria-label="테마 바꾸기">시스템</button>
     </div>
   </header>
 
@@ -37,6 +38,7 @@
       <div class="seed-tabs__indicator seed-tabs__indicator--triggerLayout_fill" aria-hidden="true"></div>
     </div>
   </nav>
+</div>
 
   <main class="jr-main">
     <!-- 탭 하나 = 패널 하나. app.js가 통째로 다시 그린다 (FRAME.md §3). -->

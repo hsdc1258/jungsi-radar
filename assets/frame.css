@@ -15,39 +15,44 @@ html, body {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
-/* ---- 상단바 ---- */
-.jr-appbar {
+/* ---- 상단바 + 탭: 한 덩어리로 붙여 둔다 (둘 사이에 내용이 비쳐 보이지 않게) ---- */
+.jr-head {
   position: sticky;
   top: 0;
   z-index: 20;
+  background: var(--seed-color-bg-layer-default);
+}
+.jr-appbar {
+  position: static;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   max-width: var(--jr-max-width);
   margin: 0 auto;
-  padding: 0 var(--jr-gutter);
+  padding: var(--seed-safe-area-top, 0px) var(--jr-gutter) 0;
   background: var(--seed-color-bg-layer-default);
 }
 .jr-title {
   margin: 0;
   font-size: var(--seed-font-size-t6, 1.125rem);
   font-weight: var(--seed-font-weight-bold, 700);
+  line-height: 1.3;
 }
-/* ---- 탭 (상단바 아래 고정) ---- */
 .jr-tabs {
-  position: sticky;
-  top: 56px;
-  z-index: 19;
   max-width: var(--jr-max-width);
   margin: 0 auto;
   background: var(--seed-color-bg-layer-default);
-  border-bottom: 1px solid var(--seed-color-stroke-neutral-subtle);
+}
+/* 선택된 탭 아래 밑줄. Seed 는 위치를 CSS 변수로 받는다 — app.js 가 값을 넣는다. */
+.jr-tabs .seed-tabs__list {
+  background: transparent;
 }
 /* ---- 본문: 한 열, 섹션 사이 간격 하나 ---- */
 .jr-main {
   max-width: var(--jr-max-width);
   margin: 0 auto;
-  padding: var(--jr-gap) var(--jr-gutter) calc(var(--jr-gap) * 4);
+  padding: var(--jr-gap) var(--jr-gutter) calc(var(--jr-gap) * 2);
 }
 .jr-panel {
   display: grid;
@@ -66,30 +71,36 @@ html, body {
 .jr-list > * + * {
   border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
 }
-/* 입력 행: 제목 왼쪽, 컨트롤(셀렉트 + 숫자) 오른쪽. 좁으면 컨트롤이 아래로 내려간다. */
+/* 입력 행: 제목 왼쪽, 컨트롤 오른쪽. 컨트롤이 남은 폭을 나눠 가져 줄바꿈이 없다. */
 .jr-input-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 8px 12px;
-  min-height: 52px;
+  gap: 10px;
+  min-height: 56px;
   padding: 8px 0;
 }
 .jr-input-row > .jr-input-label {
-  flex: 1 0 6em;
+  flex: 0 0 auto;
+  min-width: 4.6em;
   font-weight: var(--seed-font-weight-medium, 500);
 }
 .jr-input-row > .jr-input-controls {
   display: flex;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
+  justify-content: flex-end;
   gap: 8px;
   min-width: 0;
 }
-.jr-input-controls select {
-  max-width: 11em;
+.jr-input-controls > .jr-select {
+  flex: 1 1 auto;
+  min-width: 0;
 }
-.jr-input-controls input[type="number"] {
-  width: 6em;
+.jr-input-controls > .jr-number {
+  flex: 0 0 5.2em;
+  width: 5.2em;
+}
+.jr-input-controls .jr-number .seed-text-input__value {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -135,27 +146,41 @@ html, body {
   line-height: 1.5;
 }
 
-/* ---- 폼 컨트롤: Seed recipe 클래스가 모양을 만들고 여기서는 크기·정렬만 잡는다 ---- */
+/* ---- 폼 컨트롤 ----
+   숫자·검색 입력은 Seed text-input(겉 상자 __root + 알맹이 __value) 구조를 그대로 쓴다.
+   네이티브 <select>는 Seed 에 recipe 가 없어 select-trigger 클래스 위에 토큰으로만 손본다. */
 .jr-select,
 .jr-number,
 .jr-search {
   min-height: 44px;
-  padding: 0 12px;
-  color: inherit;
-  font: inherit;
-  font-size: var(--seed-font-size-t5, 0.9375rem);
 }
 .jr-select {
+  box-sizing: border-box;
+  width: 100%;
   appearance: none;
-  padding-right: 30px;
+  padding: 0 32px 0 12px;
+  color: var(--seed-color-fg-neutral);
+  background-color: var(--seed-color-bg-layer-default);
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-position: calc(100% - 17px) calc(50% + 1px), calc(100% - 12px) calc(50% + 1px);
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
+  font: inherit;
+  font-size: var(--seed-font-size-t4, 0.875rem);
+  text-overflow: ellipsis;
+}
+/* 열린 목록(브라우저가 그린다)도 같은 색을 쓰게 한다. */
+.jr-select option {
+  color: var(--seed-color-fg-neutral);
+  background-color: var(--seed-color-bg-layer-default);
 }
 .jr-number,
 .jr-search {
   width: 100%;
+  background-color: var(--seed-color-bg-layer-default);
+}
+.jr-search .seed-text-input__value {
+  min-width: 0;
 }
 .jr-inputs .jr-input-row {
   padding-inline: var(--jr-gutter);
@@ -163,6 +188,18 @@ html, body {
 .jr-segmented {
   width: 100%;
 }
+/* 세그먼트 항목은 <button> 이라 브라우저 기본 배경이 Seed 의 인디케이터를 가린다. */
+.seed-segmented-control__item {
+  appearance: none;
+  border: none;
+  background-color: var(--seed-color-bg-transparent, transparent);
+  min-width: 0;
+  padding-inline: var(--seed-dimension-x3, 12px);
+}
+/* 테마를 고정하면 브라우저 기본 위젯(스피너·달력·목록)도 같이 따라오게 한다. */
+:root[data-seed-color-mode="light-only"] { color-scheme: light; }
+:root[data-seed-color-mode="dark-only"] { color-scheme: dark; }
+
 /* ---- 필터 줄: 좁으면 감싸 내려간다 ---- */
 .jr-filters {
   display: flex;
@@ -182,6 +219,8 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  padding-inline: 0;
+  overflow-x: visible;
 }
 .jr-actions {
   display: flex;
@@ -295,4 +334,35 @@ button.jr-row {
 .seed-callout__description,
 .seed-inline-banner__description {
   overflow-wrap: anywhere;
+}
+
+/* ---- 목록은 화면 끝까지 (Seed list-item 이 스스로 좌우 여백을 갖는다) ---- */
+.jr-section > .seed-list-header,
+.jr-section > .jr-list,
+.jr-panel > .jr-list {
+  margin-inline: calc(var(--jr-gutter) * -1);
+}
+/* 접이식 안에서는 이미 여백이 있으므로 되돌린다. */
+.jr-accordion-body .jr-section > .seed-list-header,
+.jr-accordion-body .jr-section > .jr-list,
+.jr-accordion-body .jr-list {
+  margin-inline: 0;
+}
+/* 진단 행: 제목·부제가 먼저 줄바꿈하고, 우측 값은 줄어들지 않는다. */
+.jr-row .seed-list-item__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.jr-row .seed-list-item__title {
+  flex-shrink: 1;
+}
+/* 키보드 초점은 항상 보이게 (Seed 토큰 색). */
+:focus-visible {
+  outline: 2px solid var(--seed-color-stroke-focus-ring, currentColor);
+  outline-offset: 2px;
+}
+
+/* Seed 컴포넌트는 display 를 클래스로 정하므로 hidden 속성이 먹히지 않는다. 되돌려 준다. */
+[hidden] {
+  display: none !important;
 }
