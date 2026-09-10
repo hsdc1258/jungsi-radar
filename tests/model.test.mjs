@@ -1,7 +1,7 @@
 // 판정 모델 v3 (docs/MODEL.md) 계약 테스트 — §8의 여덟 항목.
 // 데이터 파일(source/adiga/*)이 아직 없어도 도는 픽스처 테스트다. 실제 값은 MODEL §0 원문이다.
 import assert from 'node:assert';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
@@ -245,9 +245,14 @@ test("§8-8 aggregation 'unknown' 행은 정밀 판정(L1·L2)으로 올라가�
 
 // ---------------------------------------------------------------- 층위 폴백
 test('산식·검산이 없으면 L3로 내려가고, 컷도 없으면 L0다', () => {
+  // 산식 자체가 없으면 비율도 못 만든다 — L3.
   assert.equal(judge(KOR_STRONG, DEPT_A, { rules2026: null, formulaCheck: null }).level, 'L3');
-  // 검산이 verified 가 아닌 트랙은 L1에 쓰지 않는다.
-  assert.equal(judge(KOR_STRONG, DEPT_A, { formulaCheck: { tracks: { 'kookmin::자유전공(A)': { status: 'mismatch' } } } }).level, 'L3');
+  // 검산이 verified 가 아닌 트랙은 L1에 쓰지 않는다. 다만 §3 비율 조건의 폴백으로
+  // 컷 학년도 산식 계수를 비율로 쓸 수 있으면 L2까지는 간다.
+  const fell = judge(KOR_STRONG, DEPT_A, { formulaCheck: { tracks: { 'kookmin::자유전공(A)': { status: 'mismatch' } } } });
+  assert.equal(fell.level, 'L2');
+  assert.ok(fell.model.flags.includes('ratio-from-2026'), '어느 비율을 썼는지 깃발로 남긴다');
+  assert.equal(fell.model.apply.formula.ratioBasis, 'ratio-from-2026');
   // 컷 자체가 없으면 L0.
   const empty = { name: '없는학과', track: '인문', jeongsi: {}, series: [] };
   assert.equal(engine.evaluateJeongsi(KOR_STRONG, KOOKMIN, empty, null, 1, context()).level, 'L0');
@@ -533,4 +538,69 @@ test('안정은 50% 지점도 넘어야 한다 — 70%컷은 보장선이 아니
     assert.equal(result.band.key, 'fit');
   }
   assert.ok(['safe', 'fit', 'reach', 'stretch', 'risky'].includes(result.band.key));
+});
+
+// ---------------------------------------------------------------- §3 L2 비율 조건 · FRAME §10.4 눈금
+// 여기서부터는 생성물(assets/data.js)의 실제 43개 대학·1978 모집단위를 그대로 쓴다.
+const DATA_FILE = 'assets/data.js';
+const hasData = existsSync(path.join(ROOT, DATA_FILE));
+const dataOnce = hasData ? load(DATA_FILE, 'IPSI_DATA') : null;
+const profileFromData = (scores) => engine.normalizeProfile({
+  mode: 'pct', eng: '2', hist: '1', korElective: '화법과작문', mathElective: '확률과통계',
+  inq1Subject: '생활과윤리', inq2Subject: '사회문화', ...scores,
+}, dataOnce.scales, dataOnce.std);
+
+test('컷·내·차이는 언제나 같은 눈금이다 — round(mine − cut.value, 1) === gap', { skip: !hasData && 'data.js not generated' }, () => {
+  const data = dataOnce;
+  const cases = [
+    { kor: '97', math: '69', inq1: '86', inq2: '52' },
+    { kor: '96', math: '93', inq1: '95', inq2: '92' },
+    { kor: '78', math: '78', inq1: '78', inq2: '79' },
+  ];
+  let checked = 0;
+  for (const scores of cases) {
+    const profile = profileFromData(scores);
+    for (const row of engine.diagnose(profile, data)) {
+      const result = row.jeongsi;
+      if (typeof result.gap !== 'number' || typeof result.mine !== 'number' || typeof result.cut?.value !== 'number') continue;
+      checked += 1;
+      assert.equal(
+        engine.round(result.mine - result.cut.value, 1), result.gap,
+        `${row.universityId} ${row.dept?.name ?? ''} (${result.level}): 컷 ${result.cut.value} · 내 ${result.mine} · 차이 ${result.gap}`,
+      );
+    }
+  }
+  assert.ok(checked > 1000, `눈금을 잰 모집단위가 너무 적다 (${checked})`);
+});
+
+test('§3 L2 비율 조건 — 탐구 하나로만 매긴 지수는 판정이 아니다 (서강대 경영학부)', { skip: !hasData && 'data.js not generated' }, () => {
+  const data = dataOnce;
+  // 서강대 2027 시행계획 `전 계열` 비율은 {국 0 · 수 0 · 영 0 · 탐 20}이다 — 그 비율로는 지수를 못 만든다.
+  const plan = (data.rules?.sogang?.tracks || []).find((track) => track.name === '전 계열');
+  assert.ok(plan, '서강대 2027 트랙이 있어야 한다');
+  assert.equal(engine.ratioWeights(plan), null, '국·수·탐이 다 양수가 아니면 비율로 쓰지 않는다');
+  // 폴백은 컷 학년도(2026) 산식 트랙의 영역 계수다.
+  const track2026 = engine.pickModelTrack(data.rules2026, 'sogang', { name: '경영학부(경영학전공)', track: '인문', ruleTrack: '상경' });
+  const derived = engine.formulaRatioWeights(track2026, { std: data.std, conv: data.conv, universityId: 'sogang' });
+  assert.equal(derived.basis, 'ratio-from-2026');
+  assert.ok(derived.kor > 0 && derived.math > 0 && derived.inq > 0);
+  // 서강대 요강은 국 1.1 · 수 1.3 · 탐 0.6×2(표준점수) — 실효 몫이 수학 > 국어 > 탐구 순이다.
+  assert.ok(derived.math > derived.kor && derived.kor > derived.inq, JSON.stringify(derived));
+
+  const university = data.universities.find((one) => one.id === 'sogang');
+  const dept = university.departments.find((one) => one.name === '경영학부(경영학전공)');
+  const result = engine.evaluateJeongsi(
+    profileFromData({ kor: '97', math: '69', inq1: '86', inq2: '52' }),
+    university, dept, data.rules.sogang, university.volatility ?? data.volatility, engine.layerContext(data),
+  );
+  assert.equal(result.level, 'L2');
+  assert.ok(result.model.flags.includes('ratio-from-2026'), '어느 비율을 썼는지 결과에 남긴다');
+  assert.equal(result.model.apply.formula.ratioBasis, 'ratio-from-2026');
+  // 컷·내·차이가 한 눈금(지수)이고, 평균 백분위는 따로 남는다.
+  assert.equal(engine.round(result.mine - result.cut.value, 1), result.gap);
+  assert.equal(result.cut.index70, result.cut.value);
+  assert.equal(result.avgMine, 78.33);
+  // 국어 97·수학 69·탐구 86/52 → 탐구 하나로 매긴 −20.0이 아니라 세 영역이 다 들어간 차이다.
+  assert.ok(result.gap > -15 && result.gap < -8, `차이가 탐구 하나로 매겨졌다 (${result.gap})`);
+  assert.deepEqual([...result.model.areas.map((row) => row.area)].sort(), ['inq', 'kor', 'math']);
 });

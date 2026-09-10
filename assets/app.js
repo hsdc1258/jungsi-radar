@@ -395,12 +395,36 @@
   // 불확실성 깃발(MODEL §7)을 두세 단어로. 화면에는 이 낱말만 적는다.
   const FLAG_LABEL = {
     'approx-conversion': '변환표 근사', 'plan-formula': '2027 시행계획', 'year-bridge': '백분위 동등 가정',
-    estimated: '등급 구간', mock: '모의 성적', target: '목표 성적',
+    'ratio-from-2026': '2026 요강 계수', estimated: '등급 구간', mock: '모의 성적', target: '목표 성적',
   };
-  // 출처 링크 글자. 원문 제목이 길면 대학 이름만 남긴다.
-  const SOURCE_TITLE = { 'adiga-hakjum': '어디가', adiga: '어디가' };
-  const sourceLabel = (title) => SOURCE_TITLE[title]
-    || String(title || '').replace(/([가-힣]{2,4})대학교/u, '$1대').slice(0, 20);
+  // 출처 링크 글자 (FRAME §10.4). 원문 제목을 그대로 쓰지 않고 **대학명·학년도·문서 종류·쪽**만
+  // 뽑아 `어디가 2026` · `국민대 2026 정시 요강 p.53`처럼 짧게 적는다.
+  const SOURCE_TITLE = { 'adiga-hakjum': '어디가', adiga: '어디가', univ: '대학 공시' };
+  const DOC_KIND = [
+    [/시행계획/u, '시행계획'],
+    [/정시.{0,6}모집.{0,4}요강|모집요강/u, '정시 요강'],
+    [/전형결과|입시결과|입결/u, '입결'],
+  ];
+  // 「숙명여자대학교」→「숙명여대」, 「건국대학교(서울)」→「건국대」, 「서울시립대학교」→「서울시립대」.
+  const universityShort = (title) => {
+    const full = String(title).match(/([가-힣]{2,6}?)(여자대학교|대학교)/u);
+    if (full) return `${full[1]}${full[2] === '여자대학교' ? '여대' : '대'}`;
+    const short = String(title).match(/([가-힣]{2,6}?대)(?![가-힣])/u);
+    return short ? short[1] : null;
+  };
+  const sourceLabel = (title, extra = {}) => {
+    const mapped = SOURCE_TITLE[title];
+    const text = String(title || '');
+    const year = String(text.match(/(\d{4})\s*학년도/u)?.[1] || text.match(/(20\d{2})/u)?.[1] || extra.year || '');
+    if (mapped) return [mapped, year].filter(Boolean).join(' ');
+    // 어디가 원문 제목(`대입정보포털 어디가 대학별 입시결과(직접 수집)`)은 발행처 이름만 남긴다.
+    if (/어디가|대입정보포털/u.test(text)) return ['어디가', year].filter(Boolean).join(' ');
+    const name = universityShort(text);
+    const kind = DOC_KIND.find(([pattern]) => pattern.test(text))?.[1] || null;
+    const page = extra.page === null || extra.page === undefined || extra.page === '' ? null : `p.${extra.page}`;
+    const parts = [name, year, kind, page].filter(Boolean);
+    return parts.length > 1 ? parts.join(' ') : text.slice(0, 20);
+  };
   // 컷의 통계 정의를 부제 한 조각으로 줄인 이름. 긴 정의 문장은 정보 탭 표에만 있다.
   const DEF_SHORT = {
     'ksi-mean': '평균 백분위', 'subject-mean70': '과목별 평균', 'top2-mean': '상위 2영역',
@@ -435,6 +459,16 @@
       if (typeof value === 'number' && value > 0 && key !== 'hist') parts.push(`${short}${value}`);
     }
     return parts.join(' ');
+  };
+  // L2 지수가 실제로 쓴 가중치를 백분율 한 줄로. 컷 학년도 산식 계수는 배점 눈금이 대학마다
+  // 달라(표준점수 계수·백분위 배점) 절대값이 뜻이 없다 — 몫으로만 적는다.
+  const ratioWeightText = (weights) => {
+    if (!weights) return '';
+    const entries = Object.entries(AREA_SHORT)
+      .filter(([key]) => key !== 'hist' && typeof weights[key] === 'number' && weights[key] > 0);
+    const total = entries.reduce((sum, [key]) => sum + weights[key], 0);
+    if (!(total > 0)) return '';
+    return entries.map(([key, short]) => `${short}${Math.round((weights[key] / total) * 100)}%`).join(' ');
   };
   // L2가 실제로 쓴 반영비율 트랙. 엔진이 2027 시행계획(DATA.rules)에서 고른 것이라
   // 학년도가 비어 있는 apply.formula 대신 이 표에서 이름으로 다시 찾는다.
@@ -486,11 +520,18 @@
       badge(band.label, BAND_TONE[band.key]),
     ].filter(Boolean);
   };
-  // 컷 한 조각. L1은 어디가 환산점수 70%, 그 밖은 백분위 컷(추정 행은 관측 범위를 뺀다).
-  const cutChip = (result) => (result?.level === 'L1' && typeof result.cut?.score70 === 'number'
-    ? `${result.cut.year} 70% ${fmt(result.cut.score70, 1)}`
-    : result?.estimated ? `컷 ${fmt(result.cut?.value, 1)}` : spreadText(result));
-  // 내 값 한 조각. L1은 환산점수와 그 구간이다.
+  // 컷 한 조각. L1은 어디가 환산점수 70%, L2는 같은 반영비율로 매긴 **지수** 컷(FRAME §10.4),
+  // 그 밖은 백분위 컷(추정 행은 관측 범위를 뺀다).
+  const cutChip = (result) => {
+    if (result?.level === 'L1' && typeof result.cut?.score70 === 'number') {
+      return `${result.cut.year} 70% ${fmt(result.cut.score70, 1)}`;
+    }
+    if (result?.level === 'L2' && typeof result.cut?.index70 === 'number') {
+      return `지수 컷 ${fmt(result.cut.index70, 1)}`;
+    }
+    return result?.estimated ? `컷 ${fmt(result.cut?.value, 1)}` : spreadText(result);
+  };
+  // 내 값 한 조각. L1은 환산점수와 그 구간, L2는 지수다 — 컷과 눈금이 같아야 한다.
   const mineChip = (result) => {
     const mine = result?.mineDetail;
     if (result?.level === 'L1' && typeof mine?.score === 'number') {
@@ -498,6 +539,7 @@
         ? ` (${fmt(mine.min, 0)}~${fmt(mine.max, 0)})` : '';
       return `내 ${fmt(mine.score, 1)}${range}`;
     }
+    if (result?.level === 'L2' && typeof mine?.score === 'number') return `내 ${fmt(mine.score, 1)}`;
     return result?.estimated ? mineWithRange(result) : `내 ${fmt(result?.mine, 1)}`;
   };
   // 어느 눈금으로 뺐는지. L1은 산식 학년도, L2는 반영비율, L3은 컷의 통계 정의다.
@@ -1486,9 +1528,14 @@
     const held = target.status === 'hold';
     const mineLine = target.level === 'L1' && typeof target.mineDetail?.score === 'number'
       ? `내 환산 ${fmt(target.mineDetail.score, 1)}`
-      : target.estimated
-        ? mineWithRange(target)
-        : `내 ${target.defLabel === ENGINE.CUT_DEFS['ksi-mean'].label ? '국·수·탐' : '비교값'} ${fmt(target.mine, 1)}`;
+      : target.level === 'L2' && typeof target.mineDetail?.score === 'number'
+        ? `내 지수 ${fmt(target.mineDetail.score, 1)}`
+        : target.estimated
+          ? mineWithRange(target)
+          : `내 ${target.defLabel === ENGINE.CUT_DEFS['ksi-mean'].label ? '국·수·탐' : '비교값'} ${fmt(target.mine, 1)}`;
+    // L2는 판정 눈금이 지수라 평균 백분위를 셋째 조각으로 따로 적는다 (FRAME §10.4).
+    const avgChip = target.level === 'L2' && typeof target.avgMine === 'number'
+      ? ` · 평균 백분위 ${fmt(target.avgMine, 1)}` : '';
     const verdict = el('div', { class: 'jr-verdict' }, [
       el('p', { class: 'jr-verdict-number', text: held ? '—' : signed(target.gap, 1) }),
       el('p', { class: 'jr-verdict-badges' }, [
@@ -1496,7 +1543,7 @@
         sourceBadge(target),
         target.status === 'ok' && LEVEL_BADGE[target.level] ? badge(LEVEL_BADGE[target.level], 'neutral') : null,
       ].filter(Boolean)),
-      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${cutChip(target)} · ${mineLine}` }),
+      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${cutChip(target)} · ${mineLine}${avgChip}` }),
       // 등급 입력일 때만: 구간 하한·상한에서의 판정을 값으로만 한 줄 (FRAME §8.1).
       target.gapRange ? el('p', { class: 'jr-muted', text: `구간 하한 ${target.gapRange.minBand.label} · 상한 ${target.gapRange.maxBand.label}` }) : null,
     ].filter(Boolean));
@@ -1604,6 +1651,13 @@
     // L2는 산식이 아니라 **반영비율**로 판정한 층위다 (docs/MODEL.md §3). 요강 학년도·활용지표·검산은
     // 환산점수 눈금(L1)에서만 뜻이 있으므로 적지 않고, 시행계획의 비율만 적는다. 비율도 없으면 행을 뺀다.
     const ratioRow = (formula, label) => {
+      // 시행계획 비율이 §3 비율 조건을 못 채워 컷 학년도 산식 계수를 쓴 트랙은 그 사실을 적는다.
+      if (formula?.ratioBasis === 'ratio-from-2026') {
+        const text = ratioWeightText(formula.ratioWeights);
+        if (!text) return;
+        add(label, join([`${formula.ratioYear || 2026} 요강 계수`, text, '반영비율']));
+        return;
+      }
       const found = ratioTrackOf(university.id, formula?.track);
       const text = found ? ratioText(found.track) : '';
       if (!text) return;
@@ -1631,12 +1685,16 @@
     // (다른 대학의 환산점수와 나란히 두지 않는다 — docs/MODEL.md §5).
     const cut = target.cut || {};
     const byScore = target.level === 'L1' && typeof cut.score70 === 'number';
-    const point70 = byScore ? cut.score70 : cut.value;
-    const point50 = byScore ? cut.score50 : target.cut50;
+    // L2는 컷도 **같은 반영비율로 매긴 지수**다 (FRAME §10.4) — 평균 백분위 컷을 적지 않는다.
+    const byIndex = target.level === 'L2' && typeof cut.index70 === 'number';
+    const point70 = byScore ? cut.score70 : byIndex ? cut.index70 : cut.value;
+    const point50 = byScore ? cut.score50 : byIndex ? cut.index50 : target.cut50;
     add('비교 입결', join([
-      typeof point70 === 'number' ? `${cut.year} 70% 지점 ${fmt(point70, 1)}` : null,
+      typeof point70 === 'number'
+        ? `${cut.year} 70% ${byIndex ? '학생 지수' : '지점'} ${fmt(point70, 1)}`
+        : null,
       typeof point50 === 'number' ? `50% ${fmt(point50, 1)}` : null,
-      byScore ? AGGREGATION_LABEL[cut.aggregation] || AGGREGATION_LABEL.unknown : defShort(target),
+      byScore ? AGGREGATION_LABEL[cut.aggregation] || AGGREGATION_LABEL.unknown : byIndex ? '반영비율' : defShort(target),
     ]));
 
     // 차이 — 점수 차·백분위 상당·평균 백분위. 2027 산식으로 판정이 바뀌면 두 줄이다.
@@ -1689,8 +1747,8 @@
         title: '출처',
         stack: true,
         suffix: sources.slice(0, 3).map((row) => (row.url
-          ? el('a', { class: 'jr-link', href: row.url, target: '_blank', rel: 'noreferrer noopener', text: sourceLabel(row.title) })
-          : el('span', { class: 'jr-value', text: sourceLabel(row.title) }))),
+          ? el('a', { class: 'jr-link', href: row.url, target: '_blank', rel: 'noreferrer noopener', text: sourceLabel(row.title, row) })
+          : el('span', { class: 'jr-value', text: sourceLabel(row.title, row) }))),
       }));
     }
 
@@ -1830,7 +1888,9 @@
       ]);
     return section([
       listHeader('비교', `${picks.length}곳`),
-      table(['모집단위', '컷', '국·수·탐', '차이', '판정'], rows),
+      // `컷`·`내`는 행마다 그 모집단위의 판정 눈금이다(L1 환산 상당·L2 지수·L3 평균 백분위) —
+      // 열 이름에 한 눈금을 못박지 않는다 (FRAME §10.4).
+      table(['모집단위', '컷', '내', '차이', '판정'], rows),
     ]);
   }
 
