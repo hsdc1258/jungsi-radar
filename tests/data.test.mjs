@@ -341,3 +341,87 @@ test('비교할 수 없는 정의는 엔진과 생성물이 같은 이름으로 
     assert.ok(ENGINE.CUT_DEFS[key], `엔진이 모르는 통계 정의: ${key}`);
   }
 });
+
+// (2026-09-10) 계열 오버라이드는 source/results.json 이 아니라 scripts/build-data.mjs 의
+// TRACK_OVERRIDES 표 하나에 있다. 생성물이 그 표대로 나왔는지만 여기서 본다.
+test('계열 오버라이드 표가 생성물에 그대로 반영된다', async () => {
+  const { TRACK_OVERRIDES } = await import('../scripts/build-data.mjs');
+  assert.ok(TRACK_OVERRIDES.length >= 13, `오버라이드가 13건 이상이어야 한다 (지금 ${TRACK_OVERRIDES.length})`);
+  for (const row of TRACK_OVERRIDES) {
+    assert.ok(row.why && row.why.length > 0, `${row.id} ${row.name}: 근거 없음`);
+    const university = DATA.universities.find((entry) => entry.id === row.id);
+    assert.ok(university, `${row.id}: 생성물에 없는 대학`);
+    const dept = university.departments.find((entry) => entry.name === row.name);
+    assert.ok(dept, `${row.id} ${row.name}: 생성물에 없는 모집단위`);
+    assert.equal(dept.track, row.track, `${row.id} ${row.name}`);
+  }
+  // 2026-09-10 조사로 새로 못박은 셋.
+  const trackOf = (id, name) => DATA.universities.find((entry) => entry.id === id)
+    .departments.find((entry) => entry.name === name).track;
+  assert.equal(trackOf('hongik', '예술학과'), '인문');
+  assert.equal(trackOf('kookmin', 'AI빅데이터융합경영학과'), '인문');
+  assert.equal(trackOf('kookmin', 'AI빅데이터융합경영학과(자연)'), '자연');
+  assert.equal(trackOf('knu', '자율미래인재학부'), '자유전공');
+});
+
+test('실기 없이 수능으로 뽑는 예체능은 practical 이 false 다', () => {
+  const deptOf = (id, name) => DATA.universities.find((entry) => entry.id === id)
+    .departments.find((entry) => entry.name === name);
+  // 경희대 체육대학·예술디자인대학(정시 실기 폐지), 세종대 창의소프트학부(수능 100%).
+  const exempt = [
+    ['khu', '체육학과'], ['khu', '스포츠의학과'], ['khu', '태권도학과'], ['khu', '골프산업학과'],
+    ['khu', '연극영화학과'], ['khu', '의류디자인학과'], ['khu', '산업디자인학과'],
+    ['sejong', '창의소프트학부(디자인이노베이션전공)'], ['sejong', '창의소프트학부(만화애니메이션텍전공)'],
+  ];
+  for (const [id, name] of exempt) {
+    const dept = deptOf(id, name);
+    assert.ok(dept, `${id} ${name}: 생성물에 없는 모집단위`);
+    assert.equal(dept.track, '예체능', `${id} ${name}: 트랙은 예체능 그대로여야 한다`);
+    assert.equal(dept.practical, false, `${id} ${name}`);
+  }
+  // 실기가 있는 예체능은 true 다.
+  assert.equal(deptOf('sejong', '무용과').practical, true);
+  assert.equal(deptOf('pnu', '음악학과 성악전공').practical, true);
+  // 예체능이 아닌 모집단위는 언제나 false 다.
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      assert.equal(typeof dept.practical, 'boolean', `${university.id} ${dept.name}`);
+      if (dept.track !== '예체능') assert.equal(dept.practical, false, `${university.id} ${dept.name}`);
+    }
+  }
+});
+
+test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서로 맞는다', () => {
+  const kinds = new Set(['punk', 'error', 'practical', 'unverified', 'normal']);
+  let count = 0;
+  let priorSeen = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      if (!dept.anomaly) continue;
+      count += 1;
+      const where = `${university.id} ${dept.name}`;
+      const { kind, gap, median: center, mad, priorMedian, priorGap, basis } = dept.anomaly;
+      assert.ok(kinds.has(kind), `${where}: ${kind}`);
+      const value = dept.jeongsi?.['2026']?.cut70;
+      assert.ok(isNumber(value), `${where}: 2026 컷 없음`);
+      // 계열 기준은 묶음이 셋 이상일 때만 있다. 있으면 차와 문턱이 맞아야 한다.
+      if (basis === 'group' || basis === 'both') {
+        assert.ok(isNumber(gap) && isNumber(center) && isNumber(mad), where);
+        // 중앙값과 차를 각각 반올림해 실으므로 마지막 자리 하나까지는 벌어질 수 있다.
+        assert.ok(Math.abs((center - value) - gap) <= 0.011, `${where}: 계열 차 ${gap}`);
+        assert.ok(gap > Math.max(3, 2.5 * mad), `${where}: 계열 문턱 미달`);
+      }
+      // 이력 기준으로 걸린 값은 이력 중앙값에서 문턱만큼 벗어나 있다(양쪽 모두).
+      if (basis === 'prior' || basis === 'both') {
+        assert.ok(isNumber(priorMedian) && isNumber(priorGap), where);
+        assert.ok(Math.abs((priorMedian - value) - priorGap) <= 0.011, `${where}: 이력 차 ${priorGap}`);
+        priorSeen += 1;
+      }
+      // 판정(펑크·오류)은 이력이나 자기모순으로만 내린다 — 이력 없는 단일값은 미확인이다.
+      if (kind === 'punk') assert.ok(isNumber(priorMedian), `${where}: 이력 없이 펑크로 판정했다`);
+      if (kind === 'unverified') assert.equal(priorMedian, null, `${where}: 이력이 있는데 미확인이다`);
+    }
+  }
+  assert.ok(count > 0, '이상치 후보가 하나도 없다');
+  assert.ok(priorSeen > 0, '이력 기준으로 걸린 값이 하나도 없다');
+});

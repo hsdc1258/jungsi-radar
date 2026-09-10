@@ -123,6 +123,55 @@ export function classifyTrack(name) {
   return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
 }
 
+// 이름만으로는 계열을 맞힐 수 없는 모집단위. 대학 시행계획·공식 입시결과 원문을 근거로 못박는다.
+// (전에는 source/results.json 의 모집단위 객체에 `track` 을 박아 두었다 — 소스는 원자료만 담고,
+// 우리가 내린 판단은 이 표 하나에 모은다. 근거 없는 항목은 넣지 않는다: docs/AUDIT.md §9·§12.)
+// 고려대 학부대학은 보류한다 — 2027 시행계획 PDF에 인문/자연 두 모집단위로 갈려 있어 한 계열로 못박을 수 없다.
+export const TRACK_OVERRIDES = [
+  { id: 'skku', name: '의상학과', track: '인문', why: '가군 수능 100% 모집단위. 시행계획 인문 트랙이 「사회과학계열·의상학과」로 묶는다' },
+  { id: 'khu', name: '의상학과', track: '인문', why: '생활과학대학 — 경희대 인문 트랙(문과·외국어·생활과학)' },
+  { id: 'khu', name: '조리&푸드디자인학과', track: '인문', why: '호텔관광대학 수능 100% 모집단위' },
+  { id: 'konkuk', name: '의상디자인학과(수능)', track: '인문', why: '공식 표의 「의상디자인학과-인문계」 행' },
+  { id: 'cbnu', name: '고고미술사학과', track: '인문', why: '이름의 「미술」이 걸렸다. 인문대학 모집단위' },
+  { id: 'jejunu', name: '수산생명의학과', track: '자연', why: '이름의 「의학」이 걸렸다. 해양과학대학' },
+  { id: 'jejunu', name: '패션의류학과', track: '자연', why: '생활과학 계열' },
+  { id: 'incheon', name: '패션산업학과', track: '자연', why: '생활과학 계열' },
+  { id: 'kangwon', name: '생태조경디자인학과', track: '자연', why: '산림환경과학대학' },
+  { id: 'kau', name: '자유전공학부(이학적성)', track: '자연', why: '이학적성 — 자연계 반영비율을 쓴다' },
+  { id: 'hongik', name: '예술학과', track: '인문', why: '2027 시행계획이 「인문계열·자연계열·예술학과」로 묶고 미술계열은 「예술학과 제외」라고 적는다 — 실기 없음' },
+  { id: 'kookmin', name: 'AI빅데이터융합경영학과', track: '인문', why: '시행계획 「인문계와 자연계로 분리 모집」 — 자연계는 (자연) 표기 모집단위가 따로 있다' },
+  { id: 'knu', name: '자율미래인재학부', track: '자유전공', why: '계열 구분 없이 뽑는 자율전공 모집단위 — 인문 반영비율을 못박지 않는다' },
+];
+const TRACK_OVERRIDE_MAP = new Map(TRACK_OVERRIDES.map((row) => [`${row.id}::${row.name}`, row.track]));
+export const overrideTrack = (universityId, name) => TRACK_OVERRIDE_MAP.get(`${universityId}::${name}`) || null;
+// 계열은 오버라이드 표 → 이름 규칙 순으로 정한다.
+export const resolveTrack = (universityId, name) => overrideTrack(universityId, name) || classifyTrack(name).track;
+
+// 실기 없이 수능 성적만으로 뽑는 예체능 모집단위. 트랙은 예체능이되 `실기` 뱃지가 없고
+// 화면의 '예체능 제외'에도 걸리지 않는다 (docs/FRAME.md §9.4).
+export const PRACTICAL_EXEMPT = [
+  {
+    id: 'khu',
+    why: '경희대 정시 실기 폐지 — 체육대학·예술디자인대학 모집단위를 수능 100%로 뽑는다',
+    names: ['체육학과', '스포츠의학과', '태권도학과', '골프산업학과', '연극영화학과', '의류디자인학과', '산업디자인학과'],
+  },
+  {
+    id: 'sejong',
+    why: '세종대 정시 일반학생전형 수능 100%',
+    names: ['창의소프트학부(디자인이노베이션전공)', '창의소프트학부(만화애니메이션텍전공)'],
+  },
+];
+const PRACTICAL_EXEMPT_MAP = new Map(PRACTICAL_EXEMPT.map((row) => [row.id, new Set(row.names)]));
+// 이름 규칙으로 이미 걸러지는 것들(ARTS_EXCEPT·이름에 박힌 (인문)/(자연))은 애초에 예체능 트랙이
+// 아니지만, 규칙이 바뀌어 예체능으로 흘러와도 실기로 잘못 표시되지 않도록 여기서도 같이 본다.
+const EXEMPT_BY_NAME = /\(인문\)|\(자연\)|\(인문계열\)|\(자연계열\)/u;
+export function isPractical(universityId, name, track) {
+  if (track !== '예체능') return false;
+  if (PRACTICAL_EXEMPT_MAP.get(universityId)?.has(name)) return false;
+  if (ARTS_EXCEPT.test(name) || EXEMPT_BY_NAME.test(name)) return false;
+  return true;
+}
+
 // 컷의 **통계 정의**. 정의마다 눈금(scale)이 다르므로 한 모집단위의 비교 계열(series)에는
 // 같은 눈금의 연도값만 넣는다. 정의가 표준(국·수·탐(2) 평균)과 달라도 버리지 않는다 —
 // 엔진(comparableScore)이 그 정의 그대로 내 성적을 계산해 같은 눈금에서 뺀다.
@@ -262,7 +311,7 @@ function medianCutOf(departments) {
   return value === null ? null : round2(value);
 }
 
-function buildUniversities(adiga, rules) {
+function buildUniversities(adiga, rules, anomalies = new Map()) {
   const byId = new Map(adiga.map((row) => [row.id, row]));
   const universities = [];
   for (const line of LINES) {
@@ -273,8 +322,8 @@ function buildUniversities(adiga, rules) {
         .filter((dept) => Object.keys(dept.jeongsi || {}).length > 0)
         .map((dept) => {
           const guessed = classifyTrack(dept.name);
-          // 소스가 계열을 못박아 둔 모집단위(자동 분류가 틀리는 이름)는 그 값을 쓴다.
-          const track = dept.track || guessed.track;
+          // 자동 분류가 틀리는 이름은 TRACK_OVERRIDES 표가 못박는다.
+          const track = overrideTrack(id, dept.name) || guessed.track;
           // 소스가 계열을 못박아 둔 모집단위(캠퍼스별 반영비율이 다른 한국외대)는 그 값을 쓴다.
           const ruleTrack = dept.ruleTrack || guessed.ruleTrack;
           const jeongsi = {};
@@ -309,7 +358,14 @@ function buildUniversities(adiga, rules) {
             }
             return out;
           };
-          return { name: dept.name, campus: dept.campus || null, track, ruleTrack, jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong') };
+          return {
+            name: dept.name, campus: dept.campus || null, track, ruleTrack,
+            // 실기가 있는 예체능 모집단위만 true — 화면의 '실기' 뱃지와 '예체능 제외'가 이 값을 본다.
+            practical: isPractical(id, dept.name, track),
+            // 계열 중앙값에서 크게 떨어진 값. scripts/anomalies.mjs 가 미리 판정해 둔다.
+            anomaly: anomalies.get(`${id}::${dept.name}`) || null,
+            jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong'),
+          };
         })
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({
@@ -325,6 +381,23 @@ function buildUniversities(adiga, rules) {
   return universities;
 }
 
+
+// 이상치 판정표. `npm run anomalies`(scripts/anomalies.mjs)가 먼저 돌아 source/anomalies.json 을
+// 만들고, 여기서는 읽기만 한다 — 판정 규칙은 그 파일 하나에 있다. 파일이 없으면 anomaly 는 전부 null 이다.
+function readAnomalies() {
+  const file = path.join(SOURCE, 'anomalies.json');
+  if (!existsSync(file)) return new Map();
+  const parsed = JSON.parse(readFileSync(file, 'utf8'));
+  return new Map((parsed.items || []).map((row) => [
+    `${row.id}::${row.name}`,
+    {
+      kind: row.kind, gap: row.gap, median: row.median, mad: row.mad,
+      // 이 모집단위 자신의 이력. 판정(펑크·오류)은 계열이 아니라 이 값으로 내린다.
+      priorMedian: row.priorMedian ?? null, priorGap: row.priorGap ?? null,
+      priorCount: row.priorCount ?? 0, basis: row.basis || 'group',
+    },
+  ]));
+}
 
 // 생성일. 내용이 그대로면 지난 생성일을 그대로 둔다 — 같은 소스로 다시 빌드해도 파일이 바뀌지 않아야
 // CI가 "생성물이 소스와 맞는가"를 diff 하나로 확인할 수 있다.
@@ -351,7 +424,7 @@ export function buildData() {
   const scales = read('scales-2026.json');
   const std = read('std-2026.json');
   const conv = read('conv-2026.json');
-  const universities = buildUniversities(adiga, rules);
+  const universities = buildUniversities(adiga, rules, readAnomalies());
   // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};
