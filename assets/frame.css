@@ -418,6 +418,11 @@ button.jr-row {
 .jr-check-slot .jr-check {
   position: static;
 }
+/* 꺼진 행에는 체크를 아예 그리지 않는다 — 옅은 회색 체크가 남아 있으면 반쯤 체크된 것처럼
+   읽힌다. 자리(22px)는 위 .jr-check-slot 이 지키므로 줄은 흔들리지 않는다 (FRAME §9.4). */
+.jr-check-slot .jr-check:not([data-checked]) {
+  visibility: hidden;
+}
 /* 누를 수 있는 것은 44px 이상 (Apple HIG). Seed 버튼 높이가 그보다 낮으면 여기서 올린다. */
 .jr-panel .seed-action-button {
   min-height: var(--jr-tap);

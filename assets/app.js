@@ -761,10 +761,16 @@
     });
   }
 
+  // 관심 대학 시트가 열린 채 768px 이상으로 넓어졌는지. 다음 그리기 한 번만 아코디언을 열어 둔다
+  // (syncBreakpoint · FRAME §9.4).
+  let favPickerOpen = false;
+
   // 관심 대학 고르기. 대학 이름 칩을 눌러 담고, localStorage에 대학 아이디만 남긴다.
   // 관심은 '우선 표시'다 — 목록을 좁히는 것은 아래 라인·대학 체크 목록이 맡는다.
   function favUniversityPicker({ open = false } = {}) {
     const count = state.favUniversities.size;
+    const carried = favPickerOpen;
+    favPickerOpen = false;
     // 좁은 폭에서는 아코디언 대신 행 하나가 시트를 연다 (FRAME §9.3).
     if (isNarrow()) {
       return el('div', { class: 'jr-section' }, [
@@ -789,7 +795,7 @@
         variant: 'ghost', size: 'small',
         onclick: () => { state.favUniversities.clear(); saveFavUniversities(); diagnoseCache.key = null; render(); },
       })]) : null,
-    ].filter(Boolean), { open, description: count > 0 ? `${count}곳` : null });
+    ].filter(Boolean), { open: open || carried, description: count > 0 ? `${count}곳` : null });
   }
 
   // 관심 학과 담기. 목표 화면 한 곳에만 둔다 — 목록 행은 제목·값만 지고 간다 (FRAME §8.2).
@@ -1042,12 +1048,21 @@
   }
 
   // 폭이 768px 위아래로 넘어가면 시트를 닫고 그 폭의 어법으로 다시 그린다.
+  // 넓어질 때는 시트만 닫고 무엇을 고르고 있었는지는 그대로 둔다 — 같은 체크 목록이 인라인으로
+  // 이어지고 칩도 열림 상태다. 좁아질 때는 인라인 목록을 접는다 (FRAME §9.4).
   function syncBreakpoint() {
     const narrow = isNarrow();
     if (narrow === wasNarrow) return;
     wasNarrow = narrow;
+    const kind = sheet?.kind || null;
     if (sheet) closeSheet({ silent: true });
-    state.filterPanel = null;
+    if (narrow) {
+      state.filterPanel = null;
+    } else {
+      state.filterPanel = kind === 'line' || kind === 'university' ? kind : null;
+      // 관심 대학은 넓은 폭에서 아코디언이다 — 시트가 열려 있었으면 열린 채로 잇는다.
+      favPickerOpen = kind === 'favUniversity';
+    }
     render();
   }
 
@@ -1770,8 +1785,11 @@
     ].filter(Boolean);
   }
 
-  // 판정이 붙은 2026 컷. 생성물이 이미 판정해 둔 값을 표로만 옮긴다
-  // (scripts/anomalies.mjs · FRAME §9.4). 설명문은 쓰지 않고 표 끝에 두 줄만 적는다.
+  // 판정이 붙은 2026 컷. 생성물이 이미 판정해 둔 값을 §8.2 행으로만 옮긴다
+  // (scripts/anomalies.mjs · FRAME §9.4). 열이 일곱인 표는 375px에서 `분류` 열이 화면 밖으로
+  // 밀리므로 표가 아니라 행이다. 설명문은 쓰지 않고 목록 끝에 두 줄만 적는다.
+  const ANOMALY_ORDER = { punk: 0, error: 1, practical: 2 };
+  const ANOMALY_TONE = { punk: 'critical', error: 'critical', practical: 'neutral' };
   function anomalyRows() {
     const rows = [];
     for (const university of DATA.universities) {
@@ -1781,10 +1799,27 @@
         rows.push({ university, dept, anomaly });
       }
     }
-    return rows.sort((left, right) => Math.abs(anomalyGap(right.anomaly) ?? 0) - Math.abs(anomalyGap(left.anomaly) ?? 0));
+    // 펑크 의심 → 오류 의심 → 실기, 같은 분류 안은 차이 큰 순 (FRAME §9.4).
+    return rows.sort((left, right) => ANOMALY_ORDER[left.anomaly.kind] - ANOMALY_ORDER[right.anomaly.kind]
+      || Math.abs(anomalyGap(right.anomaly) ?? 0) - Math.abs(anomalyGap(left.anomaly) ?? 0));
   }
 
-  // 이력이 없어 판정할 수 없는 단일값. 표에는 넣지 않고 곳수만 적는다.
+  // 행 부제 — 값만 적는다. 이력이 있으면 이력 차, 없으면 그 판정의 근거가 된 값이다:
+  // 오류 의심은 모순의 상대편(50%컷), 실기는 계열 중앙값.
+  function anomalyDetail(dept, anomaly) {
+    const current = dept.jeongsi?.['2026'] || {};
+    const parts = [`2026 ${fmt(current.cut70, 1)}`];
+    if (typeof anomaly.priorMedian === 'number') {
+      parts.push(`이력 ${fmt(anomaly.priorMedian, 1)}`, `차 ${signed(-anomalyGap(anomaly), 1)}`);
+    } else if (anomaly.kind === 'error') {
+      parts.push(typeof current.cut50 === 'number' ? `50%컷 ${fmt(current.cut50, 1)}` : '백분위 범위 밖');
+    } else if (typeof anomaly.median === 'number') {
+      parts.push(`계열 중앙값 ${fmt(anomaly.median, 1)}`, `차 ${signed(-anomaly.gap, 1)}`);
+    }
+    return parts.join(' · ');
+  }
+
+  // 이력이 없어 판정할 수 없는 단일값. 목록에는 넣지 않고 곳수만 적는다.
   function unverifiedCount() {
     let count = 0;
     for (const university of DATA.universities) {
@@ -1799,19 +1834,25 @@
     const rows = anomalyRows();
     const unverified = unverifiedCount();
     if (rows.length === 0 && unverified === 0) return [];
+    const value = (text) => el('span', { class: 'jr-gap num', text });
     return [
       listHeader('이상치', `${rows.length}곳`),
-      rows.length > 0 ? table(['대학', '모집단위', '2026 컷', '계열 중앙값', '이력 중앙값', '차', '분류'], rows.map((row) => [
-        row.university.short,
-        deptLabel(row.dept.name),
-        fmt(row.dept.jeongsi?.['2026']?.cut70, 1),
-        fmt(row.anomaly.median, 1),
-        fmt(row.anomaly.priorMedian, 1),
-        signed(-anomalyGap(row.anomaly), 1),
-        ANOMALY_LABEL[row.anomaly.kind],
-      ])) : null,
-      muted(`미확인(단일값) ${unverified}곳`),
-      muted('기준: 계열 (중앙값 − 값) > max(3, 2.5 × MAD) · 이력 |값 − 이력 중앙값| > max(3, 2.5 × MAD)'),
+      el('div', { class: 'jr-list' }, [
+        ...rows.map((row) => listItem({
+          title: `${row.university.short} ${deptLabel(row.dept.name)}`,
+          detail: anomalyDetail(row.dept, row.anomaly),
+          // 부제가 뱃지 아래 행 전체 폭을 쓴다 — 진단 행과 같은 어법이다 (FRAME §8.2).
+          stack: true,
+          suffix: badge(ANOMALY_LABEL[row.anomaly.kind], ANOMALY_TONE[row.anomaly.kind]),
+          // 진단 행과 같은 onclick — 누르면 목표 탭에서 그 모집단위가 열린다.
+          onclick: () => {
+            state.target = { university: row.university.id, dept: row.dept.name };
+            go('target');
+          },
+        })),
+        listItem({ title: '미확인(단일값)', suffix: value(`${unverified}곳`) }),
+        listItem({ title: '기준', suffix: value('|값 − 중앙값| > max(3, 2.5 × MAD)') }),
+      ]),
     ];
   }
 

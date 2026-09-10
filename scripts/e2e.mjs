@@ -248,6 +248,32 @@ async function sheetRun(page, tag) {
   await page.waitForTimeout(200);
 }
 
+// 375에서 대학 시트를 열어 둔 채 1280으로 넓히면 시트는 사라지고 같은 체크 목록이 인라인으로
+// 이어져야 한다 — 칩도 열림 상태다 (FRAME §9.4).
+async function widenRun(page, tag) {
+  await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+  await page.waitForSelector('.jr-chips');
+  await page.locator('[data-sheet-opener="university"]').click();
+  await page.waitForTimeout(240);
+  if (!(await page.evaluate(sheetShape)).open) {
+    problems.push(`${tag}/넓히기: 375에서 대학 시트가 열리지 않았다`);
+    return;
+  }
+  await page.setViewportSize({ width: 1280, height: 812 });
+  await page.waitForTimeout(320);
+  const after = await page.evaluate(sheetShape);
+  if (after.open) problems.push(`${tag}/넓히기: 1280으로 넓혔는데 시트가 남아 있다`);
+  if (after.locked) problems.push(`${tag}/넓히기: 넓혔는데 스크롤 잠금이 남았다`);
+  const inline = await page.locator('#panel [role="checkbox"]').count();
+  if (inline === 0) problems.push(`${tag}/넓히기: 인라인 체크 행이 하나도 없다`);
+  const expanded = await page.getAttribute('[data-sheet-opener="university"]', 'aria-expanded');
+  if (expanded !== 'true') problems.push(`${tag}/넓히기: 대학 칩이 열림 상태가 아니다 (${expanded})`);
+  await look(page, `${tag}/넓히기`);
+  // 다시 좁혀 두고 인라인 목록을 접는다 — 다음 판이 375에서 시작한다.
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.waitForTimeout(320);
+}
+
 try {
   for (const { width, theme } of VIEWPORTS) {
     const tag = `${width}px/${theme}`;
@@ -262,8 +288,10 @@ try {
     for (const mode of ['pct', 'grade', 'std']) {
       await walk(page, `${tag}/${CASES[mode].label}`, mode);
     }
-    if (width < 768) await sheetRun(page, tag);
-    else {
+    if (width < 768) {
+      await sheetRun(page, tag);
+      await widenRun(page, tag);
+    } else {
       // 넓은 폭에서는 같은 칩이 패널 안에서 펼쳐진다.
       await page.click('.seed-tabs__trigger[data-view="diagnose"]');
       await page.waitForSelector('.jr-chips');
@@ -305,5 +333,5 @@ try {
 
 console.log(problems.length
   ? `문제 ${problems.length}건\n${problems.join('\n')}`
-  : `문제 없음 — 폭 ${VIEWPORTS.length / 2}종 × 2테마 × 입력 기준 3종 전 흐름 + 시트 2판 + 공유 링크 1판 통과`);
+  : `문제 없음 — 폭 ${VIEWPORTS.length / 2}종 × 2테마 × 입력 기준 3종 전 흐름 + 시트 2판 + 넓히기 2판 + 공유 링크 1판 통과`);
 process.exit(problems.length ? 1 : 0);

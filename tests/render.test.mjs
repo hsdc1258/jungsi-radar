@@ -605,3 +605,39 @@ test('정보 화면의 비교 기준 표가 실제 계산과 같다', () => {
   assert.match(text, /추가합격·충원율/u);
   assert.ok(!text.includes('내 환산'), "'내 환산' 문구가 남아 있다");
 });
+
+test('정보 화면의 이상치는 표가 아니라 §8.2 행 목록이다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  const section = panel.querySelector('#jr-about-anomalies');
+  assert.ok(section, '이상치 절이 있다');
+  assert.equal(section.querySelectorAll('.jr-table').length, 0, '이상치 절에 표가 남아 있다');
+  const rows = section.querySelectorAll('.jr-row');
+  // 판정이 붙은 20곳 + 미확인·기준 두 줄.
+  assert.ok(rows.length > 3, `행이 ${rows.length}개뿐이다`);
+
+  // 부제는 값만 — 이력이 있으면 이력 차, 없으면 모순·계열의 근거 값이다 (FRAME §9.4).
+  const text = section.text;
+  assert.match(text, /광운대 경영학부 빅데이터경영전공/u);
+  assert.match(text, /2026 80\.0 · 이력 84\.7 · 차 −4\.7/u);
+  assert.match(text, /2026 61\.0 · 50%컷 57\.0/u);
+  assert.ok(!text.includes('분류'), "표의 '분류' 열이 남아 있다");
+
+  // 순서: 펑크 의심 → 오류 의심 → 실기.
+  const rank = { '펑크 의심': 0, '오류 의심': 1, 실기: 2 };
+  const kinds = rows
+    .map((row) => row.querySelector('.seed-badge__label')?.text.trim() || '')
+    .filter((label) => label in rank)
+    .map((label) => rank[label]);
+  assert.deepEqual(kinds, [...kinds].sort((left, right) => left - right), `분류 순서가 어긋난다: ${kinds.join(' ')}`);
+
+  // 목록 끝 두 행은 값만 적는다.
+  assert.match(text, /미확인\(단일값\)/u);
+  assert.match(text, /\|값 − 중앙값\| > max\(3, 2\.5 × MAD\)/u);
+
+  // 행을 누르면 진단 행과 같이 목표 탭이 열린다.
+  const first = rows.find((row) => row.tagName === 'BUTTON');
+  assert.ok(first, '누를 수 있는 이상치 행이 없다');
+  first.dispatch('click');
+  assert.equal(tabs.find((tab) => tab.getAttribute('data-view') === 'target').getAttribute('aria-selected'), 'true');
+});
