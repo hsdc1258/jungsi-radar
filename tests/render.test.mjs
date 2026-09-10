@@ -461,3 +461,11 @@ test('화면마다 ⓘ 버튼 하나가 정보 탭의 절로 보낸다', () => {
     assert.ok(built.panel.querySelector('#jr-about-verdict'), '정보 탭에 판정 절이 있다');
   }
 });
+
+test('라인과 대학을 어긋나게 체크하면 목록이 비고 안내 한 줄만 남는다', () => {
+  // 서성한 라인 + 중앙대(중경외시)는 교집합이 없다.
+  const built = bootWith(FULL_SCORES, { lines: ['서성한'], universities: ['cau'] });
+  const panel = openDiagnose(built);
+  assert.equal(rowTitles(panel).length, 0, '행이 없어야 한다');
+  assert.match(panel.text, /조건에 맞는 곳이 없습니다/u);
+});

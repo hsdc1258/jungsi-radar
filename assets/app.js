@@ -716,7 +716,10 @@
   function diagnoseRows() {
     const rows = diagnoseAll();
     const query = state.filters.query.trim();
+    // 체크한 라인·대학의 교집합. 비어 있으면(서로 어긋나게 체크했으면) 아무것도 남지 않는다.
+    const allowed = checkedUniversityIds();
     return rows.filter((row) => {
+      if (allowed && !allowed.has(row.universityId)) return false;
       if (row.jeongsi.status === 'no-cut' || row.jeongsi.status === 'no-profile') return false;
       if (hiddenNow(row.universityId, row.dept)) return false;
       if (state.filters.band !== '전체' && bandOf(row.jeongsi)?.label !== state.filters.band) return false;
