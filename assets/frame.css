@@ -1,10 +1,15 @@
-/* 화면 틀 CSS — 배치와 간격만 담는다 (docs/FRAME.md §1).
+/* 화면 틀 CSS — 배치와 간격만 담는다 (docs/FRAME.md §1·§8.2).
    색·글자·컴포넌트 모양은 전부 Seed Design 토큰과 recipe 클래스가 담당한다.
-   여기서 색 값(hex/rgb)을 쓰지 않는다 — 라이트/다크는 토큰이 알아서 바뀐다. */
+   여기서 색 값(hex/rgb)을 쓰지 않는다 — 라이트/다크는 토큰이 알아서 바뀐다.
+   조판은 iOS 설정 앱의 그룹 인셋 리스트다: 둥근 컨테이너 + 인셋 헤어라인 + 작은 회색 머리글. */
 :root {
   --jr-max-width: 640px;
   --jr-gutter: var(--seed-dimension-spacing-x-global-gutter, 16px);
-  --jr-gap: var(--seed-dimension-spacing-y-component-default, 16px);
+  /* 그룹 사이 24px, 머리글과 컨테이너 사이 6px (FRAME §8.2). */
+  --jr-gap: 24px;
+  --jr-radius: var(--seed-radius-r4, 12px);
+  --jr-row-min: 52px;
+  --jr-tap: 44px;
 }
 html, body {
   margin: 0;
@@ -44,11 +49,10 @@ html, body {
   margin: 0 auto;
   background: var(--seed-color-bg-layer-default);
 }
-/* 선택된 탭 아래 밑줄. Seed 는 위치를 CSS 변수로 받는다 — app.js 가 값을 넣는다. */
 .jr-tabs .seed-tabs__list {
   background: transparent;
 }
-/* ---- 본문: 한 열, 섹션 사이 간격 하나 ---- */
+/* ---- 본문: 한 열, 그룹 사이 간격 하나 ---- */
 .jr-main {
   max-width: var(--jr-max-width);
   margin: 0 auto;
@@ -59,17 +63,91 @@ html, body {
   gap: var(--jr-gap);
   align-content: start;
 }
-.jr-section {
+/* 그룹 하나 = 작은 회색 머리글 + 둥근 컨테이너. */
+.jr-section,
+.jr-group {
   display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.jr-section > .jr-group + .jr-group {
+  margin-top: 10px;
+}
+/* 머리글은 Seed list-header(mediumWeak)가 맡고, 우리는 자리만 잡는다. */
+.jr-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 8px;
 }
-/* 목록 그룹: list-header + list-item 반복. 경계선은 토큰 한 줄. */
+.jr-group-count {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+/* 둥근 컨테이너. 라이트에서는 흰 배경 위 회색 한 단, 다크에서는 검정 위 한 단 밝게. */
 .jr-list {
   display: grid;
-  border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
+  overflow: hidden;
+  background: var(--seed-color-bg-layer-fill);
+  border-radius: var(--jr-radius);
 }
-.jr-list > * + * {
-  border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
+/* 행 사이는 인셋 헤어라인 — 왼쪽 여백만큼 비켜 긋는다. */
+.jr-list > * {
+  position: relative;
+}
+.jr-list > * + *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: var(--jr-gutter);
+  height: 1px;
+  background: var(--seed-color-stroke-neutral-subtle);
+}
+/* ---- 화면 머리: 왼쪽 값, 오른쪽 ⓘ 하나 ---- */
+.jr-screen-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--jr-tap);
+}
+.jr-screen-head-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.jr-info {
+  flex: 0 0 auto;
+  width: var(--jr-tap);
+  min-width: var(--jr-tap);
+  height: var(--jr-tap);
+  padding: 0;
+  border-radius: var(--seed-radius-full, 999px);
+  font-weight: var(--seed-font-weight-bold, 700);
+  font-style: italic;
+}
+/* ---- 숫자 스탯 줄 (진단·성적 머리) ---- */
+.jr-stats {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  min-width: 0;
+}
+.jr-stat {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.jr-stat-label {
+  color: var(--seed-color-fg-neutral-subtle);
+  font-size: var(--seed-font-size-t3, 0.8125rem);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.jr-stat-value {
+  font-size: var(--seed-font-size-t7, 1.25rem);
+  font-weight: var(--seed-font-weight-bold, 700);
+  line-height: 1.2;
 }
 /* 입력 행: 제목 왼쪽, 컨트롤 오른쪽. 컨트롤이 남은 폭을 나눠 가져 줄바꿈이 없다. */
 .jr-input-row {
@@ -77,7 +155,7 @@ html, body {
   flex-wrap: nowrap;
   align-items: center;
   gap: 10px;
-  min-height: 56px;
+  min-height: var(--jr-row-min);
   padding: 8px 0;
 }
 .jr-input-row > .jr-input-label {
@@ -89,6 +167,7 @@ html, body {
   display: flex;
   flex: 1 1 auto;
   justify-content: flex-end;
+  align-items: center;
   gap: 8px;
   min-width: 0;
 }
@@ -100,25 +179,41 @@ html, body {
   flex: 0 0 5.2em;
   width: 5.2em;
 }
+/* 등급·표점을 넣었을 때 옆에 적는 환산 백분위. 값 하나뿐, 설명은 없다 (FRAME §8.1). */
+.jr-input-note {
+  flex: 0 0 auto;
+  color: var(--seed-color-fg-neutral-subtle);
+  font-size: var(--seed-font-size-t3, 0.8125rem);
+  white-space: nowrap;
+}
 .jr-input-controls .jr-number .seed-text-input__value {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-/* 판정 카드: 큰 숫자 하나 + 뱃지 하나. 카드 안에 카드를 넣지 않는다. */
+/* 판정 카드: 큰 숫자 하나 + 뱃지 하나 + 값 한 줄. */
 .jr-verdict {
   display: grid;
-  gap: 4px;
-  padding: var(--jr-gap) 0;
+  gap: 6px;
+  padding: 4px 0;
+}
+.jr-verdict p {
+  margin: 0;
 }
 .jr-verdict-number {
   font-size: var(--seed-font-size-t9, 2rem);
   font-weight: var(--seed-font-weight-bold, 700);
   font-variant-numeric: tabular-nums;
-  line-height: 1.15;
+  line-height: 1.1;
+}
+.jr-verdict-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .jr-muted {
   color: var(--seed-color-fg-neutral-subtle);
   font-size: var(--seed-font-size-t3, 0.8125rem);
+  line-height: 1.5;
 }
 .num {
   font-variant-numeric: tabular-nums;
@@ -127,7 +222,10 @@ html, body {
 .jr-sticky-action {
   position: sticky;
   bottom: 0;
-  padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+  /* 화면 끝까지 이어지는 바로 보이게 — 뒤 내용이 그 아래로 지나간다. */
+  margin-inline: calc(var(--jr-gutter) * -1);
+  padding: 12px var(--jr-gutter) calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--seed-color-stroke-neutral-subtle);
   background: var(--seed-color-bg-layer-default);
 }
 .jr-sticky-action > .seed-action-button {
@@ -152,25 +250,28 @@ html, body {
 .jr-select,
 .jr-number,
 .jr-search {
-  min-height: 44px;
+  min-height: var(--jr-tap);
 }
 .jr-select {
   box-sizing: border-box;
   width: 100%;
   appearance: none;
-  padding: 0 32px 0 12px;
+  padding: 0 30px 0 12px;
   color: var(--seed-color-fg-neutral);
-  background-color: var(--seed-color-bg-layer-default);
+  background-color: var(--seed-color-bg-layer-fill);
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
   background-position: calc(100% - 17px) calc(50% + 1px), calc(100% - 12px) calc(50% + 1px);
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
+  border: none;
+  border-radius: var(--seed-radius-r3, 10px);
   font: inherit;
   font-size: var(--seed-font-size-t4, 0.875rem);
   text-overflow: ellipsis;
 }
 /* 열린 목록(브라우저가 그린다)도 같은 색을 쓰게 한다. */
-.jr-select option {
+.jr-select option,
+.jr-select optgroup {
   color: var(--seed-color-fg-neutral);
   background-color: var(--seed-color-bg-layer-default);
 }
@@ -194,57 +295,66 @@ html, body {
   border: none;
   background-color: var(--seed-color-bg-transparent, transparent);
   min-width: 0;
+  min-height: var(--jr-tap);
   padding-inline: var(--seed-dimension-x3, 12px);
 }
 /* 테마를 고정하면 브라우저 기본 위젯(스피너·달력·목록)도 같이 따라오게 한다. */
 :root[data-seed-color-mode="light-only"] { color-scheme: light; }
 :root[data-seed-color-mode="dark-only"] { color-scheme: dark; }
 
-/* ---- 필터 줄: 좁으면 감싸 내려간다 ---- */
-.jr-filters {
+/* ---- 필터: 칩 한 줄(가로 스크롤) + 셀렉트 한 줄. 두 줄을 넘기지 않는다 (FRAME §8.2). ---- */
+.jr-chips {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* 화면 끝까지 흐르게 — 좌우 여백만큼 넘겨 두고 같은 만큼 안쪽 여백을 준다. */
+  margin-inline: calc(var(--jr-gutter) * -1);
+  padding-inline: var(--jr-gutter);
 }
+.jr-chips::-webkit-scrollbar {
+  display: none;
+}
+/* 관심 대학 고르기처럼 접이식 안에 들어가는 칩 묶음은 줄바꿈한다. */
+.jr-chips-wrap {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+.jr-chips .seed-chip-tabs__trigger {
+  min-height: var(--jr-tap);
+}
+.jr-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+/* 셀렉트는 내용만큼만, 검색은 남는 폭을 가져간다. */
 .jr-filters > .jr-select {
-  flex: 1 1 9em;
+  flex: 0 1 auto;
+  width: auto;
   min-width: 0;
 }
 .jr-filters > .jr-search {
-  flex: 2 1 12em;
+  flex: 1 1 5em;
   min-width: 0;
-}
-/* 판정 범례 한 줄. 좁은 폭에서도 잘리지 않게 줄바꿈만 허용한다. */
-.jr-legend {
-  margin: 0;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-.jr-chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding-inline: 0;
-  overflow-x: visible;
-}
-/* 계열 탭 묶음. 토글 칩과 같은 줄에 서되 좁아지면 함께 줄바꿈한다. */
-.jr-chips-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding-inline: 0;
-  overflow-x: visible;
 }
 .jr-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
-/* ---- 목록 행: 버튼이어도 글은 왼쪽으로 ---- */
+/* ---- 목록 행: [제목·부제] ……… [값·뱃지] ---- */
 .jr-row {
   gap: 10px;
+  min-height: var(--jr-row-min);
   text-align: left;
   background: none;
   cursor: default;
@@ -253,7 +363,11 @@ button.jr-row {
   cursor: pointer;
 }
 .jr-row .seed-list-item__content {
+  flex: 1 1 auto;
   min-width: 0;
+}
+.jr-row .seed-list-item__title {
+  flex-shrink: 1;
 }
 .jr-row .seed-list-item__suffix {
   display: flex;
@@ -265,22 +379,38 @@ button.jr-row {
   min-width: 3.2em;
   text-align: right;
 }
-.jr-fav {
-  white-space: nowrap;
+/* 체크 목록의 체크 자리. 꺼져 있어도 자리를 지켜 줄이 흔들리지 않는다. */
+.jr-check-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+.jr-check-slot .jr-check {
+  position: static;
+}
+/* 누를 수 있는 것은 44px 이상 (Apple HIG). Seed 버튼 높이가 그보다 낮으면 여기서 올린다. */
+.jr-panel .seed-action-button {
+  min-height: var(--jr-tap);
 }
 .jr-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--jr-tap);
+  min-height: var(--jr-tap);
   color: var(--seed-color-fg-brand, inherit);
 }
-.jr-verdict-note {
-  margin-left: 6px;
-  font-size: var(--seed-font-size-t4, 0.875rem);
-}
-.jr-verdict p {
-  margin: 0;
-}
 /* ---- 접이식: <details>가 열고 닫기를 맡고 Seed 클래스가 겉모습을 맡는다 ---- */
+.jr-accordion {
+  overflow: hidden;
+  background: var(--seed-color-bg-layer-fill);
+  border-radius: var(--jr-radius);
+}
 .jr-accordion > summary {
   box-sizing: border-box;
+  min-height: var(--jr-tap);
   cursor: pointer;
   list-style: none;
 }
@@ -292,11 +422,20 @@ button.jr-row {
 }
 .jr-accordion-body {
   display: grid;
-  gap: 8px;
-  padding: 0 var(--jr-gutter) 12px;
+  gap: 12px;
+  padding: 0 var(--jr-gutter) 14px;
 }
 .jr-accordion-body p {
   margin: 0;
+}
+/* 접이식 안의 컨테이너는 이미 면 위에 있으니 한 겹 더 칠하지 않는다. */
+.jr-accordion-body .jr-list,
+.jr-accordion-body .jr-accordion {
+  background: none;
+  border-radius: 0;
+}
+.jr-accordion-body .seed-list-header {
+  padding-inline: 0;
 }
 /* ---- 표: 좁은 화면에서는 표만 가로로 스크롤한다 ---- */
 .jr-table-wrap {
@@ -325,13 +464,22 @@ button.jr-row {
   font-weight: var(--seed-font-weight-medium, 500);
   white-space: normal;
 }
+/* 정보 탭의 표도 컨테이너 안에 들어간다 — 목록과 같은 면·같은 여백. */
+.jr-section > .jr-table-wrap {
+  padding: 4px var(--jr-gutter);
+  background: var(--seed-color-bg-layer-fill);
+  border-radius: var(--jr-radius);
+}
+.jr-section > .jr-table-wrap .jr-table tbody tr:last-child th,
+.jr-section > .jr-table-wrap .jr-table tbody tr:last-child td {
+  border-bottom: none;
+}
 
 /* ---- 좁은 화면 보호: 그리드·플렉스 칸이 내용의 최소 폭으로 벌어지지 않게 한다 ---- */
 .jr-panel > *,
 .jr-section > *,
 .jr-filters > *,
 .jr-actions > *,
-.jr-chips > *,
 .jr-row > * {
   min-width: 0;
 }
@@ -341,35 +489,10 @@ button.jr-row {
   max-width: 100%;
   text-overflow: ellipsis;
 }
-.jr-chips {
-  min-width: 0;
-}
 .seed-list-item__title,
 .seed-list-item__detail,
-.seed-callout__description,
 .seed-inline-banner__description {
   overflow-wrap: anywhere;
-}
-
-/* ---- 목록은 화면 끝까지 (Seed list-item 이 스스로 좌우 여백을 갖는다) ---- */
-.jr-section > .seed-list-header,
-.jr-section > .jr-list,
-.jr-panel > .jr-list {
-  margin-inline: calc(var(--jr-gutter) * -1);
-}
-/* 접이식 안에서는 이미 여백이 있으므로 되돌린다. */
-.jr-accordion-body .jr-section > .seed-list-header,
-.jr-accordion-body .jr-section > .jr-list,
-.jr-accordion-body .jr-list {
-  margin-inline: 0;
-}
-/* 진단 행: 제목·부제가 먼저 줄바꿈하고, 우측 값은 줄어들지 않는다. */
-.jr-row .seed-list-item__content {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.jr-row .seed-list-item__title {
-  flex-shrink: 1;
 }
 /* 키보드 초점은 항상 보이게 (Seed 토큰 색). */
 :focus-visible {
@@ -384,7 +507,8 @@ button.jr-row {
 
 /* 아주 좁은 화면(320px)에서는 라벨과 숫자 칸을 줄여 선택과목 이름이 더 보이게 한다. */
 @media (max-width: 360px) {
-  .jr-input-row > .jr-input-label { min-width: 3.6em; }
+  .jr-input-row > .jr-input-label { min-width: 3.4em; }
   .jr-input-controls > .jr-number { flex-basis: 4.4em; width: 4.4em; }
   .jr-input-row { gap: 8px; }
+  .jr-stats { gap: 12px; }
 }

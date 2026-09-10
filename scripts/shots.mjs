@@ -43,7 +43,7 @@ const browser = await chromium.launch({ executablePath: CHROME });
 
 // 한 화면에서 재는 것들. 브라우저 안에서 도는 함수라 밖의 변수를 쓰지 않는다.
 function measure() {
-  const out = { over: 0, offenders: [], truncated: [], overlaps: [], empty: false };
+  const out = { over: 0, offenders: [], truncated: [], overlaps: [], small: [], empty: false };
   out.over = document.documentElement.scrollWidth - window.innerWidth;
   if (out.over > 0) {
     for (const node of document.querySelectorAll('body *')) {
@@ -67,6 +67,18 @@ function measure() {
     }
   }
   out.truncated = out.truncated.slice(0, 4);
+  // 터치 타깃: 누를 수 있는 것은 44px 이상이어야 한다 (Apple HIG).
+  const seen = new Set();
+  for (const node of document.querySelectorAll('#panel button, #panel select, #panel input, #panel summary, #panel a, #panel [role="checkbox"]')) {
+    const rect = node.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) continue;
+    if (rect.height >= 43.5 && rect.width >= 43.5) continue;
+    const key = `${node.tagName}.${(node.className || '').toString().split(' ')[0]}: ${Math.round(rect.width)}x${Math.round(rect.height)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.small.push(`${key} "${(node.textContent || '').trim().slice(0, 12)}"`);
+  }
+  out.small = out.small.slice(0, 6);
   // 겹침: 맨 위에서 첫 내용이 고정바에 가리는지, 스크롤 중 고정바가 비치거나 내용에 덮이는지.
   const head = document.querySelector('.jr-head');
   if (head && panel) {
@@ -96,6 +108,7 @@ async function auditPage(page, tag, { shots = false, prefix = '' } = {}) {
     if (info.over > 0) problems.push(`${tag}/${view}: 가로 넘침 +${info.over}px — ${info.offenders.join(' | ')}`);
     if (info.empty) problems.push(`${tag}/${view}: 패널이 비었다`);
     for (const item of info.truncated) problems.push(`${tag}/${view}: 잘린 텍스트 ${item}`);
+    for (const item of info.small) problems.push(`${tag}/${view}: 터치 타깃 44px 미만 ${item}`);
     for (const item of info.overlaps) problems.push(`${tag}/${view}: ${item}`);
     if (shots) await page.screenshot({ path: path.join(OUT, `${prefix}${view}.png`), fullPage: view !== 'diagnose' });
   }
@@ -152,6 +165,40 @@ try {
     await page.close();
   }
 
+  // 라인·대학 체크 목록. 칩을 눌러 펼친 상태를 좁은 폭·넓은 폭에서 한 번씩 본다.
+  for (const width of [320, 375, 1280]) {
+    for (const theme of ['light', 'dark']) {
+      const page = await browser.newPage({ viewport: { width, height: 812 }, colorScheme: theme });
+      const tag = `체크목록/${width}px/${theme}`;
+      watch(page, tag);
+      await page.route(SEED_CDN, (route) => route.fulfill({ status: 200, contentType: 'text/css', body: seedCss }));
+      await page.addInitScript(([scores, mode]) => {
+        localStorage.setItem('jr.scores', JSON.stringify(scores));
+        localStorage.setItem('jr.theme', JSON.stringify(mode));
+      }, [SCORES, theme === 'dark' ? 'dark-only' : 'light-only']);
+      await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
+      await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+      await page.waitForSelector('.jr-chips');
+      for (const [name, label] of [['line', '라인'], ['university', '대학']]) {
+        await page.evaluate((text) => {
+          const chip = [...document.querySelectorAll('.jr-chips .seed-chip-tabs__trigger')]
+            .find((node) => node.textContent.trim().split(' ')[0] === text);
+          chip?.click();
+        }, label);
+        await page.waitForTimeout(140);
+        const info = await page.evaluate(measure);
+        if (info.over > 0) problems.push(`${tag}/${name}: 가로 넘침 +${info.over}px — ${info.offenders.join(' | ')}`);
+        for (const item of info.truncated) problems.push(`${tag}/${name}: 잘린 텍스트 ${item}`);
+        for (const item of info.small) problems.push(`${tag}/${name}: 터치 타깃 44px 미만 ${item}`);
+        for (const item of info.overlaps) problems.push(`${tag}/${name}: ${item}`);
+        const rows = await page.evaluate(() => document.querySelectorAll('[role="checkbox"]').length);
+        if (rows === 0) problems.push(`${tag}/${name}: 체크 목록이 비었다`);
+        if (width === 375 && theme === 'light') await page.screenshot({ path: path.join(OUT, `check-${name}.png`) });
+      }
+      await page.close();
+    }
+  }
+
   // 단일 파일 번들. 호스트가 감싼 문서 안에서(테마를 찍은 경우와 아닌 경우) 같은 점검을 한다.
   const bundleFile = path.join(ROOT, 'dist', 'jungsi-radar.html');
   if (existsSync(bundleFile)) {
@@ -194,5 +241,5 @@ try {
   web.kill();
 }
 
-console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 번들 4판 통과 (${OUT})`);
+console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 체크목록 6판 + 번들 4판 통과 (${OUT})`);
 process.exit(problems.length ? 1 : 0);
