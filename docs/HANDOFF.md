@@ -3,6 +3,11 @@
 ## 1. 완료
 - `scripts/build-data.mjs` 계열 분류 규칙 수정: (a) `baseName`이 '전공'을 통째로 떼어 `안전공학과`가 `안학과`가 되던 버그를 고치고 끝자리 전용 `stemName`·자유전공 전용 `freeName`으로 갈랐다, (b) 자유전공 가지에서 인문·사회를 자연보다 먼저 봐 `사회과학대학 자유전공학과`가 자연으로 가지 않게 했다(전자·반도체·소재·컴퓨터·모빌리티 키워드 추가), (c) SCIENCE에 `식물|작물|전지|의약`, HUMAN_OVERRIDE에 `언어정보`, MEDICAL_EXCEPT에 `바이오의약` 추가.
 - 이로써 자동 교정된 곳: 안전공학과(인천대·충북대) 인문→자연, 식물의학·식물자원·특용식물·응용식물(경북·충북·경상국립·전남) 인문→자연, 인하대 이차전지융합학과 인문→자연, 한양대 ERICA 분자의약전공 인문→자연, 인하대 첨단바이오의약학과 의약→자연, 부산대 언어정보학과 자연→인문, 충북대 전자정보자율전공학부·부산대 첨단모빌리티/첨단소재자율전공 자유전공→자연, 강원대 사회과학대학 자유전공학과 자연→인문.
+- 진단 필터 재편(FRAME §9.1): `.jr-chips` 가 줄바꿈하고(가로 스크롤·음수 마진 제거) 계열은 셀렉트로 내려갔다. 셀렉트 줄은 계열|판정|정렬 삼등분, 검색은 그 아래 한 줄(`.jr-search-row`). 375px에서 칩은 두 줄로 끝난다.
+- ⓘ 를 상단바로(FRAME §9.2): `index.html` 의 `#infoButton` 하나가 탭마다 목적지를 바꾸고(성적 scale/convert · 진단·목표 verdict · 반영 basis) 정보 탭에서는 `hidden` 이다. `screenHead` 는 왼쪽 값만 남았다.
+- 768px 미만 바텀시트(FRAME §9.3): 라인·대학·관심 대학 고르기를 Seed `bottom-sheet` recipe 로 연다. 스크롤 잠금·첫 행 포커스·Tab 트랩·Esc/배경/닫기/완료, 닫으면 포커스는 열었던 칩으로, 패널 스크롤 자리는 그대로(시트를 여닫을 때 패널을 다시 그리지 않는다). 768px 이상으로 넘어가면 닫고 인라인으로 돌아간다. 성적·정보 탭의 관심 대학은 좁은 폭에서 행 하나(`관심 대학 … N곳 ›`)가 시트를 연다.
+- 점검 이식성: `scripts/serve.mjs`(Node 내장 http)와 `scripts/measure.mjs`(공용 측정 함수)를 새로 두고, `scripts/shots.mjs` 는 `@playwright/test` 의 크로미움을 쓴다(`PW_CHROME` 이 있을 때만 `executablePath`). 윈도우에서도 그대로 돈다.
+- `scripts/e2e.mjs` + `npm run e2e`: 성적→진단→목표→반영→정보 전 흐름을 실제 클릭·타이핑으로, 375·768·1280 × 라이트/다크 × 백분위·등급·표점, 공유 링크 복원, 시트 열기·완료·스크롤 보존, 칩 뷰포트 안까지 단언한다.
 
 ## 2. 진행 중 (미완)
 - `npm run build`를 아직 돌리지 않아 `assets/data.js`는 옛 분류다. 빌드·테스트·번들 미실행.
@@ -11,7 +16,4 @@
 ## 3. 남은 할 일 (순서)
 1. `scripts/build-data.mjs`에 `TRACK_OVERRIDES`(대학·학과·계열·근거) 표를 만들고 `source/results.json`의 `track` 10건을 옮긴 뒤 2절의 조사 결과를 채운다. `PRACTICAL_EXEMPT`(실기 없는 예체능) 표도 함께. 예체능에 `실기` 뱃지.
 2. `scripts/anomalies.mjs` — 대학×계열 2026 70%컷의 중앙값·MAD로 `(중앙값−값) > max(3, 2.5×MAD)` 후보를 뽑아 펑크/데이터 오류/실기 혼입/정상으로 분류해 `source/anomalies.json` 생성, 빌드에 포함, 행 `이상` 뱃지 + 목표 탭 한 줄 + 정보 탭 표.
-3. 진단 필터 칩 줄바꿈(가로 스크롤 제거, 계열은 셀렉트로) + 스탯 줄 ⓘ를 제목 줄 우측 상단으로. `docs/FRAME.md` §8.2 문구 수정.
-4. 768px 미만 라인·대학·관심 대학 선택을 Seed `bottom-sheet`로(포커스 트랩·Esc·스크롤 잠금), `docs/FRAME.md` §7에 예외 한 줄.
-5. `scripts/e2e.mjs` + `npm run e2e` — 성적→진단→목표→반영→정보 전 흐름, 375·768·1280 × 라이트·다크, 등급·표점 모드, 링크 복원, 시트 열기·완료·스크롤 복원, 칩 뷰포트 안 단언, `_shots/sheet-line.png`.
-6. `npm test`에 분류 오버라이드·이상치 탐지 테스트 추가 → `npm run check`·`npm run e2e`·`npm run build` → 커밋·푸시·배포 확인 → `npm run bundle` 사본 복사.
+3. `npm test`에 분류 오버라이드·이상치 탐지 테스트 추가 → `npm run check`·`npm run e2e`·`npm run build` → 커밋·푸시·배포 확인 → `npm run bundle` 사본 복사.
