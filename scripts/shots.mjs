@@ -48,7 +48,7 @@ const browser = await chromium.launch({ executablePath: CHROME });
 
 // 한 화면에서 재는 것들. 브라우저 안에서 도는 함수라 밖의 변수를 쓰지 않는다.
 function measure() {
-  const out = { over: 0, offenders: [], truncated: [], overlaps: [], small: [], empty: false };
+  const out = { over: 0, offenders: [], truncated: [], overlaps: [], small: [], contrast: [], empty: false };
   out.over = document.documentElement.scrollWidth - window.innerWidth;
   if (out.over > 0) {
     for (const node of document.querySelectorAll('body *')) {
@@ -72,6 +72,35 @@ function measure() {
     }
   }
   out.truncated = out.truncated.slice(0, 4);
+  // 대비: 본문·부제·머리글이 배경과 4.5:1 이상인지 (WCAG AA). 반투명 배경은 재지 않는다.
+  const luminance = (color) => {
+    const parts = (color.match(/[\d.]+/gu) || []).map(Number);
+    if (parts.length < 3) return null;
+    if (parts.length > 3 && parts[3] < 1) return null;
+    const [r, g, b] = parts.slice(0, 3).map((value) => {
+      const channel = value / 255;
+      return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const backgroundOf = (node) => {
+    let current = node;
+    while (current) {
+      const color = getComputedStyle(current).backgroundColor;
+      if (color && !/rgba\(0, 0, 0, 0\)|transparent/u.test(color)) return color;
+      current = current.parentElement;
+    }
+    return 'rgb(255, 255, 255)';
+  };
+  for (const selector of ['.seed-list-item__title', '.seed-list-item__detail', '.jr-group-head', '.jr-stat-label', '.jr-muted', '.jr-gap']) {
+    const node = document.querySelector(`#panel ${selector}`);
+    if (!node) continue;
+    const front = luminance(getComputedStyle(node).color);
+    const back = luminance(backgroundOf(node));
+    if (front === null || back === null) continue;
+    const ratio = (Math.max(front, back) + 0.05) / (Math.min(front, back) + 0.05);
+    if (ratio < 4.5) out.contrast.push(`${selector} ${Math.round(ratio * 100) / 100}:1`);
+  }
   // 터치 타깃: 누를 수 있는 것은 44px 이상이어야 한다 (Apple HIG).
   const seen = new Set();
   for (const node of document.querySelectorAll('#panel button, #panel select, #panel input, #panel summary, #panel a, #panel [role="checkbox"]')) {
@@ -114,6 +143,7 @@ async function auditPage(page, tag, { shots = false, prefix = '' } = {}) {
     if (info.empty) problems.push(`${tag}/${view}: 패널이 비었다`);
     for (const item of info.truncated) problems.push(`${tag}/${view}: 잘린 텍스트 ${item}`);
     for (const item of info.small) problems.push(`${tag}/${view}: 터치 타깃 44px 미만 ${item}`);
+    for (const item of info.contrast) problems.push(`${tag}/${view}: 대비 4.5:1 미만 ${item}`);
     for (const item of info.overlaps) problems.push(`${tag}/${view}: ${item}`);
     if (shots) await page.screenshot({ path: path.join(OUT, `${prefix}${view}.png`), fullPage: view !== 'diagnose' });
   }
@@ -213,6 +243,7 @@ try {
         if (info.over > 0) problems.push(`${tag}/${name}: 가로 넘침 +${info.over}px — ${info.offenders.join(' | ')}`);
         for (const item of info.truncated) problems.push(`${tag}/${name}: 잘린 텍스트 ${item}`);
         for (const item of info.small) problems.push(`${tag}/${name}: 터치 타깃 44px 미만 ${item}`);
+        for (const item of info.contrast) problems.push(`${tag}/${name}: 대비 4.5:1 미만 ${item}`);
         for (const item of info.overlaps) problems.push(`${tag}/${name}: ${item}`);
         const rows = await page.evaluate(() => document.querySelectorAll('[role="checkbox"]').length);
         if (rows === 0) problems.push(`${tag}/${name}: 체크 목록이 비었다`);

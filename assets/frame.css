@@ -475,6 +475,23 @@ button.jr-row {
   border-bottom: none;
 }
 
+/* ---- 대비: 라이트 모드에서 subtle 회색(3.2:1)은 13px 글자에 너무 옅다.
+   한 단 진한 Seed 토큰(fg-neutral-muted)으로 올리면 라이트 6.2:1 · 다크 12.1:1 로 둘 다 AA를 넘는다. */
+.jr-muted,
+.jr-stat-label,
+.jr-input-note,
+.jr-footer-text,
+.jr-table thead th,
+.jr-group-head.seed-list-header,
+.jr-row .seed-list-item__detail {
+  color: var(--seed-color-fg-neutral-muted);
+}
+/* 값(차이 숫자)은 본문 색으로, 굵기 한 단 위로 — 행에서 가장 먼저 읽히는 숫자다. */
+.jr-gap {
+  color: var(--seed-color-fg-neutral);
+  font-weight: var(--seed-font-weight-medium, 500);
+}
+
 /* ---- 좁은 화면 보호: 그리드·플렉스 칸이 내용의 최소 폭으로 벌어지지 않게 한다 ---- */
 .jr-panel > *,
 .jr-section > *,
