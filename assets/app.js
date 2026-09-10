@@ -305,7 +305,14 @@
   const DREAM_UNIVERSITIES = new Set(['snu', 'yonsei', 'korea']);
   // 간호·물리치료·보건 등은 빼지 않는다 — 의·치·한·약·수의만 본다.
   const DREAM_DEPT = /의예|의학과|치의예|치의학|한의예|한의학|약학|수의예|수의학/u;
-  const isArtsDept = (dept) => dept?.track === '예체능';
+  // 실기가 있는 예체능만 감춘다 — 실기 없이 수능 100%로 뽑는 예체능(dept.practical === false)은
+  // 컷을 그대로 견줄 수 있어 목록에 남는다 (FRAME §9.4, scripts/build-data.mjs PRACTICAL_EXEMPT).
+  const isArtsDept = (dept) => dept?.track === '예체능' && dept?.practical === true;
+  // 이상치. 펑크·오류 의심만 뱃지를 단다 — 실기·정상은 정보 탭 표에만 남는다.
+  const ANOMALY_LABEL = { punk: '펑크 의심', error: '오류 의심', practical: '실기', normal: '정상' };
+  const ANOMALY_FLAGGED = new Set(['punk', 'error']);
+  const anomalyOf = (dept) => (dept?.anomaly && ANOMALY_LABEL[dept.anomaly.kind] ? dept.anomaly : null);
+  const isFlaggedAnomaly = (dept) => Boolean(anomalyOf(dept) && ANOMALY_FLAGGED.has(dept.anomaly.kind));
   const isDreamDept = (universityId, dept) => DREAM_UNIVERSITIES.has(universityId) || DREAM_DEPT.test(String(dept?.name || ''));
   const womenOnlyIds = new Set(DATA.universities.filter((row) => row.womenOnly).map((row) => row.id));
   function hiddenBy(universityId, dept) {
@@ -963,6 +970,9 @@
           // 보류·기준 불일치에는 차이 숫자를 적지 않는다 — 판정한 것처럼 보인다.
           el('span', { class: 'jr-gap num', text: result.status === 'ok' || result.status === 'blocked' ? signed(result.gap, 1) : '—' }),
           result.estimated && result.status === 'ok' ? badge('추정', 'warning') : null,
+          // 차이 숫자 → 추정 → 실기 → 이상 → 판정 (FRAME §9.4).
+          row.dept.practical === true ? badge('실기', 'neutral') : null,
+          isFlaggedAnomaly(row.dept) ? badge('이상', 'critical') : null,
           badge(band.label, BAND_TONE[band.key]),
         ].filter(Boolean),
         onclick: () => {
@@ -1215,7 +1225,13 @@
       `${year}학년도`, fmt(row.cut70 ?? row.avg, 2), row.kind || '—', row.note || '',
     ]);
 
+    // 이상치 한 줄. 값만 적는다 — 이상이 아니면 행 자체가 없다 (FRAME §9.4).
+    const anomaly = anomalyOf(dept);
     return accordion('기준 숫자', [
+      anomaly ? el('div', { class: 'jr-list' }, [listItem({
+        title: '이상 신호',
+        suffix: el('span', { class: 'jr-gap num', text: `${ANOMALY_LABEL[anomaly.kind]} · ${signed(-anomaly.gap, 1)}` }),
+      })]) : null,
       yearRows.length > 0 ? table(['연도', '컷', '종류', '출처'], yearRows) : muted('연도별 컷 자료 없음'),
       cuts.length > 0 ? table(['연도', '50%컷', '70%컷', '100%컷', '종류'], cuts) : null,
       meta.length > 0 ? table(['연도', '모집인원', '경쟁률', '추합', '예비번호', '군'], meta) : null,
@@ -1545,6 +1561,37 @@
     ].filter(Boolean);
   }
 
+  // 계열 중앙값에서 크게 떨어진 2026 컷. 생성물이 이미 판정해 둔 값을 표로만 옮긴다
+  // (scripts/anomalies.mjs · FRAME §9.4). 설명문은 쓰지 않고 표 끝에 기준 한 줄만 적는다.
+  function anomalyRows() {
+    const rows = [];
+    for (const university of DATA.universities) {
+      for (const dept of university.departments) {
+        const anomaly = anomalyOf(dept);
+        if (!anomaly) continue;
+        rows.push({ university, dept, anomaly });
+      }
+    }
+    return rows.sort((left, right) => right.anomaly.gap - left.anomaly.gap);
+  }
+
+  function renderAnomalies() {
+    const rows = anomalyRows();
+    if (rows.length === 0) return [];
+    return [
+      listHeader('이상치', `${rows.length}곳`),
+      table(['대학', '모집단위', '2026 컷', '계열 중앙값', '차', '분류'], rows.map((row) => [
+        row.university.short,
+        deptLabel(row.dept.name),
+        fmt(row.dept.jeongsi?.['2026']?.cut70, 1),
+        fmt(row.anomaly.median, 1),
+        signed(-row.anomaly.gap, 1),
+        ANOMALY_LABEL[row.anomaly.kind],
+      ])),
+      muted('기준: (중앙값 − 값) > max(3, 2.5 × MAD)'),
+    ];
+  }
+
   // 정보 탭의 절. ⓘ 버튼이 이 아이디로 찾아온다.
   const aboutSection = (anchor, children) => el('div', { class: 'jr-section', id: `jr-about-${anchor}` }, [].concat(children).flat(Infinity).filter(Boolean));
 
@@ -1641,6 +1688,7 @@
         }))),
       ]),
       aboutSection('accuracy', renderAccuracy() || []),
+      aboutSection('anomalies', renderAnomalies()),
       aboutSection('sources', [
         listHeader('출처'),
         el('div', { class: 'jr-list' }, sources.map((row) => listItem({

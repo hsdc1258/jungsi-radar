@@ -278,7 +278,11 @@ test('판정별 보기에서만 머리글이 나오고 머리글과 그 안의 �
   assert.ok(named.length >= 2, `판정 머리글 묶음이 둘 이상이어야 한다 (${named.length})`);
   for (const block of named) {
     const head = block.querySelector('.seed-list-header').text.trim().split(' ')[0];
-    const badges = block.querySelectorAll('.seed-badge__root').map((node) => node.text.trim());
+    // 판정 뱃지 말고도 한 행에 추정·실기·이상이 함께 붙는다 (FRAME §9.4) — 판정 뱃지만 본다.
+    const EXTRA = new Set(['추정', '실기', '이상']);
+    const badges = block.querySelectorAll('.seed-badge__root')
+      .map((node) => node.text.trim())
+      .filter((label) => !EXTRA.has(label));
     assert.ok(badges.length > 0, `${head}: 뱃지가 있어야 한다`);
     for (const label of badges) assert.equal(label, head, `${head} 묶음에 ${label} 뱃지가 섞였다`);
   }
