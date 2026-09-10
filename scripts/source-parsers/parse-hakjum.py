@@ -7,7 +7,10 @@
 #   npm run build
 # 값은 페이지에 적힌 숫자만 옮기고, 없는 값은 만들지 않는다.
 import re,html,json,urllib.parse
-IDS={'인천대학교':'incheon','경기대학교':'kyonggi','인하대학교':'inha','아주대학교':'ajou'}
+IDS={'인천대학교-본교':'incheon','경기대학교-본교':'kyonggi','인하대학교-본교':'inha','아주대학교-본교':'ajou',
+ '부산대학교-본교':'pnu','경북대학교-본교':'knu','전남대학교-본교':'jnu','전북대학교-본교':'jbnu',
+ '충남대학교-본교':'cnu','충북대학교-본교':'cbnu','강원대학교-본교':'kangwon','경상국립대학교-본교':'gnu',
+ '제주대학교-본교':'jejunu','한양대학교-ERICA-분교':'hanyang-erica','한국항공대학교-본교':'kau'}
 EXCLUDE=re.compile(r'농어촌|기초|차상위|특성화|기회균형|사회배려|고른기회|특수|장애|재직자|신학특별|실기|사회통합|한마음|국가보훈|만학도|성인학습|평생|특별전형|계약학과|국방|사이버|항공시스템')
 def clean(x): return html.unescape(re.sub(r'<[^>]+>','',x)).strip().replace('\n',' ')
 def num(x):
@@ -29,9 +32,9 @@ def group_of(name):
     m=re.search(r'일반([가나다])',name)
     return m.group(1) if m else None
 result=[]
-for uni,uid in IDS.items():
-    f='hakjum/%s-본교.html'%uni
-    url='https://hakjum.school/admissions/'+urllib.parse.quote(uni+'-본교')+'/'
+for slug,uid in IDS.items():
+    f='hakjum/%s.html'%slug
+    url='https://hakjum.school/admissions/'+urllib.parse.quote(slug)+'/'
     depts={}
     def dept(name): return depts.setdefault(name,{'name':name,'jeongsi':{},'gyogwa':{},'hakjong':{}})
     counts={'jeongsi':0,'gyogwa':0,'hakjong':0}
@@ -47,7 +50,11 @@ for uni,uid in IDS.items():
             dn=r[idx['모집단위']]
             if not dn or dn=='모집단위': continue
             quota=num(r[idx['모집']]) if '모집' in idx else None
-            if quota==0: continue
+            # 모집 0은 그해 뽑지 않은 모집단위다. 다만 한국항공대처럼 모집인원 칸을 0으로만
+            # 채운 페이지(경쟁률 칸이 아예 없다)는 값이 없다는 뜻이라 그대로 살린다.
+            if quota==0:
+                if '경쟁률' in idx: continue
+                quota=None
             rate=num(r[idx['경쟁률']]) if '경쟁률' in idx else None
             fill=num(r[idx['충원']]) if '충원' in idx else None
             if kind=='jeongsi':
@@ -70,10 +77,10 @@ for uni,uid in IDS.items():
                 cur=d[kind].get('2026')
                 if cur is None or (cur.get('quota') or 0)<(quota or 0): d[kind]['2026']=row
                 counts[kind]+=1
-    result.append({'id':uid,'name':uni,'url':url,'departments':list(depts.values()),'counts':counts})
+    result.append({'id':uid,'name':slug,'url':url,'departments':list(depts.values()),'counts':counts})
     js=[d for d in depts.values() if d['jeongsi']]
     pcts=[d['jeongsi']['2026']['pct70'] for d in js if d['jeongsi']['2026'].get('pct70') is not None]
-    print(uni,uid,counts,'depts',len(depts),'jeongsi',len(js),'pct',(min(pcts),max(pcts)) if pcts else None)
+    print(slug,uid,counts,'depts',len(depts),'jeongsi',len(js),'pct',(min(pcts),max(pcts)) if pcts else None)
     for d in js[:4]: print('   ',d['name'],d['jeongsi']['2026'].get('group'),d['jeongsi']['2026'].get('pct70'))
 import io
 json.dump(result,io.open('newunis.json','w',encoding='utf8'),ensure_ascii=False,indent=1)

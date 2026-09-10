@@ -270,3 +270,22 @@ test('진단 목록의 차이 숫자와 뱃지가 판정 정의대로 맞는다'
     assert.equal(label, verdictOf(gap), `차이 ${gap} 인데 뱃지가 ${label}`);
   }
 });
+
+test('더 보기를 누르면 목록이 늘고 다시 그려도 느려지지 않는다', () => {
+  const { panel, tabs } = bootWith(FULL_SCORES, { sort: 'cut' });
+  const open = () => tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  open();
+  const count = () => panel.querySelectorAll('.jr-row').filter((row) => row.querySelector('.jr-gap')).length;
+  const before = count();
+  assert.ok(before > 0, '행이 있어야 한다');
+  const more = panel.querySelectorAll('.seed-action-button').find((node) => node.text.includes('더 보기'));
+  assert.ok(more, '더 보기 버튼이 있어야 한다');
+  more.dispatch('click');
+  const after = count();
+  assert.ok(after > before, `더 보기로 늘어야 한다 (${before} → ${after})`);
+  // 같은 성적·필터로 다시 그릴 때는 판정 결과를 다시 계산하지 않는다.
+  const start = Date.now();
+  for (let index = 0; index < 5; index += 1) open();
+  const elapsed = Date.now() - start;
+  assert.ok(elapsed < 2000, `다시 그리기 5번이 2초 안에 끝나야 한다 (${elapsed}ms)`);
+});

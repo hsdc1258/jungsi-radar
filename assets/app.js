@@ -509,14 +509,28 @@
   }
 
   // ---------------------------------------------------------------- 진단 화면
+  // 대학 40곳·모집단위 1,800여 곳을 매 렌더마다 다시 판정하면 필터 한 번에 100ms를 넘긴다.
+  // 성적·계열·라인·정렬이 그대로면 지난 결과를 그대로 쓴다('더 보기'와 검색은 이 뒤에서 거른다).
+  let diagnoseCache = { key: null, rows: null };
+  function diagnoseAll() {
+    const key = JSON.stringify([state.scores, state.filters.track, state.filters.line, state.filters.sort]);
+    if (diagnoseCache.key !== key) {
+      diagnoseCache = {
+        key,
+        rows: ENGINE.diagnose(profile(), DATA, {
+          track: state.filters.track,
+          universities: lineUniversities(),
+          // 기본은 예상 컷 내림차순 — 갈 수 있는 가장 높은 곳부터 낮은 곳까지.
+          // '판정별'을 고르면 판정 묶음 안에서 아슬아슬한 순(차이 오름차순)으로 본다.
+          sort: state.filters.sort === 'band' ? 'gap' : 'cut',
+        }),
+      };
+    }
+    return diagnoseCache.rows;
+  }
+
   function diagnoseRows() {
-    // 기본은 예상 컷 내림차순 — 갈 수 있는 가장 높은 곳부터 낮은 곳까지.
-    // '판정별'을 고르면 판정 묶음 안에서 아슬아슬한 순(차이 오름차순)으로 본다.
-    const rows = ENGINE.diagnose(profile(), DATA, {
-      track: state.filters.track,
-      universities: lineUniversities(),
-      sort: state.filters.sort === 'band' ? 'gap' : 'cut',
-    });
+    const rows = diagnoseAll();
     const query = state.filters.query.trim();
     return rows.filter((row) => {
       if (row.jeongsi.status === 'no-cut' || row.jeongsi.status === 'no-profile') return false;

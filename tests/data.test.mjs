@@ -27,7 +27,8 @@ test('연도별 series는 백분위 범위 안에 있고 연도가 겹치지 않
       assert.equal(new Set(years).size, years.length, `${university.id} ${dept.name}: 연도 중복`);
       for (const row of series) {
         assert.match(row.year, /^20\d\d$/u);
-        assert.ok(row.value > 20 && row.value <= 100, `${university.id} ${dept.name} ${row.year}: ${row.value}`);
+        // 실기 비중이 큰 예체능 모집단위는 수능 백분위가 아주 낮을 수 있다(부산대 성악 14 등).
+        assert.ok(row.value > 0 && row.value <= 100, `${university.id} ${dept.name} ${row.year}: ${row.value}`);
         assert.ok(['adiga', 'official', 'derived'].includes(row.basis), `${university.id} ${dept.name}: basis ${row.basis}`);
       }
       if (series.length > 1) multi += 1;

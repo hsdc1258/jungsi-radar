@@ -171,19 +171,21 @@ test('영어도 우수한 영역 순(bestOf) 그룹에 들어갈 수 있다', ()
 const DATA_FILE = 'assets/data.js';
 test('generated data.js exists, parses, and respects value ranges', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
   const data = load(DATA_FILE, 'IPSI_DATA');
-  // 여자대학교(이화·숙명)를 뺀 뒤 인하·아주·인천·가천·경기를 더해 29곳이다.
-  assert.equal(data.universities.length, 29, 'university count');
-  assert.equal(Object.keys(data.rules).length, 29, 'rule count matches the university list');
+  // 여자대학교(이화·숙명)를 뺀 뒤 수도권(인하·아주·인천·가천·경기·한양ERICA·한국항공)과
+  // 지방거점국립대 9곳을 더해 40곳이다.
+  assert.equal(data.universities.length, 40, 'university count');
+  assert.equal(Object.keys(data.rules).length, 40, 'rule count matches the university list');
   const ids = new Set(data.universities.map((row) => row.id));
   for (const id of ['ewha', 'sookmyung']) {
     assert.ok(!ids.has(id), `여자대학교 ${id}는 생성물에 없어야 한다`);
     assert.ok(!(id in data.rules), `여자대학교 ${id}의 규칙도 생성물에 없어야 한다`);
   }
-  for (const id of ['inha', 'ajou', 'incheon', 'gachon', 'kyonggi']) assert.ok(ids.has(id), `${id}가 있어야 한다`);
+  for (const id of ['inha', 'ajou', 'incheon', 'gachon', 'kyonggi', 'hanyang-erica', 'kau',
+    'pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu']) assert.ok(ids.has(id), `${id}가 있어야 한다`);
   const lines = data.lines.map((row) => row.label);
   assert.ok(lines.includes('중경외시') && !lines.includes('중경외시이'), '중경외시');
   assert.ok(lines.includes('건동홍') && !lines.includes('건동홍숙'), '건동홍');
-  assert.ok(lines.includes('인가경') && lines.includes('인하아주'), '새 라인');
+  for (const label of ['인가경', '인하아주', '경기·인천', '지거국']) assert.ok(lines.includes(label), `라인 ${label}`);
   // 대학 순서는 대표 컷(예체능·의약 제외 2026 70%컷 중앙값) 내림차순이다.
   const ordered = [...data.universities].sort((left, right) => left.order - right.order);
   assert.deepEqual(ordered.map((row) => row.id), data.universities.map((row) => row.id), 'order는 배열 순서와 같다');
@@ -200,7 +202,8 @@ test('generated data.js exists, parses, and respects value ranges', { skip: !exi
       assert.ok(['인문', '자연', '의약', '예체능', '자유전공'].includes(dept.track), `${university.id} ${dept.name}: track ${dept.track}`);
       for (const [year, row] of Object.entries(dept.jeongsi || {})) {
         assert.match(year, /^20\d\d$/u);
-        if (row.metric === 'pct') assert.ok(row.cut70 > 20 && row.cut70 <= 100, `${university.id} ${dept.name} ${year}: pct cut ${row.cut70}`);
+        // 실기 비중이 큰 예체능은 수능 백분위 컷이 아주 낮게 잡힌다.
+        if (row.metric === 'pct') assert.ok(row.cut70 > 0 && row.cut70 <= 100, `${university.id} ${dept.name} ${year}: pct cut ${row.cut70}`);
         if (row.metric === 'score') assert.ok(row.cut70 > 0 && row.maxScore >= row.cut70, `${university.id} ${dept.name} ${year}: score cut`);
         assert.ok(typeof row.url === 'string' && /^https?:/u.test(row.url), `${university.id} ${dept.name} ${year}: jeongsi url`);
       }
@@ -211,13 +214,17 @@ test('generated data.js exists, parses, and respects value ranges', { skip: !exi
       }
     }
   }
-  assert.ok(departments >= 300, `at least 300 departments (found ${departments})`);
+  assert.ok(departments >= 1500, `at least 1500 departments (found ${departments})`);
   for (const [id, rule] of Object.entries(data.rules)) {
     assert.ok(Array.isArray(rule.tracks) && rule.tracks.length >= 1, `${id}: tracks`);
     for (const track of rule.tracks) {
       const weights = track.weights || {};
       const bestOf = (track.bestOf || []).flatMap((group) => group.weights || []).reduce((sum, weight) => sum + weight, 0);
-      assert.ok((weights.kor || 0) + (weights.math || 0) + (weights.inq || 0) + bestOf > 0, `${id} ${track.name}: weights`);
+      const total = (weights.kor || 0) + (weights.math || 0) + (weights.inq || 0) + bestOf;
+      // 비율을 못 찾은 규칙은 비워 둘 수 있지만, 반드시 '미확인'이라고 적어야 한다
+      // (정보 탭의 '아직 확인하지 못한 규칙' 목록이 그 문구를 센다).
+      const unconfirmed = JSON.stringify(track).includes('미확인');
+      assert.ok(total > 0 || unconfirmed, `${id} ${track.name}: weights 가 없으면 미확인이라고 적어야 한다`);
     }
   }
   assert.ok(data.scales?.exams?.['2026']?.subjects, 'scales for the 2026 exam');

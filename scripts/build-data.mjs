@@ -28,6 +28,8 @@ export const LINES = [
   { label: '광명상가', ids: ['kw', 'mju', 'smu', 'catholic'] },
   { label: '한서삼', ids: ['hansung', 'skuniv', 'syu'] },
   { label: '인가경', ids: ['incheon', 'gachon', 'kyonggi'] },
+  { label: '경기·인천', ids: ['hanyang-erica', 'kau'] },
+  { label: '지거국', ids: ['pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu'] },
 ];
 const SHORT = {
   snu: '서울대', yonsei: '연세대', korea: '고려대', sogang: '서강대', skku: '성균관대', hanyang: '한양대',
@@ -37,6 +39,9 @@ const SHORT = {
   kw: '광운대', mju: '명지대', smu: '상명대', catholic: '가톨릭대',
   hansung: '한성대', skuniv: '서경대', syu: '삼육대',
   inha: '인하대', ajou: '아주대', incheon: '인천대', gachon: '가천대', kyonggi: '경기대',
+  'hanyang-erica': '한양대 ERICA', kau: '한국항공대',
+  pnu: '부산대', knu: '경북대', jnu: '전남대', jbnu: '전북대', cnu: '충남대',
+  cbnu: '충북대', kangwon: '강원대', gnu: '경상국립대', jejunu: '제주대',
 };
 
 const SEPARATORS = /[·・･ㆍ‧∙⋅\s]/gu;
