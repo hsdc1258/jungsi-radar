@@ -8,7 +8,7 @@
 //
 // 계열 분류는 모집단위 이름의 키워드로 정한다. 어디가 표에는 계열이 없으므로 여기서 도출하고,
 // 애매한 이름은 인문으로 둔다(자연계 가산점을 잘못 얹는 쪽보다 안전하다).
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
@@ -166,6 +166,26 @@ function buildUniversities(adiga, rules) {
   return universities;
 }
 
+
+// 생성일. 내용이 그대로면 지난 생성일을 그대로 둔다 — 같은 소스로 다시 빌드해도 파일이 바뀌지 않아야
+// CI가 "생성물이 소스와 맞는가"를 diff 하나로 확인할 수 있다.
+function previousData() {
+  if (!existsSync(OUTPUT)) return null;
+  const text = readFileSync(OUTPUT, 'utf8');
+  const start = text.indexOf('window.IPSI_DATA = ');
+  if (start === -1) return null;
+  try {
+    return JSON.parse(text.slice(start + 'window.IPSI_DATA = '.length).replace(/;\s*$/u, ''));
+  } catch (error) {
+    return null;
+  }
+}
+let previous;
+function generatedAt() {
+  previous = previous === undefined ? previousData() : previous;
+  return previous?.generatedAt || new Date().toISOString().slice(0, 10);
+}
+
 export function buildData() {
   const adiga = read('results.json');
   const rules = read('rules-2027.json');
@@ -175,7 +195,7 @@ export function buildData() {
   for (const [id, rule] of Object.entries(rules.universities)) ruleMap[id] = rule;
   const volatilities = universities.map((university) => university.volatility).filter((value) => typeof value === 'number');
   return {
-    generatedAt: new Date().toISOString().slice(0, 10),
+    generatedAt: generatedAt(),
     volatility: volatilities.length > 0 ? round2(median(volatilities)) : 1,
     lines: LINES,
     universities,
@@ -200,6 +220,12 @@ window.IPSI_DATA = ${JSON.stringify(data)};
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(ROOT, 'scripts/build-data.mjs')) {
   const data = buildData();
+  // 내용이 달라졌으면 생성일을 오늘로 올린다.
+  const old = previousData();
+  if (old) {
+    const strip = (value) => JSON.stringify({ ...value, generatedAt: null });
+    if (strip(old) !== strip(data)) data.generatedAt = new Date().toISOString().slice(0, 10);
+  }
   writeFileSync(OUTPUT, render(data), 'utf8');
   const departments = data.universities.reduce((sum, university) => sum + university.departments.length, 0);
   console.log(`wrote ${path.relative(ROOT, OUTPUT)}: ${data.universities.length} universities, ${departments} departments`);
