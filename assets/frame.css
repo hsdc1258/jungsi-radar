@@ -134,3 +134,165 @@ html, body {
   font-size: var(--seed-font-size-t2, 0.75rem);
   line-height: 1.5;
 }
+
+/* ---- 폼 컨트롤: Seed recipe 클래스가 모양을 만들고 여기서는 크기·정렬만 잡는다 ---- */
+.jr-select,
+.jr-number,
+.jr-search {
+  min-height: 44px;
+  padding: 0 12px;
+  color: inherit;
+  font: inherit;
+  font-size: var(--seed-font-size-t5, 0.9375rem);
+}
+.jr-select {
+  appearance: none;
+  padding-right: 30px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.jr-number,
+.jr-search {
+  width: 100%;
+}
+.jr-inputs .jr-input-row {
+  padding-inline: var(--jr-gutter);
+}
+.jr-segmented {
+  width: 100%;
+}
+/* ---- 필터 줄: 좁으면 감싸 내려간다 ---- */
+.jr-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.jr-filters > .jr-select {
+  flex: 1 1 9em;
+  min-width: 0;
+}
+.jr-filters > .jr-search {
+  flex: 2 1 12em;
+  min-width: 0;
+}
+.jr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.jr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* ---- 목록 행: 버튼이어도 글은 왼쪽으로 ---- */
+.jr-row {
+  gap: 10px;
+  text-align: left;
+  background: none;
+  cursor: default;
+}
+button.jr-row {
+  cursor: pointer;
+}
+.jr-row .seed-list-item__content {
+  min-width: 0;
+}
+.jr-row .seed-list-item__suffix {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+  align-items: center;
+}
+.jr-gap {
+  min-width: 3.2em;
+  text-align: right;
+}
+.jr-fav {
+  white-space: nowrap;
+}
+.jr-link {
+  color: var(--seed-color-fg-brand, inherit);
+}
+.jr-verdict-note {
+  margin-left: 6px;
+  font-size: var(--seed-font-size-t4, 0.875rem);
+}
+.jr-verdict p {
+  margin: 0;
+}
+/* ---- 접이식: <details>가 열고 닫기를 맡고 Seed 클래스가 겉모습을 맡는다 ---- */
+.jr-accordion > summary {
+  box-sizing: border-box;
+  cursor: pointer;
+  list-style: none;
+}
+.jr-accordion > summary::-webkit-details-marker {
+  display: none;
+}
+.jr-accordion[open] > summary .seed-accordion__suffixIcon {
+  transform: rotate(180deg);
+}
+.jr-accordion-body {
+  display: grid;
+  gap: 8px;
+  padding: 0 var(--jr-gutter) 12px;
+}
+.jr-accordion-body p {
+  margin: 0;
+}
+/* ---- 표: 좁은 화면에서는 표만 가로로 스크롤한다 ---- */
+.jr-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.jr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--seed-font-size-t4, 0.875rem);
+  font-variant-numeric: tabular-nums;
+}
+.jr-table th,
+.jr-table td {
+  padding: 8px 10px 8px 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--seed-color-stroke-neutral-subtle);
+  white-space: nowrap;
+}
+.jr-table thead th {
+  color: var(--seed-color-fg-neutral-subtle);
+  font-weight: var(--seed-font-weight-medium, 500);
+}
+.jr-table tbody th {
+  font-weight: var(--seed-font-weight-medium, 500);
+  white-space: normal;
+}
+
+/* ---- 좁은 화면 보호: 그리드·플렉스 칸이 내용의 최소 폭으로 벌어지지 않게 한다 ---- */
+.jr-panel > *,
+.jr-section > *,
+.jr-filters > *,
+.jr-actions > *,
+.jr-chips > *,
+.jr-row > * {
+  min-width: 0;
+}
+.jr-select,
+.jr-search,
+.jr-number {
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+.jr-chips {
+  min-width: 0;
+}
+.seed-list-item__title,
+.seed-list-item__detail,
+.seed-callout__description,
+.seed-inline-banner__description {
+  overflow-wrap: anywhere;
+}
