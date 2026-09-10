@@ -1433,6 +1433,15 @@
     const gap = accuracy.gap;
     return [
       listHeader('정확도', `모집단위 ${accuracy.departments}곳`),
+      // 출처 등급 — docs/AUDIT.md §1의 잣대. 값·표만 둔다 (FRAME §8.1).
+      accuracy.sourceGrades ? accordion('출처 등급', [
+        table(['등급', '뜻', '모집단위', '비율'], accuracy.sourceGrades.rows.map((row) => [
+          row.key, row.label, String(row.count), percent(row.rate),
+        ])),
+        table(['등급', '대학'], accuracy.sourceGrades.rows.filter((row) => row.count > 0).map((row) => [
+          row.key, row.universities.join(' · '),
+        ])),
+      ]) : null,
       accordion('기준값 출처', [
         table(['출처', '모집단위', '비율'], coverage.map((row) => [row.label, String(row.count), percent(row.rate)])),
       ]),

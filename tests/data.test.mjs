@@ -274,3 +274,64 @@ test('어디가 집계 정수와 짝지은 원값은 실제로 정수가 아니�
   }
   assert.ok(pairs > 100, `짝이 너무 적다 (${pairs})`);
 });
+
+// --- 출처 등급 불변식 (docs/AUDIT.md §1) ---
+const GRADES = new Set(['A', 'B', 'C', 'D', 'E']);
+
+test('정시 값마다 출처 등급이 붙어 있고 다섯 등급 중 하나다', () => {
+  let rows = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        rows += 1;
+        assert.ok(GRADES.has(row.sourceGrade), `${university.id} ${dept.name} ${year}: 출처 등급이 없거나 알 수 없다 (${row.sourceGrade})`);
+      }
+      for (const row of dept.series || []) {
+        assert.ok(GRADES.has(row.sourceGrade), `${university.id} ${dept.name} ${row.year}: 계열 값에 출처 등급이 없다`);
+      }
+    }
+  }
+  assert.ok(rows > 1900, `정시 값이 너무 적다 (${rows})`);
+});
+
+test('출처 문자열과 등급이 어긋나지 않는다', () => {
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        const source = String(row.source || '');
+        const where = `${university.id} ${dept.name} ${year}`;
+        if (source === 'adiga-hakjum' || /학점나비/u.test(source)) assert.equal(row.sourceGrade, 'D', `${where}: 집계 사이트 값은 D다`);
+        else if (/베리타스알파/u.test(source)) assert.equal(row.sourceGrade, 'C', `${where}: 기사 인용은 C다`);
+        else if (/대학교/u.test(source)) assert.equal(row.sourceGrade, 'A', `${where}: 대학 원문은 A다`);
+        // A 로 매긴 값은 출처 문자열이 반드시 있어야 한다 — 빈 출처에 A 를 줄 수 없다.
+        if (row.sourceGrade === 'A') assert.ok(source.length > 0, `${where}: A 인데 출처가 비었다`);
+      }
+    }
+  }
+});
+
+test('정확도 표의 출처 등급 합은 정시 값 수와 같다', () => {
+  const grades = DATA.accuracy?.sourceGrades;
+  assert.ok(grades, '정확도에 출처 등급 표가 없다');
+  let rows = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) rows += Object.keys(dept.jeongsi || {}).length;
+  }
+  assert.equal(grades.total, rows, '표의 합과 실제 값 수가 다르다');
+  assert.equal(grades.rows.reduce((sum, row) => sum + row.count, 0), rows);
+  // D·E 만으로 뒷받침되는 값이 전체의 몇 %인지는 문서가 말한다 — 여기서는 0 이 아님만 못박는다.
+  assert.ok(grades.rows.find((row) => row.key === 'D').count > 0);
+  assert.ok(grades.rows.find((row) => row.key === 'A').count > 0);
+});
+
+test('비교할 수 없는 정의는 엔진과 생성물이 같은 이름으로 부른다', () => {
+  const keys = new Set();
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const row of Object.values(dept.jeongsi || {})) keys.add(row.def);
+    }
+  }
+  for (const key of keys) {
+    assert.ok(ENGINE.CUT_DEFS[key], `엔진이 모르는 통계 정의: ${key}`);
+  }
+});

@@ -247,9 +247,36 @@ export function computeAccuracy(data, engine = loadEngine()) {
     conversionApprox: Object.keys(data.rules || {}).length - Object.keys(data.conv?.universities || {}).length,
   };
 
+  // (g) 출처 등급 — 값마다 붙은 sourceGrade 를 등급별로 센다 (docs/AUDIT.md §1의 잣대).
+  const GRADE_LABELS = [
+    ['A', '평가원·대학 원문'], ['B', '어디가 공개값'], ['C', '언론이 옮긴 공식 표'],
+    ['D', '집계 사이트'], ['E', '사설 예측·추정'],
+  ];
+  const gradeTally = new Map(GRADE_LABELS.map(([key]) => [key, { count: 0, universities: new Set() }]));
+  for (const university of data.universities) {
+    for (const dept of university.departments) {
+      for (const row of Object.values(dept.jeongsi || {})) {
+        const key = gradeTally.has(row.sourceGrade) ? row.sourceGrade : 'E';
+        gradeTally.get(key).count += 1;
+        gradeTally.get(key).universities.add(university.short || university.name);
+      }
+    }
+  }
+  const gradeTotal = [...gradeTally.values()].reduce((sum, row) => sum + row.count, 0);
+  const sourceGrades = {
+    total: gradeTotal,
+    rows: GRADE_LABELS.map(([key, label]) => ({
+      key, label,
+      count: gradeTally.get(key).count,
+      rate: round((gradeTally.get(key).count / (gradeTotal || 1)) * 100, 1),
+      universities: [...gradeTally.get(key).universities].sort(),
+    })),
+  };
+
   return {
     generatedAt: data.generatedAt,
     departments,
+    sourceGrades,
     coverage: Object.fromEntries(SOURCE_KINDS.map(([key, label]) => [key, {
       label,
       count: coverage[key].count,
@@ -284,6 +311,16 @@ export function renderMarkdown(accuracy) {
   lines.push('손으로 고치지 않는다 — 소스를 고치고 `npm run build`를 다시 돌린다.');
   lines.push('');
   lines.push(`생성일 ${accuracy.generatedAt} · 정시 결과가 있는 모집단위 ${accuracy.departments}곳`);
+  lines.push('');
+  lines.push('## 0. 출처 등급');
+  lines.push('');
+  lines.push('| 등급 | 뜻 | 모집단위 | 비율 |');
+  lines.push('|---|---|---:|---:|');
+  for (const row of accuracy.sourceGrades.rows) {
+    lines.push(`| ${row.key} | ${row.label} | ${row.count} | ${percent(row.rate)} |`);
+  }
+  lines.push('');
+  lines.push('등급별 대학 목록과 원문 대조표는 docs/AUDIT.md 에 있다.');
   lines.push('');
   lines.push('## 1. 기준값은 어디서 왔나');
   lines.push('');
