@@ -564,15 +564,18 @@ test('등급 입력의 목표 화면은 구간 하한·상한의 판정을 한 �
   assert.ok(row, '숭실대 사회복지학부 행이 없다');
   row.dispatch('click');
   const text = panel.text;
-  // 어디가 70% 학생의 영역별 성적표가 들어오면서 이 행은 L2(반영비율 지수)가 됐다.
-  // 판정 카드 부제는 지수 눈금이고 평균 백분위는 셋째 조각으로만 적는다 (FRAME §10.4).
-  assert.match(text, /지수 컷 87\.5 · 내 지수 83\.5 · 평균 백분위 78\.2/u);
-  assert.match(text, /비교 입결 2026 70% 학생 지수 87\.5 · 50% 90\.5 · 반영비율/u);
-  // 구간도 지수 눈금에서 다시 계산돼(지수 78.2~88.0 · 컷 87.5) 상한 판정이 안정에서 소신이 됐다.
+  // 숭실대 공개 변환표준점수가 들어오면서 이 행은 L1(환산점수)이 됐다. 등급 입력의 L1 부제는
+  // 환산점수와 그 구간, 그리고 무엇을 가정했는지를 값만으로 적는다 (docs/MODEL.md §4).
+  assert.match(text, /2026 70% 897\.0 · 내 환산 874\.5 \(850\.1~895\.0\) · 가정 국3 수4 탐3·3/u);
+  assert.match(text, /비교 입결 2026 70% 지점 897\.0 · 50% 897\.8 · 환산점수 순/u);
   // 요점은 하한·상한을 한 줄로 함께 적는다는 것이다 (docs/MODEL.md §4).
   assert.match(text, /구간 하한 위험 · 상한 소신/u);
   assert.match(text, /추정/u);
   assert.ok(!/판정 보류/u.test(text), '등급 입력에 보류 카드가 남아 있다');
+  // L1·L2에서는 옛 '반영비율 지수' 참고 행을 빼고 판정 눈금 하나만 남긴다 (FRAME §10).
+  assert.ok(!/반영비율 지수/u.test(text), 'L1 목표 화면에 반영비율 지수 행이 남아 있다');
+  // 영어 계수가 1인 숭실 산식은 등급 배점표의 1등급 값이 배점이다 — `영1`이 아니다.
+  assert.match(text, /국350 수200 영200 탐125\+125/u);
 });
 
 test('정보 화면이 컷 정의별 내 계산과 남는 상태를 표로 적는다', () => {
@@ -593,15 +596,20 @@ test('정보 화면이 컷 정의별 내 계산과 남는 상태를 표로 적�
   assert.match(text, /과탐 필수·미적분 필수 미충족/u);
 });
 
-test('목표 화면은 반영비율 지수를 컷과 빼지 않는다고 적는다', () => {
+test('앱 자체 지수 참고 행은 L3에서만 남는다', () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'target').dispatch('click');
   const text = panel.text;
-  assert.match(text, /반영비율 지수/u);
-  assert.match(text, /컷과 눈금이 달라 차이를 내지 않음/u);
   // 판정 카드는 판정이 선 눈금으로 적는다 — L2면 지수와 평균 백분위 (FRAME §10.4).
   assert.match(text, /내 (국·수·탐|지수) \d+\.\d/u);
   assert.ok(!text.includes('내 환산'), "'내 환산' 문구가 남아 있다");
+  // L1·L2는 판정 눈금이 이미 환산점수·지수다. 같은 이야기를 다른 숫자로 두 번 하지 않는다 (FRAME §10).
+  const layered = /내 지수 \d+\.\d/u.test(text);
+  if (layered) assert.ok(!/반영비율 지수/u.test(text), 'L2 목표 화면에 옛 지수 참고 행이 남아 있다');
+  else {
+    assert.match(text, /반영비율 지수/u);
+    assert.match(text, /컷과 눈금이 달라 차이를 내지 않음/u);
+  }
 });
 
 test('정보 화면의 비교 기준 표가 실제 계산과 같다', () => {

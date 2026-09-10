@@ -84,10 +84,32 @@ const newVerdict = (result) => (result.status === 'ok' && result.band ? result.b
 
 // 반영비율 한 줄 (assets/app.js 의 ratioText 와 같은 규칙).
 function ratioText(track) {
+  // 영어 계수가 1이면 배점은 등급표 1등급 값이다(숭실 `영200`). 탐구가 과목 합산이고 네 영역
+  // 배점의 합이 총점과 맞으면 요강 표기대로 과목마다 적는다(`탐125+125`).
+  const eng = track?.areas?.eng || null;
+  const engTop = isNumber(eng?.table?.['1']) ? eng.table['1'] : null;
+  const engFactor = isNumber(eng?.factor) ? eng.factor : null;
+  const engValue = engFactor !== null && engFactor <= 1 && engTop !== null && engTop > 1
+    ? engTop * engFactor : (engFactor ?? track?.weights?.eng ?? null);
+  const inq = track?.areas?.inq || null;
+  const inqFactor = isNumber(inq?.factor) ? inq.factor : (track?.weights?.inq ?? null);
+  const inqCount = Math.max(1, Number(inq?.count) || 1);
+  const summed = inqFactor !== null && inqCount > 1 && String(inq?.aggregate || 'sum') === 'sum';
+  const value = {
+    kor: track?.areas?.kor?.factor ?? track?.weights?.kor ?? null,
+    math: track?.areas?.math?.factor ?? track?.weights?.math ?? null,
+    eng: engValue,
+    inq: inqFactor,
+    hist: track?.areas?.hist?.factor ?? track?.weights?.hist ?? null,
+  };
+  const sum = (value.kor || 0) + (value.math || 0) + (value.eng || 0) + (inqFactor || 0) * (summed ? inqCount : 1);
+  const perSubject = summed && isNumber(track?.total) && Math.abs(sum - track.total) < 0.5;
   const parts = [];
   for (const [key, short] of Object.entries(AREA_SHORT)) {
-    const value = track?.areas?.[key]?.factor ?? track?.weights?.[key];
-    if (isNumber(value) && value > 0) parts.push(`${short}${value}`);
+    if (!isNumber(value[key]) || !(value[key] > 0)) continue;
+    parts.push(key === 'inq' && perSubject
+      ? `${short}${Array.from({ length: inqCount }, () => value.inq).join('+')}`
+      : `${short}${value[key]}`);
   }
   return parts.join(' ');
 }

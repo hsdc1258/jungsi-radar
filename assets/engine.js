@@ -1098,6 +1098,13 @@
     if (!mid) return null;
     const low = run('min');
     const high = run('max');
+    // `points`는 scale(×multiply ÷divide) **앞**의 원점수라 대학마다 눈금이 다르다.
+    // `scaled`는 그 영역이 **최종 환산점수**에 얹은 몫이다 — 산식의 scale·분모를 적용하고,
+    // scale 뒤에 붙는 조각(영어 감점·가산 afterScale, 숭실 pctToTotal 가산 toTotal)은 그대로 더한다.
+    // 유리·불리(MODEL §3)와 민감도는 이 값으로 낸다. 두 값의 합 = 환산점수(cap·한국사 제외).
+    const scaledOf = (row) => round(
+      (row.points * multiply) / divide + (Number(row.afterScale) || 0) + (Number(row.toTotal) || 0), 4,
+    );
     const parts = mid.rows.map((row) => ({
       area: row.key,
       label: SUBJECT_LABEL[row.key],
@@ -1105,13 +1112,15 @@
       input: row.raw,
       factorApplied: numOr(row.factor, 0),
       points: round(row.points + (Number(row.afterScale) || 0), 4),
+      scaled: scaledOf(row),
       excluded: row.excluded === true,
     }));
     if (areas.hist && areas.hist.mode !== 'none') {
       parts.push({
         area: 'hist', label: SUBJECT_LABEL.hist, metric: areas.hist.mode || 'table',
         input: mid.historyRaw, factorApplied: numOr(areas.hist.factor, 1),
-        points: round(mid.history, 4), excluded: false,
+        // 한국사는 언제나 scale 뒤에 총점에서 더하거나 뺀다 — 이미 환산점수 눈금이다.
+        points: round(mid.history, 4), scaled: round(mid.history, 4), excluded: false,
       });
     }
     return {
@@ -1470,15 +1479,21 @@
   }
 
   // 내 성적 → 컷 학년도 산식 입력. 학년도가 다르면 §1.3 백분위 동등 가정으로 잇는다.
-  //   bump  : 모든 영역 백분위를 n점 올린 입력(국소 기울기 계산용)
+  //   bump    : 백분위를 n점 올린 입력(국소 기울기 계산용)
+  //   bumpKey : 'kor'|'math'|'inq1'|'inq2' — 그 영역만 올린다. 없으면 모든 영역을 올린다.
+  //   tabular : 표준점수·변환표준점수 원값을 쓰지 않고 언제나 백분위 되읽기 표로 간다.
+  //             기울기는 bump 쪽이 표 값이라, 기준점도 같은 표로 잡아야 차이가 기울기만 남는다.
   //   force : 'min'|'max' — 등급 구간의 하한·상한만 쓰는 입력(민감도 계산용)
   function myFormulaInputs(profile, std, options = {}) {
     if (!profile) return null;
     const sameYear = options.sameYear === true;
     const gradeMode = (profile.mode || 'pct') === 'grade';
     const bump = Number(options.bump) || 0;
-    const span = (target, pct, ownStd) => {
-      const value = isNumber(pct) ? clamp(pct + bump, 0, 100) : null;
+    const bumpKey = options.bumpKey || null;
+    const tabular = options.tabular === true || bump !== 0;
+    const span = (target, pct, ownStd, key) => {
+      const delta = bumpKey && key !== bumpKey ? 0 : bump;
+      const value = isNumber(pct) ? clamp(pct + delta, 0, 100) : null;
       const out = { pct: value, pctMin: null, pctMax: null, std: null, stdMin: null, stdMax: null };
       if (value === null) return out;
       if (gradeMode) {
@@ -1486,7 +1501,7 @@
         out.pctMin = range.min;
         out.pctMax = range.max;
       }
-      if (sameYear && bump === 0 && isNumber(ownStd)) {
+      if (sameYear && !tabular && isNumber(ownStd)) {
         out.std = ownStd;
         out.stdMin = ownStd;
         out.stdMax = ownStd;
@@ -1510,15 +1525,31 @@
     const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct);
     // 대학이 공개한 변환표준점수를 직접 넣은 성적은 근사표 대신 그 값을 쓴다(bump 는 백분위를 흔드는
     // 계산이라 그때는 표로 되돌아간다 — 고정값에 +1을 줄 수 없다).
-    const conv = (value) => (bump === 0 && isNumber(value) ? value : null);
+    const conv = (value) => (!tabular && isNumber(value) ? value : null);
     return {
-      kor: { ...span('국어', profile.kor?.pct, profile.kor?.std), conv: conv(profile.kor?.conv) },
-      math: { ...span('수학', profile.math?.pct, profile.math?.std), conv: conv(profile.math?.conv) },
-      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std), kind: row.kind, subject: row.subject, conv: conv(row.conv) })),
+      kor: { ...span('국어', profile.kor?.pct, profile.kor?.std, 'kor'), conv: conv(profile.kor?.conv) },
+      math: { ...span('수학', profile.math?.pct, profile.math?.std, 'math'), conv: conv(profile.math?.conv) },
+      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std, row.slot), kind: row.kind, subject: row.subject, conv: conv(row.conv) })),
       eng: { grade: profile.eng?.grade ?? null },
       hist: { grade: profile.hist?.grade ?? null },
       mathElective: profile.math?.elective || null,
     };
+  }
+
+  // '필요한 상승'이 다룰 영역 목록. 영어·한국사는 백분위 눈금이 아니라 여기 없다.
+  // 탐구는 그 산식이 실제로 세는 과목 수(count)까지만 — 하나만 세는 대학의 둘째 과목은 올려도 안 오른다.
+  function planAreaRows(profile, track) {
+    const areas = track?.areas || null;
+    const out = [];
+    if (!profile) return out;
+    if ((!areas || areas.kor) && isNumber(profile.kor?.pct)) out.push({ key: 'kor', label: `국어(${profile.kor.elective})`, current: profile.kor.pct });
+    if ((!areas || areas.math) && isNumber(profile.math?.pct)) out.push({ key: 'math', label: `수학(${profile.math.elective})`, current: profile.math.pct });
+    if (!areas || areas.inq) {
+      const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct);
+      const count = areas ? Math.max(1, numOr(areas.inq?.count, 2)) : rows.length;
+      for (const row of rows.slice(0, count)) out.push({ key: row.slot, label: `탐구 ${row.subject}`, current: row.pct });
+    }
+    return out;
   }
 
   const rulesFor = (rules, universityId) => (rules ? (rules.universities?.[universityId] || rules[universityId] || null) : null);
@@ -1750,6 +1781,8 @@
       level,
       apply,
       areas: model.areas,
+      areaSlopes: info.areaSlopes || null,
+      ratioWeightsUsed: info.ratioWeightsUsed || null,
       sensitivity: model.sensitivity,
       history,
       flags,
@@ -1799,6 +1832,29 @@
         const bumped = bumpedFirst;
         const slope = bumped.value - mineScore.value;
         const toPct = (points) => (isNumber(points) && isNumber(slope) ? round(points / slope, VERDICT_DIGITS) : null);
+
+        // 영역별 국소 기울기 — 그 영역 백분위만 +1 했을 때의 환산점수 변화(점).
+        // 목표 화면의 '필요한 상승'이 이것으로 비중과 영역별 백분위 상승을 만든다 (MODEL §3).
+        // 기준점도 bump 쪽과 같은 되읽기 표(tabular)로 잡아야 차이에 기울기만 남는다.
+        // 백분위→표준점수 되읽기는 눈금이 성기다 — 백분위 69와 70이 같은 표준점수인 자리가 있어
+        // +1 만으로는 기울기가 0으로 나온다. 값이 움직일 때까지 폭을 넓히고 그 폭으로 나눈다.
+        // 그래도 0이면 그 영역은 이 산식이 반영하지 않는 것이다(수학 미반영 트랙 등).
+        const slopeBase = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true }), ctx);
+        const areaSlopes = [];
+        if (slopeBase) {
+          for (const row of planAreaRows(profile, track)) {
+            let slope = 0;
+            for (const step of [1, 2, 3, 5]) {
+              const span = Math.min(100, row.current + step) - row.current;
+              if (!(span > 0)) break;
+              const one = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true, bump: step, bumpKey: row.key }), ctx);
+              if (!one) break;
+              const rise = one.value - slopeBase.value;
+              if (rise > 0) { slope = rise / span; break; }
+            }
+            areaSlopes.push({ ...row, slope: round(slope, 4) });
+          }
+        }
         const points = round(mineScore.value - score70, 4);
         const flags = [];
         if (!sameYear) flags.push('year-bridge');
@@ -1806,13 +1862,19 @@
         if (track.status === 'plan') flags.push('plan-formula');
 
         // 유리·불리: 같은 산식으로 채점한 70% 학생과의 영역별 점수 차.
+        // 눈금은 **환산점수 점**이다(MODEL §3) — scale·분모를 적용한 part.scaled 로 뺀다.
+        // 원점수(part.points)로 빼면 국민대처럼 ÷200 하는 산식에서 200배 부풀어 보인다.
         const cutParts = student70?.consistent ? formulaScore2(track, studentFormulaInputs(student70, std), ctx) : null;
         const areas = [];
         if (cutParts) {
           for (const part of mineScore.parts) {
             const twin = cutParts.parts.find((row) => row.area === part.area);
             if (!twin) continue;
-            areas.push({ area: part.area, label: part.label, mine: part.points, cut: twin.points, contrib: round(part.points - twin.points, 2) });
+            areas.push({
+              area: part.area, label: part.label,
+              mine: round(part.scaled, 2), cut: round(twin.scaled, 2),
+              contrib: round(part.scaled - twin.scaled, 2),
+            });
           }
           areas.sort((left, right) => Math.abs(right.contrib) - Math.abs(left.contrib));
         }
@@ -1860,7 +1922,7 @@
           gapMax: toPct(round(mineScore.max - score70, 4)),
           gap2026: toPct(points), gap2027, basisChanged, cut2027,
           above50: isNumber(score50) ? mineScore.value >= score50 : null,
-          areas, sensitivity, flags,
+          areas, areaSlopes, sensitivity, flags,
           blockers: mineScore.blockers || [],
           unit: 'points',
         };
@@ -2056,6 +2118,10 @@
         avgGap, basisChanged: layer.basisChanged === true, gap2026: layer.gap2026, gap2027: layer.gap2027,
       },
       areas: layer.areas || [],
+      // 목표 화면의 '필요한 상승'이 쓰는 눈금 재료 — L1은 영역별 기울기(점/백분위),
+      // L2는 지수를 매긴 반영비율 가중치다 (MODEL §3, FRAME §8.1).
+      areaSlopes: layer.areaSlopes || null,
+      ratioWeightsUsed: layer.ratioWeightsUsed || null,
       sensitivity: layer.sensitivity || null,
       cut2027: layer.cut2027 || null,
       flags: layer.flags || [],
@@ -2220,15 +2286,23 @@
   }
 
   // 목록 정렬 두 가지.
-  //   byCutDesc : 라인 순위(서연고→서성한→…)가 1차 키, 예상 컷 내림차순이 2차 키다 (docs/FRAME.md §8.3).
-  //               같은 대학·같은 컷이면 모집단위 이름 순.
+  //   byCutDesc : 라인 순위(서연고→서성한→…)가 1차 키, 컷의 **평균 백분위**(어디가 공시) 내림차순이
+  //               2차 키다 (docs/FRAME.md §8.3·§10.1). 환산점수·지수는 대학마다 눈금이 달라
+  //               모집단위를 줄 세우는 데 쓰지 않는다(MODEL §5). 공시 평균이 없으면 백분위 컷,
+  //               그것도 없으면 그 층위의 컷 값으로 내려간다. 같은 대학·같은 컷이면 이름 순.
   //   byGapAsc  : 컷과의 차이가 작은(아슬아슬한) 곳부터 — 판정별 묶음 안의 순서.
+  const cutRank = (row) => {
+    const cut = row?.jeongsi?.cut;
+    if (isNumber(cut?.avg70)) return cut.avg70;
+    if (isNumber(cut?.percentileCut)) return cut.percentileCut;
+    return isNumber(cut?.value) ? cut.value : null;
+  };
   function byCutDesc(left, right) {
     const lineLeft = left.universityOrder ?? 0;
     const lineRight = right.universityOrder ?? 0;
     if (lineLeft !== lineRight) return lineLeft - lineRight;
-    const l = left.jeongsi?.cut?.value;
-    const r = right.jeongsi?.cut?.value;
+    const l = cutRank(left);
+    const r = cutRank(right);
     if (isNumber(l) && isNumber(r)) {
       if (l !== r) return r - l;
     } else if (isNumber(l) !== isNumber(r)) {
@@ -2282,60 +2356,118 @@
   }
 
   // 목표 학과: 필요한 상승폭과 영역별 투자 효율.
-  // 상승폭은 **비교 기준(국·수·탐(2) 평균)** 위에서 잰다 — 컷이 그 눈금이기 때문이다.
-  // 그래서 세 영역의 비중은 대학 반영비율이 아니라 각각 1/3이고, 영어는 이 눈금에 들어가지
-  // 않는다(대학 반영비율은 화면이 따로 적는다).
+  // **눈금은 판정 층위가 정한다** (MODEL §3 · FRAME §8.1):
+  //   L1 — 필요한 상승은 **환산점수 점**이고, 영역 비중은 산식의 국소 기울기(그 영역 백분위 +1이
+  //        환산점수를 몇 점 올리는가)다. 영역별 목표는 그 점수를 내는 백분위 상승으로 적는다.
+  //   L2 — 컷도 나도 **반영비율 지수**라 눈금은 백분위이고, 비중은 그 반영비율이다.
+  //   L3 — 컷이 비교 기준(국·수·탐(2) 평균)이라 세 영역이 각각 1/3이다(종전 그대로).
+  // 영어·한국사는 어느 층위에서도 이 목록에 없다 — 백분위로 올릴 수 있는 영역이 아니다.
   function analyzeTarget(profile, university, dept, rule, fallbackSpread, context = {}) {
     const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility, context);
     if (['no-profile', 'no-cut', 'basis-mismatch', 'hold'].includes(result.status)) return { ...result, plan: null };
     const { score } = result;
-    const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - result.mine), 2);
-    const subjects = [];
-    const inquiryRows = [...profile.inquiries].sort((left, right) => right.pct - left.pct).slice(0, 2);
-    const addSubject = (key, label, current, share) => {
-      if (!isNumber(current) || share <= 0) return;
-      const perPoint = round(share, 3);
-      const headroom = 100 - current;
-      const needed = need > 0 ? round(need / share, 1) : 0;
-      const reachable = needed <= headroom;
-      const targetPct = reachable ? round(current + needed, 1) : 100;
+
+    // 한 영역의 한 줄. gain = 그 영역을 targetPct 까지 올렸을 때 얻는 값(눈금은 plan.unit).
+    const subjectRow = (row, need, gainPerPct) => {
+      const current = row.current;
+      const headroom = Math.max(0, 100 - current);
+      const reach = gainPerPct > 0 ? need / gainPerPct : Infinity;
+      const reachable = need <= 0 ? true : reach <= headroom;
+      // 백분위는 정수 눈금이다 — 목표는 필요한 상승을 넘기는 첫 정수 백분위다.
+      const targetPct = need <= 0 ? round(current, 1)
+        : reachable ? Math.min(100, Math.ceil(current + reach)) : 100;
+      const gain = round(Math.max(0, targetPct - current) * gainPerPct, 2);
       const currentGrade = gradeFromPercentile(current);
       const targetGrade = gradeFromPercentile(targetPct);
-      // 효율 = 영역 비중 × 남은 여지. 이미 99인 영역은 올릴 곳이 없다.
-      const efficiency = share * clamp(headroom / 10, 0, 1);
-      // 이 영역만 100까지 올려도 모자라는 폭(백분위 점). 화면이 "얼마나 모자란지"를 말할 때 쓴다.
-      const shortfall = need > 0 ? round(Math.max(0, need - headroom * share), 1) : 0;
-      subjects.push({ key, label, current: round(current, 1), share: perPoint, needed, reachable, shortfall, targetPct, currentGrade, targetGrade, gradesUp: Math.max(0, currentGrade - targetGrade), efficiency: round(efficiency, 3) });
+      return {
+        key: row.key, label: row.label, current: round(current, 1),
+        share: round(row.share, 3), slope: round(gainPerPct, 3),
+        needed: need > 0 && Number.isFinite(reach) ? round(reach, 1) : 0,
+        reachable, targetPct, gain,
+        // 이 영역만 100까지 올려도 모자라는 폭(plan.unit 눈금).
+        shortfall: need > 0 ? round(Math.max(0, need - headroom * gainPerPct), 1) : 0,
+        currentGrade, targetGrade, gradesUp: Math.max(0, currentGrade - targetGrade),
+        // 효율 = 비중 × 남은 여지. 이미 99인 영역은 올릴 곳이 없다.
+        efficiency: round(row.share * clamp(headroom / 10, 0, 1), 3),
+      };
     };
+
+    const finish = (unit, need, rows, uniform, extra = {}) => {
+      const subjects = rows.filter((row) => row.share > 0 && isNumber(row.current)).map((row) => subjectRow(row, need, row.gainPerPct));
+      const ranked = [...subjects].sort((left, right) => right.efficiency - left.efficiency);
+      return {
+        ...result,
+        plan: {
+          need, unit,
+          margin: TARGET_MARGIN,
+          basis: result.def || COMPARE_BASIS,
+          basisLabel: cutDefInfo(result.def || COMPARE_BASIS).label,
+          subjects, ranked, best: ranked[0] || null,
+          uniform,
+          // 영어·한국사는 백분위로 올리는 영역이 아니다 — 여기서 상승 효과를 계산하지 않는다.
+          english: null,
+          // 대학 반영비율과 가감점은 참고로만 넘긴다(비교값에 더하지 않는다).
+          weights: score.shares,
+          adjustments: score.adjustments,
+          blockers: score.blockers,
+          ...extra,
+        },
+        gyogwa: evaluateSusi(profile, dept, 'gyogwa'),
+        hakjong: evaluateSusi(profile, dept, 'hakjong'),
+      };
+    };
+
+    // ---------------------------------------------------------------- L1: 환산점수 점
+    const slopes = Array.isArray(result.areaSlopes) ? result.areaSlopes.filter((row) => isNumber(row.slope) && row.slope > 0) : [];
+    if (result.level === 'L1' && slopes.length > 0 && isNumber(result.cut?.score70) && isNumber(result.mineDetail?.score)) {
+      // 여유(TARGET_MARGIN)는 백분위 눈금이라 국소 기울기로 점수 눈금에 옮긴다.
+      const perPct = isNumber(result.model?.gap?.points) && isNumber(result.gap) && result.gap !== 0
+        ? Math.abs(result.model.gap.points / result.gap)
+        : slopes.reduce((sum, row) => sum + row.slope, 0);
+      const margin = perPct > 0 ? perPct * TARGET_MARGIN : 0;
+      const need = round(Math.max(0, result.cut.score70 + margin - result.mineDetail.score), 2);
+      const total = slopes.reduce((sum, row) => sum + row.slope, 0);
+      const rows = slopes.map((row) => ({ ...row, share: total > 0 ? row.slope / total : 0, gainPerPct: row.slope }));
+      // 전 영역을 같은 폭으로 올릴 때 필요한 백분위 상승.
+      const uniform = need > 0 && total > 0 ? round(need / total, 1) : 0;
+      return finish('points', need, rows, uniform, { perPct: round(perPct, 3), slopeTotal: round(total, 3) });
+    }
+
+    // ---------------------------------------------------------------- L2: 반영비율 지수(백분위)
+    const weights = result.level === 'L2' ? result.ratioWeightsUsed : null;
+    if (weights) {
+      const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - result.mine), 2);
+      const total = (weights.kor || 0) + (weights.math || 0) + (weights.inq || 0)
+        + (weights.engByRatio ? (weights.eng || 0) : 0);
+      const count = Math.max(1, Number(weights.count) || 2);
+      const rows = [];
+      const push = (key, label, current, weight) => {
+        if (!isNumber(current) || !(weight > 0) || !(total > 0)) return;
+        const share = weight / total;
+        rows.push({ key, label, current, share, gainPerPct: share });
+      };
+      push('kor', `국어(${profile.kor.elective})`, profile.kor.pct, weights.kor);
+      push('math', `수학(${profile.math.elective})`, profile.math.pct, weights.math);
+      const inquiryRows = [...profile.inquiries].sort((left, right) => right.pct - left.pct).slice(0, count);
+      for (const row of inquiryRows) push(row.slot, `탐구 ${row.subject}`, row.pct, (weights.inq || 0) / count);
+      const share3 = rows.reduce((sum, row) => sum + row.share, 0);
+      const uniform = need > 0 && share3 > 0 ? round(need / share3, 1) : 0;
+      return finish('pct', need, rows, uniform, { ratioBasis: weights.basis || 'ratio' });
+    }
+
+    // ---------------------------------------------------------------- L3: 비교 기준(국·수·탐 평균)
+    const need = round(Math.max(0, result.cut.value + TARGET_MARGIN - result.mine), 2);
     // 몫은 컷의 통계 정의가 정한다 — 국·탐 눈금이면 수학 몫은 0이라 화면에 나오지 않는다.
     const shares = scaleShares(result.def || COMPARE_BASIS, profile);
-    addSubject('kor', `국어(${profile.kor.elective})`, profile.kor.pct, shares.kor);
-    addSubject('math', `수학(${profile.math.elective})`, profile.math.pct, shares.math);
-    for (const row of inquiryRows.slice(0, shares.inqUse)) addSubject(row.slot, `탐구 ${row.subject}`, row.pct, shares.inq);
-    const ranked = [...subjects].sort((left, right) => right.efficiency - left.efficiency);
+    const rows = [
+      { key: 'kor', label: `국어(${profile.kor.elective})`, current: profile.kor.pct, share: shares.kor, gainPerPct: shares.kor },
+      { key: 'math', label: `수학(${profile.math.elective})`, current: profile.math.pct, share: shares.math, gainPerPct: shares.math },
+    ];
+    for (const row of [...profile.inquiries].sort((left, right) => right.pct - left.pct).slice(0, shares.inqUse)) {
+      rows.push({ key: row.slot, label: `탐구 ${row.subject}`, current: row.pct, share: shares.inq, gainPerPct: shares.inq });
+    }
     // 세 영역을 같은 폭으로 올릴 때 필요한 상승폭(단순평균이므로 = need).
-    const uniform = need > 0 ? round(need, 1) : 0;
-    return {
-      ...result,
-      plan: {
-        need,
-        margin: TARGET_MARGIN,
-        basis: result.def || COMPARE_BASIS,
-        basisLabel: cutDefInfo(result.def || COMPARE_BASIS).label,
-        subjects,
-        ranked,
-        best: ranked[0] || null,
-        uniform,
-        // 영어·한국사는 비교 기준(국·수·탐 평균)에 들어가지 않는다 — 여기서 상승 효과를 계산하지 않는다.
-        english: null,
-        // 대학 반영비율과 가감점은 참고로만 넘긴다(비교값에 더하지 않는다).
-        weights: score.shares,
-        adjustments: score.adjustments,
-        blockers: score.blockers,
-      },
-      gyogwa: evaluateSusi(profile, dept, 'gyogwa'),
-      hakjong: evaluateSusi(profile, dept, 'hakjong'),
-    };
+    return finish('pct', need, rows, need > 0 ? round(need, 1) : 0);
   }
 
   // 선택과목 유불리 요약(scales.exams[year]) — 같은 원점수의 만점 표준점수 차이 등을 화면이 쓴다.

@@ -374,6 +374,22 @@
   const mineWithRange = (result) => (result.bounds
     ? `가정 ${fmt(result.mine, 1)} (${fmt(result.bounds.min, 1)}~${fmt(result.bounds.max, 1)})`
     : `가정 ${fmt(result.mine, 1)}`);
+  // 등급 입력이 무엇을 가정했는지 한 조각으로: `가정 국3 수4 탐3·3`. 값만, 영어·한국사는 등급이
+  // 입력값 그대로라 가정이 아니다 (MODEL §4 · FRAME §8.1).
+  const assumedGrades = () => {
+    if (state.scores.mode !== 'grade') return '';
+    const mine = profile();
+    if (!mine) return '';
+    const gradeOf = (pct) => (typeof pct === 'number' ? ENGINE.gradeFromPercentile(pct) : null);
+    const parts = [];
+    const kor = gradeOf(mine.kor?.pct);
+    const math = gradeOf(mine.math?.pct);
+    const inq = (mine.inquiries || []).map((row) => gradeOf(row.pct)).filter((row) => row !== null);
+    if (kor) parts.push(`국${kor}`);
+    if (math) parts.push(`수${math}`);
+    if (inq.length > 0) parts.push(`탐${inq.join('·')}`);
+    return parts.length > 0 ? `가정 ${parts.join(' ')}` : '';
+  };
 
   // ---------------------------------------------------------------- 판정 모델 v3 표시
   // 계약은 docs/MODEL.md, 표시는 FRAME §10이다. 화면은 층위 이름을 라벨로 쓰지 않는다 —
@@ -452,11 +468,31 @@
       const short = { 국어: '국', 수학: '수', 영어: '영', 탐구: '탐', 한국사: '한' };
       return stated[1].trim().replace(/[.。]$/u, '').split(/[·]/u).map((piece) => piece.trim().replace(/^([가-힣]+)\s?([\d.]+)$/u, (all, name, value) => `${short[name] || name}${value}`)).join(' ');
     }
+    // 영어 계수가 1인 대학(숭실·경상국립)은 factor 가 아니라 **등급 배점표 1등급 값**이 배점이다
+    // — `영1`이 아니라 `영200`이다. factor 가 배점 눈금인 대학(건국 20 등)은 그대로 둔다.
+    const eng = track?.areas?.eng || null;
+    const engTop = typeof eng?.table?.['1'] === 'number' ? eng.table['1'] : null;
+    const engFactor = typeof eng?.factor === 'number' ? eng.factor : null;
+    const engValue = engFactor !== null && engFactor <= 1 && engTop !== null && engTop > 1
+      ? engTop * engFactor : (engFactor ?? track?.weights?.eng ?? null);
+    // 탐구를 과목마다 더하는(sum) 대학은 영역 배점이 `count × factor`다. 네 영역 배점의 합이
+    // 총점과 맞을 때만 요강 표기(`탐125+125`)로 적는다 — 아니면 계수를 그대로 둔다.
+    const inq = track?.areas?.inq || null;
+    const inqFactor = typeof inq?.factor === 'number' ? inq.factor : (track?.weights?.inq ?? null);
+    const inqCount = Math.max(1, Number(inq?.count) || 1);
+    const summed = inqFactor !== null && inqCount > 1 && String(inq?.aggregate || 'sum') === 'sum';
+    const korValue = track?.areas?.kor?.factor ?? track?.weights?.kor ?? null;
+    const mathValue = track?.areas?.math?.factor ?? track?.weights?.math ?? null;
+    const sum = (korValue || 0) + (mathValue || 0) + (engValue || 0) + (inqFactor || 0) * (summed ? inqCount : 1);
+    const perSubject = summed && typeof track?.total === 'number' && Math.abs(sum - track.total) < 0.5;
+    const value = { kor: korValue, math: mathValue, eng: engValue, inq: inqFactor };
     const parts = [];
     for (const [key, short] of Object.entries(AREA_SHORT)) {
       // 2027 시행계획 트랙은 반영점수 대신 **반영비율**(percent)만 갖고 있다 — 그 숫자를 그대로 적는다.
-      const value = track?.areas?.[key]?.factor ?? track?.weights?.[key];
-      if (typeof value === 'number' && value > 0 && key !== 'hist') parts.push(`${short}${value}`);
+      if (key === 'hist' || typeof value[key] !== 'number' || !(value[key] > 0)) continue;
+      parts.push(key === 'inq' && perSubject
+        ? `${short}${Array.from({ length: inqCount }, () => value.inq).join('+')}`
+        : `${short}${value[key]}`);
     }
     return parts.join(' ');
   };
@@ -1526,14 +1562,19 @@
     const targetBand = bandOf(target);
     // 판정 카드: 큰 숫자 하나 + 뱃지 하나 + 값만 한 줄 (FRAME §8.2).
     const held = target.status === 'hold';
+    // 등급 입력의 L1은 환산점수가 가정값이다 — 구간과 가정한 등급을 부제에 드러낸다 (MODEL §4).
+    const mineSpan = typeof target.mineDetail?.min === 'number' && typeof target.mineDetail?.max === 'number'
+      && target.mineDetail.max > target.mineDetail.min
+      ? ` (${fmt(target.mineDetail.min, 1)}~${fmt(target.mineDetail.max, 1)})` : '';
     const mineLine = target.level === 'L1' && typeof target.mineDetail?.score === 'number'
-      ? `내 환산 ${fmt(target.mineDetail.score, 1)}`
+      ? `내 환산 ${fmt(target.mineDetail.score, 1)}${mineSpan}`
       : target.level === 'L2' && typeof target.mineDetail?.score === 'number'
         ? `내 지수 ${fmt(target.mineDetail.score, 1)}`
         : target.estimated
           ? mineWithRange(target)
           : `내 ${target.defLabel === ENGINE.CUT_DEFS['ksi-mean'].label ? '국·수·탐' : '비교값'} ${fmt(target.mine, 1)}`;
     // L2는 판정 눈금이 지수라 평균 백분위를 셋째 조각으로 따로 적는다 (FRAME §10.4).
+    const gradeChip = target.level === 'L1' && assumedGrades() ? ` · ${assumedGrades()}` : '';
     const avgChip = target.level === 'L2' && typeof target.avgMine === 'number'
       ? ` · 평균 백분위 ${fmt(target.avgMine, 1)}` : '';
     const verdict = el('div', { class: 'jr-verdict' }, [
@@ -1543,12 +1584,16 @@
         sourceBadge(target),
         target.status === 'ok' && LEVEL_BADGE[target.level] ? badge(LEVEL_BADGE[target.level], 'neutral') : null,
       ].filter(Boolean)),
-      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${cutChip(target)} · ${mineLine}${avgChip}` }),
+      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${cutChip(target)} · ${mineLine}${gradeChip}${avgChip}` }),
       // 등급 입력일 때만: 구간 하한·상한에서의 판정을 값으로만 한 줄 (FRAME §8.1).
       target.gapRange ? el('p', { class: 'jr-muted', text: `구간 하한 ${target.gapRange.minBand.label} · 상한 ${target.gapRange.maxBand.label}` }) : null,
     ].filter(Boolean));
 
     const plan = target.plan;
+    // 눈금은 층위가 정한다 (MODEL §3): L1은 환산점수 점 + 그에 필요한 영역별 백분위 상승,
+    // L2·L3은 백분위(지수) 그대로. 문구는 값만 적는다 (FRAME §8.1).
+    const planPoints = plan?.unit === 'points';
+    const planShort = planPoints ? '점' : '';
     const planBlock = plan ? section([
       listHeader('필요한 상승', plan.need > 0 ? `${fmt(plan.need, 1)}점` : '충족'),
       el('div', { class: 'jr-list' }, [
@@ -1556,8 +1601,8 @@
           title: subject.label,
           detail: plan.need > 0
             ? (subject.reachable
-              ? `${fmt(subject.current, 1)} → ${fmt(subject.targetPct, 1)}`
-              : `${fmt(subject.current, 1)} · 100까지 올려도 ${fmt(subject.shortfall, 1)} 모자람`)
+              ? `${fmt(subject.current, 1)} → ${fmt(subject.targetPct, 1)}${planPoints ? ` (${signed(subject.gain, 1)}점)` : ''}`
+              : `${fmt(subject.current, 1)} · 100까지 올려도 ${fmt(subject.shortfall, 1)}${planShort} 모자람`)
             : fmt(subject.current, 1),
           suffix: plan.best && plan.best.key === subject.key && plan.need > 0
             ? badge('추천', 'brand')
@@ -1565,7 +1610,7 @@
         })),
         plan.uniform > 0 ? listItem({
           title: '전 영역 균등',
-          detail: `${fmt(plan.uniform, 1)}점씩`,
+          detail: planPoints ? `${fmt(plan.uniform, 1)} 백분위씩` : `${fmt(plan.uniform, 1)}점씩`,
         }) : null,
         plan.english && plan.english.steps.length > 0 ? listItem({
           title: `영어 ${plan.english.current}등급`,
@@ -1593,7 +1638,9 @@
         suffix: badge('넘김', 'positive'),
       }));
     }
-    if (target.index) {
+    // 앱 자체 지수는 L3에서만 쓸모가 있다 — L1은 환산점수, L2는 같은 반영비율로 매긴 지수가
+    // 이미 판정 눈금이라 이 행이 같은 이야기를 다른 숫자로 두 번 한다 (FRAME §10).
+    if (target.index && target.level !== 'L1' && target.level !== 'L2') {
       conditions.push(listItem({
         title: '반영비율 지수', detail: `${fmt(target.index.value, 1)} · 컷과 눈금이 달라 차이를 내지 않음`,
         suffix: badge('참고', 'neutral'),

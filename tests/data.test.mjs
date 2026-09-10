@@ -495,3 +495,105 @@ test('어디가에서 온 행은 집계 방식을 밝히고, 아닌 행은 unkno
   }
   assert.ok(direct > 1000, `어디가 원값 행이 너무 적다 (${direct})`);
 });
+
+// ---------------------------------------------------------------- 판정 v3 눈금 (docs/MODEL.md §3)
+// 판정에 쓰는 프로필 셋. 컷 지점 학생과 멀수록 영역별 차이가 커져 눈금 실수를 드러낸다.
+const PROFILES = {
+  강함: { mode: 'pct', korElective: '언어와매체', kor: '99', mathElective: '미적분', math: '99', eng: '1', hist: '1', inq1Subject: '생명과학I', inq1: '99', inq2Subject: '지구과학I', inq2: '99' },
+  약함: { mode: 'pct', korElective: '화법과작문', kor: '55', mathElective: '확률과통계', math: '52', eng: '5', hist: '4', inq1Subject: '사회문화', inq1: '54', inq2Subject: '생활과윤리', inq2: '50' },
+  국민대70: { mode: 'pct', korElective: '언어와매체', kor: '97', mathElective: '확률과통계', math: '69', eng: '2', hist: '1', inq1Subject: '생활과윤리', inq1: '86', inq2Subject: '사회문화', inq2: '52' },
+};
+const profileOf = (key) => ENGINE.normalizeProfile(PROFILES[key], null, DATA.std);
+const layerCtx = () => ENGINE.layerContext(DATA);
+
+// 그 영역이 낼 수 있는 최대 환산점수(=배점). 만점 성적으로 채점한 영역 몫이 기준이고,
+// 배점 없이 감점·가산만 하는 영역(한국사·일부 대학 영어)은 등급표의 폭이 기준이다.
+function areaCap(track, area, top) {
+  const config = track?.areas?.[area] || null;
+  // 성적 순으로 배점을 나눠 주는 트랙(삼육 35·25·25·15 등)은 나와 컷 학생의 배점이 서로 다르다 —
+  // 영역 하나가 배점 차이만큼 더 움직일 수 있어 총점으로만 묶는다.
+  const pool = track?.bestOf?.pool || track?.optional?.of || null;
+  if (Array.isArray(pool) && pool.includes(area)) return isNumber(track?.total) ? track.total : null;
+  const part = (top?.parts || []).find((row) => row.area === area);
+  const scored = part && isNumber(part.scaled) ? Math.abs(part.scaled) : null;
+  // 만점 성적으로 채점한 영역 몫이 기준이다. 배점 없이 감점·가산만 하거나(한국사·충남 영어),
+  // 만점 성적에서는 상위-n 규칙에 밀려 0이 되는 영역(강원 스포츠과학 영어)은 등급표의 폭이 기준이다.
+  if (config?.table && (scored === null || scored === 0)) {
+    const factor = Math.abs(Number(config.factor ?? 1)) || 1;
+    const span = Object.values(config.table).map((value) => Math.abs(Number(value))).filter((value) => Number.isFinite(value));
+    if (span.length > 0) return Math.max(...span) * factor;
+  }
+  return scored;
+}
+
+test('L1 유리·불리는 환산점수 점 단위이고 영역 배점을 넘지 않는다', () => {
+  let checked = 0;
+  for (const key of Object.keys(PROFILES)) {
+    const profile = profileOf(key);
+    for (const university of DATA.universities) {
+      for (const dept of university.departments) {
+        const result = ENGINE.evaluateJeongsi(profile, university, dept, DATA.rules[university.id], university.volatility ?? DATA.volatility, layerCtx());
+        if (result.level !== 'L1' || (result.areas || []).length === 0) continue;
+        const track = ENGINE.pickModelTrack(DATA.rules2026, university.id, dept);
+        const top = ENGINE.formulaScore2(track, ENGINE.profileFormulaInputs(profile, DATA.std, true), { std: DATA.std, conv: DATA.conv, universityId: university.id });
+        for (const row of result.areas) {
+          const where = `${key} ${university.id} ${dept.name} ${row.area}`;
+          assert.ok(isNumber(row.contrib), `${where}: 기여값이 숫자가 아니다`);
+          const cap = areaCap(track, row.area, top);
+          if (cap === null) continue;
+          // 0.5 는 반올림 여유다. 원점수(scale 앞) 눈금이 새어 나오면 배점의 수백 배가 되어 걸린다.
+          assert.ok(Math.abs(row.contrib) <= cap + 0.5, `${where}: 기여 ${row.contrib} 이 영역 배점 ${cap} 을 넘는다`);
+          checked += 1;
+        }
+      }
+    }
+  }
+  assert.ok(checked > 500, `L1 유리·불리를 낸 영역이 너무 적다 (${checked})`);
+});
+
+test('목표 화면의 필요한 상승은 L1이면 환산점수 점, L2·L3이면 백분위다', () => {
+  const profile = profileOf('약함');
+  const seen = {};
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      const target = ENGINE.analyzeTarget(profile, university, dept, DATA.rules[university.id], university.volatility ?? DATA.volatility, layerCtx());
+      const plan = target.plan;
+      if (!plan) continue;
+      const where = `${university.id} ${dept.name}`;
+      seen[target.level] = (seen[target.level] ?? 0) + 1;
+      if (target.level === 'L1') {
+        assert.equal(plan.unit, 'points', `${where}: L1 눈금이 점이 아니다`);
+        // 필요한 상승은 환산점수 눈금에서 잰다 — 컷 환산점수와 내 환산점수의 차(+여유)다.
+        const raw = target.cut.score70 - target.mineDetail.score;
+        assert.ok(plan.need >= Math.max(0, raw) - 0.01, `${where}: 필요한 상승 ${plan.need} 이 점수 차 ${raw} 보다 작다`);
+        // 비중은 옛 33/33/17/17 이 아니라 산식의 국소 기울기다.
+        assert.ok(plan.subjects.every((row) => row.slope > 0), `${where}: 기울기가 0인 영역이 목록에 남았다`);
+        for (const row of plan.subjects.filter((one) => one.reachable && plan.need > 0)) {
+          assert.ok(row.gain + 0.01 >= plan.need, `${where} ${row.key}: 목표 백분위가 필요한 상승을 못 채운다`);
+          assert.ok(Number.isInteger(row.targetPct), `${where} ${row.key}: 목표 백분위가 정수가 아니다`);
+        }
+      } else {
+        assert.equal(plan.unit, 'pct', `${where}: ${target.level} 눈금이 백분위가 아니다`);
+      }
+      // 비중 0 인 영역은 목록에 남지 않는다(그 대학이 안 보는 영역이다).
+      assert.ok(plan.subjects.every((row) => row.share > 0), `${where}: 비중 0 인 영역이 목록에 있다`);
+    }
+  }
+  assert.ok((seen.L1 ?? 0) > 100 && (seen.L2 ?? 0) > 100, `층위가 고루 나오지 않았다 ${JSON.stringify(seen)}`);
+});
+
+test('진단 "높은 순"의 2차 키는 컷의 평균 백분위다', () => {
+  const rows = ENGINE.diagnose(profileOf('강함'), DATA, { sort: 'cut' });
+  let compared = 0;
+  for (let index = 1; index < rows.length; index += 1) {
+    const before = rows[index - 1];
+    const after = rows[index];
+    if ((before.universityOrder ?? 0) !== (after.universityOrder ?? 0)) continue;
+    const l = before.jeongsi?.cut?.avg70;
+    const r = after.jeongsi?.cut?.avg70;
+    if (!isNumber(l) || !isNumber(r)) continue;
+    assert.ok(l >= r, `${before.universityName} ${before.dept.name}(${l}) 가 ${after.dept.name}(${r}) 보다 앞에 있다`);
+    compared += 1;
+  }
+  assert.ok(compared > 300, `같은 대학 안에서 견준 쌍이 너무 적다 (${compared})`);
+});
