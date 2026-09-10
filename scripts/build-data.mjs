@@ -112,28 +112,78 @@ export function classifyTrack(name) {
   return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
 }
 
+// 컷의 **통계 정의**. 우리 비교는 어디가 표준인 '국·수·탐(2) 백분위 단순평균' 위에서만 한다 —
+// 과목 구성이나 산식이 다른 값은 같은 눈금이 아니므로 비교 계열(series)에 넣지 않는다.
+export const CUT_DEFS = Object.freeze({
+  'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', comparable: true, approx: false },
+  // 과목별 70%컷을 먼저 내고 평균한 값. 같은 과목·같은 척도이지만 산식 순서가 다르다 —
+  // 어디가 집계 정수와의 실측 평균 절대차가 0.28점(docs/ACCURACY.md §2)이라 비교는 하되 '근사'로 적는다.
+  'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', comparable: true, approx: true },
+  // 국·수·탐 중 상위 2개만 평균한 값. 반영 과목 자체가 달라 우리 비교값과 뺄 수 없다.
+  'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', comparable: false, approx: false },
+});
+export function cutDefinition(row) {
+  const note = String(row?.note || '');
+  if (/상위\s*2\s*개\s*영역/u.test(note)) return 'top2-mean';
+  if (/과목별\s*70%\s*Cut/iu.test(note)) return 'subject-mean70';
+  return 'ksi-mean';
+}
+
+// 대학이 스스로 낸 값의 통계 종류. 이름이 달라도 같은 통계인 것만 한 이름으로 묶는다.
+const AVG_KINDS = Object.freeze({
+  '평균': '등록자 평균', '등록자 평균': '등록자 평균', '등록자평균': '등록자 평균',
+  '80%평균': '상위80% 평균', '상위80% 평균': '상위80% 평균', '상위 80% 평균': '상위80% 평균',
+});
+const isNum = (value) => typeof value === 'number' && Number.isFinite(value);
+// 연도 평행이동에 쓸 짝. **같은 통계끼리만** 뺀다 — 70%컷에서 평균을 빼면 그 차이는
+// 연도 변화가 아니라 통계 종류의 차이라서, 평균값이 이름만 바꿔 70%컷으로 들어가 버린다.
+export function matchOfficial(row, anchor) {
+  if (!row || !anchor) return null;
+  if (isNum(row.cut70) && isNum(anchor.cut70)) return { statistic: '70%컷', value: row.cut70, anchor: anchor.cut70 };
+  const kind = AVG_KINDS[String(row.kind || '').trim()];
+  const anchorKind = AVG_KINDS[String(anchor.kind || '').trim()];
+  if (isNum(row.avg) && isNum(anchor.avg) && kind && kind === anchorKind) {
+    return { statistic: kind, value: row.avg, anchor: anchor.avg };
+  }
+  return null;
+}
+
 function buildSeries(jeongsi, official) {
   const series = [];
-  const pctYears = Object.keys(jeongsi).filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null).sort();
+  const pctYears = Object.keys(jeongsi)
+    .filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null
+      && CUT_DEFS[jeongsi[year].def]?.comparable)
+    .sort();
   const anchorYear = pctYears.at(-1) || null;
   for (const year of pctYears) {
-    series.push({ year, value: jeongsi[year].cut70, kind: jeongsi[year].kind || '70%컷', basis: jeongsi[year].basis || 'adiga', source: jeongsi[year].source, url: jeongsi[year].url });
+    series.push({
+      year, value: jeongsi[year].cut70, kind: jeongsi[year].kind || '70%컷', def: jeongsi[year].def,
+      basis: jeongsi[year].basis || 'adiga', source: jeongsi[year].source, url: jeongsi[year].url,
+    });
   }
-  const officialValue = (row) => (row && row.metric === 'pct' ? (row.cut70 ?? row.avg ?? null) : null);
-  const anchorOfficial = anchorYear ? officialValue(official[anchorYear]) : null;
+  const anchorRow = anchorYear ? official[anchorYear] : null;
   for (const [year, row] of Object.entries(official).sort()) {
     if (series.some((entry) => entry.year === year)) continue;
-    const value = officialValue(row);
-    if (value === null) continue;
+    if (row.metric && row.metric !== 'pct') continue;
     if (row.adigaStandard) {
-      series.push({ year, value: round2(value), kind: row.kind || '70%컷', basis: 'official', source: row.source, url: row.url });
-    } else if (anchorYear && anchorOfficial !== null) {
-      // 기준 연도 대비 변화량만 옮긴다.
-      series.push({
-        year, value: round2(jeongsi[anchorYear].cut70 + (value - anchorOfficial)), kind: '70%컷 환산', basis: 'derived',
-        from: { kind: row.kind, value, anchorYear, anchorValue: anchorOfficial }, source: row.source, url: row.url,
-      });
+      const value = row.cut70 ?? row.avg ?? null;
+      if (value === null) continue;
+      series.push({ year, value: round2(value), kind: row.kind || '70%컷', def: 'ksi-mean', basis: 'official', source: row.source, url: row.url });
+      continue;
     }
+    if (!anchorYear || !anchorRow) continue;
+    const pair = matchOfficial(row, anchorRow);
+    if (!pair) continue;
+    // 기준 연도 대비 **같은 통계의** 변화량만 옮긴다.
+    series.push({
+      year, value: round2(jeongsi[anchorYear].cut70 + (pair.value - pair.anchor)), kind: '70%컷 환산', basis: 'derived',
+      def: jeongsi[anchorYear].def,
+      from: {
+        kind: row.kind, statistic: pair.statistic, value: pair.value,
+        anchorYear, anchorValue: pair.anchor, anchorKind: anchorRow.kind || null,
+      },
+      source: row.source, url: row.url,
+    });
   }
   return series.sort((left, right) => left.year.localeCompare(right.year));
 }
@@ -169,7 +219,9 @@ function medianCutOf(departments) {
   for (const dept of departments) {
     if (ORDER_EXCLUDED_TRACKS.has(dept.track)) continue;
     const years = Object.keys(dept.jeongsi || {}).sort().reverse();
-    const year = years.find((key) => dept.jeongsi[key].metric === 'pct' && typeof dept.jeongsi[key].cut70 === 'number');
+    const year = years.find((key) => dept.jeongsi[key].metric === 'pct'
+      && typeof dept.jeongsi[key].cut70 === 'number'
+      && CUT_DEFS[dept.jeongsi[key].def]?.comparable);
     if (year) values.push(dept.jeongsi[year].cut70);
   }
   const value = median(values);
@@ -201,6 +253,8 @@ function buildUniversities(adiga, rules) {
               adigaCut70: row.adigaCut70 ?? null,
               score70: row.score70 ?? null,
               metric: row.pct70 !== null && row.pct70 !== undefined ? 'pct' : 'score',
+              // 통계 정의(무엇을 재서 낸 값인가). 비교 가능성은 여기서 갈린다.
+              def: cutDefinition(row),
               kind: row.kind || '70%컷', basis: row.source === 'adiga-hakjum' ? 'adiga' : 'official',
               group: row.group || null, quota, rate: row.rate ?? null, fill,
               // 충원율은 대학이 낸 값을 그대로 쓰고, 없으면 추합 인원 ÷ 모집인원으로 만든다.

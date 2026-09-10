@@ -141,6 +141,27 @@ export function computeAccuracy(data, engine = loadEngine()) {
   }
   const columns = { rows: bothColumns, flipped, rate: round((flipped / (bothColumns || 1)) * 100, 1) };
 
+  // (c2) 컷의 통계 정의. 정의가 다른 값은 비교하지 않고 보류한다.
+  const defCounts = new Map();
+  let heldByDefinition = 0;
+  for (const university of data.universities) {
+    for (const dept of university.departments) {
+      const rows = Object.values(dept.jeongsi || {}).filter((row) => (row?.metric || 'pct') === 'pct' && typeof row.cut70 === 'number');
+      if (rows.length === 0) continue;
+      for (const key of new Set(rows.map((row) => row.def || 'ksi-mean'))) {
+        defCounts.set(key, (defCounts.get(key) || 0) + 1);
+      }
+      if ((dept.series || []).length === 0) heldByDefinition += 1;
+    }
+  }
+  const definitions = {
+    held: heldByDefinition,
+    rows: [...defCounts].map(([key, count]) => ({
+      key, count, label: engine.cutDefInfo(key).label,
+      comparable: engine.cutDefInfo(key).comparable, approx: engine.cutDefInfo(key).approx,
+    })).sort((left, right) => right.count - left.count),
+  };
+
   // (d) 판정 민감도. 컷을 흔든 뒤 판정 이름이 바뀌는 모집단위 비율.
   const shifts = [0.5, 1];
   const sensitivity = SAMPLE_SCORES.map(({ label, scores }) => {
@@ -237,6 +258,7 @@ export function computeAccuracy(data, engine = loadEngine()) {
     }])),
     gap,
     columns,
+    definitions,
     sensitivity,
     rules,
     exams,
@@ -303,6 +325,19 @@ export function renderMarkdown(accuracy) {
   lines.push('');
   lines.push(`두 값이 함께 있는 ${accuracy.columns.rows}행 가운데 ${accuracy.columns.flipped}행(${percent(accuracy.columns.rate)})에서 50%컷이 70%컷보다 낮다.`);
   lines.push('상위 50% 컷이 상위 70% 컷보다 낮을 수는 없으므로 집계 표의 두 열이 어긋나 있다는 뜻이다. 판정은 70%컷만 쓴다.');
+  lines.push('');
+  lines.push('## 3-2. 컷의 통계 정의');
+  lines.push('');
+  lines.push('컷은 무엇을 재서 낸 값인지가 자료마다 다르다. 우리 비교값(국·수·탐(2) 백분위 단순평균)과');
+  lines.push('정의가 맞는 값만 컷에서 뺀다 — 정의가 다르면 판정을 보류한다.');
+  lines.push('');
+  lines.push('| 통계 정의 | 모집단위 | 비교 |');
+  lines.push('|---|---:|---|');
+  for (const row of accuracy.definitions.rows) {
+    lines.push(`| ${row.label} | ${row.count} | ${row.comparable ? (row.approx ? '비교(근사)' : '비교') : '기준 불일치 — 보류'} |`);
+  }
+  lines.push('');
+  lines.push(`정의가 달라 판정을 보류하는 모집단위 ${accuracy.definitions.held}곳.`);
   lines.push('');
   lines.push('## 4. 컷이 흔들리면 판정도 흔들리나');
   lines.push('');

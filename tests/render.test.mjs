@@ -469,3 +469,47 @@ test('라인과 대학을 어긋나게 체크하면 목록이 비고 안내 한 
   assert.equal(rowTitles(panel).length, 0, '행이 없어야 한다');
   assert.match(panel.text, /조건에 맞는 곳이 없습니다/u);
 });
+
+// ---------------------------------------------------------------- 비교 기준 회귀 (화면)
+const GRADE_SCORES = {
+  mode: 'grade', korElective: '화법과작문', kor: '3', mathElective: '확률과통계', math: '4',
+  eng: '2', hist: '4', inq1Subject: '정치와법', inq1: '3', inq2Subject: '사회문화', inq2: '3',
+};
+
+test('등급만 넣으면 진단 화면이 보류를 세어 보여 준다', () => {
+  const { panel, tabs } = boot(GRADE_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const text = panel.text;
+  // 스탯 줄이 등급 추정임을 밝히고 보류 수를 센다.
+  assert.match(text, /국·수·탐 평균 \(등급\)/u);
+  assert.match(text, /78\.17/u);
+  const held = Number(/보류\s*(\d+)곳/u.exec(text)[1]);
+  assert.ok(held > 100, `등급 입력이면 보류가 많아야 한다 (지금 ${held})`);
+  // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다.
+  assert.ok(!/컷 \d+\.\d ±/u.test(text), '± 표기가 남아 있다');
+  assert.match(text, /관측 \d+\.\d~\d+\.\d/u);
+  // 판정 셀렉트에 보류·기준 불일치가 있다.
+  assert.match(text, /기준 불일치/u);
+});
+
+test('목표 화면은 반영비율 지수를 컷과 빼지 않는다고 적는다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'target').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /반영비율 지수/u);
+  assert.match(text, /컷과 눈금이 달라 차이를 내지 않음/u);
+  assert.match(text, /내 국·수·탐 \d+\.\d/u);
+  assert.ok(!text.includes('내 환산'), "'내 환산' 문구가 남아 있다");
+});
+
+test('정보 화면의 비교 기준 표가 실제 계산과 같다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /국·수·탐\(2\) 백분위 단순평균/u);
+  assert.match(text, /반영비율 가중 지수 \(영어 포함\)/u);
+  assert.match(text, /빼지 않는다/u);
+  assert.match(text, /상위 2개 영역 백분위 평균/u);
+  assert.match(text, /추가합격·충원율/u);
+  assert.ok(!text.includes('내 환산'), "'내 환산' 문구가 남아 있다");
+});

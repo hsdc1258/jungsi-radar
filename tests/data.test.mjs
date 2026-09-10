@@ -55,6 +55,59 @@ test('파생값(derived)은 기준 연도의 어디가 컷에서 대학 공식�
   assert.ok(checked > 100, `파생값이 100건 이상이어야 한다 (지금 ${checked})`);
 });
 
+// (2026-09-10 검수) 등록자 평균이 이름만 바꿔 70%컷 자리에 들어가던 문제를 막는다.
+test('평균과 70%컷을 섞지 않는다 — 연도 평행이동은 같은 통계끼리만 한다', () => {
+  const AVG = { '평균': '등록자 평균', '등록자 평균': '등록자 평균', '80%평균': '상위80% 평균', '상위80% 평균': '상위80% 평균' };
+  let checked = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const row of dept.series || []) {
+        if (row.basis !== 'derived') continue;
+        const { anchorYear, anchorValue, value, statistic } = row.from;
+        const source = dept.official?.[row.year];
+        const anchor = dept.official?.[anchorYear];
+        assert.ok(source && anchor, `${university.id} ${dept.name} ${row.year}: 공식 원값이 있어야 한다`);
+        assert.ok(statistic, `${university.id} ${dept.name} ${row.year}: 어떤 통계를 옮겼는지 적혀 있어야 한다`);
+        if (statistic === '70%컷') {
+          assert.equal(value, source.cut70, `${university.id} ${dept.name} ${row.year}: 70%컷끼리 짝지어야 한다`);
+          assert.equal(anchorValue, anchor.cut70, `${university.id} ${dept.name}: 기준도 70%컷이어야 한다`);
+        } else {
+          assert.equal(value, source.avg, `${university.id} ${dept.name} ${row.year}: 평균끼리 짝지어야 한다`);
+          assert.equal(anchorValue, anchor.avg, `${university.id} ${dept.name}: 기준도 평균이어야 한다`);
+          assert.equal(AVG[String(source.kind)], AVG[String(anchor.kind)],
+            `${university.id} ${dept.name} ${row.year}: ${source.kind} 과 ${anchor.kind} 은 다른 통계다`);
+          assert.equal(AVG[String(source.kind)], statistic);
+        }
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked > 100, `파생값이 100건 이상이어야 한다 (지금 ${checked})`);
+});
+
+test('비교 계열(series)에는 컷 정의가 같은 값만 들어간다', () => {
+  let mismatched = 0;
+  let held = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const row of dept.series || []) {
+        const info = ENGINE.cutDefInfo(row.def);
+        assert.ok(info.comparable, `${university.id} ${dept.name} ${row.year}: ${info.label}은 비교할 수 없는 정의다`);
+      }
+      const pct = Object.values(dept.jeongsi || {}).filter((row) => (row.metric || 'pct') === 'pct' && isNumber(row.cut70));
+      assert.ok(pct.every((row) => typeof row.def === 'string'), `${university.id} ${dept.name}: 모든 컷에 통계 정의가 붙어 있어야 한다`);
+      if (pct.length > 0 && pct.every((row) => !ENGINE.cutDefInfo(row.def).comparable)) {
+        mismatched += 1;
+        assert.equal((dept.series || []).length, 0, `${university.id} ${dept.name}: 비교 불가 값은 계열에 들어가면 안 된다`);
+        held += 1;
+      }
+    }
+  }
+  // 서경대 '상위 2개 영역 평균' 5곳 — 판정을 내지 않고 보류한다.
+  assert.equal(mismatched, held);
+  assert.ok(mismatched >= 5, `기준 불일치로 보류하는 모집단위가 있어야 한다 (지금 ${mismatched})`);
+});
+
 test('대학 변동폭과 전체 변동폭은 양수이거나 없음이다', () => {
   assert.ok(DATA.volatility > 0 && DATA.volatility < 10, `전체 변동폭 ${DATA.volatility}`);
   for (const university of DATA.universities) {

@@ -89,13 +89,15 @@
   const numText = (value) => (value === null || value === undefined || value === '' ? '—' : String(value).replace(/^-/u, MINUS));
   const prose = (text) => String(text || '').replace(/(^|[\s(])-(?=[\d.])/gu, `$1${MINUS}`);
 
-  const BAND_TONE = { safe: 'positive', fit: 'brand', reach: 'neutral', stretch: 'warning', risky: 'critical', blocked: 'critical' };
+  const BAND_TONE = { safe: 'positive', fit: 'brand', reach: 'neutral', stretch: 'warning', risky: 'critical', blocked: 'critical', hold: 'neutral', mismatch: 'neutral' };
   // 지원 자격이 막힌 모집단위(과탐 필수·미적분 필수 등)는 점수와 무관하게 '불가'다.
   const BLOCKED_BAND = Object.freeze({ key: 'blocked', label: '불가' });
   // 판정은 엔진이 낸 값 하나만 쓴다(ENGINE.VERDICT_BANDS). 화면이 따로 계산하지 않는다.
-  const bandOf = (result) => (result?.status === 'blocked' ? BLOCKED_BAND : result?.band || null);
+  const bandOf = (result) => (result?.status === 'blocked' ? BLOCKED_BAND
+    : result?.status === 'basis-mismatch' ? ENGINE.MISMATCH_BAND
+    : result?.band || null);
   // 목록에 보여 주는 순서: 안정 → 적정 → 소신 → 상향 → 위험 → 불가.
-  const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked'];
+  const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked', 'hold', 'mismatch'];
   // '높은 순' 정렬에서 앞쪽에 세우는 판정들. 머리글은 쓰지 않고 순서로만 구분한다.
   const REACHABLE_BANDS = Object.freeze(['safe', 'fit', 'reach']);
   const SORTS = Object.freeze([['cut', '높은 순'], ['band', '판정별']]);
@@ -272,7 +274,7 @@
     .replace(/\s+/gu, ' ');
   const deptKey = (universityId, deptName) => `${universityId}::${deptName}`;
   const TRACKS = ['전체', '인문', '자연', '의약', '자유전공', '예체능'];
-  const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가'];
+  const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가', '보류', '기준 불일치'];
 
   // 등급 → 백분위 환산표. 상대평가 등급 구간의 정확한 중앙값이다 (1등급 96~100 → 98.0 …).
   // 엔진의 GRADE_FLOORS·GRADE_MIDPOINTS를 그대로 읽어 화면과 계산이 절대 어긋나지 않게 한다.
@@ -313,11 +315,13 @@
   // 표점(또는 등급 배점) 기준 대학은 우리가 백분위로 바꿔 비교한다 — 뱃지 '근사'가 그 사실을 말한다.
   const isApproxBasis = (universityId) => Boolean(basisOf(universityId)?.approxPercentile);
 
+  // 컷 옆 숫자는 **과거에 관측된 연도 폭**이다. 미래 합격선의 신뢰구간이 아니므로 ±를 쓰지 않는다.
   const spreadText = (result) => {
     const cut = result.cut;
     if (!cut) return '';
     const base = `컷 ${fmt(cut.value, 1)}`;
-    if (typeof result.spread === 'number' && result.spread > 0) return `${base} ±${fmt(result.spread, 1)}`;
+    const range = result.reference?.range;
+    if (range && range.years?.length > 1 && range.max > range.min) return `${base} · 관측 ${fmt(range.min, 1)}~${fmt(range.max, 1)}`;
     return base;
   };
 
@@ -837,11 +841,13 @@
     const rows = diagnoseRows();
     const average = ENGINE.simpleAverage(profile());
     const reachable = rows.filter((row) => REACHABLE_BANDS.includes(bandOf(row.jeongsi)?.key)).length;
+    const held = rows.filter((row) => row.jeongsi.status === 'hold' || row.jeongsi.status === 'basis-mismatch').length;
+    const estimated = profile().mode === 'grade';
 
     const head = screenHead(stats([
-      ['국·수·탐 평균', fmt(average, 2)],
+      [estimated ? '국·수·탐 평균 (등급)' : '국·수·탐 평균', fmt(average, 2)],
       ['지원 가능', `${reachable}곳`],
-      ['관심', `${state.favorites.size}곳`],
+      held > 0 ? ['보류', `${held}곳`] : ['관심', `${state.favorites.size}곳`],
     ]), 'verdict');
 
     const resetLimit = () => { state.filters.limit = 8; };
@@ -919,14 +925,19 @@
       const result = row.jeongsi;
       const band = bandOf(result);
       // 부제는 값만 한 줄 — 접두어는 쓰지 않는다 (FRAME §8.1).
-      const detail = result.status === 'blocked'
-        ? result.score.blockers[0]
-        : [spreadText(result), result.group ? `${result.group}군` : null, basisShort(row.universityId)].filter(Boolean).join(' · ');
+      const detail = result.status === 'basis-mismatch'
+        ? result.hold.reason
+        : result.status === 'blocked'
+          ? result.score.blockers[0]
+          : [spreadText(result), `내 ${fmt(result.mine, 1)}`,
+            result.status === 'hold' ? `등급 구간 ${signed(result.gapRange.min, 1)}~${signed(result.gapRange.max, 1)}` : null,
+            result.group ? `${result.group}군` : null, basisShort(row.universityId)].filter(Boolean).join(' · ');
       return listItem({
         title: `${row.universityName} ${deptLabel(row.dept.name)}`,
         detail,
         suffix: [
-          el('span', { class: 'jr-gap num', text: signed(result.gap, 1) }),
+          // 보류·기준 불일치에는 차이 숫자를 적지 않는다 — 판정한 것처럼 보인다.
+          el('span', { class: 'jr-gap num', text: result.status === 'ok' || result.status === 'blocked' ? signed(result.gap, 1) : '—' }),
           badge(band.label, BAND_TONE[band.key]),
         ],
         onclick: () => {
@@ -1060,20 +1071,25 @@
     ]);
 
     const target = ENGINE.analyzeTarget(profile(), university, dept, DATA.rules[university.id], university.volatility ?? DATA.volatility);
-    if (target.status === 'no-cut') {
-      return [screenHead(pickers, 'verdict'), banner('백분위로 공개된 정시 결과가 없습니다', 'neutralWeak'),
-        renderBasis(dept, target)];
+    if (target.status === 'no-cut' || target.status === 'basis-mismatch') {
+      const why = target.status === 'basis-mismatch'
+        ? `${target.hold.reason} · 필요한 자료 ${target.hold.need}`
+        : '백분위로 공개된 정시 결과가 없습니다';
+      return [screenHead(pickers, 'verdict'),
+        el('p', { class: 'jr-verdict-badges' }, [badge(target.status === 'basis-mismatch' ? '기준 불일치' : '보류', 'neutral')]),
+        banner(why, 'neutralWeak'), renderBasis(dept, target)];
     }
 
     const targetBand = bandOf(target);
     // 판정 카드: 큰 숫자 하나 + 뱃지 하나 + 값만 한 줄 (FRAME §8.2).
+    const held = target.status === 'hold';
     const verdict = el('div', { class: 'jr-verdict' }, [
-      el('p', { class: 'jr-verdict-number', text: signed(target.gap, 1) }),
+      el('p', { class: 'jr-verdict-number', text: held ? `${signed(target.gapRange.min, 1)}~${signed(target.gapRange.max, 1)}` : signed(target.gap, 1) }),
       el('p', { class: 'jr-verdict-badges' }, [
         badge(targetBand.label, BAND_TONE[targetBand.key]),
-        isApproxBasis(university.id) ? badge('근사', 'warning') : null,
+        target.estimated ? badge('추정', 'warning') : null,
       ].filter(Boolean)),
-      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${spreadText(target)} · 내 환산 ${fmt(target.mine, 1)}` }),
+      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${spreadText(target)} · 내 국·수·탐 ${fmt(target.mine, 1)}` }),
     ]);
 
     const plan = target.plan;
@@ -1120,6 +1136,16 @@
         detail: `${fmt(target.floor.value, 1)} · ${target.floor.year}학년도`,
         suffix: badge('넘김', 'positive'),
       }));
+    }
+    if (target.index) {
+      conditions.push(listItem({
+        title: '반영비율 지수', detail: `${fmt(target.index.value, 1)} · 컷과 눈금이 달라 차이를 내지 않음`,
+        suffix: badge('참고', 'neutral'),
+      }));
+    }
+    if (held) conditions.push(listItem({ title: '판정 보류', detail: `${target.hold.reason} · 필요한 자료 ${target.hold.need}`, suffix: badge('보류', 'neutral') }));
+    if ((target.compare?.assumptions || []).length > 0) {
+      conditions.push(listItem({ title: '가정한 값', detail: target.compare.assumptions.join(' · ') }));
     }
     conditions.push(listItem({ title: '반영 지표', detail: basisOf(university.id)?.text || '미확인', suffix: badge(basisShort(university.id), isApproxBasis(university.id) ? 'warning' : 'neutral') }));
     const conditionBlock = section([listHeader('조건'), el('div', { class: 'jr-list' }, conditions)]);
@@ -1224,13 +1250,13 @@
       .map(({ pick, jeongsi: result }) => [
         `${pick.university.short} ${deptLabel(pick.dept.name)}`,
         result.cut ? fmt(result.cut.value, 1) : '—',
-        result.mine === undefined ? '—' : fmt(result.mine, 1),
-        result.gap === undefined ? '—' : signed(result.gap, 1),
+        result.mine === null || result.mine === undefined ? '—' : fmt(result.mine, 1),
+        result.status === 'ok' || result.status === 'blocked' ? signed(result.gap, 1) : '—',
         bandOf(result) ? badge(bandOf(result).label, BAND_TONE[bandOf(result).key]) : '—',
       ]);
     return section([
       listHeader('비교', `${picks.length}곳`),
-      table(['모집단위', '컷', '내 환산', '차이', '판정'], rows),
+      table(['모집단위', '컷', '국·수·탐', '차이', '판정'], rows),
     ]);
   }
 
@@ -1336,6 +1362,22 @@
   }
 
   // ---------------------------------------------------------------- 정보 화면
+  // 컷의 통계 정의별 모집단위 수. 정보 탭의 '비교 기준' 표가 쓴다.
+  function cutDefCounts() {
+    const counts = {};
+    for (const university of DATA.universities) {
+      for (const dept of university.departments) {
+        const seen = new Set();
+        for (const row of Object.values(dept.jeongsi || {})) {
+          if ((row.metric || 'pct') !== 'pct' || typeof row.cut70 !== 'number') continue;
+          seen.add(row.def || ENGINE.COMPARE_BASIS);
+        }
+        for (const key of seen) counts[key] = (counts[key] || 0) + 1;
+      }
+    }
+    return counts;
+  }
+
   function unconfirmedNotes() {
     const found = [];
     for (const [id, rule] of Object.entries(DATA.rules || {})) {
@@ -1439,7 +1481,7 @@
 
     const universitySources = DATA.universities
       .filter((university) => university.departments.some((dept) => Object.keys(dept.official || {}).length > 0))
-      .map((university) => `${university.short} ±${university.volatility === null ? '—' : fmt(university.volatility, 1)}`);
+      .map((university) => `${university.short} 연도 표준편차 ${university.volatility === null ? '—' : fmt(university.volatility, 1)}`);
 
     const unconfirmed = unconfirmedNotes();
     const precision = cutPrecision();
@@ -1458,18 +1500,32 @@
           band.min === -Infinity
             ? `${signed(all[index - 1].min, 1)} 미만`
             : index === 0 ? `${signed(band.min, 1)} 이상` : `${signed(band.min, 1)} ~ ${signed(all[index - 1].min, 1)}`,
-        ]).concat([['불가', '지원 자격 미충족']])),
+        ]).concat([
+          ['불가', '지원 자격 미충족'],
+          ['보류', '등급 입력 · 구간이 두 판정에 걸침'],
+          ['기준 불일치', '컷의 통계 정의가 달라 뺄 수 없음'],
+        ])),
       ]),
       aboutSection('scale', [
         listHeader('비교 기준'),
         table(['항목', '값'], [
-          ['척도', '국·수·탐 백분위 평균'],
+          ['척도', '국·수·탐(2) 백분위 단순평균'],
           ['기준값', '어디가 70%컷 (최근 순 0.6·0.3·0.1 가중)'],
-          ['차이', '내 환산 − 예상 컷'],
-          ['오차 ±', '연도별 최소~최대 폭의 절반 · 판정을 바꾸지 않음'],
-          ['표점 반영 대학', '백분위로 환산해 비교'],
-          ['내 환산', '영역 반영비율 가중 평균 + 영어·한국사·선택과목 가감'],
+          ['차이', '국·수·탐 평균 − 예상 컷'],
+          ['관측 범위', '연도별 최소~최대 · 과거 관측값 · 판정을 바꾸지 않음'],
+          ['추가합격·충원율', '참고 · 판정에 쓰지 않음'],
         ]),
+        table(['값', '컷에서 빼는가'], [
+          ['국·수·탐(2) 백분위 단순평균', '뺀다'],
+          ['반영비율 가중 지수 (영어 포함)', '빼지 않는다'],
+          ['대학 공식 환산점수', '빼지 않는다'],
+          ['배점 근사 환산점수', '빼지 않는다'],
+        ]),
+        table(['컷의 통계 정의', '모집단위', '비교'], Object.entries(cutDefCounts()).map(([key, count]) => [
+          ENGINE.cutDefInfo(key).label,
+          `${count}곳`,
+          ENGINE.cutDefInfo(key).comparable ? (ENGINE.cutDefInfo(key).approx ? '근사' : '비교') : '보류',
+        ])),
       ]),
       aboutSection('convert', [
         listHeader('등급 → 백분위'),
