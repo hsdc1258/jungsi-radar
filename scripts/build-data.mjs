@@ -77,35 +77,43 @@ const SHORT = {
 export const WOMEN_ONLY = new Set(['ewha', 'sookmyung']);
 
 const SEPARATORS = /[·・･ㆍ‧∙⋅\s]/gu;
-// 계열 판정용 정규화. 구분점·공백을 지우고 '전공'을 떼어 '자유전공학'이 '공학'에 걸리지 않게 한다.
-const baseName = (text) => String(text || '').replace(SEPARATORS, '').replace(/전공/gu, '');
+// 계열 판정용 정규화. 구분점·공백만 지운다. '전공'을 통째로 떼면 '안전공학과'가 '안학과'가 되어
+// 공학 규칙을 빠져나가므로, '전공'은 이름 끝(괄호 닫힘 포함)에서만 떼어 stem 을 따로 만든다.
+const baseName = (text) => String(text || '').replace(SEPARATORS, '');
+// 끝에 붙은 세부전공 꼬리만 떼어 '…섬유공학전공'이 '공학$' 규칙에 걸리게 한다.
+const stemName = (base) => base.replace(/전공\)?$/u, '');
+// 자유전공 계열 이름에서 '자유전공' 자체를 떼어 '자유전공학부'가 '공학'에 걸리지 않게 한다.
+const freeName = (base) => base.replace(/자유전공|자율전공|열린전공|무전공|융합자유|창의융합자유/gu, '');
 
 const MEDICAL = /의예|의학|치의|한의|약학|수의|간호|물리치료|임상병리|방사선|치위생|작업치료|응급구조|보건/u;
 // 이름에 '의학'이 들어가도 의약 계열이 아닌 모집단위. 식물의학·수산생명의학·해양식품생명의학은 농·수산계다.
-const MEDICAL_EXCEPT = /보건행정|보건관리|의료경영|의료산업|보건정책|보건환경|환경보건|스포츠의학|의학공학|식물의학|수산생명의학|해양식품생명의학/u;
+const MEDICAL_EXCEPT = /보건행정|보건관리|의료경영|의료산업|보건정책|보건환경|환경보건|스포츠의학|의학공학|식물의학|수산생명의학|해양식품생명의학|바이오의약/u;
 const ARTS = /음악|미술|디자인|회화|동양화|서양화|한국화|판화|조소|조형|무용|체육|스포츠|연극|영화|연기|뮤지컬|작곡|성악|피아노|관현악|국악|공예|도예|사진|애니메이션|만화|패션|뷰티|모델|실용음악|예술|골프|경기지도|아트|서예|의상|공연|태권도/u;
 // 예체능 키워드가 들어가도 실기 없이 수능으로 뽑는 모집단위.
 const ARTS_EXCEPT = /스포츠경영|공연기획|예술경영|문화예술경영|영상학과|미디어|고고미술사|미술사학|음악학과\(인문\)|패션산업|패션의류|의류산업|생태조경/u;
 const FREE = /자유전공|자율전공|열린전공|광역|무전공|혁신칼리지|융합자유|창의융합자유/u;
 // 자연계 키워드. '화학'은 '문화학과'에 걸리지 않도록 앞 글자가 '문'이 아닐 때만 본다.
-const SCIENCE = /공학|공과|과학|물리|(?<!문)화학|생명|생물|지구|천문|수학|통계|전자|전기|기계|컴퓨터|컴퓨팅|소프트웨어|정보|데이터|인공지능|AI|ICT|반도체|신소재|재료|건축|토목|환경|에너지|화공|산업공|산업경영|산업시스템|산업데이터|산업정보|산업보안|시스템|로봇|항공|자동차|조선|해양|원자력|바이오|식품|농|원예|산림|축산|동물|의생명|나노|모빌리티|자연|IT|메카|보안|디스플레이|스마트|기술|섬유|영양|가정|간호|수의|약학|이과|공대|SW|테크|지능|네트워크|배터리|양자|우주|사이버|전산|조경|기후|첨단융합/u;
+const SCIENCE = /공학|공과|과학|물리|(?<!문)화학|생명|생물|지구|천문|수학|통계|전자|전기|기계|컴퓨터|컴퓨팅|소프트웨어|정보|데이터|인공지능|AI|ICT|반도체|신소재|재료|건축|토목|환경|에너지|화공|산업공|산업경영|산업시스템|산업데이터|산업정보|산업보안|시스템|로봇|항공|자동차|조선|해양|원자력|바이오|식품|농|원예|산림|축산|동물|의생명|나노|모빌리티|자연|IT|메카|보안|디스플레이|스마트|기술|섬유|영양|가정|간호|수의|약학|이과|공대|SW|테크|지능|네트워크|배터리|양자|우주|사이버|전산|조경|기후|첨단융합|식물|작물|전지|의약/u;
 // 이름에 자연계 키워드가 있어도 인문계인 모집단위들 (대학이 인문으로 모집한다).
-const HUMAN_OVERRIDE = /경영정보|정보사회|문헌정보|정보문화|언론정보|사회언론정보|기술경영|식품자원경제|농경제|사회복지|아동가족|아동학|아동복지|의류|소비자|주거환경|가족자원|사회과학|인문과학|인문사회|언어인지|통번역|식품산업관리|영어산업|문화산업|산업심리|국제물류|물류학|Language&|SocialScience&|Finance&|글로벌한국학/u;
+const HUMAN_OVERRIDE = /경영정보|정보사회|문헌정보|정보문화|언론정보|사회언론정보|기술경영|식품자원경제|농경제|사회복지|아동가족|아동학|아동복지|의류|소비자|주거환경|가족자원|사회과학|인문과학|인문사회|언어인지|통번역|식품산업관리|영어산업|문화산업|산업심리|국제물류|물류학|언어정보|Language&|SocialScience&|Finance&|글로벌한국학/u;
 const ENGINEERING = /공학부|공학과|공학$|공과대학|공학계열/u;
 const BUSINESS = /경영|경제|무역|금융|회계|세무|통상|상경|비즈니스|글로벌경영|경상|국제통상|재무|마케팅|유통|물류|호텔|관광|부동산|광고|핀테크/u;
 
 export function classifyTrack(name) {
   const text = String(name || '');
   const base = baseName(text);
+  const stem = stemName(base);
   if (FREE.test(text)) {
-    if (/자연|이공|공학|공과|IT|과학|SCIENCE|AI/u.test(base)) return { track: '자연', ruleTrack: null };
+    const free = freeName(base);
+    // 인문·사회를 먼저 본다 — '사회과학대학 자유전공학과'의 '과학'이 자연으로 끌고 가지 않게.
     if (/예체능|미술|음악|디자인/u.test(text)) return { track: '예체능', ruleTrack: null };
-    if (/인문|사회|경영|경제/u.test(text)) return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
+    if (/인문|사회|경영|경제/u.test(free)) return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
+    if (/자연|이공|공학|공과|IT|과학|SCIENCE|AI|전자|반도체|소재|컴퓨터|모빌리티/u.test(free)) return { track: '자연', ruleTrack: null };
     return { track: '자유전공', ruleTrack: null };
   }
   if (MEDICAL.test(text) && !MEDICAL_EXCEPT.test(base)) return { track: '의약', ruleTrack: null };
   // 공학으로 끝나는 이름은 디자인·조형이 붙어 있어도 자연계다(예: 시스템디자인공학과).
-  if (ENGINEERING.test(base) && !/\(인문\)/u.test(text)) return { track: '자연', ruleTrack: null };
+  if (ENGINEERING.test(stem) && !/\(인문\)/u.test(text)) return { track: '자연', ruleTrack: null };
   // 대학이 이름에 (인문)/(자연)을 박아 둔 모집단위는 실기 없는 수능 전형이다 — 예체능으로 접지 않는다.
   if (ARTS.test(text) && !ARTS_EXCEPT.test(text) && !/\(인문\)|\(자연\)|\(인문계열\)|\(자연계열\)/u.test(text)) return { track: '예체능', ruleTrack: null };
   if (HUMAN_OVERRIDE.test(base)) return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
