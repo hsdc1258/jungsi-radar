@@ -390,7 +390,12 @@ function readAnomalies() {
   const parsed = JSON.parse(readFileSync(file, 'utf8'));
   return new Map((parsed.items || []).map((row) => [
     `${row.id}::${row.name}`,
-    { kind: row.kind, gap: row.gap, median: row.median, mad: row.mad },
+    {
+      kind: row.kind, gap: row.gap, median: row.median, mad: row.mad,
+      // 이 모집단위 자신의 이력. 판정(펑크·오류)은 계열이 아니라 이 값으로 내린다.
+      priorMedian: row.priorMedian ?? null, priorGap: row.priorGap ?? null,
+      priorCount: row.priorCount ?? 0, basis: row.basis || 'group',
+    },
   ]));
 }
 

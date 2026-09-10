@@ -391,22 +391,37 @@ test('실기 없이 수능으로 뽑는 예체능은 practical 이 false 다', (
   }
 });
 
-test('이상치는 네 분류 중 하나이고 차·중앙값이 서로 맞는다', () => {
-  const kinds = new Set(['punk', 'error', 'practical', 'normal']);
+test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서로 맞는다', () => {
+  const kinds = new Set(['punk', 'error', 'practical', 'unverified', 'normal']);
   let count = 0;
+  let priorSeen = 0;
   for (const university of DATA.universities) {
     for (const dept of university.departments) {
       if (!dept.anomaly) continue;
       count += 1;
-      const { kind, gap, median: center, mad } = dept.anomaly;
-      assert.ok(kinds.has(kind), `${university.id} ${dept.name}: ${kind}`);
-      assert.ok(isNumber(gap) && isNumber(center) && isNumber(mad), `${university.id} ${dept.name}`);
+      const where = `${university.id} ${dept.name}`;
+      const { kind, gap, median: center, mad, priorMedian, priorGap, basis } = dept.anomaly;
+      assert.ok(kinds.has(kind), `${where}: ${kind}`);
       const value = dept.jeongsi?.['2026']?.cut70;
-      assert.ok(isNumber(value), `${university.id} ${dept.name}: 2026 컷 없음`);
-      assert.equal(Math.round((center - value) * 100) / 100, gap, `${university.id} ${dept.name}`);
-      // 문턱을 넘은 것만 실린다.
-      assert.ok(gap > Math.max(3, 2.5 * mad), `${university.id} ${dept.name}: 문턱 미달`);
+      assert.ok(isNumber(value), `${where}: 2026 컷 없음`);
+      // 계열 기준은 묶음이 셋 이상일 때만 있다. 있으면 차와 문턱이 맞아야 한다.
+      if (basis === 'group' || basis === 'both') {
+        assert.ok(isNumber(gap) && isNumber(center) && isNumber(mad), where);
+        // 중앙값과 차를 각각 반올림해 실으므로 마지막 자리 하나까지는 벌어질 수 있다.
+        assert.ok(Math.abs((center - value) - gap) <= 0.011, `${where}: 계열 차 ${gap}`);
+        assert.ok(gap > Math.max(3, 2.5 * mad), `${where}: 계열 문턱 미달`);
+      }
+      // 이력 기준으로 걸린 값은 이력 중앙값에서 문턱만큼 벗어나 있다(양쪽 모두).
+      if (basis === 'prior' || basis === 'both') {
+        assert.ok(isNumber(priorMedian) && isNumber(priorGap), where);
+        assert.ok(Math.abs((priorMedian - value) - priorGap) <= 0.011, `${where}: 이력 차 ${priorGap}`);
+        priorSeen += 1;
+      }
+      // 판정(펑크·오류)은 이력이나 자기모순으로만 내린다 — 이력 없는 단일값은 미확인이다.
+      if (kind === 'punk') assert.ok(isNumber(priorMedian), `${where}: 이력 없이 펑크로 판정했다`);
+      if (kind === 'unverified') assert.equal(priorMedian, null, `${where}: 이력이 있는데 미확인이다`);
     }
   }
   assert.ok(count > 0, '이상치 후보가 하나도 없다');
+  assert.ok(priorSeen > 0, '이력 기준으로 걸린 값이 하나도 없다');
 });

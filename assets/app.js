@@ -308,11 +308,14 @@
   // 실기가 있는 예체능만 감춘다 — 실기 없이 수능 100%로 뽑는 예체능(dept.practical === false)은
   // 컷을 그대로 견줄 수 있어 목록에 남는다 (FRAME §9.4, scripts/build-data.mjs PRACTICAL_EXEMPT).
   const isArtsDept = (dept) => dept?.track === '예체능' && dept?.practical === true;
-  // 이상치. 펑크·오류 의심만 뱃지를 단다 — 실기·정상은 정보 탭 표에만 남는다.
-  const ANOMALY_LABEL = { punk: '펑크 의심', error: '오류 의심', practical: '실기', normal: '정상' };
+  // 이상치. 펑크·오류 의심만 뱃지를 단다. `미확인`(이력 없는 단일값)과 `정상`은 화면에 내지 않는다 —
+  // 계열에서 떨어져 있을 뿐 근거가 없는 값을 경고로 내면 거짓 경고다 (scripts/anomalies.mjs).
+  const ANOMALY_LABEL = { punk: '펑크 의심', error: '오류 의심', practical: '실기' };
   const ANOMALY_FLAGGED = new Set(['punk', 'error']);
   const anomalyOf = (dept) => (dept?.anomaly && ANOMALY_LABEL[dept.anomaly.kind] ? dept.anomaly : null);
   const isFlaggedAnomaly = (dept) => Boolean(anomalyOf(dept) && ANOMALY_FLAGGED.has(dept.anomaly.kind));
+  // 표시할 차. 판정의 근거가 된 쪽을 쓴다 — 이력이 있으면 이력 차, 없으면 계열 차다.
+  const anomalyGap = (anomaly) => (typeof anomaly?.priorGap === 'number' ? anomaly.priorGap : anomaly?.gap ?? null);
   const isDreamDept = (universityId, dept) => DREAM_UNIVERSITIES.has(universityId) || DREAM_DEPT.test(String(dept?.name || ''));
   const womenOnlyIds = new Set(DATA.universities.filter((row) => row.womenOnly).map((row) => row.id));
   function hiddenBy(universityId, dept) {
@@ -1230,7 +1233,7 @@
     return accordion('기준 숫자', [
       anomaly ? el('div', { class: 'jr-list' }, [listItem({
         title: '이상 신호',
-        suffix: el('span', { class: 'jr-gap num', text: `${ANOMALY_LABEL[anomaly.kind]} · ${signed(-anomaly.gap, 1)}` }),
+        suffix: el('span', { class: 'jr-gap num', text: `${ANOMALY_LABEL[anomaly.kind]} · ${signed(-anomalyGap(anomaly), 1)}` }),
       })]) : null,
       yearRows.length > 0 ? table(['연도', '컷', '종류', '출처'], yearRows) : muted('연도별 컷 자료 없음'),
       cuts.length > 0 ? table(['연도', '50%컷', '70%컷', '100%컷', '종류'], cuts) : null,
@@ -1561,8 +1564,8 @@
     ].filter(Boolean);
   }
 
-  // 계열 중앙값에서 크게 떨어진 2026 컷. 생성물이 이미 판정해 둔 값을 표로만 옮긴다
-  // (scripts/anomalies.mjs · FRAME §9.4). 설명문은 쓰지 않고 표 끝에 기준 한 줄만 적는다.
+  // 판정이 붙은 2026 컷. 생성물이 이미 판정해 둔 값을 표로만 옮긴다
+  // (scripts/anomalies.mjs · FRAME §9.4). 설명문은 쓰지 않고 표 끝에 두 줄만 적는다.
   function anomalyRows() {
     const rows = [];
     for (const university of DATA.universities) {
@@ -1572,23 +1575,37 @@
         rows.push({ university, dept, anomaly });
       }
     }
-    return rows.sort((left, right) => right.anomaly.gap - left.anomaly.gap);
+    return rows.sort((left, right) => Math.abs(anomalyGap(right.anomaly) ?? 0) - Math.abs(anomalyGap(left.anomaly) ?? 0));
+  }
+
+  // 이력이 없어 판정할 수 없는 단일값. 표에는 넣지 않고 곳수만 적는다.
+  function unverifiedCount() {
+    let count = 0;
+    for (const university of DATA.universities) {
+      for (const dept of university.departments) {
+        if (dept.anomaly?.kind === 'unverified') count += 1;
+      }
+    }
+    return count;
   }
 
   function renderAnomalies() {
     const rows = anomalyRows();
-    if (rows.length === 0) return [];
+    const unverified = unverifiedCount();
+    if (rows.length === 0 && unverified === 0) return [];
     return [
       listHeader('이상치', `${rows.length}곳`),
-      table(['대학', '모집단위', '2026 컷', '계열 중앙값', '차', '분류'], rows.map((row) => [
+      rows.length > 0 ? table(['대학', '모집단위', '2026 컷', '계열 중앙값', '이력 중앙값', '차', '분류'], rows.map((row) => [
         row.university.short,
         deptLabel(row.dept.name),
         fmt(row.dept.jeongsi?.['2026']?.cut70, 1),
         fmt(row.anomaly.median, 1),
-        signed(-row.anomaly.gap, 1),
+        fmt(row.anomaly.priorMedian, 1),
+        signed(-anomalyGap(row.anomaly), 1),
         ANOMALY_LABEL[row.anomaly.kind],
-      ])),
-      muted('기준: (중앙값 − 값) > max(3, 2.5 × MAD)'),
+      ])) : null,
+      muted(`미확인(단일값) ${unverified}곳`),
+      muted('기준: 계열 (중앙값 − 값) > max(3, 2.5 × MAD) · 이력 |값 − 이력 중앙값| > max(3, 2.5 × MAD)'),
     ];
   }
 
