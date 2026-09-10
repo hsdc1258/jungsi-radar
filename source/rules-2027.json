@@ -42,7 +42,7 @@
        "5": -0.8,
        "6": -1.2,
        "7": -1.6,
-       "8": -2.0,
+       "8": -2,
        "9": -2.4
       },
       "total": 420
@@ -89,7 +89,7 @@
        "5": -0.8,
        "6": -1.2,
        "7": -1.6,
-       "8": -2.0,
+       "8": -2,
        "9": -2.4
       },
       "total": 420
@@ -108,9 +108,11 @@
    "sources": [
     {
      "title": "2027학년도 서울대학교 대학 신입학생 입학전형 시행계획",
-     "url": "https://admission.snu.ac.kr/"
+     "url": "https://admission.snu.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "yonsei": {
    "name": "연세대학교",
@@ -152,7 +154,7 @@
        "6": -0.4,
        "7": -0.6,
        "8": -0.8,
-       "9": -1.0
+       "9": -1
       },
       "total": 800
      },
@@ -199,7 +201,7 @@
        "6": -0.4,
        "7": -0.6,
        "8": -0.8,
-       "9": -1.0
+       "9": -1
       },
       "total": 900
      },
@@ -245,7 +247,7 @@
        "6": -0.4,
        "7": -0.6,
        "8": -0.8,
-       "9": -1.0
+       "9": -1
       },
       "total": 600
      },
@@ -260,9 +262,11 @@
    "sources": [
     {
      "title": "2027학년도 연세대학교 입학전형 시행계획(서울캠퍼스)",
-     "url": "https://admission.yonsei.ac.kr/"
+     "url": "https://admission.yonsei.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "korea": {
    "name": "고려대학교",
@@ -305,7 +309,7 @@
        "6": -0.4,
        "7": -0.6,
        "8": -0.8,
-       "9": -2.0
+       "9": -2
       },
       "total": 560
      },
@@ -350,7 +354,7 @@
        "6": -0.4,
        "7": -0.6,
        "8": -0.8,
-       "9": -2.0
+       "9": -2
       },
       "total": 640
      },
@@ -367,9 +371,11 @@
    "sources": [
     {
      "title": "고려대학교 2027학년도 입학전형시행계획(2025.04)",
-     "url": "https://admission.korea.ac.kr/"
+     "url": "https://admission.korea.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "sogang": {
    "name": "서강대학교",
@@ -439,9 +445,11 @@
    "sources": [
     {
      "title": "서강대학교 2027학년도 입학전형 시행계획",
-     "url": "https://admission.sogang.ac.kr/"
+     "url": "https://admission.sogang.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "skku": {
    "name": "성균관대학교",
@@ -646,9 +654,11 @@
    "sources": [
     {
      "title": "2027학년도 성균관대학교 입학전형 시행계획",
-     "url": "https://admission.skku.edu/"
+     "url": "https://admission.skku.edu/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hanyang": {
    "name": "한양대학교",
@@ -790,9 +800,11 @@
    "sources": [
     {
      "title": "한양대학교 2027학년도 입학전형 시행계획",
-     "url": "https://go.hanyang.ac.kr/"
+     "url": "https://go.hanyang.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "cau": {
    "name": "중앙대학교",
@@ -946,9 +958,11 @@
    "sources": [
     {
      "title": "중앙대학교 2027학년도 입학전형 시행계획",
-     "url": "https://admission.cau.ac.kr/"
+     "url": "https://admission.cau.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "khu": {
    "name": "경희대학교",
@@ -1151,9 +1165,11 @@
    "sources": [
     {
      "title": "경희대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hufs": {
    "name": "한국외국어대학교(서울캠퍼스)",
@@ -1303,9 +1319,11 @@
    "sources": [
     {
      "title": "한국외국어대학교 2027학년도 입학전형 시행계획",
-     "url": "https://adms.hufs.ac.kr/"
+     "url": "https://adms.hufs.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "uos": {
    "name": "서울시립대학교",
@@ -1313,7 +1331,7 @@
    "basis": "표준점수(탐구 변환표준점수)",
    "tracks": [
     {
-     "name": "인문",
+     "name": "상경",
      "appliesTo": "인문계열Ⅰ — 경제학부·사회복지학과·세무학과·경영학부·도시행정학과·자유전공학부(인문)",
      "unit": "percent",
      "total": 1000,
@@ -1339,18 +1357,28 @@
       "note": "인문계열Ⅰ 등급별 변환점수 150→0을 100점 기준으로 옮겼다."
      },
      "history": {
-      "method": "미확인",
-      "note": "시립대는 한국사에 등급별 점수를 주지만 시행계획에서 표를 찾지 못했다(미확인)."
+      "method": "감산",
+      "table": {
+       "1": 0,
+       "2": -2,
+       "3": -4,
+       "4": -6,
+       "5": -8,
+       "6": -10
+      },
+      "total": 1000,
+      "note": "2027 시행계획 한국사 등급별 차감(총점에서 감점). 7~9등급 값은 표에서 확인하지 못했다(미확인)."
      },
      "inquiry": {
       "count": 2,
       "allowed": "사탐/과탐 모두",
       "socialBonus": 0.03,
       "note": "인문계열 지원자가 사탐 2과목을 보면 변환표준점수에 3% 가산"
-     }
+     },
+     "note": "인문계열Ⅰ. 경영·경제·세무·사회복지·도시행정·자유전공학부(인문)이 여기에 든다."
     },
     {
-     "name": "상경",
+     "name": "인문",
      "appliesTo": "인문계열Ⅱ — 행정학과·국제관계학과·영어영문·국어국문·국사학과·철학과·중국어문화·도시사회학과",
      "unit": "percent",
      "total": 1000,
@@ -1376,15 +1404,24 @@
       "note": "인문계열Ⅱ 등급별 변환점수 200→0을 100점 기준으로 옮겼다."
      },
      "history": {
-      "method": "미확인",
-      "note": "시립대는 한국사에 등급별 점수를 주지만 시행계획에서 표를 찾지 못했다(미확인)."
+      "method": "감산",
+      "table": {
+       "1": 0,
+       "2": -2,
+       "3": -4,
+       "4": -6,
+       "5": -8,
+       "6": -10
+      },
+      "total": 1000,
+      "note": "2027 시행계획 한국사 등급별 차감(총점에서 감점). 7~9등급 값은 표에서 확인하지 못했다(미확인)."
      },
      "inquiry": {
       "count": 2,
       "allowed": "사탐/과탐 모두",
       "socialBonus": 0.03
      },
-     "note": "2027학년도에 인문계열Ⅰ·Ⅱ 두 유형으로 줄었다. 여기 이름은 우리 계열 구분에 맞춘 것이다."
+     "note": "2027학년도에 인문계열Ⅰ·Ⅱ 두 유형으로 줄었다. 인문계열Ⅰ(경제·경영·세무·사회복지·도시행정·자유전공인문)은 우리 트랙 이름으로 상경, 인문계열Ⅱ(어문·행정·국제관계 등)는 인문이다."
     },
     {
      "name": "자연",
@@ -1413,8 +1450,17 @@
       "note": "자연계열 등급별 변환점수 100→0."
      },
      "history": {
-      "method": "미확인",
-      "note": "시립대는 한국사에 등급별 점수를 주지만 시행계획에서 표를 찾지 못했다(미확인)."
+      "method": "감산",
+      "table": {
+       "1": 0,
+       "2": -2,
+       "3": -4,
+       "4": -6,
+       "5": -8,
+       "6": -10
+      },
+      "total": 1000,
+      "note": "2027 시행계획 한국사 등급별 차감(총점에서 감점). 7~9등급 값은 표에서 확인하지 못했다(미확인)."
      },
      "inquiry": {
       "count": 2,
@@ -1449,8 +1495,17 @@
       }
      },
      "history": {
-      "method": "미확인",
-      "note": "시립대는 한국사에 등급별 점수를 주지만 시행계획에서 표를 찾지 못했다(미확인)."
+      "method": "감산",
+      "table": {
+       "1": 0,
+       "2": -2,
+       "3": -4,
+       "4": -6,
+       "5": -8,
+       "6": -10
+      },
+      "total": 1000,
+      "note": "2027 시행계획 한국사 등급별 차감(총점에서 감점). 7~9등급 값은 표에서 확인하지 못했다(미확인)."
      },
      "inquiry": {
       "count": 2,
@@ -1463,9 +1518,11 @@
    "sources": [
     {
      "title": "서울시립대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90/%EC%84%9C%EC%9A%B8%EC%8B%9C%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "ewha": {
    "name": "이화여자대학교",
@@ -1506,7 +1563,7 @@
        "5": 9.6,
        "6": 9.4,
        "7": 9.2,
-       "8": 9.0,
+       "8": 9,
        "9": 8.5
       },
       "total": 1000
@@ -1550,7 +1607,7 @@
        "5": 9.6,
        "6": 9.4,
        "7": 9.2,
-       "8": 9.0,
+       "8": 9,
        "9": 8.5
       },
       "total": 1000
@@ -1567,9 +1624,11 @@
    "sources": [
     {
      "title": "2027학년도 이화여자대학교 입학전형 시행계획",
-     "url": "https://admission.ewha.ac.kr/"
+     "url": "https://admission.ewha.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "konkuk": {
    "name": "건국대학교",
@@ -1645,9 +1704,11 @@
    "sources": [
     {
      "title": "2027 건국대 정시 반영비율 정리(입시호구탈출)",
-     "url": "https://ipsihogu.com/2027-konkuk-jungsi-calc/"
+     "url": "https://ipsihogu.com/2027-konkuk-jungsi-calc/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "dongguk": {
    "name": "동국대학교",
@@ -1752,9 +1813,11 @@
    "sources": [
     {
      "title": "2027학년도 동국대학교 대학입학전형 시행계획",
-     "url": "https://ipsi.dongguk.edu/"
+     "url": "https://ipsi.dongguk.edu/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hongik": {
    "name": "홍익대학교",
@@ -1856,9 +1919,11 @@
    "sources": [
     {
      "title": "홍익대학교(서울) 2027학년도 입학전형 시행계획",
-     "url": "https://ibsi.hongik.ac.kr/"
+     "url": "https://ibsi.hongik.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "sookmyung": {
    "name": "숙명여자대학교",
@@ -1990,9 +2055,11 @@
    "sources": [
     {
      "title": "숙명여자대학교 2027학년도 입학전형 시행계획",
-     "url": "https://admission.sookmyung.ac.kr/"
+     "url": "https://admission.sookmyung.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "kookmin": {
    "name": "국민대학교",
@@ -2072,9 +2139,11 @@
    "sources": [
     {
      "title": "국민대학교 2027학년도 입학전형 시행계획",
-     "url": "https://admission.kookmin.ac.kr/"
+     "url": "https://admission.kookmin.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "soongsil": {
    "name": "숭실대학교",
@@ -2230,13 +2299,16 @@
     {
      "title": "숭실대학교 2027학년도 신입학 정시 모집요강(2026-09-01 게시)",
      "url": "https://admission.ssu.ac.kr/upload/SSU%281%29_26090185116.pdf",
-     "note": "반영비율·영어 등급별 점수표·활용지표 p.42, 한국사 감점 p.6"
+     "note": "반영비율·영어 등급별 점수표·활용지표 p.42, 한국사 감점 p.6",
+     "sourceGrade": "A"
     },
     {
      "title": "숭실대학교 2027학년도 입학전형 시행계획",
-     "url": "https://ipsi.ssu.ac.kr/"
+     "url": "https://ipsi.ssu.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "sejong": {
    "name": "세종대학교",
@@ -2271,7 +2343,23 @@
       "count": 2,
       "allowed": "사탐/과탐 모두"
      },
-     "total": 1000
+     "total": 1000,
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 10,
+       "2": 10,
+       "3": 10,
+       "4": 9.8,
+       "5": 9.6,
+       "6": 9.4,
+       "7": 9.2,
+       "8": 9,
+       "9": 8.8
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「한국사 등급별 가산점 부여 [1~3등급 10점, 4등급부터 1등급당 0.2점씩 감산]」"
+     }
     },
     {
      "name": "자연",
@@ -2302,20 +2390,86 @@
       "allowed": "사탐/과탐 모두"
      },
      "note": "자유전공학부는 35·35·20·10",
-     "total": 1000
+     "total": 1000,
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 10,
+       "2": 10,
+       "3": 10,
+       "4": 9.8,
+       "5": 9.6,
+       "6": 9.4,
+       "7": 9.2,
+       "8": 9,
+       "9": 8.8
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「한국사 등급별 가산점 부여 [1~3등급 10점, 4등급부터 1등급당 0.2점씩 감산]」"
+     }
+    },
+    {
+     "name": "자유전공",
+     "appliesTo": "자유전공학부",
+     "unit": "percent",
+     "weights": {
+      "kor": 35,
+      "math": 35,
+      "eng": 20,
+      "inq": 10
+     },
+     "english": {
+      "method": "비율반영",
+      "table": {
+       "1": 100,
+       "2": 99,
+       "3": 98,
+       "4": 97,
+       "5": 85,
+       "6": 75,
+       "7": 60,
+       "8": 50,
+       "9": 0
+      },
+      "note": "2027 시행계획 「영어 등급별 환산점수표(200점 기준)」의 자유전공학부·자연 행 200/198/196/194/170/150/120/100/0"
+     },
+     "inquiry": {
+      "count": 2,
+      "allowed": "사탐/과탐 모두"
+     },
+     "note": "2027 시행계획 「대학수학능력시험 영역별 반영비율」 표의 자유전공학부 행(국35·수35·영20·탐20→10).",
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 10,
+       "2": 10,
+       "3": 10,
+       "4": 9.8,
+       "5": 9.6,
+       "6": 9.4,
+       "7": 9.2,
+       "8": 9,
+       "9": 8.8
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「한국사 등급별 가산점 부여 [1~3등급 10점, 4등급부터 1등급당 0.2점씩 감산]」"
+     }
     }
    ],
    "changes2027": "2027 정시 반영비율: 인문 30·30·20·20, 자연 20·35·20·25, 자유전공학부 35·35·20·10(총점 1,000점).",
    "sources": [
     {
      "title": "세종대학교 2027학년도 입학전형 시행계획",
-     "url": "https://ipsi.sejong.ac.kr/"
+     "url": "https://ipsi.sejong.ac.kr/",
+     "sourceGrade": "A"
     },
     {
      "title": "세종대학교 2027학년도 입학전형 시행계획 [11] 정시모집 수능 영역별 반영비율",
-     "url": "https://ipsi.sejong.ac.kr/"
+     "url": "https://ipsi.sejong.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "dankook": {
    "name": "단국대학교(죽전)",
@@ -2350,6 +2504,22 @@
      "inquiry": {
       "count": 2,
       "allowed": "사탐/과탐 모두"
+     },
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 5,
+       "2": 4,
+       "3": 3,
+       "4": 2,
+       "5": 1,
+       "6": 0,
+       "7": 0,
+       "8": 0,
+       "9": 0
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「수능 한국사등급 가산점(총점 1,000점 기준)」 p.31"
      }
     },
     {
@@ -2380,6 +2550,22 @@
      "inquiry": {
       "count": 2,
       "allowed": "사탐/과탐 모두"
+     },
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 5,
+       "2": 4,
+       "3": 3,
+       "4": 2,
+       "5": 1,
+       "6": 0,
+       "7": 0,
+       "8": 0,
+       "9": 0
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「수능 한국사등급 가산점(총점 1,000점 기준)」 p.31"
      }
     },
     {
@@ -2413,16 +2599,34 @@
       "scienceBonus": 0.05
      },
      "mathBonus": 0.05,
-     "note": "미적분·기하 5%, 과탐 5% 가산"
+     "note": "미적분·기하 5%, 과탐 5% 가산",
+     "history": {
+      "method": "가산",
+      "table": {
+       "1": 5,
+       "2": 4,
+       "3": 3,
+       "4": 2,
+       "5": 1,
+       "6": 0,
+       "7": 0,
+       "8": 0,
+       "9": 0
+      },
+      "total": 1000,
+      "note": "2027 시행계획 「수능 한국사등급 가산점(총점 1,000점 기준)」 p.31"
+     }
     }
    ],
    "changes2027": "백분위 반영. 인문 35·25·20·20, 경영경제 25·35·20·20, 공학 20·35·20·25(+가산 5%).",
    "sources": [
     {
      "title": "단국대학교 2027학년도 대학입학전형시행계획",
-     "url": "https://ipsi.dankook.ac.kr/"
+     "url": "https://ipsi.dankook.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "kw": {
    "name": "광운대학교",
@@ -2492,9 +2696,11 @@
    "sources": [
     {
      "title": "광운대학교 2027학년도 입학전형 시행계획",
-     "url": "https://iphak.kw.ac.kr/"
+     "url": "https://iphak.kw.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "mju": {
    "name": "명지대학교",
@@ -2608,9 +2814,11 @@
    "sources": [
     {
      "title": "명지대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://ipsi.mju.ac.kr/"
+     "url": "https://ipsi.mju.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "smu": {
    "name": "상명대학교",
@@ -2649,7 +2857,7 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0
+       "6": 9
       },
       "total": 1000,
       "note": "한국사 등급별 가산점. 7~9등급 값은 시행계획 표에서 확인되지 않아 비워 둔다"
@@ -2693,7 +2901,7 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0
+       "6": 9
       },
       "total": 1000,
       "note": "한국사 등급별 가산점. 7~9등급 값은 시행계획 표에서 확인되지 않아 비워 둔다"
@@ -2712,9 +2920,11 @@
    "sources": [
     {
      "title": "상명대학교 2027학년도 입학전형 시행계획",
-     "url": "https://admission.smu.ac.kr/"
+     "url": "https://admission.smu.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "catholic": {
    "name": "가톨릭대학교",
@@ -2841,9 +3051,11 @@
    "sources": [
     {
      "title": "가톨릭대학교 2027학년도 입학전형 시행계획",
-     "url": "https://ipsi.catholic.ac.kr/"
+     "url": "https://ipsi.catholic.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hansung": {
    "name": "한성대학교",
@@ -2945,9 +3157,11 @@
    "sources": [
     {
      "title": "한성대학교 2027학년도 입학전형 시행계획",
-     "url": "https://hansung.ac.kr/"
+     "url": "https://hansung.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "skuniv": {
    "name": "서경대학교",
@@ -3014,9 +3228,11 @@
    "sources": [
     {
      "title": "서경대학교 2027학년도 입학전형 시행계획",
-     "url": "https://skuniv.ac.kr/"
+     "url": "https://skuniv.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "syu": {
    "name": "삼육대학교",
@@ -3107,9 +3323,11 @@
    "sources": [
     {
      "title": "삼육대학교 2027학년도 대학입학전형계획 주요사항",
-     "url": "https://ipsi.syu.ac.kr/"
+     "url": "https://ipsi.syu.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "incheon": {
    "name": "인천대학교",
@@ -3230,9 +3448,11 @@
    "sources": [
     {
      "title": "인천대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "inha": {
    "name": "인하대학교",
@@ -3379,9 +3599,11 @@
    "sources": [
     {
      "title": "인하대학교 2027학년도 대학입학전형 시행계획(안)",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90/%EC%9D%B8%ED%95%98%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "ajou": {
    "name": "아주대학교",
@@ -3588,9 +3810,11 @@
    "sources": [
     {
      "title": "아주대학교 2027학년도 입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90/%EC%95%84%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "kyonggi": {
    "name": "경기대학교",
@@ -3633,8 +3857,8 @@
        "5": 0,
        "6": -0.5,
        "7": -0.5,
-       "8": -1.0,
-       "9": -1.0
+       "8": -1,
+       "9": -1
       },
       "total": 100
      },
@@ -3680,8 +3904,8 @@
        "5": 0,
        "6": -0.5,
        "7": -0.5,
-       "8": -1.0,
-       "9": -1.0
+       "8": -1,
+       "9": -1
       },
       "total": 100
      },
@@ -3727,8 +3951,8 @@
        "5": 0,
        "6": -0.5,
        "7": -0.5,
-       "8": -1.0,
-       "9": -1.0
+       "8": -1,
+       "9": -1
       },
       "total": 100
      },
@@ -3744,9 +3968,11 @@
    "sources": [
     {
      "title": "경기대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EA%B8%B0%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "gachon": {
    "name": "가천대학교",
@@ -3902,9 +4128,11 @@
    "sources": [
     {
      "title": "가천대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90/%EA%B0%80%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "pnu": {
    "name": "부산대학교",
@@ -3945,10 +4173,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -3991,10 +4219,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -4040,10 +4268,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 800,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -4089,10 +4317,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 600,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -4108,9 +4336,11 @@
    "sources": [
     {
      "title": "부산대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EB%B6%80%EC%82%B0%EB%8C%80%ED%95%99%EA%B5%90/%EB%B6%80%EC%82%B0%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EB%B6%80%EC%82%B0%EB%8C%80%ED%95%99%EA%B5%90/%EB%B6%80%EC%82%B0%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "knu": {
    "name": "경북대학교",
@@ -4154,7 +4384,7 @@
        "6": 9.6,
        "7": 9.4,
        "8": 9.2,
-       "9": 9.0
+       "9": 9
       },
       "total": 800
      },
@@ -4200,7 +4430,7 @@
        "6": 9.6,
        "7": 9.4,
        "8": 9.2,
-       "9": 9.0
+       "9": 9
       },
       "total": 800
      },
@@ -4249,7 +4479,7 @@
        "6": 9.6,
        "7": 9.4,
        "8": 9.2,
-       "9": 9.0
+       "9": 9
       },
       "total": 500
      },
@@ -4263,9 +4493,11 @@
    "sources": [
     {
      "title": "경북대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "jnu": {
    "name": "전남대학교",
@@ -4422,9 +4654,11 @@
    "sources": [
     {
      "title": "전남대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%84%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%84%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%84%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%84%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "cnu": {
    "name": "충남대학교",
@@ -4633,9 +4867,11 @@
    "sources": [
     {
      "title": "충남대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%B6%A9%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90/%EC%B6%A9%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%B6%A9%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90/%EC%B6%A9%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "cbnu": {
    "name": "충북대학교",
@@ -4680,9 +4916,11 @@
    "sources": [
     {
      "title": "충북대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%B6%A9%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EC%B6%A9%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%B6%A9%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EC%B6%A9%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "kangwon": {
    "name": "강원대학교",
@@ -4806,9 +5044,11 @@
    "sources": [
     {
      "title": "강원대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B0%95%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90/%EA%B0%95%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B0%95%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90/%EA%B0%95%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "gnu": {
    "name": "경상국립대학교",
@@ -4965,9 +5205,11 @@
    "sources": [
     {
      "title": "경상국립대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EC%83%81%EA%B5%AD%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EC%83%81%EA%B5%AD%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EA%B2%BD%EC%83%81%EA%B5%AD%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90/%EA%B2%BD%EC%83%81%EA%B5%AD%EB%A6%BD%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "jejunu": {
    "name": "제주대학교",
@@ -5008,10 +5250,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -5056,10 +5298,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -5107,10 +5349,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -5154,10 +5396,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -5203,10 +5445,10 @@
        "3": 9.6,
        "4": 9.4,
        "5": 9.2,
-       "6": 9.0,
-       "7": 9.0,
-       "8": 9.0,
-       "9": 9.0
+       "6": 9,
+       "7": 9,
+       "8": 9,
+       "9": 9
       },
       "total": 1000,
       "note": "시행계획 표에 6~9등급 칸이 비어 있어 6등급 값(9.0)을 이어 적용했다(미확인)."
@@ -5223,9 +5465,11 @@
    "sources": [
     {
      "title": "제주대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%9C%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%9C%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%9C%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%9C%EC%A3%BC%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "jbnu": {
    "name": "전북대학교",
@@ -5271,9 +5515,11 @@
    "sources": [
     {
      "title": "전북대학교 2027학년도 대학입학전형 시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%84%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%84%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%EC%A0%84%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90/%EC%A0%84%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hanyang-erica": {
    "name": "한양대학교 ERICA",
@@ -5357,9 +5603,11 @@
    "sources": [
     {
      "title": "한양대학교 ERICA 2027학년도 신입학 전형계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90%28ERICA%29/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90%28ERICA%29_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90%28ERICA%29/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90%28ERICA%29_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "kau": {
    "name": "한국항공대학교",
@@ -5469,9 +5717,11 @@
    "sources": [
     {
      "title": "한국항공대학교 2027학년도 대학입학전형시행계획",
-     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%ED%95%9C%EA%B5%AD%ED%95%AD%EA%B3%B5%EB%8C%80%ED%95%99%EA%B5%90/%ED%95%9C%EA%B5%AD%ED%95%AD%EA%B3%B5%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf"
+     "url": "https://cdn013.negagea.net/dgsmidc/omr/seoul/web/univ_info2025/%ED%95%9C%EA%B5%AD%ED%95%AD%EA%B3%B5%EB%8C%80%ED%95%99%EA%B5%90/%ED%95%9C%EA%B5%AD%ED%95%AD%EA%B3%B5%EB%8C%80%ED%95%99%EA%B5%90_2027%ED%95%99%EB%85%84%EB%8F%84_%EB%8C%80%ED%95%99%EC%9E%85%ED%95%99%EC%A0%84%ED%98%95%EA%B3%84%ED%9A%8D.pdf",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   },
   "hufs-global": {
    "name": "한국외국어대학교(글로벌캠퍼스)",
@@ -5621,9 +5871,11 @@
    "sources": [
     {
      "title": "한국외국어대학교 2027학년도 입학전형 시행계획",
-     "url": "https://adms.hufs.ac.kr/"
+     "url": "https://adms.hufs.ac.kr/",
+     "sourceGrade": "A"
     }
-   ]
+   ],
+   "sourceGrade": "A"
   }
  }
 }
