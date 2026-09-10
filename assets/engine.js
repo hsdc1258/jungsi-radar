@@ -33,7 +33,12 @@
     kor: '국어', math: '수학', eng: '영어', inq: '탐구', inq1: '탐구1', inq2: '탐구2', hist: '한국사',
   });
 
-  // 판정 띠. 값은 "내 환산 백분위 − 컷" (점). 위쪽 경계는 포함.
+  // 판정 띠. 하나뿐인 정의다 — 모든 화면이 이 표만 쓴다.
+  //   차이 = 내 환산 백분위 − 예상 컷 (오차를 반영하기 전 값), 소수 첫째 자리로 반올림.
+  //   안정 ≥ +2.0 / 적정 +0.7 이상 +2.0 미만 / 소신 −0.7 이상 +0.7 미만 /
+  //   상향 −2.0 이상 −0.7 미만 / 위험 −2.0 미만 / 불가 = 지원 자격 미충족.
+  //   경계값은 아래쪽 띠에 포함된다(정확히 +2.0이면 안정, 정확히 −0.7이면 소신).
+  //   오차(±)는 판정을 바꾸지 않는다 — 화면에서 옆에만 적는다.
   const VERDICT_BANDS = Object.freeze([
     { key: 'safe', label: '안정', min: 2 },
     { key: 'fit', label: '적정', min: 0.7 },
@@ -41,6 +46,9 @@
     { key: 'stretch', label: '상향', min: -2 },
     { key: 'risky', label: '위험', min: -Infinity },
   ]);
+  // 차이를 판정에 쓰는 자리수(소수 첫째 자리)로 맞춘다. 화면이 보여 주는 숫자와
+  // 뱃지가 어긋나지 않도록, 반올림한 값 하나로 표시와 판정을 함께 한다.
+  const VERDICT_DIGITS = 1;
   // 수시(내신 등급) 판정 띠. 값은 "컷 등급 − 내 등급" (등급, 클수록 유리).
   const SUSI_BANDS = Object.freeze([
     { key: 'safe', label: '안정', min: 0.3 },
@@ -411,7 +419,8 @@
     const score = universityScore(profile, rule, dept.track, dept.ruleTrack);
     if (!score) return { status: 'no-profile', reference, score: null };
     if (!reference.primary) return { status: 'no-cut', reference, score };
-    const gap = round(score.value - reference.primary.value, 2);
+    // 반올림을 먼저 하고 그 값으로 판정한다 — 0.67을 '+0.7'로 적어 놓고 소신으로 부르지 않기 위해서다.
+    const gap = round(score.value - reference.primary.value, VERDICT_DIGITS);
     const band = bandOf(gap, VERDICT_BANDS);
     // 연도별 변동폭 — 컷이 흔들린 만큼 판정도 흔들린다. 반값을 ± 오차로 보여준다.
     const spread = reference.spread;
@@ -585,7 +594,7 @@
 
   const api = Object.freeze({
     GRADE_FLOORS, GRADE_MIDPOINTS, SOCIAL_SUBJECTS, SCIENCE_SUBJECTS, KOR_ELECTIVES, MATH_ELECTIVES, SUBJECT_LABEL,
-    VERDICT_BANDS, SUSI_BANDS, TARGET_MARGIN,
+    VERDICT_BANDS, SUSI_BANDS, TARGET_MARGIN, VERDICT_DIGITS, bandOf,
     gradeFromPercentile, percentileFromGrade, percentileFloorOfGrade, percentileFromRaw, inquiryKind,
     normalizeProfile, profileComplete, inquiryPercentile, simpleAverage, pickTrack, universityScore,
     jeongsiReference, evaluateJeongsi, evaluateSusi, diagnose, analyzeTarget, electiveSummary, round,

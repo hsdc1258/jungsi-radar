@@ -222,3 +222,78 @@ test('generated data.js exists, parses, and respects value ranges', { skip: !exi
   }
   assert.ok(data.scales?.exams?.['2026']?.subjects, 'scales for the 2026 exam');
 });
+
+// ---------------------------------------------------------------- 판정 정의 고정
+// 정의는 하나뿐이다: 차이 = 내 환산 백분위 − 예상 컷(오차 반영 전), 소수 첫째 자리 반올림.
+// 안정 ≥ +2.0 / 적정 +0.7~+2.0 / 소신 −0.7~+0.7 / 상향 −2.0~−0.7 / 위험 < −2.0 / 불가 = 자격 미충족.
+const verdictOf = (gap) => (gap >= 2 ? '안정' : gap >= 0.7 ? '적정' : gap >= -0.7 ? '소신' : gap >= -2 ? '상향' : '위험');
+
+test('판정 띠 표와 경계값 포함 관계가 정의 그대로다', () => {
+  assert.deepEqual(engine.VERDICT_BANDS.map((band) => [band.key, band.label, band.min]),
+    [['safe', '안정', 2], ['fit', '적정', 0.7], ['reach', '소신', -0.7], ['stretch', '상향', -2], ['risky', '위험', -Infinity]]);
+  assert.equal(engine.VERDICT_DIGITS, 1);
+  // 경계값은 위쪽 판정에 든다.
+  for (const [gap, label] of [[2, '안정'], [1.9, '적정'], [0.7, '적정'], [0.6, '소신'], [-0.7, '소신'],
+    [-0.8, '상향'], [-2, '상향'], [-2.1, '위험'], [0, '소신']]) {
+    assert.equal(engine.bandOf(gap, engine.VERDICT_BANDS).label, label, `차이 ${gap}`);
+    assert.equal(verdictOf(gap), label, `표 정의 ${gap}`);
+  }
+});
+
+test('차이는 소수 첫째 자리로 반올림한 값이고 그 값으로 판정한다', () => {
+  // 0.67을 "+0.7"로 적어 놓고 소신이라 부르면 안 된다.
+  const dept = { name: '경계학과', track: '인문', jeongsi: { 2026: { cut70: 90, metric: 'pct' } } };
+  const rule = { name: '데모', tracks: [{ name: '인문', unit: 'percent', weights: { kor: 1, math: 1, inq: 1 } }] };
+  const cases = [[90.67, 0.7, '적정'], [90.64, 0.6, '소신'], [91.95, 2, '안정'], [91.94, 1.9, '적정'],
+    [89.33, -0.7, '소신'], [89.24, -0.8, '상향'], [88.0, -2, '상향'], [87.9, -2.1, '위험']];
+  for (const [mine, gap, label] of cases) {
+    // 국·수·탐을 모두 같은 값으로 주면 가중 평균이 그 값이 된다.
+    const profile = engine.normalizeProfile({ mode: 'pct', kor: mine, math: mine, eng: 1, inq1Subject: '사회문화', inq1: mine });
+    const result = engine.evaluateJeongsi(profile, { id: 'demo', short: '데모' }, dept, rule, 1);
+    assert.equal(result.gap, gap, `내 환산 ${mine}`);
+    assert.equal(result.band.label, label, `내 환산 ${mine}`);
+    // 화면이 적는 숫자(소수 첫째 자리)와 뱃지가 같은 값에서 나온다.
+    assert.equal(Number(result.gap.toFixed(1)), result.gap);
+  }
+});
+
+const VERDICT_CASES = [
+  ['백분위 · 사탐 2과목', { mode: 'pct', kor: 96, math: 93, eng: '2', hist: '1', inq1Subject: '사회문화', inq1: 95, inq2Subject: '생활과윤리', inq2: 92 }],
+  ['등급 입력', { mode: 'grade', kor: '2', math: '1', eng: '1', hist: '1', inq1Subject: '물리학I', inq1: '2', inq2Subject: '화학I', inq2: '3' }],
+  ['탐구 1과목만', { mode: 'pct', kor: 88, math: 91, eng: '3', hist: '2', inq1Subject: '지구과학I', inq1: 90, inq2Subject: '', inq2: '' }],
+  ['영어 미입력', { mode: 'pct', kor: 80, math: 78, eng: '', hist: '', inq1Subject: '사회문화', inq1: 82, inq2Subject: '경제', inq2: 79 }],
+  ['과탐 2과목 · 미적분', { mode: 'pct', kor: 99, math: 100, eng: '1', hist: '1', mathElective: '미적분', inq1Subject: '물리학II', inq1: 98, inq2Subject: '화학I', inq2: 97 }],
+];
+
+test('성적 다섯 세트의 상위 20행에서 (차이, 뱃지)가 정의와 100% 일치한다', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
+  const data = load(DATA_FILE, 'IPSI_DATA');
+  for (const [name, scores] of VERDICT_CASES) {
+    const profile = engine.normalizeProfile(scores, data.scales);
+    assert.ok(engine.profileComplete(profile), `${name}: 프로필이 완성돼야 한다`);
+    const rows = engine.diagnose(profile, data).filter((row) => row.jeongsi.status === 'ok' || row.jeongsi.status === 'blocked');
+    assert.ok(rows.length >= 20, `${name}: 판정된 행이 20개 이상이어야 한다 (${rows.length})`);
+    for (const row of rows.slice(0, 20)) {
+      const { gap, band, mine, cut } = row.jeongsi;
+      const where = `${name} · ${row.universityName} ${row.dept.name}`;
+      assert.equal(gap, Math.round((mine - cut.value) * 10) / 10, `${where}: 차이 정의`);
+      assert.equal(Number(gap.toFixed(1)), gap, `${where}: 소수 첫째 자리`);
+      assert.equal(band.label, verdictOf(gap), `${where}: 차이 ${gap} → ${band.label}`);
+    }
+    // 목록 전체에서도 뱃지와 차이가 어긋나지 않는다.
+    for (const row of rows) {
+      assert.equal(row.jeongsi.band.label, verdictOf(row.jeongsi.gap),
+        `${name} · ${row.universityName} ${row.dept.name}: 차이 ${row.jeongsi.gap}`);
+    }
+  }
+});
+
+test('오차(spread)는 판정을 바꾸지 않는다', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
+  const data = load(DATA_FILE, 'IPSI_DATA');
+  const profile = engine.normalizeProfile(VERDICT_CASES[0][1], data.scales);
+  const rows = engine.diagnose(profile, data).filter((row) => row.jeongsi.status === 'ok');
+  const withSpread = rows.filter((row) => typeof row.jeongsi.spread === 'number' && row.jeongsi.spread > 0);
+  assert.ok(withSpread.length > 50, '오차가 붙은 행이 많아야 한다');
+  for (const row of withSpread.slice(0, 200)) {
+    assert.equal(row.jeongsi.band.label, verdictOf(row.jeongsi.gap));
+  }
+});

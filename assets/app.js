@@ -74,16 +74,23 @@
   const BAND_TONE = { safe: 'positive', fit: 'brand', reach: 'neutral', stretch: 'warning', risky: 'critical', blocked: 'critical' };
   // 지원 자격이 막힌 모집단위(과탐 필수·미적분 필수 등)는 점수와 무관하게 '불가'다.
   const BLOCKED_BAND = Object.freeze({ key: 'blocked', label: '불가' });
+  // 판정은 엔진이 낸 값 하나만 쓴다(ENGINE.VERDICT_BANDS). 화면이 따로 계산하지 않는다.
   const bandOf = (result) => (result?.status === 'blocked' ? BLOCKED_BAND : result?.band || null);
+  // 판정 범례 한 줄. 엔진의 띠 표에서 그대로 만들어 두 화면이 같은 문장을 쓴다.
+  const verdictLegend = () => {
+    const bands = ENGINE.VERDICT_BANDS;
+    const parts = bands.map((band, index) => {
+      const upper = index === 0 ? null : bands[index - 1].min;
+      if (band.min === -Infinity) return `${band.label} ${signed(upper, 1)} 미만`;
+      if (upper === null) return `${band.label} ${signed(band.min, 1)} 이상`;
+      return `${band.label} ${signed(band.min, 1)} ~ ${signed(upper, 1)}`;
+    });
+    return `차이 = 내 환산 백분위 − 예상 컷 · ${parts.join(' · ')} · 불가 지원 자격 미충족 (오차 ±는 판정을 바꾸지 않습니다)`;
+  };
   // 목록에 보여 주는 순서: 안정 → 적정 → 소신 → 상향 → 위험 → 불가.
   const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked'];
-  // '높은 순' 정렬에서 쓰는 두 묶음. 먼저 지원 가능한 곳을 컷 높은 순으로 모두 보여 주고,
-  // 그 아래에 손이 닿지 않는 곳을 같은 방식으로 잇는다.
+  // '높은 순' 정렬에서 앞쪽에 세우는 판정들. 머리글은 쓰지 않고 순서로만 구분한다.
   const REACHABLE_BANDS = Object.freeze(['safe', 'fit', 'reach']);
-  const CUT_GROUPS = Object.freeze([
-    { key: 'reachable', label: '지원 가능', hint: '안정·적정·소신', bands: REACHABLE_BANDS },
-    { key: 'hard', label: '상향·위험·불가', hint: '지금 점수로는 어렵습니다', bands: ['stretch', 'risky', 'blocked'] },
-  ]);
   const SORTS = Object.freeze([['cut', '높은 순'], ['band', '판정별']]);
   const badge = (label, tone = 'neutral') => el('span', {
     class: `seed-badge__root seed-badge__root--size_medium seed-badge__root--variant_weak seed-badge__root--tone_${tone}-variant_weak`,
@@ -608,7 +615,8 @@
       }),
     ]);
 
-    const sortNote = state.filters.sort === 'band' ? '판정별로 묶어' : '예상 컷 높은 순으로';
+    const legend = el('p', { class: 'jr-muted jr-legend', text: verdictLegend() });
+    const sortNote = state.filters.sort === 'band' ? '판정별로 묶어' : '지원 가능한 곳부터 예상 컷 높은 순으로';
     const hiddenNote = [state.filters.noArts ? '예체능' : null, state.filters.noDream ? '의·치·한·약·수의와 서·연·고' : null]
       .filter(Boolean).join('·');
     const summary = callout('내 국·수·탐 평균',
@@ -628,63 +636,67 @@
       return [summary, chips, filters, note, banner(empty)].filter(Boolean);
     }
 
-    // 묶음 나누기. '높은 순'은 지원 가능 / 어려움 두 묶음, '판정별'은 판정 여섯 묶음이다.
-    const groups = state.filters.sort === 'band'
-      ? BAND_ORDER.map((key) => ({ key, label: null, hint: null, bands: [key] }))
-      : CUT_GROUPS.map((group) => ({ ...group }));
-    const bucket = new Map(groups.map((group) => [group.key, []]));
-    for (const row of rows) {
-      const key = bandOf(row.jeongsi).key;
-      const group = groups.find((candidate) => candidate.bands.includes(key));
-      if (group) bucket.get(group.key).push(row);
-    }
-
-    // 묶음마다 같은 수만 먼저 보여 준다 — 한 묶음이 목록을 다 차지해 다른 묶음이 묻히지 않게 한다.
-    const perGroup = state.filters.limit;
-    const blocks = [];
-    let shown = 0;
-    for (const group of groups) {
-      const list = bucket.get(group.key) || [];
-      if (list.length === 0) continue;
-      const slice = list.slice(0, perGroup);
-      shown += slice.length;
-      const label = group.label || bandOf(list[0].jeongsi).label;
-      const suffix = group.hint ? `${group.hint} · ${list.length}곳` : `${list.length}곳`;
-      blocks.push(el('div', { class: 'jr-section' }, [
-        listHeader(label, suffix),
-        el('div', { class: 'jr-list' }, slice.map((row) => {
-          const result = row.jeongsi;
-          const band = bandOf(result);
-          const detail = result.status === 'blocked'
-            ? `${result.score.blockers[0]} · ${spreadText(result)}`
-            : `${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`;
-          return listItem({
-            title: `${row.universityName} ${deptLabel(row.dept.name)}`,
-            detail,
-            suffix: [
-              el('span', { class: 'jr-gap num', text: signed(result.gap, 1) }),
-              badge(band.label, BAND_TONE[band.key]),
-              favoriteButton(row.universityId, row.dept.name),
-            ],
-            onclick: () => {
-              state.target = { university: row.universityId, dept: row.dept.name };
-              go('target');
-            },
-          });
-        })),
-      ]));
-    }
+    const rowItem = (row) => {
+      const result = row.jeongsi;
+      const band = bandOf(result);
+      const detail = result.status === 'blocked'
+        ? `${result.score.blockers[0]} · ${spreadText(result)}`
+        : `${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`;
+      return listItem({
+        title: `${row.universityName} ${deptLabel(row.dept.name)}`,
+        detail,
+        suffix: [
+          el('span', { class: 'jr-gap num', text: signed(result.gap, 1) }),
+          badge(band.label, BAND_TONE[band.key]),
+          favoriteButton(row.universityId, row.dept.name),
+        ],
+        onclick: () => {
+          state.target = { university: row.universityId, dept: row.dept.name };
+          go('target');
+        },
+      });
+    };
 
     const total = rows.length;
-    const unit = state.filters.sort === 'band' ? '판정별' : '묶음별';
+    const blocks = [];
+    let shown = 0;
+    let moreLabel = '';
+
+    if (state.filters.sort === 'band') {
+      // 판정별 보기에서만 머리글을 쓴다. 머리글과 그 안의 뱃지는 언제나 같은 판정이다.
+      const bucket = new Map(BAND_ORDER.map((key) => [key, []]));
+      for (const row of rows) bucket.get(bandOf(row.jeongsi).key)?.push(row);
+      for (const key of BAND_ORDER) {
+        const list = bucket.get(key) || [];
+        if (list.length === 0) continue;
+        const slice = list.slice(0, state.filters.limit);
+        shown += slice.length;
+        blocks.push(el('div', { class: 'jr-section' }, [
+          listHeader(bandOf(list[0].jeongsi).label, `${list.length}곳`),
+          el('div', { class: 'jr-list' }, slice.map(rowItem)),
+        ]));
+      }
+      moreLabel = `더 보기 (판정별 ${state.filters.limit}곳씩 · 남은 ${total - shown}곳)`;
+    } else {
+      // 높은 순: 머리글 없는 한 목록. 지원 가능한 곳(안정·적정·소신)을 예상 컷 높은 순으로 먼저
+      // 늘어놓고, 그 뒤에 상향·위험·불가를 같은 방식으로 잇는다. 판정은 행마다 뱃지가 말한다.
+      const reachable = rows.filter((row) => REACHABLE_BANDS.includes(bandOf(row.jeongsi).key));
+      const hard = rows.filter((row) => !REACHABLE_BANDS.includes(bandOf(row.jeongsi).key));
+      const ordered = [...reachable, ...hard];
+      const slice = ordered.slice(0, state.filters.limit * 2);
+      shown = slice.length;
+      if (slice.length > 0) blocks.push(el('div', { class: 'jr-section' }, [el('div', { class: 'jr-list' }, slice.map(rowItem))]));
+      moreLabel = `더 보기 (남은 ${total - shown}곳)`;
+    }
+
     const more = shown < total
-      ? el('div', { class: 'jr-actions' }, [button(`더 보기 (${unit} ${state.filters.limit}곳씩 · 남은 ${total - shown}곳)`, {
+      ? el('div', { class: 'jr-actions' }, [button(moreLabel, {
         variant: 'neutralWeak',
         onclick: () => { state.filters.limit += 8; saveFilters(); render(); },
       })])
       : null;
 
-    return [summary, chips, filters, note, ...blocks, more].filter(Boolean);
+    return [summary, legend, chips, filters, note, ...blocks, more].filter(Boolean);
   }
 
   // ---------------------------------------------------------------- 목표 화면
@@ -1005,14 +1017,17 @@
     const unconfirmed = unconfirmedNotes();
 
     return [
-      callout('판정 기준', [
-        ...ENGINE.VERDICT_BANDS.map((band, index, all) => (
+      callout('판정 기준', verdictLegend(), 'informative'),
+      section([
+        listHeader('판정 표', '경계값은 위쪽 판정에 든다'),
+        table(['판정', '차이 (내 환산 − 예상 컷)'], ENGINE.VERDICT_BANDS.map((band, index, all) => [
+          band.label,
           band.min === -Infinity
-            ? `${band.label} 컷 ${signed(all[index - 1].min, 1)}점 미만`
-            : `${band.label} 컷 ${signed(band.min, 1)}점 이상`
-        )),
-        '불가 지원 자격이 막힌 모집단위',
-      ].join(' · '), 'informative'),
+            ? `${signed(all[index - 1].min, 1)} 미만`
+            : index === 0 ? `${signed(band.min, 1)} 이상` : `${signed(band.min, 1)} 이상 ${signed(all[index - 1].min, 1)} 미만`,
+        ]).concat([['불가', '지원 자격 미충족 (과탐 필수·미적분 필수 등)']])),
+        muted('차이는 소수 첫째 자리로 반올림한 값이고, 그 값으로 판정합니다. 오차(±)는 판정을 바꾸지 않습니다.'),
+      ]),
       section([
         listHeader('계산 방법'),
         el('div', { class: 'jr-list' }, [

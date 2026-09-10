@@ -215,6 +215,12 @@ html, body {
   flex: 2 1 12em;
   min-width: 0;
 }
+/* 판정 범례 한 줄. 좁은 폭에서도 잘리지 않게 줄바꿈만 허용한다. */
+.jr-legend {
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 .jr-chips {
   display: flex;
   flex-wrap: wrap;

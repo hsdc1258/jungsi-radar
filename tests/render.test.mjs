@@ -162,18 +162,21 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   assert.match(about, /데이터 생성일/u);
 });
 
-test('진단 목록은 예상 컷 높은 순으로 나오고 지원 가능 묶음이 먼저다', () => {
+test('진단 목록은 머리글 없는 한 목록이고 지원 가능한 곳이 컷 높은 순으로 먼저다', () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   const text = panel.text;
-  assert.match(text, /예상 컷 높은 순으로 봅니다/u);
-  assert.match(text, /지원 가능/u);
-  // 목록 행의 '예상 컷 xx.x' 를 차례로 읽어 내림차순인지 본다.
+  assert.match(text, /지원 가능한 곳부터 예상 컷 높은 순으로 봅니다/u);
+  // 판정 범례가 목록 위에 한 줄 있다.
+  assert.match(text, /차이 = 내 환산 백분위 − 예상 컷/u);
+  assert.match(text, /안정 \+2\.0 이상/u);
+  assert.match(text, /오차 ±는 판정을 바꾸지 않습니다/u);
+  // '높은 순' 보기에는 판정 머리글(list-header)이 없다.
+  const headers = panel.querySelectorAll('.seed-list-header').map((node) => node.text);
+  assert.ok(!headers.some((head) => /안정|적정|소신|상향|위험|불가/u.test(head)), `판정 머리글이 없어야 한다: ${headers}`);
+  // 목록 행의 '예상 컷 xx.x' 를 차례로 읽어 내림차순인지 본다(지원 가능 묶음 안에서).
   const cuts = [...text.matchAll(/예상 컷 (\d+\.\d)/gu)].map((row) => Number(row[1]));
   assert.ok(cuts.length > 3, `컷이 여럿 보여야 한다 (${cuts.length})`);
-  const possible = text.indexOf('지원 가능');
-  const hard = text.indexOf('상향·위험·불가');
-  if (hard !== -1) assert.ok(possible < hard, '지원 가능 묶음이 먼저 나온다');
 });
 
 test('기본 토글 두 개가 켜져 있어 예체능과 서·연·고·의약 최상위를 감춘다', () => {
@@ -227,4 +230,43 @@ test('성적 공유 링크의 쿼리를 다시 읽어 들인다', () => {
   assert.equal(saved.inq1Subject, '사회문화');
   // 링크로 들어오면 바로 진단 화면을 연다.
   assert.equal(built.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').getAttribute('aria-selected'), 'true');
+});
+
+// 저장된 필터까지 함께 넣고 띄운다.
+function bootWith(scores, filters) {
+  const built = buildContext();
+  built.context.localStorage.setItem('jr.scores', JSON.stringify(scores));
+  built.context.localStorage.setItem('jr.filters', JSON.stringify(filters));
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
+  return built;
+}
+
+test('판정별 보기에서만 머리글이 나오고 머리글과 그 안의 뱃지가 같다', () => {
+  const { panel, tabs } = bootWith(FULL_SCORES, { sort: 'band' });
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const blocks = panel.querySelectorAll('.jr-section').filter((node) => node.querySelector('.seed-list-header'));
+  const verdicts = ['안정', '적정', '소신', '상향', '위험', '불가'];
+  const named = blocks.filter((block) => verdicts.includes(block.querySelector('.seed-list-header').text.trim().split(' ')[0]));
+  assert.ok(named.length >= 2, `판정 머리글 묶음이 둘 이상이어야 한다 (${named.length})`);
+  for (const block of named) {
+    const head = block.querySelector('.seed-list-header').text.trim().split(' ')[0];
+    const badges = block.querySelectorAll('.seed-badge__root').map((node) => node.text.trim());
+    assert.ok(badges.length > 0, `${head}: 뱃지가 있어야 한다`);
+    for (const label of badges) assert.equal(label, head, `${head} 묶음에 ${label} 뱃지가 섞였다`);
+  }
+});
+
+test('진단 목록의 차이 숫자와 뱃지가 판정 정의대로 맞는다', () => {
+  const { panel, tabs } = bootWith(FULL_SCORES, { sort: 'cut', limit: 40 });
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const rows = panel.querySelectorAll('.jr-row');
+  const withGap = rows.filter((row) => row.querySelector('.jr-gap'));
+  assert.ok(withGap.length >= 20, `판정 행이 20개 이상이어야 한다 (${withGap.length})`);
+  const verdictOf = (gap) => (gap >= 2 ? '안정' : gap >= 0.7 ? '적정' : gap >= -0.7 ? '소신' : gap >= -2 ? '상향' : '위험');
+  for (const row of withGap.slice(0, 20)) {
+    const gap = Number(row.querySelector('.jr-gap').text.trim().replace('\u2212', '-').replace('+', ''));
+    const label = row.querySelector('.seed-badge__root').text.trim();
+    if (label === '불가') continue;
+    assert.equal(label, verdictOf(gap), `차이 ${gap} 인데 뱃지가 ${label}`);
+  }
 });
