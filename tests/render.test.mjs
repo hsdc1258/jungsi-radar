@@ -564,9 +564,10 @@ test('등급 입력의 목표 화면은 구간 하한·상한의 판정을 한 �
   row.dispatch('click');
   const text = panel.text;
   assert.match(text, /가정 78\.2 \(71\.3~84\.0\)/u);
-  // 어디가 원값(2026 = 82)이 들어오면서 컷이 82.36 → 82.03으로 내려가, 구간 상한 판정이
-  // 적정에서 안정으로 올라갔다. 요점은 하한·상한을 한 줄로 함께 적는다는 것이다.
-  assert.match(text, /구간 하한 위험 · 상한 안정/u);
+  // 어디가 70% 학생의 영역별 성적표가 들어오면서 이 행은 L2(반영비율 지수)가 됐다. 구간도
+  // 지수 눈금에서 다시 계산돼(지수 78.2~88.0 · 컷 87.5) 상한 판정이 안정에서 소신이 됐다.
+  // 요점은 하한·상한을 한 줄로 함께 적는다는 것이다 (docs/MODEL.md §4).
+  assert.match(text, /구간 하한 위험 · 상한 소신/u);
   assert.match(text, /추정/u);
   assert.ok(!/판정 보류/u.test(text), '등급 입력에 보류 카드가 남아 있다');
 });
@@ -792,9 +793,20 @@ test('L2 행은 백분위 차 하나와 근사 뱃지를 붙인다', () => {
 });
 
 test('L3 행은 참고 뱃지를 붙이고 컷의 통계 정의를 부제 끝에 적는다', () => {
-  const { panel, tabs } = boot(FULL_SCORES);
+  // 어디가 원값이 들어오면서 목록 첫 행은 L1·L2가 됐다. 진짜 L3 행(영역별 성적표가 없거나
+  // consistent:false 라 지수·환산으로 못 올라간 곳)을 엔진에게 물어 그 행만 남기고 본다.
+  const probe = buildContext();
+  const { IPSI_ENGINE: engine, IPSI_DATA: data } = probe.context;
+  const profile = engine.normalizeProfile(FULL_SCORES, data.scales, data.std);
+  const l3 = engine.diagnose(profile, data).find((entry) => entry.jeongsi.status === 'ok' && entry.jeongsi.level === 'L3');
+  assert.ok(l3, '생성 데이터에 L3 행이 없다');
+  // 남은 L3는 실기 모집단위라 기본 필터(예체능·특수대학 제외)에 걸린다 — 그 둘만 열어 준다.
+  const { panel, tabs } = bootWith(FULL_SCORES,
+    { universities: [l3.universityId], query: l3.dept.name, noArts: false, noDream: false });
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
+  const row = panel.querySelectorAll('.jr-row')
+    .find((node) => node.querySelector('.jr-gap') && node.text.includes(l3.dept.name));
+  assert.ok(row, `${l3.universityName} ${l3.dept.name} 행이 없다`);
   const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
   // 성적 출처 기본값(모의고사) → 모의, 층위 L3 → 참고, 그리고 판정.
   assert.equal(badges[0], '모의');

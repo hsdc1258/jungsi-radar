@@ -255,6 +255,26 @@
     return { min: GRADE_FLOORS[index], max: index === 0 ? 100 : GRADE_FLOORS[index - 1] - 1 };
   }
 
+  // 등급 입력의 **영역별** 백분위 하한·상한(§4). 등급 경계는 제도가 고정한 값이라 지어낸 폭이 아니다.
+  // 산식(L1)·지수(L2)는 영역마다 단조증가라, 하한끼리·상한끼리 묶으면 그대로 값의 하한·상한이 된다.
+  // 등급 입력이 아니면 폭이 없다 — null 이다.
+  function gradeAreaBounds(profile, count = 2) {
+    if (profile?.mode !== 'grade') return null;
+    const rangeOf = (pct) => (isNumber(pct) ? percentileRangeOfGrade(gradeFromPercentile(pct)) : null);
+    const kor = rangeOf(profile?.kor?.pct);
+    const math = rangeOf(profile?.math?.pct);
+    const rows = [...(profile?.inquiries || [])]
+      .sort((left, right) => right.pct - left.pct)
+      .slice(0, Math.max(1, count))
+      .map((row) => rangeOf(row.pct));
+    if (!kor || !math || rows.length === 0 || rows.some((row) => !row)) return null;
+    const mean = (key) => rows.reduce((sum, row) => sum + row[key], 0) / rows.length;
+    return {
+      low: { kor: kor.min, math: math.min, inq: mean('min') },
+      high: { kor: kor.max, math: math.max, inq: mean('max') },
+    };
+  }
+
   // 영역별 값 세 벌. 어떤 눈금이든 이 셋(국어·수학·탐구)에서 만든다.
   //   inq2 = 탐구 상위 2과목 평균(한 과목뿐이면 그 과목) · inq1 = 탐구 상위 1과목
   function areaValues(profile) {
@@ -1799,18 +1819,21 @@
           };
         }).sort((left, right) => Math.abs(right.contrib ?? 0) - Math.abs(left.contrib ?? 0));
         const gap = round(myIndex.value - cutIndex.value, VERDICT_DIGITS);
-        const cut50Index = student50?.consistent
-          ? ratioIndex({
-            kor: student50.kor, math: student50.math,
-            inq: student50.inq.length > 0 ? student50.inq.slice(0, weights.count).reduce((sum, row) => sum + row.pct, 0) / Math.min(weights.count, student50.inq.length) : null,
-            eng: engPercentOf(student50.eng, weights.engTable),
-          }, weights)
-          : null;
+        // 등급 입력은 하한·중앙·상한 세 점을 다 낸다(§4). 영어는 절대평가라 등급 그대로다.
+        const bounds = gradeAreaBounds(profile, weights.count);
+        const atBound = (side) => (bounds ? ratioIndex({ ...bounds[side], eng: myValues.eng }, weights) : null);
+        const lowIndex = atBound('low');
+        const highIndex = atBound('high');
+        const gapMin = lowIndex ? round(lowIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
+        const gapMax = highIndex ? round(highIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
         return {
           ...base, level: 'L2', track: ratioTrack, myIndex, cutIndex,
-          points: null, pctEq: gap, gapMin: gap, gapMax: gap, gap2026: gap, gap2027: null,
+          myIndexMin: lowIndex ? lowIndex.value : myIndex.value,
+          myIndexMax: highIndex ? highIndex.value : myIndex.value,
+          points: null, pctEq: gap, gapMin, gapMax, gap2026: gap, gap2027: null,
           basisChanged: false, cut2027: null,
-          above50: cut50Index ? myIndex.value >= cut50Index.value : null,
+          // 50% 지점은 환산점수 눈금에서만 의미가 있다(§3) — 지수 판정은 띠 표 그대로다.
+          above50: null,
           areas, sensitivity: null,
           flags: ratioTrack?.status === 'plan' ? ['plan-formula'] : [],
           blockers: [], unit: 'pct',
@@ -1829,7 +1852,8 @@
     const gap = layer.pctEq;
     const estimateBand = bandOf(gap, VERDICT_BANDS);
     // 70%컷은 보장선이 아니다 — 50% 지점을 넘지 못하면 '안정'을 '적정'으로 내린다.
-    const band = estimateBand?.key === 'safe' && layer.above50 === false
+    // 이 단서는 **환산점수**를 말한다(§3) — 눈금이 환산점수인 L1에서만 건다. L2·L3은 띠 표 그대로다.
+    const band = layer.level === 'L1' && estimateBand?.key === 'safe' && layer.above50 === false
       ? VERDICT_BANDS.find((row) => row.key === 'fit')
       : estimateBand;
     const gapRange = isNumber(layer.gapMin) && isNumber(layer.gapMax) && (layer.gapMin !== gap || layer.gapMax !== gap)
@@ -1897,8 +1921,8 @@
         }
         : {
           score: layer.myIndex ? layer.myIndex.value : null,
-          min: layer.myIndex ? layer.myIndex.value : null,
-          max: layer.myIndex ? layer.myIndex.value : null,
+          min: layer.myIndex ? (layer.myIndexMin ?? layer.myIndex.value) : null,
+          max: layer.myIndex ? (layer.myIndexMax ?? layer.myIndex.value) : null,
           parts: layer.myIndex ? layer.myIndex.parts : [], adjustments: [], assumptions: [], unit: 'pct',
         },
       gapDetail: {

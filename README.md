@@ -196,7 +196,10 @@ source/conv-2026.json    # 탐구 변환표준점수 — 입학처 공개 표와
 source/anomalies.json    # 생성물 — scripts/anomalies.mjs가 씁니다(계열 중앙값·이전 연도 이력에서 크게 떨어진 컷)
 
 npm run anomalies # → source/anomalies.json (build가 먼저 돌립니다)
-npm run build   # source/*.json → assets/data.js
+npm run rules   # → source/rules-2026.json (조각난 요강 산식을 합칩니다)
+npm run verify  # → source/formula-check.json (어디가 공시 환산점수로 산식을 검산합니다)
+npm run build   # rules → verify → anomalies → assets/data.js
+npm run report  # → docs/MODEL-REPORT.md (옛 모델과 v3의 판정 차이)
 npm test        # 엔진·데이터 불변식·렌더러 스모크 (node --test, 의존성 없음)
 ```
 
@@ -303,6 +306,7 @@ docs/FRAME.md       화면 틀. 여기 없는 패턴은 만들지 않습니다.
 docs/MODEL.md       판정 계약(층위·산식·검산·결과 객체). 계산과 화면이 어긋나면 이 문서가 이깁니다.
 docs/ACCURACY.md    정확도 정량 분석 (생성물 — scripts/accuracy-report.mjs가 씁니다)
 docs/AUDIT.md       독립 검수 기록 (생성물 — scripts/audit-report.mjs가 source/audit.json에서 씁니다)
+docs/MODEL-REPORT.md 옛 모델(평균 백분위)과 v3의 판정 차이 (생성물 — scripts/model-report.mjs가 씁니다)
 ```
 
 배포는 `main`에 push하면 GitHub Actions가 테스트를 돌린 뒤 GitHub Pages로 올립니다.

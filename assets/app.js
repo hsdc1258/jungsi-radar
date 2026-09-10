@@ -430,10 +430,19 @@
     }
     const parts = [];
     for (const [key, short] of Object.entries(AREA_SHORT)) {
-      const factor = track?.areas?.[key]?.factor;
-      if (typeof factor === 'number' && factor > 0 && key !== 'hist') parts.push(`${short}${factor}`);
+      // 2027 시행계획 트랙은 반영점수 대신 **반영비율**(percent)만 갖고 있다 — 그 숫자를 그대로 적는다.
+      const value = track?.areas?.[key]?.factor ?? track?.weights?.[key];
+      if (typeof value === 'number' && value > 0 && key !== 'hist') parts.push(`${short}${value}`);
     }
     return parts.join(' ');
+  };
+  // L2가 실제로 쓴 반영비율 트랙. 엔진이 2027 시행계획(DATA.rules)에서 고른 것이라
+  // 학년도가 비어 있는 apply.formula 대신 이 표에서 이름으로 다시 찾는다.
+  const ratioTrackOf = (universityId, trackName) => {
+    const rule = DATA.rules?.[universityId] || null;
+    if (!rule || !trackName) return null;
+    const track = (rule.tracks || []).find((row) => row.name === trackName) || null;
+    return track ? { track, year: rule.year ?? null, status: rule.status || 'plan' } : null;
   };
   const metricText = (track) => {
     const seen = [];
@@ -1586,13 +1595,26 @@
       const track = modelTrackOf(university.id, formula);
       const check = formulaCheckOf(university.id, formula.track);
       add(label, join([
-        `${formula.year}${formula.status === 'plan' ? ' 시행계획' : ' 요강'}`,
+        formula.year ? `${formula.year}${formula.status === 'plan' ? ' 시행계획' : ' 요강'}` : null,
         ratioText(track) || formula.track,
         metricText(track),
         CHECK_TEXT[check?.status || 'unchecked'],
       ]));
     };
-    formulaRow(apply.formula, '산식');
+    // L2는 산식이 아니라 **반영비율**로 판정한 층위다 (docs/MODEL.md §3). 요강 학년도·활용지표·검산은
+    // 환산점수 눈금(L1)에서만 뜻이 있으므로 적지 않고, 시행계획의 비율만 적는다. 비율도 없으면 행을 뺀다.
+    const ratioRow = (formula, label) => {
+      const found = ratioTrackOf(university.id, formula?.track);
+      const text = found ? ratioText(found.track) : '';
+      if (!text) return;
+      add(label, join([
+        found.year ? `${found.year}${found.status === 'final' ? ' 요강' : ' 시행계획'}` : null,
+        text,
+        '반영비율',
+      ]));
+    };
+    if (target.level === 'L2') ratioRow(apply.formula, '산식');
+    else formulaRow(apply.formula, '산식');
     if (target.basisChanged && target.cut2027) {
       formulaRow({ year: 2027, status: target.cut2027.status, track: target.cut2027.track }, '산식');
     }

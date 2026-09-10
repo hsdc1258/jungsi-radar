@@ -6,8 +6,10 @@
   "description": "수능 백분위·등급으로 서울 주요 대학 정시 지원선을 진단하는 정적 사이트",
   "scripts": {
     "anomalies": "node scripts/anomalies.mjs",
-    "rules": "node scripts/merge-rules.mjs && node scripts/verify-formulas.mjs",
-    "build": "npm run rules && npm run anomalies && node scripts/build-data.mjs",
+    "rules": "node scripts/merge-rules.mjs",
+    "verify": "node scripts/verify-formulas.mjs",
+    "build": "npm run rules && npm run verify && npm run anomalies && node scripts/build-data.mjs",
+    "report": "node scripts/model-report.mjs",
     "bundle": "node scripts/bundle.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "npm run bundle && node scripts/shots.mjs",
