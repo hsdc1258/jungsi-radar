@@ -60,7 +60,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 200,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -146,7 +146,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "kind": "science",
         "rate": 0.05,
@@ -254,7 +254,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "kind": "science",
         "rate": 0.03,
@@ -335,7 +335,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 100,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -500,7 +500,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -594,7 +594,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -687,7 +687,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -773,7 +773,7 @@
        "count": 1,
        "aggregate": "sum",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -941,7 +941,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 125,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -1040,7 +1040,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 125,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -1134,7 +1134,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 125,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -1244,7 +1244,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 125,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -1355,7 +1355,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 125,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -1558,7 +1558,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 300,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -1659,7 +1659,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 300,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -1754,7 +1754,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -1849,7 +1849,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -2338,7 +2338,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 20,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -2426,7 +2426,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -2522,7 +2522,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 20,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -2612,7 +2612,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 2
@@ -3254,7 +3254,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3348,7 +3348,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3443,7 +3443,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3547,7 +3547,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3649,7 +3649,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3752,7 +3752,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3847,7 +3847,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -3944,7 +3944,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -4028,7 +4028,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -4184,7 +4184,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 20,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": {
         "kind": "maxConv",
         "multiplier": 1
@@ -4867,7 +4867,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 1.5,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -4941,7 +4941,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 1.5,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "kind": "science",
         "rate": 0.1,
@@ -5023,7 +5023,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 1,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5099,7 +5099,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 2,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5178,7 +5178,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 1.5,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5254,7 +5254,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 3,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5326,7 +5326,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 3.2,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5396,7 +5396,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 2,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -5466,7 +5466,7 @@
        "count": 2,
        "aggregate": "mean",
        "factor": 1.2,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -6395,7 +6395,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 1.75,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "kind": "social",
         "rate": 0.05,
@@ -6493,7 +6493,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 1.5,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -6567,7 +6567,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 1.75,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "kind": "science",
         "rate": 0.05,
@@ -6648,7 +6648,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 1.75,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "table",
@@ -8890,7 +8890,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },
@@ -8966,7 +8966,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },
@@ -9051,7 +9051,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },
@@ -9129,7 +9129,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },
@@ -9268,7 +9268,7 @@
        "count": 1,
        "aggregate": "sum",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },
@@ -9347,7 +9347,7 @@
        "count": 1,
        "aggregate": "sum",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "denominator": null,
        "note": "당해 연도 과목별 난이도를 고려해 변환표준점수에 가산점을 부여한다(표는 수능 뒤 공지)."
       },

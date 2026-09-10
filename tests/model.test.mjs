@@ -493,7 +493,11 @@ test('§1.2 확장 필드 — base·optional·pctToTotal·hist mode·채점 불�
   const without = scoreOf(ss, { kor: { std: 130 }, math: { std: 120 }, eng: 2, hist: 1, inq: [{ pct: 96, kind: 'science', subject: '화학Ⅰ' }, { pct: 92, kind: 'science', subject: '물리학Ⅰ' }] });
   // 숭실대 총점은 정수 자리에서 반올림하므로(roundTo 0) 두 값의 차는 4.7 ± 반올림 한 칸이다.
   assert.ok(Math.abs((withBonus.value - without.value) - (96 + 92) * 0.025) <= 1, `${without.value} → ${withBonus.value}`);
-  assert.ok(withBonus.flags.includes('approx-conversion'), '변환표 근사는 flags 에 남는다');
+  assert.ok(!withBonus.flags.includes('approx-conversion'), '숭실대는 대학이 낸 변환표를 쓴다');
+  // 변환표를 못 구한 대학(한국외대)은 근사라고 flags 에 남긴다.
+  const hufsTrack = trackIn('hufs', '서울 인문(어문·사범·자유전공)');
+  const hufsScore = scoreOf(hufsTrack, { kor: { std: 130 }, math: { std: 120 }, eng: 2, hist: 1, inq: [{ pct: 96, kind: 'social', subject: '생활과윤리' }, { pct: 92, kind: 'social', subject: '사회·문화' }] });
+  assert.ok(hufsScore.flags.includes('approx-conversion'), '변환표 근사는 flags 에 남는다');
 
   // 성균관대·한양대는 요강이 정규화 상수를 밝히지 않는다(factor·scale null) — 채점하지 않는다.
   for (const [id, name] of [['skku', '가군 인문(A/B)'], ['hanyang', '자연계']]) {

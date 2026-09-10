@@ -425,7 +425,8 @@ test('입학처 산식이 없는 대학은 배점 근사값을 내고 근사라�
     mode: 'std', kor: 131, math: 128, eng: '2', hist: '1',
     inq1Subject: '생활과윤리', inq1: 65, inq2Subject: '한국지리', inq2: 67,
   }, null, STD);
-  const raw = engine.universityRawScore(profile, RULES_2027.khu, '인문', { std: STD, conv: CONV, universityId: 'khu' });
+  // 한국외대는 입학처 산식도, 대학이 낸 탐구 변환표도 아직 못 구한 대학이다.
+  const raw = engine.universityRawScore(profile, RULES_2027.hufs, '인문', { std: STD, conv: CONV, universityId: 'hufs' });
   assert.equal(raw.basis, 'rules');
   assert.equal(raw.approx, true);
   assert.ok(raw.value > 0 && raw.value <= raw.max, `${raw.value} / ${raw.max}`);
@@ -437,13 +438,19 @@ test('입학처 산식이 없는 대학은 배점 근사값을 내고 근사라�
     inq1Subject: '생활과윤리', inq1: STD.subjects['탐구-생활과윤리'].maxStd,
     inq2Subject: '한국지리', inq2: STD.subjects['탐구-한국지리'].maxStd,
   }, null, STD);
-  const top = engine.universityRawScore(perfect, RULES_2027.khu, '인문', { std: STD, conv: CONV, universityId: 'khu' });
+  const top = engine.universityRawScore(perfect, RULES_2027.hufs, '인문', { std: STD, conv: CONV, universityId: 'hufs' });
   assert.ok(top.value > raw.value, '만점이 더 높아야 한다');
   assert.ok(top.value <= top.max + 0.01, `${top.value} > ${top.max}`);
 });
 
 test('탐구 변환표는 백분위가 오르면 값도 오른다', () => {
-  for (const [id, table] of [['approx', CONV.approx.table], ...Object.entries(CONV.universities).map(([key, row]) => [key, row.table])]) {
+  const entries = [['approx', CONV.approx.table]];
+  for (const [key, row] of Object.entries(CONV.universities)) {
+    if (row.table) entries.push([key, row.table]);
+    // 사탐·과탐 표를 따로 낸 대학은 표마다 확인한다.
+    for (const [kind, table] of Object.entries(row.tables || {})) entries.push([`${key}.${kind}`, table]);
+  }
+  for (const [id, table] of entries) {
     for (let pct = 0; pct < 100; pct += 1) {
       assert.ok(Number(table[String(pct + 1)]) >= Number(table[String(pct)]), `${id}: 백분위 ${pct} → ${pct + 1}`);
     }
@@ -622,7 +629,10 @@ test('공식 환산표가 없으면 공식 환산점수라고 말하지 않는�
   const soongsil = engine.universityRawScore(profile, data.rules.soongsil, '인문', { std: data.std, conv: data.conv, universityId: 'soongsil' });
   assert.equal(soongsil.basis, 'rules');
   assert.equal(soongsil.approx, true, '산출식을 못 구한 대학은 근사라고 말한다');
-  assert.equal(soongsil.conversion.kind, 'approx', '변환표준점수 표도 근사표다');
+  assert.equal(soongsil.conversion.kind, 'official', '숭실대는 대학이 낸 변환표준점수 표를 쓴다');
+  // 대학이 낸 변환표를 못 구한 대학은 통합 근사표라고 말한다.
+  const hufs = engine.universityRawScore(profile, data.rules.hufs, '인문', { std: data.std, conv: data.conv, universityId: 'hufs' });
+  assert.equal(hufs.conversion.kind, 'approx', '변환표를 못 구한 대학은 근사표다');
 });
 
 test('재현 입력(3·4·2·3·3·4)에서 숭실대에 근거 없는 적정이 다시 뜨지 않는다', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {

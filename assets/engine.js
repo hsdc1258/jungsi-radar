@@ -605,12 +605,16 @@
 
   // 탐구 변환표준점수 표. 입학처가 낸 표가 있으면 그것(kind 'official'), 없으면
   // 17개 사탐·과탐 도수분포를 합쳐 만든 통합 근사표(kind 'approx')를 쓴다.
+  // 사탐·과탐 표를 따로 낸 대학은 universities[id].tables = { social, science } 로 싣는다.
+  // 그 경우 table 은 대표 표(사탐 → 과탐 순으로 있는 것)라서 최고점 같은 대학 단위 값에 쓴다.
   function conversionTable(conv, universityId) {
     const official = conv?.universities?.[universityId];
-    if (official?.table) {
-      return { kind: 'official', table: official.table, name: official.name, note: official.note, source: official.source, formula: official.formula || null };
+    const split = official?.tables && typeof official.tables === 'object' ? official.tables : null;
+    const table = official?.table || split?.social || split?.science || null;
+    if (table) {
+      return { kind: 'official', table, tables: split, name: official.name, note: official.note, source: official.source, formula: official.formula || null };
     }
-    if (conv?.approx?.table) return { kind: 'approx', table: conv.approx.table, note: conv.approx.note, source: null, formula: null };
+    if (conv?.approx?.table) return { kind: 'approx', table: conv.approx.table, tables: null, note: conv.approx.note, source: null, formula: null };
     return null;
   }
   // 백분위 → 변환표준점수. 표는 백분위 0~100 한 칸마다 값이 있고, 사이는 선형 보간한다.
@@ -874,6 +878,8 @@
       ? { kind: ctx.convKind || 'approx', table: ctx.convTable, name: null, note: null, source: null }
       : conversionTable(ctx.conv, ctx.universityId ?? track.universityId ?? null);
     const convTable = conversion?.table || null;
+    // 사탐·과탐 표를 따로 낸 대학은 과목 종류에 맞는 표를 쓴다. 없으면 대표 표 하나뿐이다.
+    const convTableOf = (kind) => (kind && conversion?.tables?.[kind]) || convTable;
     const std = ctx.std || null;
     const maxConv = convTable ? convertedStd(100, convTable) : null;
     const roundTo = numOr(track.roundTo, numOr(track.round, 4));
@@ -890,8 +896,9 @@
       if (!spec) return 1;
       if (spec.kind === 'const') return numOr(spec.value, 1) || 1;
       if (spec.kind === 'maxConv') {
-        if (!isNumber(maxConv) || maxConv === 0) return null;
-        return maxConv * (numOr(spec.multiplier, 1) || 1);
+        const top = options.kind ? convertedStd(100, convTableOf(options.kind)) : maxConv;
+        if (!isNumber(top) || top === 0) return null;
+        return top * (numOr(spec.multiplier, 1) || 1);
       }
       if (spec.kind === 'maxStd') {
         const value = maxStdOfArea(std, spec.area || key, subjectKey, options);
@@ -933,7 +940,7 @@
       if (count <= 0) return null;
       const rows = inputs.inq || [];
       const valued = rows
-        .map((row) => ({ row, base: areaMetricValue(config, row, pick, convTable) }))
+        .map((row) => ({ row, base: areaMetricValue(config, row, pick, convTableOf(row.kind)) }))
         .filter((row) => row.base !== null);
       if (valued.length === 0) return null;
       const aggregate = config.aggregate || 'sum';
@@ -1230,8 +1237,9 @@
       }
       if (area === 'inq') {
         if (!conversion || rows.length === 0) return null;
+        const tableOf = (kind) => (kind && conversion.tables?.[kind]) || conversion.table;
         const top = Number(conversion.table['100']);
-        const each = rows.map((row) => convertedStd(row.pct, conversion.table));
+        const each = rows.map((row) => convertedStd(row.pct, tableOf(row.kind)));
         if (each.some((value) => value === null) || !Number.isFinite(top) || top <= 0) return null;
         return (each.reduce((sum, value) => sum + value, 0) / each.length) / top;
       }
