@@ -156,6 +156,9 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   const diagnose = view('diagnose');
   assert.match(diagnose, /지원 가능/u);
   assert.ok(/안정|적정|소신|상향|위험/u.test(diagnose), '판정 뱃지가 없다');
+  // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다 (FRAME §8.2).
+  assert.ok(!/컷 \d+\.\d ±/u.test(diagnose), '± 표기가 남아 있다');
+  assert.match(diagnose, /관측 \d+\.\d~\d+\.\d/u);
   const target = view('target');
   assert.match(target, /필요한 상승|정시 결과가 없습니다/u);
   const rules = view('rules');
@@ -487,11 +490,13 @@ test('등급만 넣으면 진단 화면이 추정 뱃지와 가정값·구간을
   assert.ok(!/보류\s*\d+곳/u.test(text), '등급 입력에 보류 묶음이 남아 있다');
   assert.match(text, /추정/u);
   // 부제는 값만 — 가정값과 구간이 숫자로만 실린다.
-  assert.match(text, /가정 78\.2/u);
-  assert.match(text, /구간 71\.3~84\.0/u);
+  // 부제는 한 줄 — 구간은 가정값 괄호로 붙는다.
+  assert.match(text, /가정 78\.2 \(71\.3~84\.0\)/u);
+  assert.ok(!/·\s*구간 71\.3~84\.0/u.test(text), '구간이 따로 떨어진 조각으로 남아 있다');
   // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다.
   assert.ok(!/컷 \d+\.\d ±/u.test(text), '± 표기가 남아 있다');
-  assert.match(text, /관측 \d+\.\d~\d+\.\d/u);
+  // 추정 행에는 컷의 연도 관측 범위를 적지 않는다 — 내 구간이 훨씬 넓어 줄만 밀린다.
+  assert.ok(!/관측 \d+\.\d~\d+\.\d/u.test(text), '추정 행에 관측 범위가 남아 있다');
   // 판정 셀렉트에는 보류·기준 불일치가 그대로 남는다(성적이 비면 쓰인다).
   assert.match(text, /기준 불일치/u);
 });
@@ -506,8 +511,7 @@ test('등급 입력의 목표 화면은 구간 하한·상한의 판정을 한 �
   assert.ok(row, '숭실대 사회복지학부 행이 없다');
   row.dispatch('click');
   const text = panel.text;
-  assert.match(text, /가정 78\.2/u);
-  assert.match(text, /구간 71\.3~84\.0/u);
+  assert.match(text, /가정 78\.2 \(71\.3~84\.0\)/u);
   assert.match(text, /구간 하한 위험 · 상한 적정/u);
   assert.match(text, /추정/u);
   assert.ok(!/판정 보류/u.test(text), '등급 입력에 보류 카드가 남아 있다');

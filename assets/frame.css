@@ -375,6 +375,25 @@ button.jr-row {
   gap: 6px;
   align-items: center;
 }
+/* 부제를 뱃지 아래 행 전체 폭으로 까는 행. 값이 넷을 넘어도 375px에서 한 줄이다. */
+.jr-row--stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+}
+.jr-row-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.jr-row-head > * {
+  min-width: 0;
+}
+.jr-row--stack .seed-list-item__detail {
+  display: block;
+}
 .jr-gap {
   min-width: 3.2em;
   text-align: right;

@@ -222,21 +222,25 @@
   });
 
   // list-item 한 줄. suffix에는 뱃지·버튼이 들어간다.
-  const listItem = ({ title, detail, suffix, onclick, prefix, attrs = {} }) => {
+  // stack: 부제를 뱃지 아래 **행 전체 폭**으로 깐다. 값이 넷을 넘는 진단 목록에서
+  // 375px 한 줄에 들어가게 하려는 것이다 — 부제를 줄이지 않고 자리를 넓힌다 (FRAME §8.1).
+  const listItem = ({ title, detail, suffix, onclick, prefix, attrs = {}, stack = false }) => {
     const tag = onclick ? 'button' : 'div';
-    const node = el(tag, {
-      class: 'seed-list-item__root jr-row',
-      type: onclick ? 'button' : null,
-      onclick,
-      ...attrs,
-    }, [
+    const detailNode = detail ? el('span', { class: 'seed-list-item__detail', text: detail }) : null;
+    const head = [
       prefix ? el('span', { class: 'seed-list-item__prefix' }, [prefix]) : null,
       el('span', { class: 'seed-list-item__content' }, [
         el('span', { class: 'seed-list-item__title', text: title }),
-        detail ? el('span', { class: 'seed-list-item__detail', text: detail }) : null,
-      ]),
+        stack ? null : detailNode,
+      ].filter(Boolean)),
       suffix ? el('span', { class: 'seed-list-item__suffix' }, [].concat(suffix)) : null,
-    ]);
+    ].filter(Boolean);
+    const node = el(tag, {
+      class: `seed-list-item__root jr-row${stack ? ' jr-row--stack' : ''}`,
+      type: onclick ? 'button' : null,
+      onclick,
+      ...attrs,
+    }, stack ? [el('span', { class: 'jr-row-head' }, head), detailNode].filter(Boolean) : head);
     return node;
   };
 
@@ -333,6 +337,11 @@
     if (range && range.years?.length > 1 && range.max > range.min) return `${base} · 관측 ${fmt(range.min, 1)}~${fmt(range.max, 1)}`;
     return base;
   };
+
+  // 등급 입력의 가정값과 구간. 부제 한 줄에 들어가도록 구간은 괄호로 붙인다 (FRAME §8.1).
+  const mineWithRange = (result) => (result.bounds
+    ? `가정 ${fmt(result.mine, 1)} (${fmt(result.bounds.min, 1)}~${fmt(result.bounds.max, 1)})`
+    : `가정 ${fmt(result.mine, 1)}`);
 
   const saveScores = () => writeStore(STORE.scores, state.scores);
   // 더 보기로 늘린 개수(limit)는 저장하지 않는다 — 새로고침했더니 목록이 수백 줄인 일을 막는다.
@@ -939,14 +948,17 @@
         ? result.hold.reason
         : result.status === 'blocked'
           ? result.score.blockers[0]
-          : [spreadText(result),
-            // 등급 입력은 구간 중앙 백분위를 가정값으로 쓴다 — 값과 구간만 적는다.
-            result.estimated ? `가정 ${fmt(result.mine, 1)}` : `내 ${fmt(result.mine, 1)}`,
-            result.estimated && result.bounds ? `구간 ${fmt(result.bounds.min, 1)}~${fmt(result.bounds.max, 1)}` : null,
+          // 등급 입력은 구간 중앙 백분위를 가정값으로 쓴다 — 구간은 괄호로 붙여 한 조각으로 둔다.
+          // 추정 행에서는 컷의 연도 관측 범위를 빼고 내 구간만 남긴다: 등급 구간이 훨씬 넓어
+          // 두 범위를 나란히 적으면 좁은 폭에서 줄만 밀린다(관측 범위는 '기준 숫자'에 그대로 있다).
+          : [result.estimated ? `컷 ${fmt(result.cut.value, 1)}` : spreadText(result),
+            result.estimated ? mineWithRange(result) : `내 ${fmt(result.mine, 1)}`,
             result.group ? `${result.group}군` : null, basisShort(row.universityId)].filter(Boolean).join(' · ');
       return listItem({
         title: `${row.universityName} ${deptLabel(row.dept.name)}`,
         detail,
+        // 부제가 뱃지 아래 행 전체 폭을 쓴다 — 값을 줄이지 않고 한 줄에 담는다.
+        stack: true,
         suffix: [
           // 보류·기준 불일치에는 차이 숫자를 적지 않는다 — 판정한 것처럼 보인다.
           el('span', { class: 'jr-gap num', text: result.status === 'ok' || result.status === 'blocked' ? signed(result.gap, 1) : '—' }),
@@ -1096,7 +1108,7 @@
     // 판정 카드: 큰 숫자 하나 + 뱃지 하나 + 값만 한 줄 (FRAME §8.2).
     const held = target.status === 'hold';
     const mineLine = target.estimated
-      ? `가정 ${fmt(target.mine, 1)}${target.bounds ? ` · 구간 ${fmt(target.bounds.min, 1)}~${fmt(target.bounds.max, 1)}` : ''}`
+      ? mineWithRange(target)
       : `내 ${target.defLabel === ENGINE.CUT_DEFS['ksi-mean'].label ? '국·수·탐' : '비교값'} ${fmt(target.mine, 1)}`;
     const verdict = el('div', { class: 'jr-verdict' }, [
       el('p', { class: 'jr-verdict-number', text: held ? '—' : signed(target.gap, 1) }),
