@@ -158,6 +158,9 @@
     if (SOCIAL_SUBJECTS.includes(subject)) return 'social';
     return null;
   };
+  const INQ_KIND_NAME = Object.freeze({ social: '사탐', science: '과탐', vocational: '직탐' });
+  // 탐구 한 과목의 이름표. 과목을 모르고 **종류만** 아는 성적표(어디가 70% 지점 학생)도 있다.
+  const inquiryLabel = (row) => `탐구 ${row?.subject || INQ_KIND_NAME[row?.kind] || ''}`.trim();
 
   // 화면 입력(문자열 섞임)을 정규화한 프로필로 만든다. 비어 있는 영역은 null이다.
   // scales는 원점수 입력을 백분위로 바꿀 때만 필요하다 (scales.exams[year].subjects[key].grades).
@@ -208,10 +211,15 @@
     const inquiries = [];
     for (const slot of ['inq1', 'inq2']) {
       const subject = source[`${slot}Subject`];
-      const kind = inquiryKind(subject);
-      const pct = kind ? relative(source[slot], `탐구-${subject}`, `탐구-${subject}`) : null;
+      // 과목을 알면 그 과목으로, **종류만** 알면(어디가 70% 지점 학생 성적표) 종류로 받는다.
+      // 종류만 아는 성적은 되읽기가 그 종류 과목 전체 구간이고(§1.3), 과목이 정해져야 붙는
+      // 가산(미적분·기하 등)은 붙지 않는다.
+      const named = inquiryKind(subject) ? subject : null;
+      const kind = named ? inquiryKind(named) : (INQ_KIND_ALIAS[String(source[`${slot}Kind`] || '')] || null);
+      const stdKey = named ? `탐구-${named}` : kind;
+      const pct = kind ? relative(source[slot], `탐구-${named}`, stdKey) : null;
       if (kind && pct !== null) {
-        inquiries.push({ slot, subject, kind, pct, std: mode === 'std' ? toNumber(source[slot]) : null, read: stdReads[`탐구-${subject}`] || null });
+        inquiries.push({ slot, subject: named, kind, pct, std: mode === 'std' ? toNumber(source[slot]) : null, read: stdReads[stdKey] || null });
       }
     }
     const gpa = toNumber(source.gpa);
@@ -359,7 +367,7 @@
       };
       say('국어', profile.kor?.pct);
       if (scale !== 'kor-inq') say('수학', profile.math?.pct);
-      for (const row of area.rows.slice(0, scale === 'ksi1' ? 1 : 2)) say(`탐구 ${row.subject}`, row.pct);
+      for (const row of area.rows.slice(0, scale === 'ksi1' ? 1 : 2)) say(inquiryLabel(row), row.pct);
     } else if (mode === 'raw') {
       assumptions.push('원점수 → 백분위 추정');
     }
@@ -1183,7 +1191,7 @@
       math: spanOf('math', profile?.math),
       inq: rows.map((row) => ({
         kind: row.kind, subject: row.subject,
-        std: best ? (std?.subjects?.[`탐구-${row.subject}`]?.maxStd ?? null) : (isNumber(row.std) ? row.std : null),
+        std: best ? (maxStdOfArea(std, 'inq', row.subject ? `탐구-${row.subject}` : null, { kind: row.kind }) ?? null) : (isNumber(row.std) ? row.std : null),
         pct: best ? 100 : row.pct,
       })),
       eng: { grade: best ? 1 : profile?.eng?.grade ?? null },
@@ -1529,7 +1537,8 @@
     return {
       kor: { ...span('국어', profile.kor?.pct, profile.kor?.std, 'kor'), conv: conv(profile.kor?.conv) },
       math: { ...span('수학', profile.math?.pct, profile.math?.std, 'math'), conv: conv(profile.math?.conv) },
-      inq: rows.map((row) => ({ ...span(`탐구-${row.subject}`, row.pct, row.std, row.slot), kind: row.kind, subject: row.subject, conv: conv(row.conv) })),
+      // 과목을 모르는 성적은 그 종류 과목 전체에서 되읽는다(§1.3) — studentFormulaInputs 와 같은 길이다.
+      inq: rows.map((row) => ({ ...span(row.subject ? `탐구-${row.subject}` : (row.kind || 'inq'), row.pct, row.std, row.slot), kind: row.kind, subject: row.subject, conv: conv(row.conv) })),
       eng: { grade: profile.eng?.grade ?? null },
       hist: { grade: profile.hist?.grade ?? null },
       mathElective: profile.math?.elective || null,
@@ -1547,7 +1556,7 @@
     if (!areas || areas.inq) {
       const rows = [...(profile.inquiries || [])].sort((left, right) => right.pct - left.pct);
       const count = areas ? Math.max(1, numOr(areas.inq?.count, 2)) : rows.length;
-      for (const row of rows.slice(0, count)) out.push({ key: row.slot, label: `탐구 ${row.subject}`, current: row.pct });
+      for (const row of rows.slice(0, count)) out.push({ key: row.slot, label: inquiryLabel(row), current: row.pct });
     }
     return out;
   }
@@ -2449,7 +2458,7 @@
       push('kor', `국어(${profile.kor.elective})`, profile.kor.pct, weights.kor);
       push('math', `수학(${profile.math.elective})`, profile.math.pct, weights.math);
       const inquiryRows = [...profile.inquiries].sort((left, right) => right.pct - left.pct).slice(0, count);
-      for (const row of inquiryRows) push(row.slot, `탐구 ${row.subject}`, row.pct, (weights.inq || 0) / count);
+      for (const row of inquiryRows) push(row.slot, inquiryLabel(row), row.pct, (weights.inq || 0) / count);
       const share3 = rows.reduce((sum, row) => sum + row.share, 0);
       const uniform = need > 0 && share3 > 0 ? round(need / share3, 1) : 0;
       return finish('pct', need, rows, uniform, { ratioBasis: weights.basis || 'ratio' });
@@ -2464,7 +2473,7 @@
       { key: 'math', label: `수학(${profile.math.elective})`, current: profile.math.pct, share: shares.math, gainPerPct: shares.math },
     ];
     for (const row of [...profile.inquiries].sort((left, right) => right.pct - left.pct).slice(0, shares.inqUse)) {
-      rows.push({ key: row.slot, label: `탐구 ${row.subject}`, current: row.pct, share: shares.inq, gainPerPct: shares.inq });
+      rows.push({ key: row.slot, label: inquiryLabel(row), current: row.pct, share: shares.inq, gainPerPct: shares.inq });
     }
     // 세 영역을 같은 폭으로 올릴 때 필요한 상승폭(단순평균이므로 = need).
     return finish('pct', need, rows, need > 0 ? round(need, 1) : 0);

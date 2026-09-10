@@ -200,6 +200,7 @@ npm run rules   # → source/rules-2026.json (조각난 요강 산식을 합칩�
 npm run verify  # → source/formula-check.json (어디가 공시 환산점수로 산식을 검산합니다)
 npm run build   # rules → verify → anomalies → assets/data.js
 npm run report  # → docs/MODEL-REPORT.md (옛 모델과 v3의 판정 차이)
+npm run accuracy # → docs/ACCURACY-AUDIT.md (재현·자기 위치·교차 검수·흔들림 전수검사)
 npm test        # 엔진·데이터 불변식·렌더러 스모크 (node --test, 의존성 없음)
 ```
 
@@ -239,8 +240,16 @@ npm run e2e     # 성적 입력 → 진단 → 목표 → 반영 → 정보 전 
 트랙만 `verified`이고 **그 트랙만 환산 층위(L1)에 씁니다** — 지금 verified 43 · mismatch 83 ·
 unchecked 31 트랙(대조한 행 3,927개)입니다. 대학별 표는 `docs/AUDIT.md` §14에 있습니다.
 
+`docs/ACCURACY-AUDIT.md`(`npm run accuracy`)는 **전수검사**입니다(`docs/MODEL.md` §9) — 어디가 행
+전부와 모집단위 1,978곳 전부에 네 가지 잣대를 댑니다. **A 재현**(공시 환산점수를 되살리는가) ·
+**B 자기 위치**(그 모집단위 70% 지점 학생의 성적표를 사용자 입력처럼 넣으면 제자리에 서는가) ·
+**C 교차 검수**(서로 다른 대학·층위·계열의 실제 70% 학생 성적표 여섯 벌을 전 모집단위에) ·
+**D 흔들림**(컷이 ±0.5·±1.0 움직일 때 띠가 바뀌는 비율, 층위별). 실제 합격 여부 자료가 없으므로
+합격 확률 숫자는 만들지 않습니다.
+
 ```
 node scripts/accuracy-report.mjs   # docs/ACCURACY.md 다시 쓰기
+npm run accuracy                   # docs/ACCURACY-AUDIT.md 다시 쓰기
 npm run verify                     # source/formula-check.json 다시 쓰기
 npm run audit                      # docs/AUDIT.md 의 §14 산식 검산 절만 다시 쓰기
 npm run report                     # docs/MODEL-REPORT.md (v2 → v3 판정 변화) 다시 쓰기
