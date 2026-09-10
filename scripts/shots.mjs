@@ -24,6 +24,11 @@ const STD_SCORES = {
   eng: '2', hist: '1', inq1Subject: '생활과윤리', inq1: '65', inq2Subject: '한국지리', inq2: '67', gpa: '',
 };
 const FAV_UNIVERSITIES = ['khu', 'cau', 'konkuk'];
+// 등급 입력. 입력 칸 옆 환산값이 좁은 폭에서 줄을 밀지 않는지 함께 본다.
+const GRADE_SCORES = {
+  mode: 'grade', korElective: '언어와매체', kor: '2', mathElective: '미적분', math: '1',
+  eng: '2', hist: '1', inq1Subject: '사회문화', inq1: '3', inq2Subject: '생활과윤리', inq2: '3', gpa: '2.1',
+};
 
 const SEED_CDN = 'https://cdn.jsdelivr.net/npm/@seed-design/css@2.7.0/all.min.css';
 mkdirSync(OUT, { recursive: true });
@@ -165,6 +170,24 @@ try {
     await page.close();
   }
 
+  // 등급 모드. 입력 칸 옆 환산값(작은 회색 숫자)이 들어간 성적 화면을 좁은 폭에서 본다.
+  for (const width of [320, 375]) {
+    const page = await browser.newPage({ viewport: { width, height: 812 }, colorScheme: 'light' });
+    const tag = `등급모드/${width}px`;
+    watch(page, tag);
+    await page.route(SEED_CDN, (route) => route.fulfill({ status: 200, contentType: 'text/css', body: seedCss }));
+    await page.addInitScript((scores) => {
+      localStorage.setItem('jr.scores', JSON.stringify(scores));
+      localStorage.setItem('jr.theme', JSON.stringify('light-only'));
+    }, GRADE_SCORES);
+    await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
+    await page.waitForSelector('#panel .seed-segmented-control__root');
+    const notes = await page.evaluate(() => document.querySelectorAll('.jr-input-note').length);
+    if (notes < 4) problems.push(`${tag}: 환산값이 ${notes}개뿐이다`);
+    await auditPage(page, tag, { shots: width === 375, prefix: 'grade-' });
+    await page.close();
+  }
+
   // 라인·대학 체크 목록. 칩을 눌러 펼친 상태를 좁은 폭·넓은 폭에서 한 번씩 본다.
   for (const width of [320, 375, 1280]) {
     for (const theme of ['light', 'dark']) {
@@ -241,5 +264,5 @@ try {
   web.kill();
 }
 
-console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 체크목록 6판 + 번들 4판 통과 (${OUT})`);
+console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 등급모드 2판 + 체크목록 6판 + 번들 4판 통과 (${OUT})`);
 process.exit(problems.length ? 1 : 0);
