@@ -1070,11 +1070,12 @@
       let rows = 0;
       let fixed = 0;
       for (const dept of university.departments) {
-        for (const row of Object.values(dept.jeongsi || {})) {
-          if (row.metric !== 'pct' || typeof row.cut70 !== 'number') continue;
-          rows += 1;
-          if (!Number.isInteger(row.cut70)) fixed += 1;
-        }
+        // 판정에 가장 크게 걸리는 최신 연도 컷만 센다.
+        const year = Object.keys(dept.jeongsi || {}).sort().at(-1);
+        const row = year ? dept.jeongsi[year] : null;
+        if (!row || row.metric !== 'pct' || typeof row.cut70 !== 'number') continue;
+        rows += 1;
+        if (!Number.isInteger(row.cut70)) fixed += 1;
       }
       if (rows === 0) continue;
       total += rows;
@@ -1144,7 +1145,7 @@
       ]),
       accordion(`어디가 값의 정밀도 — 아직 정수뿐인 대학 ${precision.integerOnly.length}곳`, [
         muted('우리가 쓰는 어디가 70%컷은 집계 페이지가 정수로만 싣습니다. 대학이 낸 원값은 소수 둘째 자리까지 있어(경희대 의예 98.95 등) 값이 여러 점 달라지기도 합니다.'),
-        muted(`지금 정시 컷 ${precision.total}곳 가운데 ${precision.exact}곳을 대학 공식 표의 원값으로 바꿨습니다. 나머지 ${precision.total - precision.exact}곳은 정수 그대로라 판정이 한 칸 옮겨 갈 수 있습니다.`),
+        muted(`가장 최근 연도 정시 컷 ${precision.total}곳 가운데 ${precision.exact}곳이 소수까지 있는 원값입니다. 나머지 ${precision.total - precision.exact}곳은 정수 그대로라 판정이 한 칸 옮겨 갈 수 있습니다.`),
         el('p', { class: 'jr-muted', text: '아래 대학은 아직 한 모집단위도 원값으로 바꾸지 못했습니다.' }),
         precision.integerOnly.length > 0 ? muted(precision.integerOnly.join(' · ')) : muted('없음'),
         precision.partial.length > 0 ? el('div', {}, [
