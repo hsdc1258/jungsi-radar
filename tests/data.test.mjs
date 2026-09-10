@@ -391,8 +391,9 @@ test('실기 없이 수능으로 뽑는 예체능은 practical 이 false 다', (
   }
 });
 
-test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서로 맞는다', () => {
-  const kinds = new Set(['punk', 'error', 'practical', 'unverified', 'normal']);
+test('이상치는 네 분류 중 하나이고 계열 차·이력 차가 서로 맞는다', () => {
+  // docs/MODEL.md §6 — 오류·펑크·실기·판단 불가 넷뿐이다. 'unverified'·'normal'은 없앴다.
+  const kinds = new Set(['punk', 'error', 'practical', 'undetermined']);
   let count = 0;
   let priorSeen = 0;
   for (const university of DATA.universities) {
@@ -403,7 +404,8 @@ test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서�
       const { kind, gap, median: center, mad, priorMedian, priorGap, basis } = dept.anomaly;
       assert.ok(kinds.has(kind), `${where}: ${kind}`);
       const value = dept.jeongsi?.['2026']?.cut70;
-      assert.ok(isNumber(value), `${where}: 2026 컷 없음`);
+      // 환산점수로만 공개된 행도 검사 대상이다 — 둘 중 하나는 있어야 한다.
+      assert.ok(isNumber(value) || isNumber(dept.anomaly.score70), `${where}: 2026 컷 없음`);
       // 계열 기준은 묶음이 셋 이상일 때만 있다. 있으면 차와 문턱이 맞아야 한다.
       if (basis === 'group' || basis === 'both') {
         assert.ok(isNumber(gap) && isNumber(center) && isNumber(mad), where);
@@ -417,9 +419,8 @@ test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서�
         assert.ok(Math.abs((priorMedian - value) - priorGap) <= 0.011, `${where}: 이력 차 ${priorGap}`);
         priorSeen += 1;
       }
-      // 판정(펑크·오류)은 이력이나 자기모순으로만 내린다 — 이력 없는 단일값은 미확인이다.
-      if (kind === 'punk') assert.ok(isNumber(priorMedian), `${where}: 이력 없이 펑크로 판정했다`);
-      if (kind === 'unverified') assert.equal(priorMedian, null, `${where}: 이력이 있는데 미확인이다`);
+      // 펑크는 이력(같은 선발 조건의 전년)이 있어야만 부른다 — 단일 저값은 판단 불가다.
+      if (kind === 'punk') assert.ok(isNumber(priorMedian) || isNumber(dept.anomaly.score70), `${where}: 이력 없이 펑크로 판정했다`);
     }
   }
   assert.ok(count > 0, '이상치 후보가 하나도 없다');

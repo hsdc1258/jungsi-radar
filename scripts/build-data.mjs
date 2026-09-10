@@ -17,6 +17,9 @@ const SOURCE = path.join(ROOT, 'source');
 const OUTPUT = path.join(ROOT, 'assets/data.js');
 
 const read = (file) => JSON.parse(readFileSync(path.join(SOURCE, file), 'utf8'));
+// 아직 만들어지지 않은 소스는 없는 채로 둔다 — 산식(rules-2026)·검산(formula-check)이 없으면
+// 판정이 L3(정의별 백분위 비교)에서 나올 뿐, 빌드는 그대로 끝난다 (docs/MODEL.md §3).
+const readOptional = (file) => (existsSync(path.join(SOURCE, file)) ? read(file) : null);
 
 // 대학이 실제로 반영하는 지표(rules[].basis 한 줄)를 화면이 쓸 수 있는 짧은 라벨로 바꾼다.
 //   metric  'std' 표준점수 · 'pct' 백분위 · 'grade' 등급 배점 · null 미확인
@@ -345,6 +348,12 @@ function buildUniversities(adiga, rules, anomalies = new Map()) {
               fillRate: row.fillRate ?? (typeof fill === 'number' && typeof quota === 'number' && quota > 0
                 ? Math.round((fill / quota) * 1000) / 10 : null),
               lastWait: row.lastWait ?? null,
+              // docs/MODEL.md §1.1 — 환산점수와 그 지점 학생 한 명의 성적표. 어디가 원문 그대로다.
+              score: row.score ?? null,
+              student: row.student ?? null,
+              // 집계 방식. 어디가 각주 정의(환산점수 순 정렬)가 아니면 'unknown' 이고,
+              // unknown 인 행에는 정밀 판정(L1·L2)을 내리지 않는다.
+              aggregation: row.aggregation || (row.source === 'adiga-hakjum' ? 'adiga-score-rank' : 'unknown'),
               typeName: row.typeName || '', note: row.note || '', source: row.source, url: row.url,
               sourceGrade: row.sourceGrade || 'E',
             };
@@ -392,6 +401,8 @@ function readAnomalies() {
     `${row.id}::${row.name}`,
     {
       kind: row.kind, gap: row.gap, median: row.median, mad: row.mad,
+      // 왜 그렇게 분류했는가(docs/MODEL.md §6). 화면이 값만 그대로 적는다.
+      reasons: row.reasons || [], score70: row.score70 ?? null, score50: row.score50 ?? null,
       // 이 모집단위 자신의 이력. 판정(펑크·오류)은 계열이 아니라 이 값으로 내린다.
       priorMedian: row.priorMedian ?? null, priorGap: row.priorGap ?? null,
       priorCount: row.priorCount ?? 0, basis: row.basis || 'group',
@@ -424,6 +435,8 @@ export function buildData() {
   const scales = read('scales-2026.json');
   const std = read('std-2026.json');
   const conv = read('conv-2026.json');
+  const rules2026 = readOptional('rules-2026.json');
+  const formulaCheck = readOptional('formula-check.json');
   const universities = buildUniversities(adiga, rules, readAnomalies());
   // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
@@ -438,6 +451,10 @@ export function buildData() {
     lines: LINES,
     universities,
     rules: ruleMap,
+    // 2026학년도 산식(scripts/merge-rules.mjs)과 그 검산(scripts/verify-formulas.mjs).
+    // 없으면 null — 엔진이 L3로 내려간다.
+    rules2026,
+    formulaCheck,
     scales,
     std,
     conv,
