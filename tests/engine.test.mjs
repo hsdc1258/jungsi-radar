@@ -172,15 +172,15 @@ const DATA_FILE = 'assets/data.js';
 test('generated data.js exists, parses, and respects value ranges', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
   const data = load(DATA_FILE, 'IPSI_DATA');
   // 여자대학교(이화·숙명)를 뺀 뒤 수도권(인하·아주·인천·가천·경기·한양ERICA·한국항공)과
-  // 지방거점국립대 9곳을 더해 40곳이다.
-  assert.equal(data.universities.length, 40, 'university count');
-  assert.equal(Object.keys(data.rules).length, 40, 'rule count matches the university list');
+  // 지방거점국립대 9곳을 더해 40곳, 한국외대를 캠퍼스별로 갈라 41곳이다.
+  assert.equal(data.universities.length, 41, 'university count');
+  assert.equal(Object.keys(data.rules).length, 41, 'rule count matches the university list');
   const ids = new Set(data.universities.map((row) => row.id));
   for (const id of ['ewha', 'sookmyung']) {
     assert.ok(!ids.has(id), `여자대학교 ${id}는 생성물에 없어야 한다`);
     assert.ok(!(id in data.rules), `여자대학교 ${id}의 규칙도 생성물에 없어야 한다`);
   }
-  for (const id of ['inha', 'ajou', 'incheon', 'gachon', 'kyonggi', 'hanyang-erica', 'kau',
+  for (const id of ['inha', 'ajou', 'incheon', 'gachon', 'kyonggi', 'hanyang-erica', 'kau', 'hufs', 'hufs-global',
     'pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu']) assert.ok(ids.has(id), `${id}가 있어야 한다`);
   const lines = data.lines.map((row) => row.label);
   assert.ok(lines.includes('중경외시') && !lines.includes('중경외시이'), '중경외시');

@@ -28,12 +28,12 @@ export const LINES = [
   { label: '광명상가', ids: ['kw', 'mju', 'smu', 'catholic'] },
   { label: '한서삼', ids: ['hansung', 'skuniv', 'syu'] },
   { label: '인가경', ids: ['incheon', 'gachon', 'kyonggi'] },
-  { label: '경기·인천', ids: ['hanyang-erica', 'kau'] },
+  { label: '경기·인천', ids: ['hanyang-erica', 'kau', 'hufs-global'] },
   { label: '지거국', ids: ['pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu'] },
 ];
 const SHORT = {
-  snu: '서울대', yonsei: '연세대', korea: '고려대', sogang: '서강대', skku: '성균관대', hanyang: '한양대',
-  cau: '중앙대', khu: '경희대', hufs: '한국외대', uos: '서울시립대',
+  snu: '서울대', yonsei: '연세대', korea: '고려대', sogang: '서강대', skku: '성균관대', hanyang: '한양대 서울',
+  cau: '중앙대', khu: '경희대', hufs: '한국외대 서울', 'hufs-global': '한국외대 글로벌', uos: '서울시립대',
   konkuk: '건국대', dongguk: '동국대', hongik: '홍익대',
   kookmin: '국민대', soongsil: '숭실대', sejong: '세종대', dankook: '단국대',
   kw: '광운대', mju: '명지대', smu: '상명대', catholic: '가톨릭대',
@@ -85,7 +85,7 @@ function buildSeries(jeongsi, official) {
   const pctYears = Object.keys(jeongsi).filter((year) => jeongsi[year].metric === 'pct' && jeongsi[year].cut70 !== null).sort();
   const anchorYear = pctYears.at(-1) || null;
   for (const year of pctYears) {
-    series.push({ year, value: jeongsi[year].cut70, kind: '70%컷', basis: 'adiga', source: jeongsi[year].source, url: jeongsi[year].url });
+    series.push({ year, value: jeongsi[year].cut70, kind: jeongsi[year].kind || '70%컷', basis: jeongsi[year].basis || 'adiga', source: jeongsi[year].source, url: jeongsi[year].url });
   }
   const officialValue = (row) => (row && row.metric === 'pct' ? (row.cut70 ?? row.avg ?? null) : null);
   const anchorOfficial = anchorYear ? officialValue(official[anchorYear]) : null;
@@ -154,16 +154,26 @@ function buildUniversities(adiga, rules) {
       const departments = (source?.departments || [])
         .filter((dept) => Object.keys(dept.jeongsi || {}).length > 0)
         .map((dept) => {
-          const { track, ruleTrack } = classifyTrack(dept.name);
+          const guessed = classifyTrack(dept.name);
+          const track = guessed.track;
+          // 소스가 계열을 못박아 둔 모집단위(캠퍼스별 반영비율이 다른 한국외대)는 그 값을 쓴다.
+          const ruleTrack = dept.ruleTrack || guessed.ruleTrack;
           const jeongsi = {};
           for (const [year, row] of Object.entries(dept.jeongsi)) {
             if (year === 'alts') continue;
+            const quota = row.quota ?? null;
+            const fill = row.fill ?? null;
             jeongsi[year] = {
-              cut70: row.pct70 ?? null, cut50: row.pct50 ?? null, score70: row.score70 ?? null,
+              cut70: row.pct70 ?? null, cut50: row.pct50 ?? null, cut100: row.pct100 ?? null,
+              score70: row.score70 ?? null,
               metric: row.pct70 !== null && row.pct70 !== undefined ? 'pct' : 'score',
-              kind: '70%컷', basis: 'adiga',
-              group: row.group || null, quota: row.quota ?? null, rate: row.rate ?? null, fill: row.fill ?? null,
-              typeName: row.typeName || '', source: row.source, url: row.url,
+              kind: row.kind || '70%컷', basis: row.source === 'adiga-hakjum' ? 'adiga' : 'official',
+              group: row.group || null, quota, rate: row.rate ?? null, fill,
+              // 충원율은 대학이 낸 값을 그대로 쓰고, 없으면 추합 인원 ÷ 모집인원으로 만든다.
+              fillRate: row.fillRate ?? (typeof fill === 'number' && typeof quota === 'number' && quota > 0
+                ? Math.round((fill / quota) * 1000) / 10 : null),
+              lastWait: row.lastWait ?? null,
+              typeName: row.typeName || '', note: row.note || '', source: row.source, url: row.url,
             };
           }
           const official = dept.official || {};
@@ -175,7 +185,7 @@ function buildUniversities(adiga, rules) {
             }
             return out;
           };
-          return { name: dept.name, track, ruleTrack, jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong') };
+          return { name: dept.name, campus: dept.campus || null, track, ruleTrack, jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong') };
         })
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({

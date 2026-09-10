@@ -5,3 +5,4 @@ node_modules/
 _seed/work/
 scripts/source-parsers/official.json
 dist/
+__pycache__/

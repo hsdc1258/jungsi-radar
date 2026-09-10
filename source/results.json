@@ -79584,7 +79584,7 @@
  },
  {
   "id": "hufs",
-  "name": "한국외국어대학교",
+  "name": "한국외국어대학교(서울캠퍼스)",
   "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
   "departments": [
    {
@@ -79615,7 +79615,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "경제학부",
@@ -79645,37 +79647,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "국제금융학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 5.0,
-      "rate": 34.0,
-      "fill": 3.0,
-      "pct70": 83.0,
-      "pct50": 84.0,
-      "score70": 622.22,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 5.0,
-      "rate": 11.6,
-      "fill": 2.0,
-      "cut70": 5.45,
-      "cut50": 3.55,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "국제통상학과",
@@ -79705,7 +79679,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "국제학부",
@@ -79735,97 +79711,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "그리스・불가리아학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 14.17,
-      "fill": 3.0,
-      "pct70": 76.0,
-      "pct50": 75.0,
-      "score70": 612.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 5.0,
-      "rate": 14.4,
-      "fill": 0.0,
-      "cut70": 5.54,
-      "cut50": 5.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "글로벌스포츠산업학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 6.5,
-      "fill": 6.0,
-      "pct70": 82.0,
-      "pct50": 86.0,
-      "score70": 627.06,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 10.0,
-      "rate": 27.5,
-      "fill": 4.0,
-      "cut70": 3.37,
-      "cut50": 3.04,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "기후변화융합학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 18.0,
-      "rate": 5.0,
-      "fill": 13.0,
-      "pct70": 77.0,
-      "pct50": 77.0,
-      "score70": 622.3,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 9.67,
-      "fill": 4.0,
-      "cut70": 3.92,
-      "cut50": 3.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "네덜란드어과",
@@ -79855,7 +79743,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "노어과",
@@ -79885,7 +79775,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "독일어과",
@@ -79915,67 +79807,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "디지털콘텐츠학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 7.33,
-      "fill": 14.0,
-      "pct70": 76.0,
-      "pct50": 76.0,
-      "score70": 617.75,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 13.0,
-      "fill": 4.0,
-      "cut70": 3.95,
-      "cut50": 3.72,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "루마니아학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 11.29,
-      "fill": 1.0,
-      "pct70": 74.0,
-      "pct50": 74.0,
-      "score70": 607.34,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 9.33,
-      "fill": 7.0,
-      "cut70": 5.07,
-      "cut50": 4.99,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "말레이인도네시아어과",
@@ -80005,7 +79839,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "미디어커뮤니케이션학부",
@@ -80035,97 +79871,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "바이오메디컬공학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 6.8,
-      "fill": 6.0,
-      "pct70": 82.0,
-      "pct50": 82.0,
-      "score70": 629.22,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 8.0,
-      "rate": 11.63,
-      "fill": 6.0,
-      "cut70": 3.76,
-      "cut50": 3.32,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "반도체전자공학부(반도체공학전공)",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 4.7,
-      "fill": 5.0,
-      "pct70": 80.0,
-      "pct50": 80.0,
-      "score70": 628.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 8.78,
-      "fill": 7.0,
-      "cut70": 4.25,
-      "cut50": 3.58,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "반도체전자공학부(전자공학전공)",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 14.0,
-      "rate": 3.62,
-      "fill": 6.0,
-      "pct70": 77.0,
-      "pct50": 79.0,
-      "score70": 613.16,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 6.0,
-      "rate": 13.0,
-      "fill": 2.0,
-      "cut70": 5.03,
-      "cut50": 3.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "베트남어과",
@@ -80155,157 +79903,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "사학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 15.67,
-      "fill": 3.0,
-      "pct70": 75.0,
-      "pct50": 76.0,
-      "score70": 614.23,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 7.0,
-      "rate": 7.57,
-      "fill": 13.0,
-      "cut70": 4.31,
-      "cut50": 3.09,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "산업경영공학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 14.0,
-      "rate": 4.62,
-      "fill": 11.0,
-      "pct70": 76.0,
-      "pct50": 78.0,
-      "score70": 623.8,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 6.0,
-      "rate": 8.17,
-      "fill": 6.0,
-      "cut70": 4.36,
-      "cut50": 3.41,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "생명공학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 7.21,
-      "fill": 17.0,
-      "pct70": 79.0,
-      "pct50": 79.0,
-      "score70": 624.84,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 6.67,
-      "fill": 12.0,
-      "cut70": 2.95,
-      "cut50": 2.87,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "세르비아・크로아티아학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 7.29,
-      "fill": 2.0,
-      "pct70": 77.0,
-      "pct50": 79.0,
-      "score70": 613.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 9.83,
-      "fill": 1.0,
-      "cut70": 4.97,
-      "cut50": 4.77,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "수학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 11.0,
-      "rate": 7.0,
-      "fill": 7.0,
-      "pct70": 79.0,
-      "pct50": 78.0,
-      "score70": 623.24,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 6.5,
-      "fill": 8.0,
-      "cut70": 3.36,
-      "cut50": 3.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "스칸디나비아어과",
@@ -80335,7 +79935,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "스페인어과",
@@ -80365,7 +79967,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "아랍어과",
@@ -80395,67 +79999,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "아프리카학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 13.0,
-      "rate": 6.75,
-      "fill": 14.0,
-      "pct70": 76.0,
-      "pct50": 75.0,
-      "score70": 612.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 8.0,
-      "rate": 11.5,
-      "fill": 5.0,
-      "cut70": 5.81,
-      "cut50": 5.28,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "언어인지과학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 6.0,
-      "fill": 3.0,
-      "pct70": 81.0,
-      "pct50": 80.0,
-      "score70": 622.65,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 7.0,
-      "rate": 6.29,
-      "fill": 10.0,
-      "cut70": 3.88,
-      "cut50": 3.65,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "영미문학.문화학과",
@@ -80485,7 +80031,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "영어통번역학과",
@@ -80515,37 +80063,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "융합인재학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 42.0,
-      "rate": 6.21,
-      "fill": 56.0,
-      "pct70": 78.0,
-      "pct50": 77.0,
-      "score70": 613.17,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 18.0,
-      "rate": 10.72,
-      "fill": 18.0,
-      "cut70": 4.66,
-      "cut50": 4.28,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "융합일본지역학부",
@@ -80575,7 +80095,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "이탈리아어과",
@@ -80605,7 +80127,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "인도어과",
@@ -80635,7 +80159,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "일본언어문화학부",
@@ -80665,37 +80191,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "자유전공학부(글로벌)",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 66.0,
-      "rate": 7.06,
-      "fill": 91.0,
-      "pct70": 79.0,
-      "pct50": 82.0,
-      "score70": 620.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 43.0,
-      "rate": 9.09,
-      "fill": 59.0,
-      "cut70": 3.48,
-      "cut50": 3.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "자유전공학부(서울)",
@@ -80725,37 +80223,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "전자물리학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 7.78,
-      "fill": 14.0,
-      "pct70": 77.0,
-      "pct50": 75.0,
-      "score70": 621.69,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 5.83,
-      "fill": 6.0,
-      "cut70": 3.55,
-      "cut50": 3.41,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "정치외교학과",
@@ -80785,7 +80255,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "중국언어문화학부",
@@ -80815,7 +80287,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "중국외교통상학부",
@@ -80845,97 +80319,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "중앙아시아학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 9.67,
-      "fill": 9.0,
-      "pct70": 79.0,
-      "pct50": 77.0,
-      "score70": 612.52,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 5.0,
-      "rate": 14.0,
-      "fill": 2.0,
-      "cut70": 5.58,
-      "cut50": 5.4,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "철학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 6.86,
-      "fill": 7.0,
-      "pct70": 78.0,
-      "pct50": 81.0,
-      "score70": 615.36,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 7.0,
-      "rate": 5.86,
-      "fill": 5.0,
-      "cut70": 3.31,
-      "cut50": 3.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "체코・슬로바키아학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 7.71,
-      "fill": 8.0,
-      "pct70": 76.0,
-      "pct50": 80.0,
-      "score70": 613.19,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 9.17,
-      "fill": 5.0,
-      "cut70": 5.15,
-      "cut50": 5.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "태국학과",
@@ -80965,67 +80351,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "통계학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 9.67,
-      "fill": 16.0,
-      "pct70": 79.0,
-      "pct50": 76.0,
-      "score70": 626.73,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 6.0,
-      "rate": 8.83,
-      "fill": 3.0,
-      "cut70": 3.87,
-      "cut50": 3.7,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "투어리즘 & 웰니스학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 8.22,
-      "fill": 3.0,
-      "pct70": 76.0,
-      "pct50": 83.0,
-      "score70": 618.2,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 18.56,
-      "fill": 13.0,
-      "cut70": 5.34,
-      "cut50": 5.13,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "튀르키예・아제르바이잔학과",
@@ -81055,7 +80383,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "페르시아어・이란학과",
@@ -81085,7 +80415,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "포르투갈어과",
@@ -81115,37 +80447,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "폴란드학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 7.0,
-      "fill": 2.0,
-      "pct70": 79.0,
-      "pct50": 79.0,
-      "score70": 621.7,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 8.17,
-      "fill": 4.0,
-      "cut70": 5.17,
-      "cut50": 4.85,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "프랑스어학부",
@@ -81175,37 +80479,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "한국학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 5.0,
-      "rate": 7.0,
-      "fill": 5.0,
-      "pct70": 75.0,
-      "pct50": 78.0,
-      "score70": 615.98,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 4.0,
-      "rate": 15.0,
-      "fill": 5.0,
-      "cut70": 5.34,
-      "cut50": 5.0,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "행정학과",
@@ -81235,127 +80511,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "헝가리학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 5.86,
-      "fill": 0.0,
-      "pct70": 78.0,
-      "pct50": 76.0,
-      "score70": 611.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 8.0,
-      "fill": 4.0,
-      "cut70": 4.77,
-      "cut50": 4.28,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "화학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 14.0,
-      "rate": 10.23,
-      "fill": 16.0,
-      "pct70": 76.0,
-      "pct50": 74.0,
-      "score70": 619.8,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 6.0,
-      "fill": 7.0,
-      "cut70": 3.13,
-      "cut50": 2.96,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "환경학과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 5.5,
-      "fill": 15.0,
-      "pct70": 74.0,
-      "pct50": 79.0,
-      "score70": 622.26,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(서류형))",
-      "quota": 6.0,
-      "rate": 6.33,
-      "fill": 6.0,
-      "cut70": 3.19,
-      "cut50": 3.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "AI데이터융합학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 12.0,
-      "rate": 7.27,
-      "fill": 12.0,
-      "pct70": 79.0,
-      "pct50": 80.0,
-      "score70": 626.82,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 12.89,
-      "fill": 10.0,
-      "cut70": 4.73,
-      "cut50": 4.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "ELLT학과",
@@ -81385,67 +80543,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
-   },
-   {
-    "name": "Finance & AI융합학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 7.5,
-      "fill": 17.0,
-      "pct70": 77.0,
-      "pct50": 81.0,
-      "score70": 613.59,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
     },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 9.0,
-      "rate": 11.78,
-      "fill": 10.0,
-      "cut70": 4.7,
-      "cut50": 4.02,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
-   },
-   {
-    "name": "Global Business & Technology학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 7.8,
-      "fill": 7.0,
-      "pct70": 83.0,
-      "pct50": 81.0,
-      "score70": 619.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {
-     "2026": {
-      "typeName": "학생부종합(학생부종합전형(면접형))",
-      "quota": 13.0,
-      "rate": 12.31,
-      "fill": 12.0,
-      "cut70": 3.7,
-      "cut50": 3.56,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    }
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "Language & AI융합학부",
@@ -81475,7 +80575,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "Language & Diplomacy학부",
@@ -81505,7 +80607,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "Social Science & AI융합학부",
@@ -81535,7 +80639,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "몽골어과",
@@ -81565,7 +80671,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "영어교육과",
@@ -81595,7 +80703,1276 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "사회과학대학[통합모집]",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 31.0,
+      "rate": 5.23,
+      "fill": 26.0,
+      "pct70": 91.0,
+      "pct50": 89.0,
+      "score70": 646.63,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "상경대학[통합모집]",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 26.0,
+      "rate": 4.15,
+      "fill": 20.0,
+      "pct70": 89.0,
+      "pct50": 91.0,
+      "score70": 648.64,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "영어대학[통합모집]",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 37.0,
+      "rate": 4.3,
+      "fill": 16.0,
+      "pct70": 90.0,
+      "pct50": 90.0,
+      "score70": 649.65,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "일본학대학[통합모집]",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 16.0,
+      "rate": 4.13,
+      "fill": 5.0,
+      "pct70": 86.0,
+      "pct50": 90.0,
+      "score70": 648.46,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "중국학대학[통합모집]",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 21.0,
+      "rate": 3.86,
+      "fill": 2.0,
+      "pct70": 90.0,
+      "pct50": 84.0,
+      "score70": 648.19,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "특수외국어(유럽지역)계열",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 24.0,
+      "rate": 4.42,
+      "fill": 13.0,
+      "pct70": 91.0,
+      "pct50": 90.0,
+      "score70": 646.68,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "특수외국어(인도・아세안지역)계열",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 24.0,
+      "rate": 5.46,
+      "fill": 17.0,
+      "pct70": 89.0,
+      "pct50": 85.0,
+      "score70": 646.49,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "특수외국어(중동지역)계열",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 21.0,
+      "rate": 4.86,
+      "fill": 7.0,
+      "pct70": 89.0,
+      "pct50": 84.0,
+      "score70": 646.8,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "한국어교육과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 9.0,
+      "rate": 3.22,
+      "fill": 3.0,
+      "pct70": 90.0,
+      "pct50": 90.0,
+      "score70": 648.96,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "핵심외국어계열",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 54.0,
+      "rate": 3.78,
+      "fill": 23.0,
+      "pct70": 88.0,
+      "pct50": 89.0,
+      "score70": 647.76,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "Language & Trade학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 8.0,
+      "rate": 4.13,
+      "fill": 4.0,
+      "pct70": 90.0,
+      "pct50": 91.0,
+      "score70": 648.0,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {},
+    "campus": "서울캠퍼스",
+    "ruleTrack": "상경"
+   }
+  ],
+  "counts": {
+   "jeongsi": 88,
+   "gyogwa": 0,
+   "hakjong": 134
+  }
+ },
+ {
+  "id": "hufs-global",
+  "name": "한국외국어대학교(글로벌캠퍼스)",
+  "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+  "departments": [
+   {
+    "name": "국제금융학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 5.0,
+      "rate": 34.0,
+      "fill": 3.0,
+      "pct70": 83.0,
+      "pct50": 84.0,
+      "score70": 622.22,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 5.0,
+      "rate": 11.6,
+      "fill": 2.0,
+      "cut70": 5.45,
+      "cut50": 3.55,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "그리스・불가리아학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 6.0,
+      "rate": 14.17,
+      "fill": 3.0,
+      "pct70": 76.0,
+      "pct50": 75.0,
+      "score70": 612.27,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 5.0,
+      "rate": 14.4,
+      "fill": 0.0,
+      "cut70": 5.54,
+      "cut50": 5.31,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "글로벌스포츠산업학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 10.0,
+      "rate": 6.5,
+      "fill": 6.0,
+      "pct70": 82.0,
+      "pct50": 86.0,
+      "score70": 627.06,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 10.0,
+      "rate": 27.5,
+      "fill": 4.0,
+      "cut70": 3.37,
+      "cut50": 3.04,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "기후변화융합학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 18.0,
+      "rate": 5.0,
+      "fill": 13.0,
+      "pct70": 77.0,
+      "pct50": 77.0,
+      "score70": 622.3,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 9.67,
+      "fill": 4.0,
+      "cut70": 3.92,
+      "cut50": 3.62,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "디지털콘텐츠학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 9.0,
+      "rate": 7.33,
+      "fill": 14.0,
+      "pct70": 76.0,
+      "pct50": 76.0,
+      "score70": 617.75,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 13.0,
+      "fill": 4.0,
+      "cut70": 3.95,
+      "cut50": 3.72,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "루마니아학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 7.0,
+      "rate": 11.29,
+      "fill": 1.0,
+      "pct70": 74.0,
+      "pct50": 74.0,
+      "score70": 607.34,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 9.33,
+      "fill": 7.0,
+      "cut70": 5.07,
+      "cut50": 4.99,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "바이오메디컬공학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 10.0,
+      "rate": 6.8,
+      "fill": 6.0,
+      "pct70": 82.0,
+      "pct50": 82.0,
+      "score70": 629.22,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 8.0,
+      "rate": 11.63,
+      "fill": 6.0,
+      "cut70": 3.76,
+      "cut50": 3.32,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "반도체전자공학부(반도체공학전공)",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 10.0,
+      "rate": 4.7,
+      "fill": 5.0,
+      "pct70": 80.0,
+      "pct50": 80.0,
+      "score70": 628.74,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 8.78,
+      "fill": 7.0,
+      "cut70": 4.25,
+      "cut50": 3.58,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "반도체전자공학부(전자공학전공)",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 14.0,
+      "rate": 3.62,
+      "fill": 6.0,
+      "pct70": 77.0,
+      "pct50": 79.0,
+      "score70": 613.16,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 6.0,
+      "rate": 13.0,
+      "fill": 2.0,
+      "cut70": 5.03,
+      "cut50": 3.62,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "사학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 6.0,
+      "rate": 15.67,
+      "fill": 3.0,
+      "pct70": 75.0,
+      "pct50": 76.0,
+      "score70": 614.23,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 7.0,
+      "rate": 7.57,
+      "fill": 13.0,
+      "cut70": 4.31,
+      "cut50": 3.09,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "산업경영공학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 14.0,
+      "rate": 4.62,
+      "fill": 11.0,
+      "pct70": 76.0,
+      "pct50": 78.0,
+      "score70": 623.8,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 6.0,
+      "rate": 8.17,
+      "fill": 6.0,
+      "cut70": 4.36,
+      "cut50": 3.41,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "생명공학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 15.0,
+      "rate": 7.21,
+      "fill": 17.0,
+      "pct70": 79.0,
+      "pct50": 79.0,
+      "score70": 624.84,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 6.67,
+      "fill": 12.0,
+      "cut70": 2.95,
+      "cut50": 2.87,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "세르비아・크로아티아학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 7.0,
+      "rate": 7.29,
+      "fill": 2.0,
+      "pct70": 77.0,
+      "pct50": 79.0,
+      "score70": 613.08,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 9.83,
+      "fill": 1.0,
+      "cut70": 4.97,
+      "cut50": 4.77,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "수학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 11.0,
+      "rate": 7.0,
+      "fill": 7.0,
+      "pct70": 79.0,
+      "pct50": 78.0,
+      "score70": 623.24,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 6.5,
+      "fill": 8.0,
+      "cut70": 3.36,
+      "cut50": 3.27,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "아프리카학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 13.0,
+      "rate": 6.75,
+      "fill": 14.0,
+      "pct70": 76.0,
+      "pct50": 75.0,
+      "score70": 612.74,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 8.0,
+      "rate": 11.5,
+      "fill": 5.0,
+      "cut70": 5.81,
+      "cut50": 5.28,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "언어인지과학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 6.0,
+      "rate": 6.0,
+      "fill": 3.0,
+      "pct70": 81.0,
+      "pct50": 80.0,
+      "score70": 622.65,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 7.0,
+      "rate": 6.29,
+      "fill": 10.0,
+      "cut70": 3.88,
+      "cut50": 3.65,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "융합인재학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 42.0,
+      "rate": 6.21,
+      "fill": 56.0,
+      "pct70": 78.0,
+      "pct50": 77.0,
+      "score70": 613.17,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 18.0,
+      "rate": 10.72,
+      "fill": 18.0,
+      "cut70": 4.66,
+      "cut50": 4.28,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "자유전공학부(글로벌)",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 66.0,
+      "rate": 7.06,
+      "fill": 91.0,
+      "pct70": 79.0,
+      "pct50": 82.0,
+      "score70": 620.46,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 43.0,
+      "rate": 9.09,
+      "fill": 59.0,
+      "cut70": 3.48,
+      "cut50": 3.27,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "전자물리학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 10.0,
+      "rate": 7.78,
+      "fill": 14.0,
+      "pct70": 77.0,
+      "pct50": 75.0,
+      "score70": 621.69,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 5.83,
+      "fill": 6.0,
+      "cut70": 3.55,
+      "cut50": 3.41,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "중앙아시아학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 6.0,
+      "rate": 9.67,
+      "fill": 9.0,
+      "pct70": 79.0,
+      "pct50": 77.0,
+      "score70": 612.52,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 5.0,
+      "rate": 14.0,
+      "fill": 2.0,
+      "cut70": 5.58,
+      "cut50": 5.4,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "철학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 8.0,
+      "rate": 6.86,
+      "fill": 7.0,
+      "pct70": 78.0,
+      "pct50": 81.0,
+      "score70": 615.36,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 7.0,
+      "rate": 5.86,
+      "fill": 5.0,
+      "cut70": 3.31,
+      "cut50": 3.15,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "체코・슬로바키아학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 7.0,
+      "rate": 7.71,
+      "fill": 8.0,
+      "pct70": 76.0,
+      "pct50": 80.0,
+      "score70": 613.19,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 9.17,
+      "fill": 5.0,
+      "cut70": 5.15,
+      "cut50": 5.08,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "통계학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 9.0,
+      "rate": 9.67,
+      "fill": 16.0,
+      "pct70": 79.0,
+      "pct50": 76.0,
+      "score70": 626.73,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 6.0,
+      "rate": 8.83,
+      "fill": 3.0,
+      "cut70": 3.87,
+      "cut50": 3.7,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "투어리즘 & 웰니스학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 9.0,
+      "rate": 8.22,
+      "fill": 3.0,
+      "pct70": 76.0,
+      "pct50": 83.0,
+      "score70": 618.2,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 18.56,
+      "fill": 13.0,
+      "cut70": 5.34,
+      "cut50": 5.13,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "폴란드학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 7.0,
+      "rate": 7.0,
+      "fill": 2.0,
+      "pct70": 79.0,
+      "pct50": 79.0,
+      "score70": 621.7,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 8.17,
+      "fill": 4.0,
+      "cut70": 5.17,
+      "cut50": 4.85,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "한국학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 5.0,
+      "rate": 7.0,
+      "fill": 5.0,
+      "pct70": 75.0,
+      "pct50": 78.0,
+      "score70": 615.98,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 4.0,
+      "rate": 15.0,
+      "fill": 5.0,
+      "cut70": 5.34,
+      "cut50": 5.0,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "헝가리학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 7.0,
+      "rate": 5.86,
+      "fill": 0.0,
+      "pct70": 78.0,
+      "pct50": 76.0,
+      "score70": 611.27,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 8.0,
+      "fill": 4.0,
+      "cut70": 4.77,
+      "cut50": 4.28,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
+   },
+   {
+    "name": "화학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 14.0,
+      "rate": 10.23,
+      "fill": 16.0,
+      "pct70": 76.0,
+      "pct50": 74.0,
+      "score70": 619.8,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 6.0,
+      "fill": 7.0,
+      "cut70": 3.13,
+      "cut50": 2.96,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "환경학과",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 15.0,
+      "rate": 5.5,
+      "fill": 15.0,
+      "pct70": 74.0,
+      "pct50": 79.0,
+      "score70": 622.26,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(서류형))",
+      "quota": 6.0,
+      "rate": 6.33,
+      "fill": 6.0,
+      "cut70": 3.19,
+      "cut50": 3.08,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "AI데이터융합학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 12.0,
+      "rate": 7.27,
+      "fill": 12.0,
+      "pct70": 79.0,
+      "pct50": 80.0,
+      "score70": 626.82,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 12.89,
+      "fill": 10.0,
+      "cut70": 4.73,
+      "cut50": 4.08,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
+   },
+   {
+    "name": "Finance & AI융합학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 10.0,
+      "rate": 7.5,
+      "fill": 17.0,
+      "pct70": 77.0,
+      "pct50": 81.0,
+      "score70": 613.59,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 9.0,
+      "rate": 11.78,
+      "fill": 10.0,
+      "cut70": 4.7,
+      "cut50": 4.02,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
+   },
+   {
+    "name": "Global Business & Technology학부",
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 15.0,
+      "rate": 7.8,
+      "fill": 7.0,
+      "pct70": 83.0,
+      "pct50": 81.0,
+      "score70": 619.62,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {
+     "2026": {
+      "typeName": "학생부종합(학생부종합전형(면접형))",
+      "quota": 13.0,
+      "rate": 12.31,
+      "fill": 12.0,
+      "cut70": 3.7,
+      "cut50": 3.56,
+      "source": "adiga-hakjum",
+      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "컴퓨터공학부",
@@ -81625,7 +82002,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "정보통신공학과",
@@ -81655,7 +82034,9 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "경상대학[통합모집]",
@@ -81674,7 +82055,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "상경"
    },
    {
     "name": "공과계열",
@@ -81693,7 +82076,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "국가전략언어계열",
@@ -81712,64 +82097,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "사회과학대학[통합모집]",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 31.0,
-      "rate": 5.23,
-      "fill": 26.0,
-      "pct70": 91.0,
-      "pct50": 89.0,
-      "score70": 646.63,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "상경대학[통합모집]",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 26.0,
-      "rate": 4.15,
-      "fill": 20.0,
-      "pct70": 89.0,
-      "pct50": 91.0,
-      "score70": 648.64,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "영어대학[통합모집]",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 37.0,
-      "rate": 4.3,
-      "fill": 16.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
-      "score70": 649.65,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "우크라이나학과",
@@ -81788,7 +82118,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "인문대학[통합모집]",
@@ -81807,26 +82139,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "일본학대학[통합모집]",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 16.0,
-      "rate": 4.13,
-      "fill": 5.0,
-      "pct70": 86.0,
-      "pct50": 90.0,
-      "score70": 648.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
    },
    {
     "name": "자연과학대학[통합모집]",
@@ -81845,121 +82160,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "중국학대학[통합모집]",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 21.0,
-      "rate": 3.86,
-      "fill": 2.0,
-      "pct70": 90.0,
-      "pct50": 84.0,
-      "score70": 648.19,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "특수외국어(유럽지역)계열",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 24.0,
-      "rate": 4.42,
-      "fill": 13.0,
-      "pct70": 91.0,
-      "pct50": 90.0,
-      "score70": 646.68,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "특수외국어(인도・아세안지역)계열",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 24.0,
-      "rate": 5.46,
-      "fill": 17.0,
-      "pct70": 89.0,
-      "pct50": 85.0,
-      "score70": 646.49,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "특수외국어(중동지역)계열",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 21.0,
-      "rate": 4.86,
-      "fill": 7.0,
-      "pct70": 89.0,
-      "pct50": 84.0,
-      "score70": 646.8,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "한국어교육과",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 3.22,
-      "fill": 3.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
-      "score70": 648.96,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "핵심외국어계열",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 54.0,
-      "rate": 3.78,
-      "fill": 23.0,
-      "pct70": 88.0,
-      "pct50": 89.0,
-      "score70": 647.76,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "AI융합대학[통합모집]",
@@ -81978,7 +82181,9 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "자연"
    },
    {
     "name": "Culture & Technology융합대학[통합모집]",
@@ -81997,33 +82202,11 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
-   },
-   {
-    "name": "Language & Trade학부",
-    "jeongsi": {
-     "2026": {
-      "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 4.13,
-      "fill": 4.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
-      "score70": 648.0,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
-     }
-    },
-    "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "글로벌캠퍼스",
+    "ruleTrack": "인문"
    }
-  ],
-  "counts": {
-   "jeongsi": 88,
-   "gyogwa": 0,
-   "hakjong": 134
-  }
+  ]
  },
  {
   "id": "kau",
@@ -83097,7 +83280,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "교육학과",
@@ -83138,7 +83322,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "국어교육과",
@@ -83179,7 +83364,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "기계공학부",
@@ -83220,7 +83406,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "데이터사이언스학부",
@@ -83261,7 +83448,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "미래자동차공학과",
@@ -83302,7 +83490,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "바이오메디컬공학전공",
@@ -83332,7 +83521,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "수학교육과",
@@ -83373,7 +83563,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "신소재공학부",
@@ -83414,7 +83605,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "에너지공학과",
@@ -83455,7 +83647,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "영어교육과",
@@ -83496,7 +83689,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "융합전자공학부",
@@ -83537,7 +83731,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "전기공학전공",
@@ -83578,7 +83773,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "컴퓨터소프트웨어학부",
@@ -83619,7 +83815,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "한양인터칼리지학부(자연)",
@@ -83636,7 +83833,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "화학공학과",
@@ -83677,7 +83875,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "간호학과",
@@ -83718,7 +83917,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "건설환경공학과",
@@ -83759,7 +83959,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "건축공학부",
@@ -83800,7 +84001,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "건축학부",
@@ -83841,7 +84043,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "경영학부",
@@ -83882,7 +84085,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "경제금융학부",
@@ -83923,7 +84127,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "관광학부",
@@ -83964,7 +84169,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "국어국문학과",
@@ -84005,7 +84211,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "국제학부",
@@ -84035,7 +84242,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "도시공학과",
@@ -84076,7 +84284,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "독어독문학과",
@@ -84104,7 +84313,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "물리학과",
@@ -84145,7 +84355,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "미디어커뮤니케이션학과",
@@ -84186,7 +84397,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "반도체공학과",
@@ -84227,7 +84439,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "사학과",
@@ -84268,7 +84481,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "사회학과",
@@ -84309,7 +84523,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "산업공학과",
@@ -84350,7 +84565,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "생명공학과",
@@ -84391,7 +84607,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "생명과학과",
@@ -84432,7 +84649,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "수학과",
@@ -84473,7 +84691,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "스포츠매니지먼트전공",
@@ -84503,7 +84722,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "스포츠사이언스전공",
@@ -84533,7 +84753,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "식품영양학과",
@@ -84574,7 +84795,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "실내건축디자인학과",
@@ -84615,7 +84837,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "연극영화학과(영화전공)",
@@ -84645,7 +84868,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "영어영문학과",
@@ -84686,7 +84910,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "원자력공학과",
@@ -84727,7 +84952,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "유기나노공학과",
@@ -84768,7 +84994,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "의류학과",
@@ -84809,7 +85036,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "의예과",
@@ -84839,7 +85067,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "자원환경공학과",
@@ -84880,7 +85109,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "정보시스템학과",
@@ -84921,7 +85151,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "정책학과",
@@ -84962,7 +85193,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "정치외교학과",
@@ -85003,7 +85235,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "중어중문학과",
@@ -85044,7 +85277,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "철학과",
@@ -85085,7 +85319,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "파이낸스경영학과",
@@ -85126,7 +85361,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "한양인터칼리지학부(인문)",
@@ -85143,7 +85379,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "행정학과",
@@ -85184,7 +85421,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "화학과",
@@ -85225,7 +85463,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
-    }
+    },
+    "campus": "서울캠퍼스"
    },
    {
     "name": "한양인터칼리지학부",
@@ -85255,7 +85494,8 @@
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
     },
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "서울캠퍼스"
    },
    {
     "name": "연극영화학과(연기)",
@@ -85274,7 +85514,8 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "서울캠퍼스"
    },
    {
     "name": "연극영화학과(연출및스탭)",
@@ -85293,7 +85534,8 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "서울캠퍼스"
    }
   ],
   "counts": {
@@ -85347,10 +85589,11 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
-    "name": "건설환경공학과",
+    "name": "건설환경공학과(ERICA)",
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반)",
@@ -85388,7 +85631,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "건축공학전공",
@@ -85429,7 +85673,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "건축학전공",
@@ -85470,10 +85715,11 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
-    "name": "경영학부",
+    "name": "경영학부(ERICA)",
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반)",
@@ -85511,7 +85757,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "경제학부",
@@ -85552,7 +85799,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "광고홍보학과",
@@ -85593,7 +85841,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "교통물류공학과",
@@ -85634,7 +85883,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "글로벌문화통상학부",
@@ -85675,7 +85925,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "기계공학과",
@@ -85716,7 +85967,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "디자인계열",
@@ -85733,7 +85985,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "로봇공학과",
@@ -85774,7 +86027,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "문화인류학과",
@@ -85815,7 +86069,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "문화콘텐츠학과",
@@ -85856,7 +86111,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "미디어학과",
@@ -85897,7 +86153,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "바이오나노공학전공",
@@ -85938,7 +86195,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "바이오신약융합학부",
@@ -85979,7 +86237,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "반도체・디스플레이공학전공",
@@ -86021,7 +86280,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "배터리소재화학공학과",
@@ -86062,7 +86322,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "분자의약전공",
@@ -86103,7 +86364,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "산업경영공학과",
@@ -86145,7 +86407,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "수리데이터사이언스학과",
@@ -86186,7 +86449,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "스포츠과학부",
@@ -86216,7 +86480,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "신소재・반도체공학전공",
@@ -86257,7 +86522,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "약학과",
@@ -86298,7 +86564,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "에너지바이오학과",
@@ -86339,7 +86606,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "인공지능학과",
@@ -86381,7 +86649,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "전자공학부",
@@ -86422,7 +86691,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "지능정보양자공학전공",
@@ -86463,7 +86733,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "지능형클라우드전공",
@@ -86494,7 +86765,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "차세대반도체융합공학부",
@@ -86535,7 +86807,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "컴퓨터전공",
@@ -86577,7 +86850,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "컴퓨터학부",
@@ -86618,7 +86892,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "해양융합공학과",
@@ -86659,7 +86934,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "ICT융합학부",
@@ -86700,7 +86976,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "LIONS자율전공학부(인문사회계열)",
@@ -86728,7 +87005,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "LIONS자율전공학부(자연계열)",
@@ -86756,7 +87034,8 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
-    }
+    },
+    "campus": "ERICA캠퍼스"
    },
    {
     "name": "보험계리학과",
@@ -86786,7 +87065,8 @@
       "url": "https://hakjum.school/admissions/%ED%95%9C%EC%96%91%EB%8C%80%ED%95%99%EA%B5%90-ERICA-%EB%B6%84%EA%B5%90/"
      }
     },
-    "hakjong": {}
+    "hakjong": {},
+    "campus": "ERICA캠퍼스"
    }
   ]
  },
