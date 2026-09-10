@@ -1528,11 +1528,12 @@
     const rule = rulesFor(rules, universityId);
     const tracks = Array.isArray(rule?.tracks) ? rule.tracks : [];
     if (tracks.length === 0) return null;
+    // 학년도·상태는 대학 항목에 없으면 파일 머리(rules-<학년도>.json)의 값이다.
     const stamp = (track) => ({
       ...track,
       universityId,
-      year: track.year ?? rule.year ?? null,
-      status: track.status || rule.status || null,
+      year: track.year ?? rule.year ?? rules?.year ?? null,
+      status: track.status || rule.status || rules?.status || null,
       source: track.source || rule.source || null,
       sourceGrade: track.sourceGrade || rule.sourceGrade || null,
     });
@@ -1565,6 +1566,8 @@
   const formulaVerified = (check, universityId, trackName) => (check?.tracks || {})[`${universityId}::${trackName}`]?.status === 'verified';
 
   // L2 — 반영비율. 옛 형식(rules-2027.json weights)과 §1.2 형식(areas.factor) 둘 다 읽는다.
+  // **비율 조건**(MODEL §3): 국어·수학·탐구 비율이 **모두** 0보다 커야 한다. 탐구 하나로만
+  // 매긴 지수는 판정이 아니다 — 하나라도 0이면 null을 돌려 컷 학년도 산식 폴백으로 넘긴다.
   function ratioWeights(track) {
     if (!track) return null;
     if (track.weights) {
@@ -1572,11 +1575,12 @@
       const math = Number(track.weights.math) || 0;
       const inq = Number(track.weights.inq) || 0;
       const eng = Number(track.weights.eng) || 0;
-      if (kor + math + inq <= 0) return null;
+      if (!(kor > 0 && math > 0 && inq > 0)) return null;
       return {
         kor, math, inq, eng, engTable: track.english?.table || null,
         engByRatio: eng > 0 && (track.english?.method || '비율반영') === '비율반영',
         count: Number(track.inquiry?.count) || 2, name: track.name || null,
+        basis: 'ratio', year: track.year ?? null,
       };
     }
     const areas = track.areas || null;
@@ -1584,10 +1588,72 @@
     const kor = Number(areas.kor?.factor) || 0;
     const math = Number(areas.math?.factor) || 0;
     const inq = Number(areas.inq?.factor) || 0;
-    if (kor + math + inq <= 0) return null;
+    if (!(kor > 0 && math > 0 && inq > 0)) return null;
     return {
       kor, math, inq, eng: 0, engTable: areas.eng?.table || null, engByRatio: false,
       count: Number(areas.inq?.count) || 2, name: track.name || null,
+      basis: 'ratio', year: track.year ?? null,
+    };
+  }
+
+  // 그 지표가 낼 수 있는 최고값. 실효 가중치의 분자다.
+  function metricCeiling(config, key, std, maxConv) {
+    const metric = config?.metric || 'std';
+    if (metric === 'pct') return 100;
+    if (metric === 'table') return tableValue(config?.table, 1);
+    if (metric === 'conv' || metric === 'convRatio') return isNumber(maxConv) ? maxConv : null;
+    return maxStdOfArea(std, key, null, {});
+  }
+
+  // §3 L2 비율 조건의 폴백 — 컷 학년도(2026) 산식 트랙의 **영역 계수**를 비율로 옮긴다.
+  // 실효 가중치 = 그 영역이 최대로 낼 수 있는 배점 = (지표 최고값 ÷ 분모) × factor.
+  // 분모(div·denominator)가 있으면 값이 이미 최고점으로 정규화되므로 factor 자체가 배점이 된다.
+  // 탐구가 합산(sum)이면 과목 수만큼 곱하고, 분모가 두 과목 합(sumOfTwo)이면 그쪽도 두 배다.
+  // 국·수·탐 셋 다 계수가 적혀 있고 셋 다 양수일 때만 쓴다 — 아니면 null(=L3)이다.
+  function formulaRatioWeights(track, ctx = {}) {
+    const areas = track?.areas || null;
+    if (!areas) return null;
+    for (const key of ['kor', 'math', 'inq']) {
+      if (!isNumber(Number(areas[key]?.factor)) || Number(areas[key].factor) <= 0) return null;
+    }
+    const std = ctx.std || null;
+    const conversion = conversionTable(ctx.conv, ctx.universityId ?? track.universityId ?? null);
+    const maxConv = conversion?.table ? convertedStd(100, conversion.table) : null;
+    const weightOf = (key) => {
+      const config = areas[key];
+      if (!config) return 0;
+      if (key === 'eng' && ['penalty', 'bonus', 'none'].includes(String(config.mode || ''))) return 0;
+      const factor = Number(config.factor);
+      if (!isNumber(factor) || factor <= 0) return 0;
+      const ceiling = metricCeiling(config, key, std, maxConv);
+      if (!isNumber(ceiling) || ceiling <= 0) return 0;
+      const spec = areaDenominatorSpec(config, key);
+      let denominator = 1;
+      let span = 1;
+      if (key === 'inq' && String(config.aggregate || 'sum') === 'sum') span = Math.max(1, numOr(config.count, 2));
+      if (spec) {
+        if (spec.kind === 'const') denominator = numOr(spec.value, 1) || 1;
+        else if (spec.kind === 'maxConv') denominator = (isNumber(maxConv) ? maxConv : 0) * (numOr(spec.multiplier, 1) || 1);
+        else if (spec.kind === 'maxStd') {
+          const one = maxStdOfArea(std, spec.area || key, null, {});
+          denominator = isNumber(one) ? one * (spec.sumOfTwo ? 2 : 1) : 0;
+        }
+        if (!isNumber(denominator) || denominator === 0) return 0;
+      }
+      return round((ceiling * span / denominator) * factor, 4);
+    };
+    const kor = weightOf('kor');
+    const math = weightOf('math');
+    const inq = weightOf('inq');
+    if (!(kor > 0 && math > 0 && inq > 0)) return null;
+    const eng = weightOf('eng');
+    return {
+      kor, math, inq, eng,
+      engTable: areas.eng?.table || null,
+      engByRatio: eng > 0 && Boolean(areas.eng?.table),
+      count: Number(areas.inq?.count) || 2,
+      name: track.name || null,
+      basis: 'ratio-from-2026', year: track.year ?? null,
     };
   }
 
@@ -1655,8 +1721,9 @@
     if (profile?.mode === 'grade' || profile?.mode === 'raw') add('estimated');
     if (profile?.sourceKind && profile.sourceKind !== 'actual') add(profile.sourceKind);
     const sources = [...(info.sources || [])];
-    if (cutRow?.source) sources.push({ title: cutRow.source, url: cutRow.url || null });
-    else if (reference?.primary?.source) sources.push({ title: reference.primary.source, url: reference.primary.url || null });
+    // 링크 글자를 짧게 줄이려면 화면이 학년도·쪽을 알아야 한다 (FRAME §10.4).
+    if (cutRow?.source) sources.push({ title: cutRow.source, url: cutRow.url || null, year: cutYear });
+    else if (reference?.primary?.source) sources.push({ title: reference.primary.source, url: reference.primary.url || null, year: reference.primary.year ?? cutYear });
     const band = result.band ? { ...result.band, uncertainty: LAYER_UNCERTAINTY[level] ?? null, note: '70% 지점 대비' } : result.band;
     const apply = info.apply || {
       year: APPLY_YEAR, typeName: cutRow?.typeName || '',
@@ -1801,10 +1868,22 @@
     }
 
     // ---------------------------------------------------------------- L2 지수
-    const ratioTrack = pickModelTrack(context.rules2027, universityId, dept) || pickTrack(rule, dept?.track, dept?.ruleTrack);
-    const weights = ratioWeights(ratioTrack);
+    const planTrack = pickModelTrack(context.rules2027, universityId, dept) || pickTrack(rule, dept?.track, dept?.ruleTrack);
+    let ratioTrack = planTrack;
+    let weights = ratioWeights(planTrack);
+    let ratioFormulaTrack = null;
+    if (!weights) {
+      // 시행계획 비율이 §3 비율 조건을 못 채운다 — 컷 학년도(2026) 산식 계수를 비율로 쓴다.
+      const derived = formulaRatioWeights(track, { std, conv: context.conv, universityId });
+      if (derived) {
+        weights = derived;
+        ratioFormulaTrack = track;
+        ratioTrack = track;
+      }
+    }
     if (weights && student70?.consistent) {
       const cutInq = student70.inq.slice(0, weights.count);
+      const indexOf = (values) => ratioIndex(values, weights);
       const cutValues = {
         kor: student70.kor, math: student70.math,
         inq: cutInq.length > 0 ? cutInq.reduce((sum, row) => sum + row.pct, 0) / cutInq.length : null,
@@ -1817,6 +1896,15 @@
       };
       const cutIndex = ratioIndex(cutValues, weights);
       const myIndex = ratioIndex(myValues, weights);
+      // 50% 학생도 같은 비율로 매긴다 — 근거 카드 `비교 입결` 행이 두 지점을 같은 눈금으로 적는다.
+      const inq50 = student50?.consistent ? student50.inq.slice(0, weights.count) : [];
+      const cutIndex50 = student50?.consistent
+        ? indexOf({
+          kor: student50.kor, math: student50.math,
+          inq: inq50.length > 0 ? inq50.reduce((sum, row) => sum + row.pct, 0) / inq50.length : null,
+          eng: engPercentOf(student50.eng, weights.engTable),
+        })
+        : null;
       if (cutIndex && myIndex) {
         const areas = myIndex.parts.map((part) => {
           const twin = cutIndex.parts.find((row) => row.key === part.key) || null;
@@ -1834,8 +1922,12 @@
         const highIndex = atBound('high');
         const gapMin = lowIndex ? round(lowIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
         const gapMax = highIndex ? round(highIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
+        const flags = [];
+        if (weights.basis === 'ratio-from-2026') flags.push('ratio-from-2026');
+        else if (ratioTrack?.status === 'plan') flags.push('plan-formula');
         return {
-          ...base, level: 'L2', track: ratioTrack, myIndex, cutIndex,
+          ...base, level: 'L2', track: ratioTrack, myIndex, cutIndex, cutIndex50,
+          ratioBasis: weights.basis, ratioWeightsUsed: weights, ratioFormulaTrack,
           myIndexMin: lowIndex ? lowIndex.value : myIndex.value,
           myIndexMax: highIndex ? highIndex.value : myIndex.value,
           points: null, pctEq: gap, gapMin, gapMax, gap2026: gap, gap2027: null,
@@ -1843,7 +1935,7 @@
           // 50% 지점은 환산점수 눈금에서만 의미가 있다(§3) — 지수 판정은 띠 표 그대로다.
           above50: null,
           areas, sensitivity: null,
-          flags: ratioTrack?.status === 'plan' ? ['plan-formula'] : [],
+          flags,
           blockers: [], unit: 'pct',
         };
       }
@@ -1867,24 +1959,48 @@
     const gapRange = isNumber(layer.gapMin) && isNumber(layer.gapMax) && (layer.gapMin !== gap || layer.gapMax !== gap)
       ? { min: layer.gapMin, max: layer.gapMax, minBand: bandOf(layer.gapMin, VERDICT_BANDS), maxBand: bandOf(layer.gapMax, VERDICT_BANDS) }
       : null;
-    const mineValue = mine ? mine.value : null;
-    const cutValue = isNumber(mineValue) && isNumber(gap) ? round(mineValue - gap, 2) : null;
+    // 눈금 하나로 맞춘다 (FRAME §10.4): L2의 `내`는 **지수**이고 컷도 같은 지수다.
+    // 평균 백분위는 따로 남겨 화면이 셋째 조각으로만 적는다.
+    const avgValue = mine ? mine.value : null;
+    const mineValue = layer.level === 'L2' && layer.myIndex ? layer.myIndex.value : avgValue;
+    // L2의 컷은 반올림해 맞춘 값이 아니라 **같은 비율로 매긴 70% 학생의 지수 그대로**다 —
+    // 그래야 `내 − 컷 = 차이`가 화면과 엔진에서 한 자리도 어긋나지 않는다.
+    const cutValue = layer.level === 'L2' && layer.cutIndex
+      ? layer.cutIndex.value
+      : (isNumber(mineValue) && isNumber(gap) ? round(mineValue - gap, 2) : null);
     const row = layer.cutRow;
-    const avgGap = isNumber(mineValue) && isNumber(row?.cut70) ? round(mineValue - row.cut70, VERDICT_DIGITS) : null;
-    const floor = isNumber(row?.cut100) && isNumber(mineValue)
-      ? { year: layer.cutYear, value: row.cut100, cleared: mineValue >= row.cut100 } : null;
+    const avgGap = isNumber(avgValue) && isNumber(row?.cut70) ? round(avgValue - row.cut70, VERDICT_DIGITS) : null;
+    const floor = isNumber(row?.cut100) && isNumber(avgValue)
+      ? { year: layer.cutYear, value: row.cut100, cleared: avgValue >= row.cut100 } : null;
     const fill = isNumber(row?.fill)
       ? { year: layer.cutYear, count: row.fill, rate: isNumber(row.fillRate) ? row.fillRate : null, lastWait: isNumber(row.lastWait) ? row.lastWait : null }
       : null;
     const formula = layer.track
       ? { year: layer.track.year ?? null, status: layer.track.status || null, sourceGrade: layer.track.sourceGrade || null, track: layer.track.name || null, source: layer.track.source || null }
       : null;
+    // 어느 비율로 지수를 매겼는가 (§3 L2 비율 조건). `ratio-from-2026`이면 컷 학년도 산식 계수다.
+    if (formula && layer.level === 'L2') {
+      formula.ratioBasis = layer.ratioBasis || 'ratio';
+      formula.ratioTrack = layer.ratioFormulaTrack?.name ?? layer.track?.name ?? null;
+      formula.ratioYear = layer.ratioFormulaTrack?.year ?? layer.track?.year ?? null;
+      formula.ratioWeights = layer.ratioWeightsUsed
+        ? { kor: layer.ratioWeightsUsed.kor, math: layer.ratioWeightsUsed.math, inq: layer.ratioWeightsUsed.inq, eng: layer.ratioWeightsUsed.engByRatio ? layer.ratioWeightsUsed.eng : 0 }
+        : null;
+    }
     const sources = [];
-    if (layer.track?.source?.title) sources.push({ title: layer.track.source.title, url: layer.track.source.url || null });
+    if (layer.track?.source?.title) {
+      sources.push({
+        title: layer.track.source.title, url: layer.track.source.url || null,
+        page: layer.track.source.page ?? null, year: layer.track.year ?? null,
+      });
+    }
     return attachModel({
       ...shell,
       status,
+      mine: mineValue,
       group: row?.group || null,
+      // 평균 백분위는 L2에서 판정 눈금이 아니다 — 화면이 셋째 조각으로만 적는다 (FRAME §10.4).
+      avgMine: avgValue,
       cut: {
         year: layer.cutYear,
         value: cutValue,
@@ -1893,6 +2009,8 @@
         aggregation: layer.aggregation,
         score70: layer.cutScore70,
         score50: layer.cutScore50,
+        index70: layer.cutIndex ? layer.cutIndex.value : null,
+        index50: layer.cutIndex50 ? layer.cutIndex50.value : null,
         student70: layer.student70,
         avg70: isNumber(row?.cut70) ? row.cut70 : null,
         verified: layer.level === 'L1',
@@ -2246,7 +2364,7 @@
     // 판정 모델 v3 (docs/MODEL.md)
     stdRangeFromPercentile, stdSubjectKeys, formulaScore2, adaptLegacyFormulaTrack,
     myFormulaInputs, studentFormulaInputs, profileFormulaInputs, normalizeCutStudent,
-    pickModelTrack, ratioWeights, ratioIndex, trackHasFormula, layerContext,
+    pickModelTrack, ratioWeights, formulaRatioWeights, ratioIndex, trackHasFormula, layerContext,
     APPLY_YEAR, LAYER_UNCERTAINTY,
   });
   globalThis.IPSI_ENGINE = api;

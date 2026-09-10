@@ -646,7 +646,9 @@ test('재현 입력(3·4·2·3·3·4)에서 숭실대에 근거 없는 적정이
   for (const name of ['사회복지학부', '법학과', '국제법무학과', '평생교육학과']) {
     const dept = soongsil.departments.find((row) => row.name === name);
     const result = engine.evaluateJeongsi(profile, soongsil, dept, data.rules.soongsil, soongsil.volatility);
-    assert.equal(result.mine, 78.17, `${name}: 비교값은 국·수·탐 평균이어야 한다`);
+    // L2는 판정 눈금이 지수라 `mine`도 지수다 — 평균 백분위는 avgMine 에 남는다 (FRAME §10.4).
+    const avg = result.level === 'L2' ? result.avgMine : result.mine;
+    assert.equal(avg, 78.17, `${name}: 평균 백분위 비교값은 국·수·탐 평균이어야 한다`);
     assert.equal(result.status, 'ok', `${name}: 등급 입력도 구간 중앙값으로 판정한다 (지금 ${result.status})`);
     assert.equal(result.estimated, true, `${name}: 추정이라고 밝힌다`);
     assert.notEqual(result.band.label, '적정', `${name}: 적정이 다시 뜨면 안 된다`);
@@ -654,15 +656,18 @@ test('재현 입력(3·4·2·3·3·4)에서 숭실대에 근거 없는 적정이
     assert.ok(result.gap < 0, `${name}: 컷보다 낮다 (${result.gap})`);
     // 구간 하한·상한의 판정을 함께 돌려준다(화면이 한 줄로 적는다).
     assert.ok(result.gapRange && result.gapRange.minBand && result.gapRange.maxBand, `${name}: 구간 판정이 있어야 한다`);
-    assert.ok(result.bounds.min < result.mine && result.mine < result.bounds.max, `${name}: 가정값은 구간 안이다`);
+    assert.ok(result.bounds.min < avg && avg < result.bounds.max, `${name}: 가정값은 구간 안이다`);
   }
   // 어디가 70% 학생의 영역별 성적표가 들어오면서 사회복지학부는 L2(반영비율 지수)로 올라갔다.
-  // 컷은 그 학생을 숭실대 인문 비율(국35 수20 영20 탐25)로 매긴 지수 82.17(내 눈금 상당),
-  // 내 지수는 83.5라 차이 −4.0 → 위험이다. 평균 백분위만 보던 −3.9와 값은 비슷해도 근거가 다르다.
+  // 컷·내 값은 둘 다 숭실대 인문 비율(국35 수20 영20 탐25)로 매긴 **지수**다(FRAME §10.4):
+  // 컷 87.45 · 내 83.5 → 차이 −4.0 → 위험. 평균 백분위만 보던 −3.9와 값은 비슷해도 근거가 다르다.
   const welfare = soongsil.departments.find((row) => row.name === '사회복지학부');
   const result = engine.evaluateJeongsi(profile, soongsil, welfare, data.rules.soongsil, soongsil.volatility);
   assert.equal(result.level, 'L2');
-  assert.equal(result.cut.value, 82.17);
+  assert.equal(result.mine, 83.5);
+  assert.equal(result.cut.value, 87.45);
+  assert.equal(result.cut.index70, 87.45);
+  assert.equal(result.avgMine, 78.17);
   assert.equal(result.gap, -4);
   assert.equal(result.band.label, '위험');
   // 등급 입력의 구간은 세 점이다 — 하한·중앙·상한이 순서대로 놓인다 (docs/MODEL.md §4).

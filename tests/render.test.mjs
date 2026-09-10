@@ -162,7 +162,8 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   assert.ok(/안정|적정|소신|상향|위험/u.test(diagnose), '판정 뱃지가 없다');
   // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다 (FRAME §8.2).
   assert.ok(!/컷 \d+\.\d ±/u.test(diagnose), '± 표기가 남아 있다');
-  assert.match(diagnose, /관측 \d+\.\d~\d+\.\d/u);
+  // L2 행의 부제는 컷과 내가 **같은 눈금**(지수)이다 (FRAME §10.4).
+  assert.match(diagnose, /지수 컷 \d+\.\d · 내 \d+\.\d · [가나다]군 · 반영비율/u);
   const target = view('target');
   assert.match(target, /필요한 상승|정시 결과가 없습니다/u);
   const rules = view('rules');
@@ -563,9 +564,11 @@ test('등급 입력의 목표 화면은 구간 하한·상한의 판정을 한 �
   assert.ok(row, '숭실대 사회복지학부 행이 없다');
   row.dispatch('click');
   const text = panel.text;
-  assert.match(text, /가정 78\.2 \(71\.3~84\.0\)/u);
-  // 어디가 70% 학생의 영역별 성적표가 들어오면서 이 행은 L2(반영비율 지수)가 됐다. 구간도
-  // 지수 눈금에서 다시 계산돼(지수 78.2~88.0 · 컷 87.5) 상한 판정이 안정에서 소신이 됐다.
+  // 어디가 70% 학생의 영역별 성적표가 들어오면서 이 행은 L2(반영비율 지수)가 됐다.
+  // 판정 카드 부제는 지수 눈금이고 평균 백분위는 셋째 조각으로만 적는다 (FRAME §10.4).
+  assert.match(text, /지수 컷 87\.5 · 내 지수 83\.5 · 평균 백분위 78\.2/u);
+  assert.match(text, /비교 입결 2026 70% 학생 지수 87\.5 · 50% 90\.5 · 반영비율/u);
+  // 구간도 지수 눈금에서 다시 계산돼(지수 78.2~88.0 · 컷 87.5) 상한 판정이 안정에서 소신이 됐다.
   // 요점은 하한·상한을 한 줄로 함께 적는다는 것이다 (docs/MODEL.md §4).
   assert.match(text, /구간 하한 위험 · 상한 소신/u);
   assert.match(text, /추정/u);
@@ -596,7 +599,8 @@ test('목표 화면은 반영비율 지수를 컷과 빼지 않는다고 적는�
   const text = panel.text;
   assert.match(text, /반영비율 지수/u);
   assert.match(text, /컷과 눈금이 달라 차이를 내지 않음/u);
-  assert.match(text, /내 국·수·탐 \d+\.\d/u);
+  // 판정 카드는 판정이 선 눈금으로 적는다 — L2면 지수와 평균 백분위 (FRAME §10.4).
+  assert.match(text, /내 (국·수·탐|지수) \d+\.\d/u);
   assert.ok(!text.includes('내 환산'), "'내 환산' 문구가 남아 있다");
 });
 
@@ -708,8 +712,8 @@ const L1 = (result) => ({
   cut2027: null,
   flags: ['plan-formula'],
   sources: [
-    { title: 'adiga-hakjum', url: 'https://hakjum.school/' },
-    { title: '국민대학교 2026학년도 정시모집요강', url: 'https://admission.kookmin.ac.kr/' },
+    { title: 'adiga-hakjum', url: 'https://hakjum.school/', year: '2026' },
+    { title: '국민대학교 2026학년도 정시모집요강', url: 'https://admission.kookmin.ac.kr/', page: 53 },
   ],
 });
 
@@ -722,13 +726,19 @@ const L2 = (result) => ({
   gap: -1.2,
   gapDetail: { points: null, pctEq: -1.2, min: -1.2, max: -1.2, avgGap: -0.4, basisChanged: false, gap2026: -1.2, gap2027: null },
   mineDetail: { score: 79.4, min: 79.4, max: 79.4, parts: [], adjustments: [], assumptions: [], unit: 'pct' },
-  cut: { ...result.cut, year: '2026', value: 80.6, aggregation: 'adiga-score-rank', score70: null, score50: null, verified: false },
+  // L2의 컷·내는 같은 반영비율로 매긴 **지수**다 (FRAME §10.4) — 평균 백분위는 avgMine 에만 있다.
+  mine: 79.4,
+  avgMine: 78.2,
+  cut: {
+    ...result.cut, year: '2026', value: 80.6, aggregation: 'adiga-score-rank',
+    score70: null, score50: null, index70: 80.6, index50: 83.1, verified: false,
+  },
   apply: { year: 2027, typeName: '수능(일반학생전형)', group: '가', formula: { year: 2027, status: 'plan', track: '인문', source: null } },
   areas: [{ area: 'math', label: '수학', mine: 93, cut: 96, contrib: -0.9 }],
   sensitivity: null,
   uncertainty: 1,
   flags: ['plan-formula'],
-  sources: [{ title: 'adiga-hakjum', url: 'https://hakjum.school/' }],
+  sources: [{ title: 'adiga-hakjum', url: 'https://hakjum.school/', year: '2026' }],
 });
 
 const L0 = (result) => ({
@@ -779,7 +789,9 @@ test('L1 목표 화면은 근거 카드에 라벨·값 행을 고정 순서로 �
   assert.match(text, /70% 지점 대비 · 불확실성 ±0\.5/u);
   assert.match(text, /국어 \+6\.2 · 수학 −9\.0/u);
   assert.match(text, /2027 시행계획/u);
-  assert.ok(evidence.querySelectorAll('.jr-link').length >= 1, '출처 링크 행이 없다');
+  // 출처 링크 글자는 대학명·학년도·문서 종류·쪽만 남긴 짧은 이름이다 (FRAME §10.4).
+  assert.deepEqual(evidence.querySelectorAll('.jr-link').map((node) => node.text.trim()),
+    ['어디가 2026', '국민대 2026 정시 요강 p.53']);
   // 층위 이름은 라벨로 쓰지 않고, 문장도 쓰지 않는다 (FRAME §10.2).
   for (const gone of ['L1', '봅니다', '입니다']) assert.ok(!text.includes(gone), `'${gone}' 이 남아 있다`);
 });
@@ -789,7 +801,14 @@ test('L2 행은 백분위 차 하나와 근사 뱃지를 붙인다', () => {
   const row = openFixture(built);
   assert.equal(row.querySelector('.jr-gap').text.trim(), '−1.2');
   assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['근사', '소신']);
-  assert.match(row.querySelector('.seed-list-item__detail').text, /· 가군 · 반영비율$/u);
+  // 부제는 컷·내가 같은 지수 눈금이다 (FRAME §10.1·§10.4).
+  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(), '지수 컷 80.6 · 내 79.4 · 가군 · 반영비율');
+  row.dispatch('click');
+  const evidence = built.panel.querySelectorAll('.jr-section')
+    .find((node) => node.querySelector('.seed-list-header')?.text.trim() === '근거');
+  // 판정 카드 부제와 근거 카드 `비교 입결` 행도 같은 눈금이고, 평균 백분위는 셋째 조각이다.
+  assert.match(built.panel.text, /지수 컷 80\.6 · 내 지수 79\.4 · 평균 백분위 78\.2/u);
+  assert.match(evidence.text, /2026 70% 학생 지수 80\.6 · 50% 83\.1 · 반영비율/u);
 });
 
 test('L3 행은 참고 뱃지를 붙이고 컷의 통계 정의를 부제 끝에 적는다', () => {
