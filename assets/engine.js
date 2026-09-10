@@ -500,7 +500,9 @@
       const targetGrade = gradeFromPercentile(targetPct);
       // 효율 = 영역 비중 × 남은 여지. 이미 99인 영역은 올릴 곳이 없다.
       const efficiency = share * clamp(headroom / 10, 0, 1);
-      subjects.push({ key, label, current: round(current, 1), share: perPoint, needed, reachable, targetPct, currentGrade, targetGrade, gradesUp: Math.max(0, currentGrade - targetGrade), efficiency: round(efficiency, 3) });
+      // 이 영역만 100까지 올려도 모자라는 폭(환산 점). 화면이 "얼마나 모자란지"를 말할 때 쓴다.
+      const shortfall = need > 0 ? round(Math.max(0, need - headroom * share), 1) : 0;
+      subjects.push({ key, label, current: round(current, 1), share: perPoint, needed, reachable, shortfall, targetPct, currentGrade, targetGrade, gradesUp: Math.max(0, currentGrade - targetGrade), efficiency: round(efficiency, 3) });
     };
     addSubject('kor', `국어(${profile.kor.elective})`, profile.kor.pct, score.shares.kor || 0);
     addSubject('math', `수학(${profile.math.elective})`, profile.math.pct, score.shares.math || 0);

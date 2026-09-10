@@ -24,7 +24,7 @@
     mode: 'pct',
     korElective: '언어와매체', kor: '',
     mathElective: '미적분', math: '',
-    eng: '2', hist: '3',
+    eng: '2', hist: '1',
     inq1Subject: '생활과윤리', inq1: '',
     inq2Subject: '사회문화', inq2: '',
     gpa: '',
@@ -57,12 +57,26 @@
     }
     return node;
   };
-  const fmt = (value, digits = 1) => (typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '—');
+  // 음수는 하이픈이 아니라 진짜 빼기 기호(−)로 적는다 — 숫자가 줄지어 나오는 화면이라 폭이 흔들리면 안 된다.
+  const MINUS = '\u2212';
+  const fmt = (value, digits = 1) => (typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits).replace('-', MINUS) : '—');
+  // 차이를 나타내는 숫자에는 항상 부호를 붙인다.
+  const signed = (value, digits = 1) => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+    const sign = value > 0 ? '+' : value < 0 ? MINUS : '';
+    return `${sign}${Math.abs(value).toFixed(digits)}`;
+  };
   const muted = (text) => el('p', { class: 'jr-muted', text });
+  // 표·문장 속 음수도 같은 빼기 기호로 (원자료는 하이픈을 쓴다).
+  const numText = (value) => (value === null || value === undefined || value === '' ? '—' : String(value).replace(/^-/u, MINUS));
+  const prose = (text) => String(text || '').replace(/(^|[\s(])-(?=[\d.])/gu, `$1${MINUS}`);
 
-  const BAND_TONE = { safe: 'positive', fit: 'brand', reach: 'neutral', stretch: 'warning', risky: 'critical' };
-  // 목록에 보여 주는 순서. 결정에 가장 도움이 되는 '적정·소신'을 위에 둔다.
-  const BAND_ORDER = ['fit', 'reach', 'stretch', 'safe', 'risky'];
+  const BAND_TONE = { safe: 'positive', fit: 'brand', reach: 'neutral', stretch: 'warning', risky: 'critical', blocked: 'critical' };
+  // 지원 자격이 막힌 모집단위(과탐 필수·미적분 필수 등)는 점수와 무관하게 '불가'다.
+  const BLOCKED_BAND = Object.freeze({ key: 'blocked', label: '불가' });
+  const bandOf = (result) => (result?.status === 'blocked' ? BLOCKED_BAND : result?.band || null);
+  // 목록에 보여 주는 순서: 안정 → 적정 → 소신 → 상향 → 위험 → 불가.
+  const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked'];
   const badge = (label, tone = 'neutral') => el('span', {
     class: `seed-badge__root seed-badge__root--size_medium seed-badge__root--variant_weak seed-badge__root--tone_${tone}-variant_weak`,
   }, [el('span', { class: 'seed-badge__label', text: label })]);
@@ -88,12 +102,34 @@
     return node;
   };
 
-  const numberInput = (value, onchange, { label, id, min = 0, max = 100, step = 1, placeholder = '' }) => el('input', {
-    type: 'number', value, min, max, step, placeholder, inputmode: 'decimal', id,
-    'aria-label': label,
-    class: 'seed-text-input__root seed-text-input__root--variant_outline seed-text-input__root--size_medium jr-number',
-    oninput: (event) => onchange(event.target.value),
-  });
+  // Seed text-input 은 겉 상자(__root)가 테두리를, 안쪽 <input>(__value)이 글자를 맡는다.
+  const textInput = (attrs, wrapperClass) => el('div', {
+    class: `seed-text-input__root seed-text-input__root--variant_outline seed-text-input__root--variant_outline-size_medium ${wrapperClass}`,
+  }, [el('input', {
+    class: 'seed-text-input__value seed-text-input__value--variant_outline-size_medium',
+    ...attrs,
+  })]);
+
+  const numberInput = (value, onchange, { label, id, min = 0, max = 100, step = 1, placeholder = '' }) => {
+    // 범위를 벗어난 값은 테두리로 알린다 (계산은 어차피 범위 안으로 잘라 쓴다).
+    const mark = (raw) => {
+      const number = Number(raw);
+      const bad = raw !== '' && (!Number.isFinite(number) || number < min || number > max);
+      if (bad) { root.setAttribute('data-invalid', ''); input.setAttribute('aria-invalid', 'true'); }
+      else { root.removeAttribute('data-invalid'); input.removeAttribute('aria-invalid'); }
+    };
+    const input = el('input', {
+      class: 'seed-text-input__value seed-text-input__value--variant_outline-size_medium',
+      type: 'number', value, min, max, step, placeholder, inputmode: 'decimal', id,
+      'aria-label': label,
+      oninput: (event) => { mark(event.target.value); onchange(event.target.value); },
+    });
+    const root = el('div', {
+      class: 'seed-text-input__root seed-text-input__root--variant_outline seed-text-input__root--variant_outline-size_medium jr-number',
+    }, [input]);
+    mark(value);
+    return root;
+  };
 
   const callout = (title, description, tone = 'neutral') => el('div', {
     class: `seed-callout__root seed-callout__root--tone_${tone}`,
@@ -157,9 +193,15 @@
 
   // ---------------------------------------------------------------- 도메인 헬퍼
   const universityById = new Map(DATA.universities.map((university) => [university.id, university]));
+  // 어디가 원자료의 모집단위 이름은 괄호가 앞에 붙거나 붙여 쓴 것이 섞여 있다. 표시만 다듬는다(값은 원문 그대로).
+  const deptLabel = (name) => String(name || '')
+    .trim()
+    .replace(/^\(([^)]+)\)\s*(.+)$/u, '$2 ($1)')
+    .replace(/(\S)([([])/gu, '$1 $2')
+    .replace(/\s+/gu, ' ');
   const deptKey = (universityId, deptName) => `${universityId}::${deptName}`;
   const TRACKS = ['전체', '인문', '자연', '의약', '자유전공', '예체능'];
-  const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험'];
+  const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가'];
 
   const profile = () => ENGINE.normalizeProfile(state.scores, DATA.scales);
   const profileReady = () => ENGINE.profileComplete(profile());
@@ -174,12 +216,13 @@
     const cut = result.cut;
     if (!cut) return '';
     const base = `예상 컷 ${fmt(cut.value, 1)}`;
-    if (typeof result.spread === 'number' && result.spread > 0) return `${base} ± ${fmt(result.spread, 1)}`;
+    if (typeof result.spread === 'number' && result.spread > 0) return `${base} ±${fmt(result.spread, 1)}`;
     return base;
   };
 
   const saveScores = () => writeStore(STORE.scores, state.scores);
-  const saveFilters = () => writeStore(STORE.filters, state.filters);
+  // 더 보기로 늘린 개수(limit)는 저장하지 않는다 — 새로고침했더니 목록이 수백 줄인 일을 막는다.
+  const saveFilters = () => writeStore(STORE.filters, { ...state.filters, limit: undefined });
   const saveFavorites = () => writeStore(STORE.favorites, [...state.favorites]);
 
   // ---------------------------------------------------------------- URL 공유
@@ -201,6 +244,8 @@
       state.scores.mode = state.scores.mode === 'grade' ? 'grade' : 'pct';
       saveScores();
       state.view = 'diagnose';
+      // 주소에 성적이 남아 있으면 새로고침할 때마다 내가 고친 값을 덮어쓴다. 한 번 읽고 지운다.
+      try { globalThis.history?.replaceState?.(null, '', location.pathname); } catch (error) { /* 무시 */ }
     }
   }
   function shareUrl() {
@@ -216,7 +261,7 @@
   const KOR_ELECTIVES = ENGINE.KOR_ELECTIVES;
   const MATH_ELECTIVES = ENGINE.MATH_ELECTIVES;
   const INQ_SUBJECTS = [...ENGINE.SOCIAL_SUBJECTS, ...ENGINE.SCIENCE_SUBJECTS];
-  const GRADES = Array.from({ length: 9 }, (unused, index) => [String(index + 1), `${index + 1}등급`]);
+  const GRADES = [['', '미입력'], ...Array.from({ length: 9 }, (unused, index) => [String(index + 1), `${index + 1}등급`])];
 
   // 한 줄 = 라벨 + 컨트롤. 라벨은 진짜 <label>이라 눌러도 입력으로 초점이 간다.
   function inputRow(label, controls, hint, forId) {
@@ -229,6 +274,54 @@
   function setScore(field, value) {
     state.scores[field] = value;
     saveScores();
+    liveRefresh();
+  }
+  // 성적 화면이 열려 있는 동안 요약과 '진단 보기' 버튼만 즉시 고쳐 그린다.
+  // 화면 전체를 다시 그리면 입력하던 칸의 초점이 날아간다.
+  let liveRefresh = () => {};
+
+  // 입력 기준을 바꾸면 이미 적은 값도 같이 바꿔 준다 (백분위 96 ↔ 1등급).
+  // 등급으로 갔다가 그대로 돌아오면 원래 백분위를 되살린다 — 96이 98로 바뀌어 있으면 안 된다.
+  const modeBackup = { pct: null, grade: null };
+  function convertScores(from, to) {
+    if (from === to) return;
+    const fields = ['kor', 'math', 'inq1', 'inq2'];
+    const before = {};
+    for (const field of fields) before[field] = state.scores[field];
+    const saved = modeBackup[to];
+    for (const field of fields) {
+      const raw = before[field];
+      const number = Number(raw);
+      if (raw === '' || raw === null || raw === undefined || !Number.isFinite(number)) { state.scores[field] = ''; continue; }
+      if (to === 'grade') {
+        state.scores[field] = String(ENGINE.gradeFromPercentile(Math.min(100, Math.max(0, number))));
+        continue;
+      }
+      const back = Number(saved?.[field]);
+      const untouched = Number.isFinite(back) && String(ENGINE.gradeFromPercentile(back)) === String(Math.round(number));
+      state.scores[field] = untouched ? String(saved[field]) : String(ENGINE.percentileFromGrade(number));
+    }
+    modeBackup[from] = before;
+  }
+
+  // 클립보드가 막혀 있을 수 있다(권한 거부·iframe). 그때는 옛 방식으로, 그것도 안 되면 링크를 보여 준다.
+  async function copyText(text) {
+    try {
+      if (navigator?.clipboard?.writeText) { await navigator.clipboard.writeText(text); return true; }
+    } catch (error) { /* 아래 폴백으로 간다 */ }
+    try {
+      if (!document.body || typeof document.execCommand !== 'function') return false;
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.append(area);
+      area.select?.();
+      const done = document.execCommand('copy');
+      area.remove?.();
+      return Boolean(done);
+    } catch (error) { return false; }
   }
 
   function renderScores() {
@@ -245,7 +338,12 @@
         type: 'button', role: 'radio', 'aria-checked': String(state.scores.mode === value),
         class: 'seed-segmented-control__item',
         'data-checked': state.scores.mode === value ? '' : null,
-        onclick: () => { setScore('mode', value); render(); },
+        onclick: () => {
+          if (state.scores.mode === value) return;
+          convertScores(state.scores.mode, value);
+          setScore('mode', value);
+          render();
+        },
       }, [label])),
     ]);
 
@@ -291,23 +389,37 @@
       ]),
     ]);
 
-    const average = ENGINE.simpleAverage(profile());
-    const summary = average === null
-      ? banner('국어·수학·탐구를 채우면 진단이 열립니다.')
-      : callout('국·수·탐 평균', `${fmt(average, 2)} 백분위 — 어디가 공개값과 같은 기준입니다.`, 'informative');
+    const summary = el('div', { class: 'jr-summary' });
+    const actionButton = button('진단 보기', {
+      variant: 'brandSolid', size: 'large',
+      onclick: () => { if (profileReady()) go('diagnose'); },
+    });
+    // 숫자를 고칠 때마다 요약과 버튼만 다시 그린다.
+    liveRefresh = () => {
+      const current = profile();
+      const average = ENGINE.simpleAverage(current);
+      const note = state.scores.mode === 'grade' ? '등급을 백분위로 바꾼 값입니다.' : '어디가 공개값과 같은 기준입니다.';
+      summary.replaceChildren(average === null
+        ? banner('국어·수학·탐구를 채우면 진단이 열립니다.')
+        : callout('국·수·탐 평균', `${fmt(average, 2)} 백분위 — ${note}`, 'informative'));
+      if (ENGINE.profileComplete(current)) {
+        actionButton.removeAttribute('disabled');
+        actionButton.setAttribute('aria-disabled', 'false');
+      } else {
+        actionButton.setAttribute('disabled', '');
+        actionButton.setAttribute('aria-disabled', 'true');
+      }
+    };
 
     const share = el('div', { class: 'jr-actions' }, [
-      button(state.copied ? '링크를 복사했습니다' : '성적 링크 복사', {
+      button(state.copied === true ? '링크를 복사했습니다' : '성적 링크 복사', {
         variant: 'neutralOutline',
         onclick: async () => {
-          try {
-            await navigator.clipboard.writeText(shareUrl());
-            state.copied = true;
-          } catch (error) {
-            state.copied = false;
-          }
+          state.copied = (await copyText(shareUrl())) ? true : 'failed';
           render();
-          setTimeout(() => { state.copied = false; }, 4000);
+          setTimeout(() => {
+            if (state.copied === true) { state.copied = false; if (state.view === 'scores') render(); }
+          }, 4000);
         },
       }),
       button('입력 지우기', {
@@ -316,15 +428,18 @@
       }),
     ]);
 
-    const action = el('div', { class: 'jr-sticky-action' }, [
-      button('진단 보기', {
-        variant: 'brandSolid', size: 'large',
-        onclick: () => { go('diagnose'); },
-        attrs: profileReady() ? {} : { disabled: true, 'aria-disabled': 'true' },
-      }),
-    ]);
+    // 복사가 막힌 환경에서는 링크를 직접 골라 갈 수 있게 띄운다.
+    const fallback = state.copied === 'failed'
+      ? section([
+        banner('브라우저가 복사를 막았습니다. 아래 주소를 길게 눌러 복사하세요.', 'criticalWeak'),
+        textInput({ type: 'text', value: shareUrl(), readonly: true, 'aria-label': '성적 공유 주소', onclick: (event) => event.target.select?.() }, 'jr-search'),
+      ])
+      : null;
 
-    return [modeControl, summary, rows, gpa, share, action];
+    const action = el('div', { class: 'jr-sticky-action' }, [actionButton]);
+
+    liveRefresh();
+    return [modeControl, summary, rows, gpa, share, fallback, action];
   }
 
   // ---------------------------------------------------------------- 진단 화면
@@ -333,7 +448,7 @@
     const query = state.filters.query.trim();
     return rows.filter((row) => {
       if (row.jeongsi.status === 'no-cut' || row.jeongsi.status === 'no-profile') return false;
-      if (state.filters.band !== '전체' && row.jeongsi.band?.label !== state.filters.band) return false;
+      if (state.filters.band !== '전체' && bandOf(row.jeongsi)?.label !== state.filters.band) return false;
       if (state.filters.favOnly && !state.favorites.has(deptKey(row.universityId, row.dept.name))) return false;
       if (query && !(`${row.universityName} ${row.dept.name}`).includes(query)) return false;
       return true;
@@ -345,7 +460,7 @@
     const on = state.favorites.has(key);
     return el('button', {
       type: 'button',
-      class: `seed-action-button seed-action-button--variant_${on ? 'neutralSolid' : 'ghost'} seed-action-button--size_xsmall seed-action-button--layout_withText seed-action-button--size_xsmall-layout_withText jr-fav`,
+      class: `seed-action-button seed-action-button--variant_${on ? 'neutralSolid' : 'neutralOutline'} seed-action-button--size_xsmall seed-action-button--layout_withText seed-action-button--size_xsmall-layout_withText jr-fav`,
       'aria-pressed': String(on),
       'aria-label': `${deptName} 관심 학과 ${on ? '해제' : '저장'}`,
       onclick: (event) => {
@@ -354,7 +469,7 @@
         saveFavorites();
         render();
       },
-    }, [on ? '관심' : '관심 저장']);
+    }, ['관심']);
   }
 
   function renderDiagnose() {
@@ -378,16 +493,15 @@
         (value) => { state.filters.line = value; state.filters.limit = 8; saveFilters(); render(); }, '대학 라인'),
       select(BANDS.map((band) => [band, band === '전체' ? '판정 전체' : band]), state.filters.band,
         (value) => { state.filters.band = value; state.filters.limit = 8; saveFilters(); render(); }, '판정'),
-      el('input', {
+      textInput({
         type: 'search', value: state.filters.query, placeholder: '대학·학과 검색', 'aria-label': '대학·학과 검색',
-        class: 'seed-text-input__root seed-text-input__root--variant_outline seed-text-input__root--size_medium jr-search',
         oninput: (event) => {
           state.filters.query = event.target.value;
           state.filters.limit = 8;
           saveFilters();
           renderPanel({ keepFocus: 'search' });
         },
-      }),
+      }, 'jr-search'),
       button(state.filters.favOnly ? '관심만 보기 켬' : '관심만 보기', {
         variant: state.filters.favOnly ? 'neutralSolid' : 'neutralOutline', size: 'small',
         onclick: () => { state.filters.favOnly = !state.filters.favOnly; saveFilters(); render(); },
@@ -403,7 +517,7 @@
     }
 
     const grouped = new Map(BAND_ORDER.map((key) => [key, []]));
-    for (const row of rows) grouped.get(row.jeongsi.band.key)?.push(row);
+    for (const row of rows) grouped.get(bandOf(row.jeongsi).key)?.push(row);
 
     // 판정마다 같은 수만 먼저 보여 준다 — '안정'이 목록을 다 차지해 '적정'이 묻히지 않게 한다.
     const perGroup = state.filters.limit;
@@ -415,15 +529,19 @@
       const slice = group.slice(0, perGroup);
       shown += slice.length;
       blocks.push(el('div', { class: 'jr-section' }, [
-        listHeader(group[0].jeongsi.band.label, `${group.length}곳`),
+        listHeader(bandOf(group[0].jeongsi).label, `${group.length}곳`),
         el('div', { class: 'jr-list' }, slice.map((row) => {
           const result = row.jeongsi;
+          const band = bandOf(result);
+          const detail = result.status === 'blocked'
+            ? `${result.score.blockers[0]} · ${spreadText(result)}`
+            : `${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`;
           return listItem({
-            title: `${row.universityName} ${row.dept.name}`,
-            detail: `${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`,
+            title: `${row.universityName} ${deptLabel(row.dept.name)}`,
+            detail,
             suffix: [
-              el('span', { class: 'jr-gap num', text: `${result.gap > 0 ? '+' : ''}${fmt(result.gap, 1)}` }),
-              badge(result.band.label, BAND_TONE[result.band.key]),
+              el('span', { class: 'jr-gap num', text: signed(result.gap, 1) }),
+              badge(band.label, BAND_TONE[band.key]),
               favoriteButton(row.universityId, row.dept.name),
             ],
             onclick: () => {
@@ -471,7 +589,7 @@
         state.target = { university: value, dept: '' };
         render();
       }, '대학'),
-      select(university.departments.map((row) => [row.name, row.name]), dept.name, (value) => {
+      select(university.departments.map((row) => [row.name, deptLabel(row.name)]), dept.name, (value) => {
         state.target = { university: university.id, dept: value };
         render();
       }, '모집단위'),
@@ -483,10 +601,11 @@
         renderBasis(dept, target)];
     }
 
+    const targetBand = bandOf(target);
     const verdict = el('div', { class: 'jr-verdict' }, [
-      el('p', { class: 'jr-muted', text: `${university.short} ${dept.name} · ${dept.track}` }),
-      el('p', { class: 'jr-verdict-number', text: `${target.gap > 0 ? '+' : ''}${fmt(target.gap, 1)}` }),
-      el('p', {}, [badge(target.band.label, BAND_TONE[target.band.key]), el('span', { class: 'jr-verdict-note', text: ` 내 환산 ${fmt(target.mine, 1)} · ${spreadText(target)}` })]),
+      el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${dept.track}` }),
+      el('p', { class: 'jr-verdict-number', text: signed(target.gap, 1) }),
+      el('p', {}, [badge(targetBand.label, BAND_TONE[targetBand.key]), el('span', { class: 'jr-verdict-note', text: ` 내 환산 ${fmt(target.mine, 1)} · ${spreadText(target)}` })]),
       el('p', { class: 'jr-muted', text: `${target.cut.kind} 기준${target.cut.derived ? ' (지난해 값은 대학 공식 발표의 연도 변화량으로 맞춘 값)' : ''}` }),
     ]);
 
@@ -499,7 +618,7 @@
           detail: plan.need > 0
             ? (subject.reachable
               ? `${fmt(subject.current, 1)} → ${fmt(subject.targetPct, 1)} (이 영역만 올릴 때)`
-              : `이 영역만으로는 닿지 않습니다 (현재 ${fmt(subject.current, 1)})`)
+              : `100까지 올려도 ${fmt(subject.shortfall, 1)}점 모자랍니다 (현재 ${fmt(subject.current, 1)})`)
             : `현재 ${fmt(subject.current, 1)} · 반영 비중 ${Math.round(subject.share * 100)}%`,
           suffix: plan.best && plan.best.key === subject.key && plan.need > 0
             ? badge('추천', 'brand')
@@ -511,7 +630,7 @@
         }) : null,
         plan.english && plan.english.steps.length > 0 ? listItem({
           title: `영어 ${plan.english.current}등급 상승 효과`,
-          detail: plan.english.steps.map((step) => `${step.grade}등급 +${fmt(step.gain, 2)}`).join(' · '),
+          detail: plan.english.steps.map((step) => `${step.grade}등급 ${signed(step.gain, 2)}`).join(' · '),
           suffix: plan.english.enough ? badge(`${plan.english.enough.grade}등급이면 충분`, 'positive') : null,
         }) : null,
       ].filter(Boolean)),
@@ -521,7 +640,7 @@
     if (plan && plan.blockers.length > 0) notes.push(callout('지원 제한', plan.blockers.join(' · '), 'critical'));
     if (plan && plan.adjustments.length > 0) {
       notes.push(callout('선택과목·가감점',
-        plan.adjustments.map((row) => `${row.label} ${row.delta > 0 ? '+' : ''}${fmt(row.delta, 2)}`).join(' · '), 'warning'));
+        plan.adjustments.map((row) => `${row.label} ${signed(row.delta, 2)}`).join(' · '), 'warning'));
     }
     if (target.score?.bestOfNotes?.length > 0) {
       notes.push(callout('우수 영역 순 반영', target.score.bestOfNotes.join(' · '), 'neutral'));
@@ -568,7 +687,7 @@
       if (!result) continue;
       rows.push(listItem({
         title: `${label} ${result.typeName || ''}`.trim(),
-        detail: `${result.year}학년도 70%컷 ${fmt(result.cut, 2)}등급 · 내 내신과의 차이 ${result.gap > 0 ? '+' : ''}${fmt(result.gap, 2)}`,
+        detail: `${result.year}학년도 70%컷 ${fmt(result.cut, 2)}등급 · 내 내신과의 차이 ${signed(result.gap, 2)}`,
         suffix: badge(result.band.label, BAND_TONE[result.band.key]),
       }));
     }
@@ -599,11 +718,11 @@
     const rows = picks.map((pick) => {
       const result = ENGINE.evaluateJeongsi(profile(), pick.university, pick.dept, DATA.rules[pick.university.id], pick.university.volatility ?? DATA.volatility);
       return [
-        `${pick.university.short} ${pick.dept.name}`,
+        `${pick.university.short} ${deptLabel(pick.dept.name)}`,
         result.cut ? fmt(result.cut.value, 1) : '—',
         result.mine === undefined ? '—' : fmt(result.mine, 1),
-        result.gap === undefined ? '—' : `${result.gap > 0 ? '+' : ''}${fmt(result.gap, 1)}`,
-        result.band ? badge(result.band.label, BAND_TONE[result.band.key]) : '—',
+        result.gap === undefined ? '—' : signed(result.gap, 1),
+        bandOf(result) ? badge(bandOf(result).label, BAND_TONE[bandOf(result).key]) : '—',
       ];
     });
     return section([
@@ -630,16 +749,22 @@
     const trackBlocks = (rule.tracks || []).map((track, index) => {
       const weights = track.weights || {};
       const unit = track.unit === 'points' ? '점' : '%';
+      const english = track.english || {};
+      const history = track.history || {};
+      // 비율이 0인 영역은 '0점'이 아니라 어떻게 반영되는지를 적는다.
+      const zeroText = (label) => {
+        if (label === '영어') return english.method ? `비율 없이 ${english.method}` : '가감점으로만 반영';
+        if (label === '한국사') return history.method ? `비율 없이 ${history.method}` : '가감점으로만 반영';
+        return '미반영';
+      };
       const weightRows = [
         ['국어', weights.kor ?? 0], ['수학', weights.math ?? 0], ['영어', weights.eng ?? 0], ['탐구', weights.inq ?? 0],
-      ].map(([label, value]) => [label, `${value}${unit}`]);
+      ].map(([label, value]) => [label, Number(value) > 0 ? `${numText(value)}${unit}` : zeroText(label)]);
       for (const group of track.bestOf || []) {
-        weightRows.push([`${group.areas.map((area) => ENGINE.SUBJECT_LABEL[area]).join('·')} 우수 순`, group.weights.join(' / ')]);
+        weightRows.push([`${group.areas.map((area) => ENGINE.SUBJECT_LABEL[area]).join('·')} 우수 순`, group.weights.map(numText).join(' / ')]);
       }
-      const english = track.english || {};
-      const englishRow = Object.entries(english.table || {}).map(([grade, value]) => `${grade}등급 ${value}`);
-      const history = track.history || {};
-      const historyRow = Object.entries(history.table || {}).map(([grade, value]) => `${grade}등급 ${value}`);
+      const englishRow = Object.entries(english.table || {}).map(([grade, value]) => `${grade}등급 ${numText(value)}`);
+      const historyRow = Object.entries(history.table || {}).map(([grade, value]) => `${grade}등급 ${numText(value)}`);
       const inquiry = track.inquiry || {};
       const extras = [];
       if (inquiry.count) extras.push(`탐구 ${inquiry.count}과목 반영`);
@@ -654,7 +779,7 @@
         englishRow.length > 0 ? el('p', { class: 'jr-muted', text: `영어(${english.method || '반영'}): ${englishRow.join(' · ')}` }) : null,
         historyRow.length > 0 ? el('p', { class: 'jr-muted', text: `한국사(${history.method || '반영'}): ${historyRow.join(' · ')}` }) : null,
         extras.length > 0 ? el('p', { class: 'jr-muted', text: extras.join(' · ') }) : null,
-        [english.note, history.note, inquiry.note, track.note].filter(Boolean).map((note) => el('p', { class: 'jr-muted', text: note })),
+        [english.note, history.note, inquiry.note, track.note].filter(Boolean).map((note) => el('p', { class: 'jr-muted', text: prose(note) })),
       ].filter(Boolean), { open: index === 0 });
     });
 
@@ -672,7 +797,7 @@
     return [
       picker,
       section([listHeader(`${university.name} 정시 수능 반영`, `${rule.year || 2027}학년도`), ...trackBlocks]),
-      rule.changes2027 ? callout('2027학년도 변경', rule.changes2027, 'informative') : null,
+      rule.changes2027 ? callout('2027학년도 변경', prose(rule.changes2027), 'informative') : null,
       cutRows.length > 0 ? section([
         listHeader(`${EXAM_YEAR}학년도 수능 선택과목 원점수 컷`, exam.status === 'final' ? '실채점 확정' : '가채점 예상'),
         el('div', { class: 'jr-list' }, cutRows.map(([subject, first, second, third, maxStd]) => listItem({
@@ -727,9 +852,14 @@
     const unconfirmed = unconfirmedNotes();
 
     return [
-      callout('판정 기준', ENGINE.VERDICT_BANDS.map((band) => (
-        band.min === -Infinity ? `${band.label} 컷 −2점 미만` : `${band.label} 컷 ${band.min > 0 ? '+' : ''}${band.min}점 이상`
-      )).join(' · '), 'informative'),
+      callout('판정 기준', [
+        ...ENGINE.VERDICT_BANDS.map((band, index, all) => (
+          band.min === -Infinity
+            ? `${band.label} 컷 ${signed(all[index - 1].min, 1)}점 미만`
+            : `${band.label} 컷 ${signed(band.min, 1)}점 이상`
+        )),
+        '불가 지원 자격이 막힌 모집단위',
+      ].join(' · '), 'informative'),
       section([
         listHeader('계산 방법'),
         el('div', { class: 'jr-list' }, [
@@ -742,7 +872,7 @@
         listHeader('출처'),
         el('div', { class: 'jr-list' }, sources.map((row) => listItem({
           title: row.title,
-          detail: row.note || row.url,
+          detail: row.note || String(row.url || '').replace(/^https?:\/\//u, '').split('/')[0],
           suffix: el('a', { class: 'jr-link', href: row.url, target: '_blank', rel: 'noreferrer noopener', text: '열기' }),
         }))),
       ]),
@@ -784,7 +914,7 @@
     }
     for (const child of children.filter(Boolean)) panel.append(child);
     if (keepFocus === 'search') {
-      const search = panel.querySelector('.jr-search');
+      const search = panel.querySelector('.jr-search input') || panel.querySelector('.jr-search');
       if (search) {
         search.focus();
         if (selectionStart !== null && selectionStart !== undefined) {
@@ -801,6 +931,17 @@
       tab.tabIndex = on ? 0 : -1;
       if (on) tab.setAttribute('data-selected', ''); else tab.removeAttribute('data-selected');
     }
+    syncTabIndicator();
+  }
+
+  // 탭 밑줄. Seed 는 위치를 CSS 변수(--indicator-left/width)로 받는다.
+  function syncTabIndicator() {
+    const indicator = document.querySelector('.seed-tabs__indicator');
+    const active = document.querySelector('.seed-tabs__trigger[data-selected]');
+    if (!indicator || !active || typeof indicator.style?.setProperty !== 'function') return;
+    if (!Number.isFinite(active.offsetWidth) || active.offsetWidth === 0) return;
+    indicator.style.setProperty('--indicator-left', `${active.offsetLeft}px`);
+    indicator.style.setProperty('--indicator-width', `${active.offsetWidth}px`);
   }
 
   function render() {
@@ -812,18 +953,36 @@
     state.view = view;
     writeStore(STORE.view, view);
     render();
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'auto' : 'auto' });
+    window.scrollTo(0, 0);
   }
 
   // ---------------------------------------------------------------- 테마
   const THEMES = [['system', '시스템'], ['light-only', '밝게'], ['dark-only', '어둡게']];
-  function applyTheme(mode) {
+  // 다른 페이지 안에 얹혀 도는 경우(단일 파일 번들), 호스트가 <html data-theme="dark|light">로
+  // 테마를 정한다. 그때는 우리가 고르지 않고 호스트를 따라간다.
+  function hostTheme() {
+    const value = document.documentElement.getAttribute?.('data-theme');
+    if (value === 'dark') return 'dark-only';
+    if (value === 'light') return 'light-only';
+    return null;
+  }
+  function applyTheme(mode, { remember = true } = {}) {
     document.documentElement.setAttribute('data-seed-color-mode', mode);
     const label = THEMES.find(([value]) => value === mode)?.[1] || '시스템';
     const toggle = document.getElementById('themeToggle');
-    toggle.textContent = label;
-    toggle.setAttribute('aria-label', `테마 바꾸기 — 지금 ${label}`);
-    writeStore(STORE.theme, mode);
+    if (toggle) {
+      toggle.textContent = label;
+      toggle.setAttribute('aria-label', `테마 바꾸기 — 지금 ${label}`);
+    }
+    if (remember) writeStore(STORE.theme, mode);
+  }
+  function followHostTheme() {
+    const forced = hostTheme();
+    const toggle = document.getElementById('themeToggle');
+    if (!forced) return false;
+    applyTheme(forced, { remember: false });
+    if (toggle) toggle.hidden = true;
+    return true;
   }
 
   // ---------------------------------------------------------------- 시작
@@ -849,7 +1008,11 @@
     });
 
     const stored = readStore(STORE.theme, 'system');
-    applyTheme(['system', 'light-only', 'dark-only'].includes(stored) ? stored : 'system');
+    if (!followHostTheme()) applyTheme(['system', 'light-only', 'dark-only'].includes(stored) ? stored : 'system');
+    // 호스트가 나중에 테마를 바꿔도 따라간다.
+    if (typeof MutationObserver === 'function') {
+      new MutationObserver(followHostTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }
     document.getElementById('themeToggle').addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-seed-color-mode') || 'system';
       const index = THEMES.findIndex(([value]) => value === current);
@@ -858,6 +1021,8 @@
 
     if (!VIEWS[state.view]) state.view = 'scores';
     render();
+    // 글자 크기·창 폭이 바뀌면 탭 밑줄 자리도 다시 잡는다.
+    globalThis.addEventListener?.('resize', syncTabIndicator);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
