@@ -341,3 +341,72 @@ test('비교할 수 없는 정의는 엔진과 생성물이 같은 이름으로 
     assert.ok(ENGINE.CUT_DEFS[key], `엔진이 모르는 통계 정의: ${key}`);
   }
 });
+
+// (2026-09-10) 계열 오버라이드는 source/results.json 이 아니라 scripts/build-data.mjs 의
+// TRACK_OVERRIDES 표 하나에 있다. 생성물이 그 표대로 나왔는지만 여기서 본다.
+test('계열 오버라이드 표가 생성물에 그대로 반영된다', async () => {
+  const { TRACK_OVERRIDES } = await import('../scripts/build-data.mjs');
+  assert.ok(TRACK_OVERRIDES.length >= 13, `오버라이드가 13건 이상이어야 한다 (지금 ${TRACK_OVERRIDES.length})`);
+  for (const row of TRACK_OVERRIDES) {
+    assert.ok(row.why && row.why.length > 0, `${row.id} ${row.name}: 근거 없음`);
+    const university = DATA.universities.find((entry) => entry.id === row.id);
+    assert.ok(university, `${row.id}: 생성물에 없는 대학`);
+    const dept = university.departments.find((entry) => entry.name === row.name);
+    assert.ok(dept, `${row.id} ${row.name}: 생성물에 없는 모집단위`);
+    assert.equal(dept.track, row.track, `${row.id} ${row.name}`);
+  }
+  // 2026-09-10 조사로 새로 못박은 셋.
+  const trackOf = (id, name) => DATA.universities.find((entry) => entry.id === id)
+    .departments.find((entry) => entry.name === name).track;
+  assert.equal(trackOf('hongik', '예술학과'), '인문');
+  assert.equal(trackOf('kookmin', 'AI빅데이터융합경영학과'), '인문');
+  assert.equal(trackOf('kookmin', 'AI빅데이터융합경영학과(자연)'), '자연');
+  assert.equal(trackOf('knu', '자율미래인재학부'), '자유전공');
+});
+
+test('실기 없이 수능으로 뽑는 예체능은 practical 이 false 다', () => {
+  const deptOf = (id, name) => DATA.universities.find((entry) => entry.id === id)
+    .departments.find((entry) => entry.name === name);
+  // 경희대 체육대학·예술디자인대학(정시 실기 폐지), 세종대 창의소프트학부(수능 100%).
+  const exempt = [
+    ['khu', '체육학과'], ['khu', '스포츠의학과'], ['khu', '태권도학과'], ['khu', '골프산업학과'],
+    ['khu', '연극영화학과'], ['khu', '의류디자인학과'], ['khu', '산업디자인학과'],
+    ['sejong', '창의소프트학부(디자인이노베이션전공)'], ['sejong', '창의소프트학부(만화애니메이션텍전공)'],
+  ];
+  for (const [id, name] of exempt) {
+    const dept = deptOf(id, name);
+    assert.ok(dept, `${id} ${name}: 생성물에 없는 모집단위`);
+    assert.equal(dept.track, '예체능', `${id} ${name}: 트랙은 예체능 그대로여야 한다`);
+    assert.equal(dept.practical, false, `${id} ${name}`);
+  }
+  // 실기가 있는 예체능은 true 다.
+  assert.equal(deptOf('sejong', '무용과').practical, true);
+  assert.equal(deptOf('pnu', '음악학과 성악전공').practical, true);
+  // 예체능이 아닌 모집단위는 언제나 false 다.
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      assert.equal(typeof dept.practical, 'boolean', `${university.id} ${dept.name}`);
+      if (dept.track !== '예체능') assert.equal(dept.practical, false, `${university.id} ${dept.name}`);
+    }
+  }
+});
+
+test('이상치는 네 분류 중 하나이고 차·중앙값이 서로 맞는다', () => {
+  const kinds = new Set(['punk', 'error', 'practical', 'normal']);
+  let count = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      if (!dept.anomaly) continue;
+      count += 1;
+      const { kind, gap, median: center, mad } = dept.anomaly;
+      assert.ok(kinds.has(kind), `${university.id} ${dept.name}: ${kind}`);
+      assert.ok(isNumber(gap) && isNumber(center) && isNumber(mad), `${university.id} ${dept.name}`);
+      const value = dept.jeongsi?.['2026']?.cut70;
+      assert.ok(isNumber(value), `${university.id} ${dept.name}: 2026 컷 없음`);
+      assert.equal(Math.round((center - value) * 100) / 100, gap, `${university.id} ${dept.name}`);
+      // 문턱을 넘은 것만 실린다.
+      assert.ok(gap > Math.max(3, 2.5 * mad), `${university.id} ${dept.name}: 문턱 미달`);
+    }
+  }
+  assert.ok(count > 0, '이상치 후보가 하나도 없다');
+});

@@ -4311,8 +4311,7 @@
       "url": "https://hakjum.school/admissions/%EA%B0%95%EC%9B%90%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
       "sourceGrade": "D"
      }
-    },
-    "track": "자연"
+    }
    },
    {
     "name": "수의학과",
@@ -7339,8 +7338,7 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {},
-    "track": "인문"
+    "hakjong": {}
    },
    {
     "name": "의상디자인학과(실기)",
@@ -20601,8 +20599,7 @@
       "adigaStandard": false,
       "sourceGrade": "A"
      }
-    },
-    "track": "인문"
+    }
    },
    {
     "name": "의예과(자연계열)",
@@ -21213,8 +21210,7 @@
       "adigaStandard": false,
       "sourceGrade": "A"
      }
-    },
-    "track": "인문"
+    }
    },
    {
     "name": "중국어학과",
@@ -51611,8 +51607,7 @@
       "url": "https://admission.skku.edu/",
       "sourceGrade": "A"
      }
-    },
-    "track": "인문"
+    }
    },
    {
     "name": "프랑스어문학과",
@@ -67495,8 +67490,7 @@
       "url": "https://hakjum.school/admissions/%EC%9D%B8%EC%B2%9C%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
       "sourceGrade": "D"
      }
-    },
-    "track": "자연"
+    }
    },
    {
     "name": "해양학과",
@@ -76452,8 +76446,7 @@
       "sourceGrade": "D"
      }
     },
-    "hakjong": {},
-    "track": "자연"
+    "hakjong": {}
    },
    {
     "name": "수의예과",
@@ -77140,8 +77133,7 @@
       "sourceGrade": "D"
      }
     },
-    "hakjong": {},
-    "track": "자연"
+    "hakjong": {}
    },
    {
     "name": "해양산업경찰학과",
@@ -83147,8 +83139,7 @@
       "url": "https://hakjum.school/admissions/%EC%B6%A9%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
       "sourceGrade": "D"
      }
-    },
-    "track": "인문"
+    }
    },
    {
     "name": "공업화학과",
@@ -89470,8 +89461,7 @@
      }
     },
     "gyogwa": {},
-    "hakjong": {},
-    "track": "자연"
+    "hakjong": {}
    }
   ]
  },

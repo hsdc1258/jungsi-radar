@@ -1,0 +1,906 @@
+{
+ "year": "2026",
+ "threshold": "(중앙값 − 값) > max(3, 2.5 × MAD)",
+ "items": [
+  {
+   "id": "sejong",
+   "name": "무용과",
+   "track": "예체능",
+   "value": 28,
+   "median": 72,
+   "mad": 10.5,
+   "gap": 44,
+   "kind": "practical"
+  },
+  {
+   "id": "kookmin",
+   "name": "회화전공",
+   "track": "예체능",
+   "value": 42,
+   "median": 77,
+   "mad": 8,
+   "gap": 35,
+   "kind": "practical"
+  },
+  {
+   "id": "pnu",
+   "name": "음악학과 성악전공",
+   "track": "예체능",
+   "value": 14,
+   "median": 49,
+   "mad": 3,
+   "gap": 35,
+   "kind": "practical"
+  },
+  {
+   "id": "knu",
+   "name": "치위생학과",
+   "track": "의약",
+   "value": 66,
+   "median": 96.5,
+   "mad": 2,
+   "gap": 30.5,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "축산학과",
+   "track": "자연",
+   "value": 52,
+   "median": 82,
+   "mad": 4,
+   "gap": 30,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "건설방재공학과",
+   "track": "자연",
+   "value": 53,
+   "median": 82,
+   "mad": 4,
+   "gap": 29,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "산림생태보호학과",
+   "track": "자연",
+   "value": 56,
+   "median": 82,
+   "mad": 4,
+   "gap": 26,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "섬유패션디자인학부 섬유공학전공",
+   "track": "자연",
+   "value": 58,
+   "median": 82,
+   "mad": 4,
+   "gap": 24,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "위치정보시스템학과",
+   "track": "자연",
+   "value": 58,
+   "median": 82,
+   "mad": 4,
+   "gap": 24,
+   "kind": "error"
+  },
+  {
+   "id": "jejunu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 73,
+   "median": 95,
+   "mad": 1,
+   "gap": 22,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "자동차공학과",
+   "track": "자연",
+   "value": 61,
+   "median": 82,
+   "mad": 4,
+   "gap": 21,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "환경안전공학과",
+   "track": "자연",
+   "value": 61,
+   "median": 82,
+   "mad": 4,
+   "gap": 21,
+   "kind": "error"
+  },
+  {
+   "id": "pnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 77,
+   "median": 97,
+   "mad": 1,
+   "gap": 20,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "곤충생명과학과",
+   "track": "자연",
+   "value": 63,
+   "median": 82,
+   "mad": 4,
+   "gap": 19,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "스마트플랜트공학과",
+   "track": "자연",
+   "value": 64,
+   "median": 82,
+   "mad": 4,
+   "gap": 18,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "식물자원학과",
+   "track": "자연",
+   "value": 64,
+   "median": 82,
+   "mad": 4,
+   "gap": 18,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "식품외식산업학과",
+   "track": "자연",
+   "value": 64,
+   "median": 82,
+   "mad": 4,
+   "gap": 18,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "정밀기계공학과",
+   "track": "자연",
+   "value": 65,
+   "median": 82,
+   "mad": 4,
+   "gap": 17,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 80,
+   "median": 97,
+   "mad": 1,
+   "gap": 17,
+   "kind": "error"
+  },
+  {
+   "id": "khu",
+   "name": "태권도학과",
+   "track": "예체능",
+   "value": 63,
+   "median": 79,
+   "mad": 2,
+   "gap": 16,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "말/특수동물학과",
+   "track": "자연",
+   "value": 66,
+   "median": 82,
+   "mad": 4,
+   "gap": 16,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "소프트웨어학과",
+   "track": "자연",
+   "value": 66,
+   "median": 82,
+   "mad": 4,
+   "gap": 16,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "에너지화학공학과",
+   "track": "자연",
+   "value": 66,
+   "median": 82,
+   "mad": 4,
+   "gap": 16,
+   "kind": "error"
+  },
+  {
+   "id": "jnu",
+   "name": "지구과학교육과",
+   "track": "자연",
+   "value": 58,
+   "median": 74,
+   "mad": 3.5,
+   "gap": 16,
+   "kind": "error"
+  },
+  {
+   "id": "pnu",
+   "name": "바이오산업기계공학과",
+   "track": "자연",
+   "value": 63,
+   "median": 78,
+   "mad": 4,
+   "gap": 15,
+   "kind": "error"
+  },
+  {
+   "id": "pnu",
+   "name": "원예생명과학과",
+   "track": "자연",
+   "value": 63.33,
+   "median": 78,
+   "mad": 4,
+   "gap": 14.67,
+   "kind": "error"
+  },
+  {
+   "id": "konkuk",
+   "name": "현대미술학과",
+   "track": "예체능",
+   "value": 65.25,
+   "median": 79.5,
+   "mad": 2.5,
+   "gap": 14.25,
+   "kind": "practical"
+  },
+  {
+   "id": "pnu",
+   "name": "생명환경화학과",
+   "track": "자연",
+   "value": 64,
+   "median": 78,
+   "mad": 4,
+   "gap": 14,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "나노신소재공학과",
+   "track": "자연",
+   "value": 68,
+   "median": 82,
+   "mad": 4,
+   "gap": 14,
+   "kind": "error"
+  },
+  {
+   "id": "jnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 80,
+   "median": 94,
+   "mad": 3,
+   "gap": 14,
+   "kind": "error"
+  },
+  {
+   "id": "jbnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 81,
+   "median": 95,
+   "mad": 1,
+   "gap": 14,
+   "kind": "error"
+  },
+  {
+   "id": "jejunu",
+   "name": "경영학과(야)",
+   "track": "인문",
+   "value": 48,
+   "median": 62,
+   "mad": 4,
+   "gap": 14,
+   "kind": "error"
+  },
+  {
+   "id": "hanyang",
+   "name": "연극영화학과(연기)",
+   "track": "예체능",
+   "value": 77,
+   "median": 90.5,
+   "mad": 3.5,
+   "gap": 13.5,
+   "kind": "practical"
+  },
+  {
+   "id": "cnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 81,
+   "median": 94.5,
+   "mad": 1,
+   "gap": 13.5,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 80,
+   "median": 93.5,
+   "mad": 2.5,
+   "gap": 13.5,
+   "kind": "error"
+  },
+  {
+   "id": "jejunu",
+   "name": "행정학과(야)",
+   "track": "인문",
+   "value": 49,
+   "median": 62,
+   "mad": 4,
+   "gap": 13,
+   "kind": "error"
+  },
+  {
+   "id": "pnu",
+   "name": "바이오소재과학과",
+   "track": "자연",
+   "value": 66,
+   "median": 78,
+   "mad": 4,
+   "gap": 12,
+   "kind": "error"
+  },
+  {
+   "id": "pnu",
+   "name": "식품공학과",
+   "track": "자연",
+   "value": 67,
+   "median": 78,
+   "mad": 4,
+   "gap": 11,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "생물의소재공학과",
+   "track": "자연",
+   "value": 58,
+   "median": 69,
+   "mad": 2,
+   "gap": 11,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 86,
+   "median": 96.5,
+   "mad": 2,
+   "gap": 10.5,
+   "kind": "error"
+  },
+  {
+   "id": "hongik",
+   "name": "예술학과",
+   "track": "인문",
+   "value": 78,
+   "median": 88,
+   "mad": 1,
+   "gap": 10,
+   "kind": "error"
+  },
+  {
+   "id": "cbnu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 84,
+   "median": 94,
+   "mad": 2,
+   "gap": 10,
+   "kind": "error"
+  },
+  {
+   "id": "cbnu",
+   "name": "러시아언어문화학과",
+   "track": "인문",
+   "value": 65,
+   "median": 75,
+   "mad": 2,
+   "gap": 10,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "생명건강공학과",
+   "track": "자연",
+   "value": 59,
+   "median": 69,
+   "mad": 2,
+   "gap": 10,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "관광학과",
+   "track": "인문",
+   "value": 71,
+   "median": 80.5,
+   "mad": 1.5,
+   "gap": 9.5,
+   "kind": "error"
+  },
+  {
+   "id": "kyonggi",
+   "name": "융합과학부",
+   "track": "자연",
+   "value": 73,
+   "median": 82.1,
+   "mad": 1,
+   "gap": 9.1,
+   "kind": "error"
+  },
+  {
+   "id": "hongik",
+   "name": "판화과",
+   "track": "예체능",
+   "value": 59,
+   "median": 68,
+   "mad": 3.5,
+   "gap": 9,
+   "kind": "practical"
+  },
+  {
+   "id": "jnu",
+   "name": "미래모빌리티학과",
+   "track": "자연",
+   "value": 65,
+   "median": 74,
+   "mad": 3.5,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "cbnu",
+   "name": "컴퓨터공학과",
+   "track": "자연",
+   "value": 63,
+   "median": 72,
+   "mad": 2,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "문화예술・공과대학 자유전공학과",
+   "track": "자연",
+   "value": 60,
+   "median": 69,
+   "mad": 2,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "스마트산업공학과",
+   "track": "자연",
+   "value": 60,
+   "median": 69,
+   "mad": 2,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "농학과",
+   "track": "자연",
+   "value": 56,
+   "median": 65,
+   "mad": 3,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "원예과학부",
+   "track": "자연",
+   "value": 56,
+   "median": 65,
+   "mad": 3,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "독어독문학과",
+   "track": "인문",
+   "value": 58,
+   "median": 67,
+   "mad": 3,
+   "gap": 9,
+   "kind": "error"
+  },
+  {
+   "id": "kookmin",
+   "name": "미래융합전공(C)",
+   "track": "인문",
+   "value": 78,
+   "median": 86,
+   "mad": 1.5,
+   "gap": 8,
+   "kind": "error"
+  },
+  {
+   "id": "cnu",
+   "name": "화학공학교육과",
+   "track": "자연",
+   "value": 70,
+   "median": 78,
+   "mad": 3,
+   "gap": 8,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "배터리융합공학과",
+   "track": "자연",
+   "value": 61,
+   "median": 69,
+   "mad": 2,
+   "gap": 8,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "지질과학과",
+   "track": "자연",
+   "value": 57,
+   "median": 65,
+   "mad": 3,
+   "gap": 8,
+   "kind": "error"
+  },
+  {
+   "id": "gnu",
+   "name": "화학과",
+   "track": "자연",
+   "value": 57,
+   "median": 65,
+   "mad": 3,
+   "gap": 8,
+   "kind": "error"
+  },
+  {
+   "id": "khu",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 89.45,
+   "median": 96.88,
+   "mad": 1.17,
+   "gap": 7.43,
+   "kind": "normal"
+  },
+  {
+   "id": "kyonggi",
+   "name": "소프트웨어경영학부",
+   "track": "자연",
+   "value": 75,
+   "median": 82.1,
+   "mad": 1,
+   "gap": 7.1,
+   "kind": "error"
+  },
+  {
+   "id": "dankook",
+   "name": "체육교육과",
+   "track": "예체능",
+   "value": 74,
+   "median": 81,
+   "mad": 1,
+   "gap": 7,
+   "kind": "practical"
+  },
+  {
+   "id": "syu",
+   "name": "컴퓨터공학부",
+   "track": "자연",
+   "value": 71,
+   "median": 78,
+   "mad": 1,
+   "gap": 7,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "화공・생물공학부",
+   "track": "자연",
+   "value": 62,
+   "median": 69,
+   "mad": 2,
+   "gap": 7,
+   "kind": "error"
+  },
+  {
+   "id": "sogang",
+   "name": "사회과학부",
+   "track": "인문",
+   "value": 84,
+   "median": 90.5,
+   "mad": 2,
+   "gap": 6.5,
+   "kind": "error"
+  },
+  {
+   "id": "kyonggi",
+   "name": "화학과",
+   "track": "자연",
+   "value": 76,
+   "median": 82.1,
+   "mad": 1,
+   "gap": 6.1,
+   "kind": "error"
+  },
+  {
+   "id": "yonsei",
+   "name": "간호학과",
+   "track": "의약",
+   "value": 92,
+   "median": 98,
+   "mad": 0.5,
+   "gap": 6,
+   "kind": "error"
+  },
+  {
+   "id": "cau",
+   "name": "영어영문학과",
+   "track": "인문",
+   "value": 85,
+   "median": 91,
+   "mad": 1,
+   "gap": 6,
+   "kind": "error"
+  },
+  {
+   "id": "cbnu",
+   "name": "건축공학과",
+   "track": "자연",
+   "value": 66,
+   "median": 72,
+   "mad": 2,
+   "gap": 6,
+   "kind": "error"
+  },
+  {
+   "id": "kangwon",
+   "name": "환경공학과",
+   "track": "자연",
+   "value": 63,
+   "median": 69,
+   "mad": 2,
+   "gap": 6,
+   "kind": "error"
+  },
+  {
+   "id": "smu",
+   "name": "SW융합학부 게임전공",
+   "track": "자연",
+   "value": 78,
+   "median": 83.5,
+   "mad": 1.5,
+   "gap": 5.5,
+   "kind": "error"
+  },
+  {
+   "id": "yonsei",
+   "name": "식품영양학과",
+   "track": "자연",
+   "value": 89,
+   "median": 94,
+   "mad": 1,
+   "gap": 5,
+   "kind": "error"
+  },
+  {
+   "id": "hanyang",
+   "name": "사학과",
+   "track": "인문",
+   "value": 87,
+   "median": 92,
+   "mad": 1,
+   "gap": 5,
+   "kind": "error"
+  },
+  {
+   "id": "cau",
+   "name": "국어국문학부(국어국문학전공)",
+   "track": "인문",
+   "value": 86,
+   "median": 91,
+   "mad": 1,
+   "gap": 5,
+   "kind": "error"
+  },
+  {
+   "id": "hufs",
+   "name": "말레이인도네시아어과",
+   "track": "인문",
+   "value": 84,
+   "median": 89,
+   "mad": 1,
+   "gap": 5,
+   "kind": "error"
+  },
+  {
+   "id": "sookmyung",
+   "name": "행정학과",
+   "track": "인문",
+   "value": 79,
+   "median": 84,
+   "mad": 1,
+   "gap": 5,
+   "kind": "error"
+  },
+  {
+   "id": "ajou",
+   "name": "환경안전공학과",
+   "track": "자연",
+   "value": 81,
+   "median": 85.83,
+   "mad": 0.67,
+   "gap": 4.83,
+   "kind": "error"
+  },
+  {
+   "id": "hanyang",
+   "name": "유기나노공학과",
+   "track": "자연",
+   "value": 88,
+   "median": 92.5,
+   "mad": 1.5,
+   "gap": 4.5,
+   "kind": "error"
+  },
+  {
+   "id": "knu",
+   "name": "고고인류학과",
+   "track": "인문",
+   "value": 76,
+   "median": 80.5,
+   "mad": 1.5,
+   "gap": 4.5,
+   "kind": "error"
+  },
+  {
+   "id": "cau",
+   "name": "역사학과",
+   "track": "인문",
+   "value": 87,
+   "median": 91,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "hufs",
+   "name": "몽골어과",
+   "track": "인문",
+   "value": 85,
+   "median": 89,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "hufs",
+   "name": "영어통번역학과",
+   "track": "인문",
+   "value": 85,
+   "median": 89,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "hongik",
+   "name": "국어국문학과",
+   "track": "인문",
+   "value": 84,
+   "median": 88,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "kookmin",
+   "name": "소프트웨어학부",
+   "track": "자연",
+   "value": 82,
+   "median": 86,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "kyonggi",
+   "name": "영어영문학과",
+   "track": "인문",
+   "value": 76,
+   "median": 80,
+   "mad": 1,
+   "gap": 4,
+   "kind": "error"
+  },
+  {
+   "id": "ajou",
+   "name": "수학과",
+   "track": "자연",
+   "value": 82,
+   "median": 85.83,
+   "mad": 0.67,
+   "gap": 3.83,
+   "kind": "error"
+  },
+  {
+   "id": "mju",
+   "name": "미디어·휴먼라이프대학",
+   "track": "인문",
+   "value": 80.3,
+   "median": 84,
+   "mad": 0.65,
+   "gap": 3.7,
+   "kind": "normal"
+  },
+  {
+   "id": "mju",
+   "name": "화학・생명과학대학",
+   "track": "자연",
+   "value": 79,
+   "median": 82.5,
+   "mad": 1.35,
+   "gap": 3.5,
+   "kind": "error"
+  },
+  {
+   "id": "khu",
+   "name": "한약학과",
+   "track": "의약",
+   "value": 93.48,
+   "median": 96.88,
+   "mad": 1.17,
+   "gap": 3.4,
+   "kind": "normal"
+  },
+  {
+   "id": "kw",
+   "name": "경영학부 빅데이터경영전공",
+   "track": "자연",
+   "value": 80,
+   "median": 83.33,
+   "mad": 1,
+   "gap": 3.33,
+   "kind": "punk"
+  }
+ ]
+}
