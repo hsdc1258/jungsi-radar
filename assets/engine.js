@@ -225,10 +225,21 @@
     const weights = { ...(track?.weights || {}) };
     const inquiryCount = Number(track?.inquiry?.count) || 2;
     const inqPct = inquiryPercentile(profile, inquiryCount);
+    const engRows = englishTable(track?.english);
+    const engGrade = profile.eng.grade;
+    // 영어 등급을 다른 영역과 견줄 수 있는 0~100 값으로. 1등급 배점을 100으로 본 비율이다.
+    const engPct = (() => {
+      if (!isNumber(engGrade)) return null;
+      const top = engRows[1];
+      const mine = engRows[engGrade];
+      if (isNumber(top) && top > 0 && isNumber(mine)) return clamp(mine / top, 0, 1) * 100;
+      return engGrade === 1 ? 100 : null;
+    })();
     // '우수한 영역 순' 반영: 그룹 안의 영역을 내 점수 순으로 줄 세워 큰 가중치부터 준다.
+    // 영어도 그룹에 들어갈 수 있다(가천대 정시: 영어·탐구 중 우수한 순 20:10).
     const bestOfNotes = [];
     for (const group of Array.isArray(track?.bestOf) ? track.bestOf : []) {
-      const current = { kor: profile.kor.pct, math: profile.math.pct, inq: inqPct };
+      const current = { kor: profile.kor.pct, math: profile.math.pct, inq: inqPct, eng: engPct };
       const ordered = (group.areas || []).filter((area) => isNumber(current[area])).sort((a, b) => current[b] - current[a]);
       const sortedWeights = [...(group.weights || [])].sort((a, b) => b - a);
       ordered.forEach((area, index) => { weights[area] = (Number(weights[area]) || 0) + (Number(sortedWeights[index]) || 0); });
@@ -240,9 +251,7 @@
     const wEng = Number(weights.eng) || 0;
     const unit = track?.unit === 'points' ? 'points' : 'percent';
     const englishMethod = track?.english?.method || (wEng > 0 ? '비율반영' : '가산');
-    const engRows = englishTable(track?.english);
     const englishByRatio = wEng > 0 && englishMethod === '비율반영';
-    const engGrade = profile.eng.grade;
 
     // 반영비율이 하나도 없으면(규칙 미확인) 단순 평균으로 대체하고 그렇게 표시한다.
     const hasWeights = wKor + wMath + wInq > 0;
@@ -257,12 +266,7 @@
         { key: 'math', weight: 1, pct: profile.math.pct },
         { key: 'inq', weight: 1, pct: inqPct },
       ];
-    if (englishByRatio && isNumber(engGrade)) {
-      const top = engRows[1];
-      const mine = engRows[engGrade];
-      const ratio = isNumber(top) && top > 0 && isNumber(mine) ? clamp(mine / top, 0, 1) : (engGrade === 1 ? 1 : null);
-      if (ratio !== null) parts.push({ key: 'eng', weight: wEng, pct: ratio * 100 });
-    }
+    if (englishByRatio && isNumber(engPct)) parts.push({ key: 'eng', weight: wEng, pct: engPct });
     const totalWeight = parts.reduce((sum, part) => sum + part.weight, 0);
     const shares = {};
     for (const part of parts) shares[part.key] = part.weight / totalWeight;
@@ -450,7 +454,34 @@
     };
   }
 
-  // 전체 진단: 모든 대학·모집단위를 판정해 정렬한다. filters: { track, universities:Set, group }
+  // 목록 정렬 두 가지.
+  //   byCutDesc : 예상 컷이 높은 곳부터 — "갈 수 있는 가장 높은 곳"을 먼저 본다.
+  //               같은 컷이면 대학 라인 순(서연고→…), 그다음 모집단위 이름 순.
+  //   byGapAsc  : 컷과의 차이가 작은(아슬아슬한) 곳부터 — 판정별 묶음 안의 순서.
+  function byCutDesc(left, right) {
+    const l = left.jeongsi?.cut?.value;
+    const r = right.jeongsi?.cut?.value;
+    if (isNumber(l) && isNumber(r)) {
+      if (l !== r) return r - l;
+    } else if (isNumber(l) !== isNumber(r)) {
+      return isNumber(l) ? -1 : 1;
+    }
+    if ((left.universityOrder ?? 0) !== (right.universityOrder ?? 0)) return (left.universityOrder ?? 0) - (right.universityOrder ?? 0);
+    return String(left.dept?.name || '').localeCompare(String(right.dept?.name || ''), 'ko');
+  }
+  function byGapAsc(left, right) {
+    const l = left.jeongsi?.gap;
+    const r = right.jeongsi?.gap;
+    if (isNumber(l) && isNumber(r)) {
+      if (l !== r) return l - r;
+    } else if (isNumber(l) !== isNumber(r)) {
+      return isNumber(l) ? -1 : 1;
+    }
+    return (left.universityOrder ?? 0) - (right.universityOrder ?? 0);
+  }
+
+  // 전체 진단: 모든 대학·모집단위를 판정해 정렬한다.
+  // filters: { track, universities:Set, group, sort: 'cut' | 'gap' }
   function diagnose(profile, data, filters = {}) {
     const rows = [];
     for (const university of data.universities || []) {
@@ -471,13 +502,7 @@
         });
       }
     }
-    rows.sort((left, right) => {
-      const l = left.jeongsi.gap; const r = right.jeongsi.gap;
-      if (isNumber(l) && isNumber(r)) return l - r;
-      if (isNumber(l)) return -1;
-      if (isNumber(r)) return 1;
-      return left.universityOrder - right.universityOrder;
-    });
+    rows.sort(filters.sort === 'gap' ? byGapAsc : byCutDesc);
     return rows;
   }
 
@@ -564,6 +589,7 @@
     gradeFromPercentile, percentileFromGrade, percentileFloorOfGrade, percentileFromRaw, inquiryKind,
     normalizeProfile, profileComplete, inquiryPercentile, simpleAverage, pickTrack, universityScore,
     jeongsiReference, evaluateJeongsi, evaluateSusi, diagnose, analyzeTarget, electiveSummary, round,
+    byCutDesc, byGapAsc,
   });
   globalThis.IPSI_ENGINE = api;
 })();

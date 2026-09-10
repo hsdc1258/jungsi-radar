@@ -32,7 +32,7 @@
   const state = {
     view: readStore(STORE.view, 'scores'),
     scores: { ...EMPTY_SCORES, ...readStore(STORE.scores, {}) },
-    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, limit: 8, ...readStore(STORE.filters, {}) },
+    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, sort: 'cut', noArts: true, noDream: true, limit: 8, ...readStore(STORE.filters, {}) },
     favorites: new Set(readStore(STORE.favorites, [])),
     target: { university: '', dept: '' },
     rulesUniversity: 'snu',
@@ -77,6 +77,14 @@
   const bandOf = (result) => (result?.status === 'blocked' ? BLOCKED_BAND : result?.band || null);
   // 목록에 보여 주는 순서: 안정 → 적정 → 소신 → 상향 → 위험 → 불가.
   const BAND_ORDER = ['safe', 'fit', 'reach', 'stretch', 'risky', 'blocked'];
+  // '높은 순' 정렬에서 쓰는 두 묶음. 먼저 지원 가능한 곳을 컷 높은 순으로 모두 보여 주고,
+  // 그 아래에 손이 닿지 않는 곳을 같은 방식으로 잇는다.
+  const REACHABLE_BANDS = Object.freeze(['safe', 'fit', 'reach']);
+  const CUT_GROUPS = Object.freeze([
+    { key: 'reachable', label: '지원 가능', hint: '안정·적정·소신', bands: REACHABLE_BANDS },
+    { key: 'hard', label: '상향·위험·불가', hint: '지금 점수로는 어렵습니다', bands: ['stretch', 'risky', 'blocked'] },
+  ]);
+  const SORTS = Object.freeze([['cut', '높은 순'], ['band', '판정별']]);
   const badge = (label, tone = 'neutral') => el('span', {
     class: `seed-badge__root seed-badge__root--size_medium seed-badge__root--variant_weak seed-badge__root--tone_${tone}-variant_weak`,
   }, [el('span', { class: 'seed-badge__label', text: label })]);
@@ -202,6 +210,38 @@
   const deptKey = (universityId, deptName) => `${universityId}::${deptName}`;
   const TRACKS = ['전체', '인문', '자연', '의약', '자유전공', '예체능'];
   const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가'];
+
+  // 등급 → 백분위 환산표. 상대평가 등급 구간의 정확한 중앙값이다 (1등급 96~100 → 98.0 …).
+  // 엔진의 GRADE_FLOORS·GRADE_MIDPOINTS를 그대로 읽어 화면과 계산이 절대 어긋나지 않게 한다.
+  const GRADE_TABLE = ENGINE.GRADE_MIDPOINTS.map((mid, index) => ({
+    grade: index + 1,
+    low: ENGINE.GRADE_FLOORS[index],
+    high: index === 0 ? 100 : ENGINE.GRADE_FLOORS[index - 1],
+    mid,
+  }));
+  const gradeMidText = (grade) => {
+    const row = GRADE_TABLE[Math.min(9, Math.max(1, Math.round(Number(grade)))) - 1];
+    return `${row.grade}등급 → ${fmt(row.mid, 1)}(구간 중앙)`;
+  };
+
+  // 목록에서 걸러 내는 두 가지. 토글은 기본으로 켜져 있고 localStorage에 남는다.
+  //   예체능 제외    — 실기 비중이 커서 수능 컷만으로는 판정이 어려운 모집단위.
+  //   말도 안되는거 제외 — 의·치·한·약·수의 최상위 모집단위와 서울대·연세대·고려대 전체.
+  // 관심 목록·공유 링크로 직접 연 모집단위는 숨기지 않는다(아래 hiddenBy 호출부에서 예외).
+  const DREAM_UNIVERSITIES = new Set(['snu', 'yonsei', 'korea']);
+  // 간호·물리치료·보건 등은 빼지 않는다 — 의·치·한·약·수의만 본다.
+  const DREAM_DEPT = /의예|의학과|치의예|치의학|한의예|한의학|약학|수의예|수의학/u;
+  const isArtsDept = (dept) => dept?.track === '예체능';
+  const isDreamDept = (universityId, dept) => DREAM_UNIVERSITIES.has(universityId) || DREAM_DEPT.test(String(dept?.name || ''));
+  function hiddenBy(universityId, dept) {
+    if (state.filters.noArts && isArtsDept(dept)) return 'arts';
+    if (state.filters.noDream && isDreamDept(universityId, dept)) return 'dream';
+    return null;
+  }
+  // 관심 학과로 담아 두었거나 지금 목표로 열어 둔 모집단위는 숨김 규칙을 비켜 간다.
+  const pinned = (universityId, deptName) => state.favorites.has(deptKey(universityId, deptName))
+    || (state.target.university === universityId && state.target.dept === deptName);
+  const hiddenNow = (universityId, dept) => (pinned(universityId, dept.name) ? null : hiddenBy(universityId, dept));
 
   const profile = () => ENGINE.normalizeProfile(state.scores, DATA.scales);
   const profileReady = () => ENGINE.profileComplete(profile());
@@ -390,6 +430,13 @@
     ]);
 
     const summary = el('div', { class: 'jr-summary' });
+    // 등급 입력일 때 "2등급 → 92.5(구간 중앙)" 처럼 무엇으로 바뀌었는지 그 자리에서 보여 준다.
+    const conversion = el('div', { class: 'jr-summary' });
+    const gradeTable = isGrade ? accordion('등급 → 백분위 환산표', [
+      muted('상대평가 등급 구간의 정확한 중앙값을 씁니다. 백분위 ↔ 등급을 오갈 때도 같은 표입니다.'),
+      table(['등급', '백분위 구간', '환산 백분위'],
+        GRADE_TABLE.map((row) => [`${row.grade}등급`, `${fmt(row.low, 0)} ~ ${fmt(row.high, 0)}`, fmt(row.mid, 1)])),
+    ]) : null;
     const actionButton = button('진단 보기', {
       variant: 'brandSolid', size: 'large',
       onclick: () => { if (profileReady()) go('diagnose'); },
@@ -398,10 +445,22 @@
     liveRefresh = () => {
       const current = profile();
       const average = ENGINE.simpleAverage(current);
-      const note = state.scores.mode === 'grade' ? '등급을 백분위로 바꾼 값입니다.' : '어디가 공개값과 같은 기준입니다.';
+      const note = state.scores.mode === 'grade'
+        ? '등급 구간의 정중앙 백분위로 바꾼 값입니다.'
+        : '어디가 공개값과 같은 기준입니다.';
       summary.replaceChildren(average === null
         ? banner('국어·수학·탐구를 채우면 진단이 열립니다.')
         : callout('국·수·탐 평균', `${fmt(average, 2)} 백분위 — ${note}`, 'informative'));
+      if (state.scores.mode === 'grade') {
+        const parts = [['kor', '국어'], ['math', '수학'], ['inq1', '탐구 1'], ['inq2', '탐구 2']]
+          .filter(([field]) => String(state.scores[field] ?? '').trim() !== '' && Number.isFinite(Number(state.scores[field])))
+          .map(([field, label]) => `${label} ${gradeMidText(state.scores[field])}`);
+        conversion.replaceChildren(parts.length > 0
+          ? callout('등급 → 백분위 환산', parts.join(' · '), 'neutral')
+          : banner('등급을 넣으면 구간 중앙 백분위로 바꿔 보여 줍니다.'));
+      } else {
+        conversion.replaceChildren();
+      }
       if (ENGINE.profileComplete(current)) {
         actionButton.removeAttribute('disabled');
         actionButton.setAttribute('aria-disabled', 'false');
@@ -439,15 +498,22 @@
     const action = el('div', { class: 'jr-sticky-action' }, [actionButton]);
 
     liveRefresh();
-    return [modeControl, summary, rows, gpa, share, fallback, action];
+    return [modeControl, summary, conversion, gradeTable, rows, gpa, share, fallback, action].filter(Boolean);
   }
 
   // ---------------------------------------------------------------- 진단 화면
   function diagnoseRows() {
-    const rows = ENGINE.diagnose(profile(), DATA, { track: state.filters.track, universities: lineUniversities() });
+    // 기본은 예상 컷 내림차순 — 갈 수 있는 가장 높은 곳부터 낮은 곳까지.
+    // '판정별'을 고르면 판정 묶음 안에서 아슬아슬한 순(차이 오름차순)으로 본다.
+    const rows = ENGINE.diagnose(profile(), DATA, {
+      track: state.filters.track,
+      universities: lineUniversities(),
+      sort: state.filters.sort === 'band' ? 'gap' : 'cut',
+    });
     const query = state.filters.query.trim();
     return rows.filter((row) => {
       if (row.jeongsi.status === 'no-cut' || row.jeongsi.status === 'no-profile') return false;
+      if (hiddenNow(row.universityId, row.dept)) return false;
       if (state.filters.band !== '전체' && bandOf(row.jeongsi)?.label !== state.filters.band) return false;
       if (state.filters.favOnly && !state.favorites.has(deptKey(row.universityId, row.dept.name))) return false;
       if (query && !(`${row.universityName} ${row.dept.name}`).includes(query)) return false;
@@ -480,19 +546,52 @@
     const rows = diagnoseRows();
     const average = ENGINE.simpleAverage(profile());
 
-    const chips = el('div', { class: 'seed-chip-tabs__list seed-chip-tabs__list--size_medium jr-chips', role: 'tablist', 'aria-label': '계열' }, TRACKS.map((track) => el('button', {
+    const trackTabs = el('div', { class: 'seed-chip-tabs__list seed-chip-tabs__list--size_medium jr-chips-tabs', role: 'tablist', 'aria-label': '계열' }, TRACKS.map((track) => el('button', {
       type: 'button', role: 'tab',
       'aria-selected': String(state.filters.track === track),
       'data-selected': state.filters.track === track ? '' : null,
       class: 'seed-chip-tabs__trigger seed-chip-tabs__trigger--size_medium seed-chip-tabs__trigger--variant_neutralOutline',
-      onclick: () => { state.filters.track = track; state.filters.limit = 8; saveFilters(); render(); },
+      onclick: () => {
+        state.filters.track = track;
+        // 예체능을 골랐는데 '예체능 제외'가 켜져 있으면 아무것도 안 남는다 — 함께 꺼 준다.
+        if (track === '예체능') state.filters.noArts = false;
+        state.filters.limit = 8;
+        saveFilters();
+        render();
+      },
     }, [track])));
+    // 토글 칩. 계열 칩과 같은 줄에 둔다.
+    const toggleChip = (label, on, onclick) => el('button', {
+      type: 'button',
+      'aria-pressed': String(on),
+      'data-selected': on ? '' : null,
+      class: 'seed-chip-tabs__trigger seed-chip-tabs__trigger--size_medium seed-chip-tabs__trigger--variant_neutralOutline',
+      onclick,
+    }, [label]);
+    const chips = el('div', { class: 'jr-chips' }, [
+      trackTabs,
+      toggleChip('예체능 제외', state.filters.noArts, () => {
+        state.filters.noArts = !state.filters.noArts;
+        if (state.filters.noArts && state.filters.track === '예체능') state.filters.track = '전체';
+        state.filters.limit = 8;
+        saveFilters();
+        render();
+      }),
+      toggleChip('말도 안되는거 제외', state.filters.noDream, () => {
+        state.filters.noDream = !state.filters.noDream;
+        state.filters.limit = 8;
+        saveFilters();
+        render();
+      }),
+    ]);
 
     const filters = el('div', { class: 'jr-filters' }, [
       select([['전체', '라인 전체'], ...DATA.lines.map((line) => [line.label, line.label])], state.filters.line,
         (value) => { state.filters.line = value; state.filters.limit = 8; saveFilters(); render(); }, '대학 라인'),
       select(BANDS.map((band) => [band, band === '전체' ? '판정 전체' : band]), state.filters.band,
         (value) => { state.filters.band = value; state.filters.limit = 8; saveFilters(); render(); }, '판정'),
+      select(SORTS, state.filters.sort,
+        (value) => { state.filters.sort = value; state.filters.limit = 8; saveFilters(); render(); }, '정렬'),
       textInput({
         type: 'search', value: state.filters.query, placeholder: '대학·학과 검색', 'aria-label': '대학·학과 검색',
         oninput: (event) => {
@@ -509,34 +608,50 @@
       }),
     ]);
 
+    const sortNote = state.filters.sort === 'band' ? '판정별로 묶어' : '예상 컷 높은 순으로';
+    const hiddenNote = [state.filters.noArts ? '예체능' : null, state.filters.noDream ? '의·치·한·약·수의와 서·연·고' : null]
+      .filter(Boolean).join('·');
     const summary = callout('내 국·수·탐 평균',
-      `${fmt(average, 2)} 백분위 · 조건에 맞는 모집단위 ${rows.length}곳 · 관심 ${state.favorites.size}곳`, 'informative');
+      `${fmt(average, 2)} 백분위 · 조건에 맞는 모집단위 ${rows.length}곳을 ${sortNote} 봅니다 · 관심 ${state.favorites.size}곳${hiddenNote ? ` · ${hiddenNote} 제외` : ''}`, 'informative');
 
     const note = state.filters.track === '예체능'
       ? banner('예체능은 실기 비중이 커서 수능 컷만으로는 판정이 어렵습니다. 참고로만 보세요.')
       : null;
 
     if (rows.length === 0) {
+      const off = [state.filters.noArts ? '예체능 제외' : null, state.filters.noDream ? '말도 안되는거 제외' : null].filter(Boolean);
       const empty = state.filters.favOnly && state.favorites.size === 0
         ? '관심 학과가 아직 없습니다. 목록에서 관심을 눌러 담아 보세요.'
-        : '조건에 맞는 모집단위가 없습니다. 필터를 넓혀 보세요.';
+        : off.length > 0
+          ? `조건에 맞는 모집단위가 없습니다. 필터를 넓히거나 ${off.join('·')} 토글을 꺼 보세요.`
+          : '조건에 맞는 모집단위가 없습니다. 필터를 넓혀 보세요.';
       return [summary, chips, filters, note, banner(empty)].filter(Boolean);
     }
 
-    const grouped = new Map(BAND_ORDER.map((key) => [key, []]));
-    for (const row of rows) grouped.get(bandOf(row.jeongsi).key)?.push(row);
+    // 묶음 나누기. '높은 순'은 지원 가능 / 어려움 두 묶음, '판정별'은 판정 여섯 묶음이다.
+    const groups = state.filters.sort === 'band'
+      ? BAND_ORDER.map((key) => ({ key, label: null, hint: null, bands: [key] }))
+      : CUT_GROUPS.map((group) => ({ ...group }));
+    const bucket = new Map(groups.map((group) => [group.key, []]));
+    for (const row of rows) {
+      const key = bandOf(row.jeongsi).key;
+      const group = groups.find((candidate) => candidate.bands.includes(key));
+      if (group) bucket.get(group.key).push(row);
+    }
 
-    // 판정마다 같은 수만 먼저 보여 준다 — '안정'이 목록을 다 차지해 '적정'이 묻히지 않게 한다.
+    // 묶음마다 같은 수만 먼저 보여 준다 — 한 묶음이 목록을 다 차지해 다른 묶음이 묻히지 않게 한다.
     const perGroup = state.filters.limit;
     const blocks = [];
     let shown = 0;
-    for (const key of BAND_ORDER) {
-      const group = grouped.get(key) || [];
-      if (group.length === 0) continue;
-      const slice = group.slice(0, perGroup);
+    for (const group of groups) {
+      const list = bucket.get(group.key) || [];
+      if (list.length === 0) continue;
+      const slice = list.slice(0, perGroup);
       shown += slice.length;
+      const label = group.label || bandOf(list[0].jeongsi).label;
+      const suffix = group.hint ? `${group.hint} · ${list.length}곳` : `${list.length}곳`;
       blocks.push(el('div', { class: 'jr-section' }, [
-        listHeader(bandOf(group[0].jeongsi).label, `${group.length}곳`),
+        listHeader(label, suffix),
         el('div', { class: 'jr-list' }, slice.map((row) => {
           const result = row.jeongsi;
           const band = bandOf(result);
@@ -561,8 +676,9 @@
     }
 
     const total = rows.length;
+    const unit = state.filters.sort === 'band' ? '판정별' : '묶음별';
     const more = shown < total
-      ? el('div', { class: 'jr-actions' }, [button(`더 보기 (판정별 ${state.filters.limit}곳씩 · 남은 ${total - shown}곳)`, {
+      ? el('div', { class: 'jr-actions' }, [button(`더 보기 (${unit} ${state.filters.limit}곳씩 · 남은 ${total - shown}곳)`, {
         variant: 'neutralWeak',
         onclick: () => { state.filters.limit += 8; saveFilters(); render(); },
       })])
@@ -572,11 +688,24 @@
   }
 
   // ---------------------------------------------------------------- 목표 화면
+  // 목표 탭에서 고를 수 있는 대학·모집단위. 진단 목록과 같은 숨김 규칙을 따르되,
+  // 지금 열어 둔 곳과 관심 학과는 늘 남긴다(공유 링크로 바로 들어온 경우를 위해).
+  const targetDepartments = (university) => {
+    const rows = (university.departments || []).filter((dept) => !hiddenNow(university.id, dept));
+    return rows.length > 0 ? rows : university.departments || [];
+  };
+  const targetUniversities = () => {
+    const rows = DATA.universities.filter((university) => targetDepartments(university).some((dept) => !hiddenNow(university.id, dept)));
+    return rows.length > 0 ? rows : DATA.universities;
+  };
+
   function currentTarget() {
-    const university = universityById.get(state.target.university) || DATA.universities.find((row) => row.departments.length > 0);
+    const university = universityById.get(state.target.university) || targetUniversities().find((row) => row.departments.length > 0);
     if (!university) return null;
+    const allowed = targetDepartments(university);
     const dept = university.departments.find((row) => row.name === state.target.dept)
-      || university.departments.find((row) => Object.keys(row.jeongsi || {}).length > 0)
+      || allowed.find((row) => Object.keys(row.jeongsi || {}).length > 0)
+      || allowed[0]
       || university.departments[0];
     return { university, dept };
   }
@@ -591,12 +720,16 @@
     const { university, dept } = picked;
     state.target = { university: university.id, dept: dept.name };
 
+    const universityOptions = targetUniversities();
+    if (!universityOptions.some((row) => row.id === university.id)) universityOptions.unshift(university);
+    const deptOptions = targetDepartments(university);
+    if (!deptOptions.some((row) => row.name === dept.name)) deptOptions.unshift(dept);
     const pickers = el('div', { class: 'jr-filters' }, [
-      select(DATA.universities.map((row) => [row.id, `${row.short} (${row.line})`]), university.id, (value) => {
+      select(universityOptions.map((row) => [row.id, `${row.short} (${row.line})`]), university.id, (value) => {
         state.target = { university: value, dept: '' };
         render();
       }, '대학'),
-      select(university.departments.map((row) => [row.name, deptLabel(row.name)]), dept.name, (value) => {
+      select(deptOptions.map((row) => [row.name, deptLabel(row.name)]), dept.name, (value) => {
         state.target = { university: university.id, dept: value };
         render();
       }, '모집단위'),
@@ -719,24 +852,34 @@
     if (!picks.some((row) => row.university.id === university.id && row.dept.name === dept.name) && picks.length < 3) {
       picks.unshift({ university, dept });
     }
+    // 진단 목록과 같은 숨김 규칙. 관심 학과와 지금 보는 곳은 pinned 라 그대로 남는다.
+    const visible = picks.filter((pick) => !hiddenNow(pick.university.id, pick.dept));
+    picks.length = 0;
+    picks.push(...visible);
     if (picks.length < 2) {
       return section([
         listHeader('비교'),
         banner('진단 화면에서 관심 학과를 두 곳 이상 저장하면 같은 성적으로 나란히 비교합니다.'),
       ]);
     }
-    const rows = picks.map((pick) => {
-      const result = ENGINE.evaluateJeongsi(profile(), pick.university, pick.dept, DATA.rules[pick.university.id], pick.university.volatility ?? DATA.volatility);
-      return [
+    // 진단 목록과 같은 정렬 — 예상 컷이 높은 곳부터, 같으면 대학 라인 순.
+    const rows = picks
+      .map((pick) => ({
+        pick,
+        universityOrder: pick.university.order ?? 0,
+        dept: pick.dept,
+        jeongsi: ENGINE.evaluateJeongsi(profile(), pick.university, pick.dept, DATA.rules[pick.university.id], pick.university.volatility ?? DATA.volatility),
+      }))
+      .sort(ENGINE.byCutDesc)
+      .map(({ pick, jeongsi: result }) => [
         `${pick.university.short} ${deptLabel(pick.dept.name)}`,
         result.cut ? fmt(result.cut.value, 1) : '—',
         result.mine === undefined ? '—' : fmt(result.mine, 1),
         result.gap === undefined ? '—' : signed(result.gap, 1),
         bandOf(result) ? badge(bandOf(result).label, BAND_TONE[bandOf(result).key]) : '—',
-      ];
-    });
+      ]);
     return section([
-      listHeader('비교', `관심 학과 ${picks.length}곳`),
+      listHeader('비교', `관심 학과 ${picks.length}곳 · 예상 컷 높은 순`),
       table(['모집단위', '예상 컷', '내 환산', '차이', '판정'], rows),
     ]);
   }
@@ -876,7 +1019,13 @@
           listItem({ title: '기준값', detail: '가용한 연도의 컷을 최근 순 0.6·0.3·0.1로 가중 평균한 값입니다.' }),
           listItem({ title: '오차', detail: '연도별 최소~최대 폭의 절반입니다. 한 해뿐이면 그 대학 학과들의 연도별 표준편차 중앙값을 씁니다.' }),
           listItem({ title: '내 환산', detail: '대학별 영역 반영비율로 가중 평균한 뒤 영어·한국사 가감점과 선택과목 가산을 백분위 단위로 더합니다.' }),
+          listItem({ title: '등급 입력', detail: `등급은 그 구간의 정중앙 백분위로 바꿉니다 (${GRADE_TABLE.map((row) => `${row.grade}등급 ${fmt(row.mid, 1)}`).join(' · ')}).` }),
         ]),
+      ]),
+      accordion('등급 → 백분위 환산표', [
+        muted('상대평가 등급 구간의 정확한 중앙값입니다. 백분위 ↔ 등급을 오갈 때도 같은 표를 씁니다.'),
+        table(['등급', '백분위 구간', '환산 백분위'],
+          GRADE_TABLE.map((row) => [`${row.grade}등급`, `${fmt(row.low, 0)} ~ ${fmt(row.high, 0)}`, fmt(row.mid, 1)])),
       ]),
       section([
         listHeader('출처'),

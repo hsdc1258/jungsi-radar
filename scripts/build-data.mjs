@@ -21,19 +21,22 @@ const read = (file) => JSON.parse(readFileSync(path.join(SOURCE, file), 'utf8'))
 export const LINES = [
   { label: '서연고', ids: ['snu', 'yonsei', 'korea'] },
   { label: '서성한', ids: ['sogang', 'skku', 'hanyang'] },
-  { label: '중경외시이', ids: ['cau', 'khu', 'hufs', 'uos', 'ewha'] },
-  { label: '건동홍숙', ids: ['konkuk', 'dongguk', 'hongik', 'sookmyung'] },
+  { label: '중경외시', ids: ['cau', 'khu', 'hufs', 'uos'] },
+  { label: '건동홍', ids: ['konkuk', 'dongguk', 'hongik'] },
+  { label: '인하아주', ids: ['inha', 'ajou'] },
   { label: '국숭세단', ids: ['kookmin', 'soongsil', 'sejong', 'dankook'] },
   { label: '광명상가', ids: ['kw', 'mju', 'smu', 'catholic'] },
   { label: '한서삼', ids: ['hansung', 'skuniv', 'syu'] },
+  { label: '인가경', ids: ['incheon', 'gachon', 'kyonggi'] },
 ];
 const SHORT = {
   snu: '서울대', yonsei: '연세대', korea: '고려대', sogang: '서강대', skku: '성균관대', hanyang: '한양대',
-  cau: '중앙대', khu: '경희대', hufs: '한국외대', uos: '서울시립대', ewha: '이화여대',
-  konkuk: '건국대', dongguk: '동국대', hongik: '홍익대', sookmyung: '숙명여대',
+  cau: '중앙대', khu: '경희대', hufs: '한국외대', uos: '서울시립대',
+  konkuk: '건국대', dongguk: '동국대', hongik: '홍익대',
   kookmin: '국민대', soongsil: '숭실대', sejong: '세종대', dankook: '단국대',
   kw: '광운대', mju: '명지대', smu: '상명대', catholic: '가톨릭대',
   hansung: '한성대', skuniv: '서경대', syu: '삼육대',
+  inha: '인하대', ajou: '아주대', incheon: '인천대', gachon: '가천대', kyonggi: '경기대',
 };
 
 const SEPARATORS = /[·・･ㆍ‧∙⋅\s]/gu;
@@ -42,7 +45,7 @@ const baseName = (text) => String(text || '').replace(SEPARATORS, '').replace(/�
 
 const MEDICAL = /의예|의학|치의|한의|약학|수의|간호|물리치료|임상병리|방사선|치위생|작업치료|응급구조|보건/u;
 const MEDICAL_EXCEPT = /보건행정|보건관리|의료경영|의료산업|보건정책|보건환경|환경보건|스포츠의학|의학공학/u;
-const ARTS = /음악|미술|디자인|회화|조소|조형|무용|체육|스포츠|연극|영화|연기|뮤지컬|작곡|성악|피아노|관현악|국악|공예|도예|사진|애니메이션|만화|패션|뷰티|모델|실용음악|예술|골프|경기지도|아트|서예|의상|공연|태권도/u;
+const ARTS = /음악|미술|디자인|회화|동양화|서양화|한국화|판화|조소|조형|무용|체육|스포츠|연극|영화|연기|뮤지컬|작곡|성악|피아노|관현악|국악|공예|도예|사진|애니메이션|만화|패션|뷰티|모델|실용음악|예술|골프|경기지도|아트|서예|의상|공연|태권도/u;
 const ARTS_EXCEPT = /스포츠경영|공연기획|예술경영|문화예술경영|영상학과|미디어/u;
 const FREE = /자유전공|자율전공|열린전공|광역|무전공|혁신칼리지|융합자유|창의융합자유/u;
 // 자연계 키워드. '화학'은 '문화학과'에 걸리지 않도록 앞 글자가 '문'이 아닐 때만 본다.
@@ -121,15 +124,28 @@ function volatilityOf(departments) {
   return value === null ? null : round2(value);
 }
 
+// 대학의 대표 컷. 예체능·의약을 뺀 일반 모집단위의 2026학년도 정시 70%컷(백분위) 중앙값이다.
+// 화면의 대학 순서를 이 값으로 정한다 — 라인 이름은 참고 라벨로만 남긴다.
+const ORDER_EXCLUDED_TRACKS = new Set(['예체능', '의약']);
+function medianCutOf(departments) {
+  const values = [];
+  for (const dept of departments) {
+    if (ORDER_EXCLUDED_TRACKS.has(dept.track)) continue;
+    const years = Object.keys(dept.jeongsi || {}).sort().reverse();
+    const year = years.find((key) => dept.jeongsi[key].metric === 'pct' && typeof dept.jeongsi[key].cut70 === 'number');
+    if (year) values.push(dept.jeongsi[year].cut70);
+  }
+  const value = median(values);
+  return value === null ? null : round2(value);
+}
+
 function buildUniversities(adiga, rules) {
   const byId = new Map(adiga.map((row) => [row.id, row]));
   const universities = [];
-  let order = 0;
   for (const line of LINES) {
     for (const id of line.ids) {
       const source = byId.get(id);
       const rule = rules.universities[id];
-      order += 1;
       const departments = (source?.departments || [])
         .filter((dept) => Object.keys(dept.jeongsi || {}).length > 0)
         .map((dept) => {
@@ -158,11 +174,22 @@ function buildUniversities(adiga, rules) {
         })
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({
-        id, name: rule?.name || source?.name || id, short: SHORT[id] || id, line: line.label, order,
+        id, name: rule?.name || source?.name || id, short: SHORT[id] || id, line: line.label, order: 0,
+        medianCut: medianCutOf(departments),
         resultUrl: source?.url || null, volatility: volatilityOf(departments), departments,
       });
     }
   }
+  // 대표 컷 내림차순. 값이 없는 대학은 뒤로 보내고 라인 표 순서를 지킨다.
+  const lineIndex = new Map(LINES.flatMap((line, index) => line.ids.map((id) => [id, index])));
+  universities.sort((left, right) => {
+    const l = left.medianCut;
+    const r = right.medianCut;
+    if (typeof l === 'number' && typeof r === 'number' && l !== r) return r - l;
+    if (typeof l === 'number' !== (typeof r === 'number')) return typeof l === 'number' ? -1 : 1;
+    return (lineIndex.get(left.id) ?? 0) - (lineIndex.get(right.id) ?? 0);
+  });
+  universities.forEach((university, index) => { university.order = index + 1; });
   return universities;
 }
 
@@ -191,8 +218,10 @@ export function buildData() {
   const rules = read('rules-2027.json');
   const scales = read('scales-2026.json');
   const universities = buildUniversities(adiga, rules);
+  // 라인에 없는 대학(여자대학교 등)은 생성물에 넣지 않는다 — 소스에는 남겨 두되 화면에는 내보내지 않는다.
+  const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};
-  for (const [id, rule] of Object.entries(rules.universities)) ruleMap[id] = rule;
+  for (const [id, rule] of Object.entries(rules.universities)) if (listed.has(id)) ruleMap[id] = rule;
   const volatilities = universities.map((university) => university.volatility).filter((value) => typeof value === 'number');
   return {
     generatedAt: generatedAt(),

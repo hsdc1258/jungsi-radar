@@ -162,6 +162,41 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   assert.match(about, /데이터 생성일/u);
 });
 
+test('진단 목록은 예상 컷 높은 순으로 나오고 지원 가능 묶음이 먼저다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /예상 컷 높은 순으로 봅니다/u);
+  assert.match(text, /지원 가능/u);
+  // 목록 행의 '예상 컷 xx.x' 를 차례로 읽어 내림차순인지 본다.
+  const cuts = [...text.matchAll(/예상 컷 (\d+\.\d)/gu)].map((row) => Number(row[1]));
+  assert.ok(cuts.length > 3, `컷이 여럿 보여야 한다 (${cuts.length})`);
+  const possible = text.indexOf('지원 가능');
+  const hard = text.indexOf('상향·위험·불가');
+  if (hard !== -1) assert.ok(possible < hard, '지원 가능 묶음이 먼저 나온다');
+});
+
+test('기본 토글 두 개가 켜져 있어 예체능과 서·연·고·의약 최상위를 감춘다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /예체능 제외/u);
+  assert.match(text, /말도 안되는거 제외/u);
+  assert.match(text, /의·치·한·약·수의와 서·연·고 제외/u);
+  assert.ok(!/서울대|연세대|고려대/u.test(text.split('예상 컷')[1] || ''), '서·연·고가 목록에 없다');
+  assert.ok(!/의예/u.test(text), '의예 모집단위가 목록에 없다');
+});
+
+test('등급으로 넣으면 구간 중앙 백분위가 화면에 보인다', () => {
+  const { panel, tabs } = boot({ ...FULL_SCORES, mode: 'grade', kor: '2', math: '1', inq1: '3', inq2: '3' });
+  tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
+  const text = panel.text;
+  assert.match(text, /국어 2등급 → 92\.5\(구간 중앙\)/u);
+  assert.match(text, /수학 1등급 → 98\.0\(구간 중앙\)/u);
+  assert.match(text, /등급 구간의 정중앙 백분위로 바꾼 값입니다/u);
+  assert.match(text, /등급 → 백분위 환산표/u);
+});
+
 test('탭을 바꾸면 aria-selected가 하나만 참이다', () => {
   const { tabs } = boot(FULL_SCORES);
   tabs[2].dispatch('click');

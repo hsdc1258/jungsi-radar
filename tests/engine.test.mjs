@@ -121,20 +121,76 @@ test('susi evaluation compares gpa with the latest cut', () => {
   assert.equal(result.band.label, '적정');
 });
 
-test('diagnose sorts departments by gap and honours track filters', () => {
+test('diagnose sorts by expected cut (high first) by default and honours track filters', () => {
   const profile = engine.normalizeProfile({ mode: 'pct', kor: 95, math: 95, eng: 1, inq1Subject: '사회문화', inq1: 95, inq2Subject: '생활과윤리', inq2: 95 });
   const data = { universities: [{ ...UNIVERSITY, departments: [DEPT, { name: '경제학과', track: '인문', jeongsi: { 2026: { cut70: 93, metric: 'pct' } } }, { name: '기계공학부', track: '자연', jeongsi: { 2026: { cut70: 93, metric: 'pct' } } }] }], rules: { demo: RULE } };
+  // 기본 정렬은 "갈 수 있는 가장 높은 곳부터" — 예상 컷 내림차순, 같은 컷이면 대학 순 → 학과 이름 순.
   const rows = engine.diagnose(profile, data);
-  // 사탐 응시자라 과탐 가산 불이익을 받는 기계공학부의 차이가 가장 작다(오름차순 = 어려운 순).
-  assert.deepEqual(rows.map((row) => row.dept.name), ['기계공학부', '경영학과', '경제학과']);
+  assert.deepEqual(rows.map((row) => row.dept.name), ['경영학과', '경제학과', '기계공학부']);
+  assert.ok(rows[0].jeongsi.cut.value >= rows[1].jeongsi.cut.value);
+  // 'gap' 정렬은 판정별 묶음 안에서 쓰는 아슬아슬한 순이다.
+  // 사탐 응시자라 과탐 가산 불이익을 받는 기계공학부의 차이가 가장 작다.
+  const byGap = engine.diagnose(profile, data, { sort: 'gap' });
+  assert.deepEqual(byGap.map((row) => row.dept.name), ['기계공학부', '경영학과', '경제학과']);
   assert.equal(engine.diagnose(profile, data, { track: '자연' }).length, 1);
+});
+
+test('등급 → 백분위 환산은 구간의 정확한 중앙값이다', () => {
+  const expected = [98, 92.5, 83, 68.5, 50, 31.5, 17, 7.5, 2];
+  assert.deepEqual([...engine.GRADE_MIDPOINTS], expected);
+  assert.deepEqual([...engine.GRADE_FLOORS], [96, 89, 77, 60, 40, 23, 11, 4, 0]);
+  for (let grade = 1; grade <= 9; grade += 1) {
+    const low = engine.GRADE_FLOORS[grade - 1];
+    const high = grade === 1 ? 100 : engine.GRADE_FLOORS[grade - 2];
+    assert.equal(engine.percentileFromGrade(grade), (low + high) / 2, `${grade}등급`);
+    assert.equal(engine.percentileFromGrade(grade), expected[grade - 1]);
+    // 백분위 ↔ 등급을 오가도 같은 표를 쓴다.
+    assert.equal(engine.gradeFromPercentile(engine.percentileFromGrade(grade)), grade);
+  }
+  // 등급으로 넣은 성적은 중앙값 백분위로 계산된다.
+  const profile = engine.normalizeProfile({ mode: 'grade', kor: 2, math: 1, inq1Subject: '사회문화', inq1: 3, inq2Subject: '생활과윤리', inq2: 3 });
+  assert.equal(profile.kor.pct, 92.5);
+  assert.equal(profile.math.pct, 98);
+  assert.equal(engine.simpleAverage(profile), Math.round(((92.5 + 98 + 83) / 3) * 100) / 100);
+});
+
+test('영어도 우수한 영역 순(bestOf) 그룹에 들어갈 수 있다', () => {
+  // 가천대 정시 일반전형1: 국어·수학 중 우수한 순 40:30, 영어·탐구 중 우수한 순 20:10.
+  const rule = { name: '데모', tracks: [{ name: '인문', unit: 'percent', total: 1000, weights: {},
+    bestOf: [{ areas: ['kor', 'math'], weights: [40, 30] }, { areas: ['eng', 'inq'], weights: [20, 10] }],
+    english: { method: '비율반영', table: { 1: 98, 2: 95, 3: 92, 4: 86, 5: 80, 6: 60, 7: 50, 8: 40, 9: 30 } },
+    inquiry: { count: 1 } }] };
+  const profile = engine.normalizeProfile({ mode: 'pct', kor: 90, math: 80, eng: 1, inq1Subject: '사회문화', inq1: 70 });
+  const score = engine.universityScore(profile, rule, '인문', null);
+  // 영어 1등급 = 100, 탐구 70 → 영어가 위라 20:10. 국어 90 > 수학 80 → 40:30.
+  const expected = (90 * 40 + 80 * 30 + 100 * 20 + 70 * 10) / 100;
+  assert.equal(score.value, Math.round(expected * 100) / 100);
+  assert.ok(score.bestOfNotes.some((note) => note.includes('영어')));
 });
 
 const DATA_FILE = 'assets/data.js';
 test('generated data.js exists, parses, and respects value ranges', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
   const data = load(DATA_FILE, 'IPSI_DATA');
-  assert.ok(Array.isArray(data.universities) && data.universities.length >= 20, 'at least 20 universities');
-  assert.ok(data.rules && Object.keys(data.rules).length >= 20, 'rules for at least 20 universities');
+  // 여자대학교(이화·숙명)를 뺀 뒤 인하·아주·인천·가천·경기를 더해 29곳이다.
+  assert.equal(data.universities.length, 29, 'university count');
+  assert.equal(Object.keys(data.rules).length, 29, 'rule count matches the university list');
+  const ids = new Set(data.universities.map((row) => row.id));
+  for (const id of ['ewha', 'sookmyung']) {
+    assert.ok(!ids.has(id), `여자대학교 ${id}는 생성물에 없어야 한다`);
+    assert.ok(!(id in data.rules), `여자대학교 ${id}의 규칙도 생성물에 없어야 한다`);
+  }
+  for (const id of ['inha', 'ajou', 'incheon', 'gachon', 'kyonggi']) assert.ok(ids.has(id), `${id}가 있어야 한다`);
+  const lines = data.lines.map((row) => row.label);
+  assert.ok(lines.includes('중경외시') && !lines.includes('중경외시이'), '중경외시');
+  assert.ok(lines.includes('건동홍') && !lines.includes('건동홍숙'), '건동홍');
+  assert.ok(lines.includes('인가경') && lines.includes('인하아주'), '새 라인');
+  // 대학 순서는 대표 컷(예체능·의약 제외 2026 70%컷 중앙값) 내림차순이다.
+  const ordered = [...data.universities].sort((left, right) => left.order - right.order);
+  assert.deepEqual(ordered.map((row) => row.id), data.universities.map((row) => row.id), 'order는 배열 순서와 같다');
+  const cuts = ordered.map((row) => row.medianCut).filter((value) => typeof value === 'number');
+  for (let index = 1; index < cuts.length; index += 1) {
+    assert.ok(cuts[index] <= cuts[index - 1], `대표 컷 내림차순 (${cuts[index - 1]} → ${cuts[index]})`);
+  }
   let departments = 0;
   for (const university of data.universities) {
     assert.ok(university.id && university.name && university.short, `university identity ${university.id}`);
