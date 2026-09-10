@@ -5087,11 +5087,13 @@
       "quota": 39.0,
       "rate": 5.85,
       "fill": 51.0,
-      "pct70": 87.0,
-      "pct50": 91.0,
+      "pct70": 87.17,
+      "pct50": null,
       "score70": 667.54,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 51.0,
+      "note": "학점나비 정수 87 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5125,14 +5127,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 67.0,
+      "quota": 65.0,
       "rate": 5.15,
       "fill": 70.0,
-      "pct70": 86.0,
-      "pct50": 91.0,
+      "pct70": 85.83,
+      "pct50": null,
       "score70": 667.07,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 70.0,
+      "note": "학점나비 정수 86 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5166,15 +5170,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 33.0,
+      "quota": 32.0,
       "rate": 5.03,
       "fill": 22.0,
       "pct70": 90.33,
-      "pct50": 91.0,
+      "pct50": null,
       "score70": 667.49,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(90.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 90.33 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 22.0
      }
     },
     "gyogwa": {
@@ -5208,14 +5213,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 14.0,
+      "quota": 13.0,
       "rate": 3.43,
       "fill": 8.0,
-      "pct70": 88.0,
-      "pct50": 85.0,
+      "pct70": 87.83,
+      "pct50": null,
       "score70": 670.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 8.0,
+      "note": "학점나비 정수 88 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5234,7 +5241,22 @@
    },
    {
     "name": "국어국문학과",
-    "jeongsi": {},
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(KU일반학생)",
+      "group": "나",
+      "quota": 6.0,
+      "rate": 7.67,
+      "fill": null,
+      "pct70": 85.67,
+      "pct50": null,
+      "score70": 673.35,
+      "lastWait": 3.0,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 없음 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
+     }
+    },
     "gyogwa": {},
     "hakjong": {
      "2026": {
@@ -5258,11 +5280,13 @@
       "quota": 32.0,
       "rate": 6.22,
       "fill": 55.0,
-      "pct70": 89.0,
-      "pct50": 91.0,
+      "pct70": 88.83,
+      "pct50": null,
       "score70": 666.61,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 55.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5296,15 +5320,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-가군",
       "group": "가",
-      "quota": 40.0,
+      "quota": 37.0,
       "rate": 4.95,
       "fill": 43.0,
       "pct70": 92.5,
-      "pct50": 89.0,
+      "pct50": null,
       "score70": 671.81,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(93.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 92.5 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 43.0
      }
     },
     "gyogwa": {
@@ -5341,11 +5366,13 @@
       "quota": 15.0,
       "rate": 7.47,
       "fill": 27.0,
-      "pct70": 89.0,
-      "pct50": 89.0,
+      "pct70": 88.5,
+      "pct50": null,
       "score70": 667.98,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 27.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5371,11 +5398,13 @@
       "quota": 42.0,
       "rate": 3.9,
       "fill": 14.0,
-      "pct70": 89.0,
-      "pct50": 88.0,
+      "pct70": 89.33,
+      "pct50": null,
       "score70": 666.99,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 14.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5412,11 +5441,13 @@
       "quota": 6.0,
       "rate": 6.83,
       "fill": 5.0,
-      "pct70": 85.0,
-      "pct50": 90.0,
+      "pct70": 85.17,
+      "pct50": null,
       "score70": 672.6,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 5.0,
+      "note": "학점나비 정수 85 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5453,11 +5484,13 @@
       "quota": 12.0,
       "rate": 5.42,
       "fill": 14.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 88.67,
+      "pct50": null,
       "score70": 667.72,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 14.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5494,11 +5527,13 @@
       "quota": 5.0,
       "rate": 11.2,
       "fill": 6.0,
-      "pct70": 85.0,
-      "pct50": 83.0,
+      "pct70": 85.17,
+      "pct50": null,
       "score70": 666.51,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 6.0,
+      "note": "학점나비 정수 85 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5536,11 +5571,12 @@
       "rate": 4.5,
       "fill": 8.0,
       "pct70": 90.67,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 668.81,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(91.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 90.67 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 8.0
      }
     },
     "gyogwa": {
@@ -5577,11 +5613,12 @@
       "quota": 4.0,
       "rate": 10.5,
       "fill": 0.0,
-      "pct70": 85.0,
-      "pct50": 85.0,
+      "pct70": 85.17,
+      "pct50": null,
       "score70": 670.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 85 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5607,11 +5644,13 @@
       "quota": 42.0,
       "rate": 4.74,
       "fill": 28.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 89.5,
+      "pct50": null,
       "score70": 668.41,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 28.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5648,11 +5687,13 @@
       "quota": 16.0,
       "rate": 5.31,
       "fill": 25.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 88.5,
+      "pct50": null,
       "score70": 670.14,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 25.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5679,10 +5720,12 @@
       "rate": 4.58,
       "fill": 12.0,
       "pct70": 90.0,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 668.72,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 12.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5705,14 +5748,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-가군",
       "group": "가",
-      "quota": 17.0,
+      "quota": 15.0,
       "rate": 6.0,
       "fill": 17.0,
-      "pct70": 88.0,
-      "pct50": 90.0,
+      "pct70": 88.33,
+      "pct50": null,
       "score70": 669.86,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 17.0,
+      "note": "학점나비 정수 88 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5739,11 +5784,12 @@
       "rate": 5.36,
       "fill": 64.0,
       "pct70": 96.33,
-      "pct50": 98.0,
+      "pct50": null,
       "score70": 705.71,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(96.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 96.33 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 64.0
      }
     },
     "gyogwa": {
@@ -5780,11 +5826,13 @@
       "quota": 8.0,
       "rate": 8.5,
       "fill": 10.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 88.5,
+      "pct50": null,
       "score70": 668.71,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 10.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5821,11 +5869,13 @@
       "quota": 8.0,
       "rate": 5.25,
       "fill": 4.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 89.83,
+      "pct50": null,
       "score70": 669.14,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 4.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -5859,14 +5909,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-다군",
       "group": "다",
-      "quota": 12.0,
+      "quota": 11.0,
       "rate": 19.08,
       "fill": 43.0,
-      "pct70": 89.0,
-      "pct50": 92.0,
+      "pct70": 89.17,
+      "pct50": null,
       "score70": 671.64,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 43.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5892,11 +5944,13 @@
       "quota": 12.0,
       "rate": 5.17,
       "fill": 3.0,
-      "pct70": 89.0,
-      "pct50": 89.0,
+      "pct70": 88.67,
+      "pct50": null,
       "score70": 667.35,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 3.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -5915,7 +5969,22 @@
    },
    {
     "name": "영어교육과",
-    "jeongsi": {},
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(KU일반학생)",
+      "group": "가",
+      "quota": 8.0,
+      "rate": 5.88,
+      "fill": null,
+      "pct70": 85.0,
+      "pct50": null,
+      "score70": 671.82,
+      "lastWait": 8.0,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 없음 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
+     }
+    },
     "gyogwa": {
      "2026": {
       "typeName": "학생부교과(KU지역균형)",
@@ -5943,7 +6012,22 @@
    },
    {
     "name": "영어영문학과",
-    "jeongsi": {},
+    "jeongsi": {
+     "2026": {
+      "typeName": "수능(KU일반학생)",
+      "group": "나",
+      "quota": 6.0,
+      "rate": 6.57,
+      "fill": null,
+      "pct70": 83.0,
+      "pct50": null,
+      "score70": 671.82,
+      "lastWait": 4.0,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 없음 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
+     }
+    },
     "gyogwa": {
      "2026": {
       "typeName": "학생부교과(KU지역균형)",
@@ -5979,11 +6063,12 @@
       "rate": 18.64,
       "fill": 42.0,
       "pct70": 91.17,
-      "pct50": 92.0,
+      "pct50": null,
       "score70": 673.66,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(91.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 91.17 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 42.0
      }
     },
     "gyogwa": {},
@@ -6009,11 +6094,13 @@
       "quota": 18.0,
       "rate": 5.28,
       "fill": 23.0,
-      "pct70": 89.0,
-      "pct50": 92.0,
+      "pct70": 88.83,
+      "pct50": null,
       "score70": 664.65,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 23.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6067,11 +6154,13 @@
       "quota": 26.0,
       "rate": 4.96,
       "fill": 28.0,
-      "pct70": 89.0,
-      "pct50": 91.0,
+      "pct70": 89.33,
+      "pct50": null,
       "score70": 671.07,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 28.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6105,14 +6194,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-다군",
       "group": "다",
-      "quota": 64.0,
+      "quota": 63.0,
       "rate": 7.44,
       "fill": 136.0,
       "pct70": 92.0,
-      "pct50": 91.0,
+      "pct50": null,
       "score70": 674.23,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 136.0,
+      "note": "학점나비 정수 92 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6150,10 +6241,12 @@
       "rate": 4.77,
       "fill": 8.0,
       "pct70": 90.0,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 665.81,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 8.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6176,14 +6269,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 8.0,
+      "quota": 5.0,
       "rate": 5.5,
       "fill": 1.0,
-      "pct70": 83.0,
-      "pct50": 87.0,
+      "pct70": 82.67,
+      "pct50": null,
       "score70": 670.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 1.0,
+      "note": "학점나비 정수 83 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6244,11 +6339,12 @@
       "rate": 5.74,
       "fill": 32.0,
       "pct70": 91.83,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 668.81,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(92.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 91.83 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 32.0
      }
     },
     "gyogwa": {},
@@ -6271,14 +6367,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-다군",
       "group": "다",
-      "quota": 49.0,
+      "quota": 47.0,
       "rate": 7.08,
       "fill": 131.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 89.83,
+      "pct50": null,
       "score70": 669.97,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 131.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6315,11 +6413,13 @@
       "quota": 25.0,
       "rate": 4.56,
       "fill": 14.0,
-      "pct70": 88.0,
-      "pct50": 91.0,
+      "pct70": 88.33,
+      "pct50": null,
       "score70": 671.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 14.0,
+      "note": "학점나비 정수 88 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6346,10 +6446,12 @@
       "rate": 5.52,
       "fill": 15.0,
       "pct70": 88.0,
-      "pct50": 88.0,
+      "pct50": null,
       "score70": 665.78,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 15.0,
+      "note": "학점나비 정수 88 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6383,15 +6485,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-가군",
       "group": "가",
-      "quota": 31.0,
+      "quota": 30.0,
       "rate": 4.55,
       "fill": 26.0,
       "pct70": 90.33,
-      "pct50": 92.0,
+      "pct50": null,
       "score70": 671.44,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(90.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 90.33 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 26.0
      }
     },
     "gyogwa": {
@@ -6425,14 +6528,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 11.0,
+      "quota": 9.0,
       "rate": 4.18,
       "fill": 10.0,
-      "pct70": 89.0,
-      "pct50": 92.0,
+      "pct70": 88.83,
+      "pct50": null,
       "score70": 670.47,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 10.0,
+      "note": "학점나비 정수 89 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6455,15 +6560,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-나군",
       "group": "나",
-      "quota": 25.0,
+      "quota": 23.0,
       "rate": 4.64,
       "fill": 10.0,
       "pct70": 90.5,
-      "pct50": 88.0,
+      "pct50": null,
       "score70": 665.91,
-      "source": "베리타스알파 「건국대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=614504",
-      "note": "학점나비가 정수로 실은 어디가 값(91.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 90.5 대체 — 과목별 70%Cut의 국·수·탐 산술평균",
+      "lastWait": 10.0
      }
     },
     "gyogwa": {},
@@ -6486,14 +6592,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-가군",
       "group": "가",
-      "quota": 62.0,
+      "quota": 60.0,
       "rate": 5.85,
       "fill": 52.0,
-      "pct70": 86.0,
-      "pct50": 89.0,
+      "pct70": 85.83,
+      "pct50": null,
       "score70": 676.45,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 52.0,
+      "note": "학점나비 정수 86 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6516,14 +6624,16 @@
      "2026": {
       "typeName": "수능(KU일반학생)-다군",
       "group": "다",
-      "quota": 67.0,
+      "quota": 60.0,
       "rate": 8.97,
       "fill": 219.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 89.83,
+      "pct50": null,
       "score70": 671.55,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 219.0,
+      "note": "학점나비 정수 90 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {
@@ -6634,11 +6744,13 @@
       "quota": 35.0,
       "rate": 10.43,
       "fill": 7.0,
-      "pct70": 80.0,
-      "pct50": 81.0,
-      "score70": 408.66,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 79.5,
+      "pct50": null,
+      "score70": 408.657,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 7.0,
+      "note": "학점나비 정수 80 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6653,11 +6765,13 @@
       "quota": 32.0,
       "rate": 6.31,
       "fill": 7.0,
-      "pct70": 65.0,
-      "pct50": 73.0,
-      "score70": 392.11,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 65.25,
+      "pct50": null,
+      "score70": 392.105,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 7.0,
+      "note": "학점나비 정수 65 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6672,11 +6786,13 @@
       "quota": 45.0,
       "rate": 14.51,
       "fill": 12.0,
-      "pct70": 78.0,
-      "pct50": 81.0,
-      "score70": 409.42,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 77.75,
+      "pct50": null,
+      "score70": 409.416,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 12.0,
+      "note": "학점나비 정수 78 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6691,11 +6807,13 @@
       "quota": 20.0,
       "rate": 7.8,
       "fill": 15.0,
-      "pct70": 80.0,
-      "pct50": 78.0,
-      "score70": 411.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 79.5,
+      "pct50": null,
+      "score70": 411.078,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 15.0,
+      "note": "학점나비 정수 80 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6748,11 +6866,12 @@
       "quota": 25.0,
       "rate": 13.12,
       "fill": 0.0,
-      "pct70": 83.0,
-      "pct50": 88.0,
-      "score70": 417.32,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 82.75,
+      "pct50": null,
+      "score70": 417.323,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "note": "학점나비 정수 83 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6767,11 +6886,13 @@
       "quota": 39.0,
       "rate": 11.62,
       "fill": 10.0,
-      "pct70": 80.0,
-      "pct50": 80.0,
-      "score70": 410.64,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 79.75,
+      "pct50": null,
+      "score70": 410.637,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 10.0,
+      "note": "학점나비 정수 80 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6786,11 +6907,13 @@
       "quota": 34.0,
       "rate": 14.15,
       "fill": 35.0,
-      "pct70": 91.0,
-      "pct50": 91.0,
-      "score70": 433.78,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B1%B4%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 90.75,
+      "pct50": null,
+      "score70": 433.779,
+      "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)",
+      "url": "https://enter.konkuk.ac.kr/",
+      "lastWait": 35.0,
+      "note": "학점나비 정수 91 대체 — 과목별 70%Cut의 국·수·탐 산술평균"
      }
     },
     "gyogwa": {},
@@ -6818,7 +6941,7 @@
       "rate": 9.63,
       "fill": 7.0,
       "pct70": 82.6,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 82.6,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -6942,7 +7065,7 @@
       "rate": 6.8,
       "fill": 9.0,
       "pct70": 84.05,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 84.05,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7107,7 +7230,7 @@
       "rate": 7.73,
       "fill": 15.0,
       "pct70": 83.2,
-      "pct50": 77.0,
+      "pct50": null,
       "score70": 83.2,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7248,7 +7371,7 @@
       "rate": 8.11,
       "fill": 16.0,
       "pct70": 83.05,
-      "pct50": 82.0,
+      "pct50": null,
       "score70": 83.05,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7290,7 +7413,7 @@
       "rate": 8.5,
       "fill": 6.0,
       "pct70": 82.85,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 82.85,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7373,7 +7496,7 @@
       "rate": 5.79,
       "fill": 15.0,
       "pct70": 81.85,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 81.85,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7415,7 +7538,7 @@
       "rate": 7.64,
       "fill": 18.0,
       "pct70": 81.85,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 81.85,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7457,7 +7580,7 @@
       "rate": 7.5,
       "fill": 5.0,
       "pct70": 83.1,
-      "pct50": 75.0,
+      "pct50": null,
       "score70": 83.1,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7499,7 +7622,7 @@
       "rate": 7.0,
       "fill": 13.0,
       "pct70": 82.05,
-      "pct50": 76.0,
+      "pct50": null,
       "score70": 82.05,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7541,7 +7664,7 @@
       "rate": 5.64,
       "fill": 18.0,
       "pct70": 83.25,
-      "pct50": 77.0,
+      "pct50": null,
       "score70": 83.25,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7665,7 +7788,7 @@
       "rate": 5.44,
       "fill": 44.0,
       "pct70": 83.65,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 83.65,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7789,7 +7912,7 @@
       "rate": 5.28,
       "fill": 62.0,
       "pct70": 82.55,
-      "pct50": 76.0,
+      "pct50": null,
       "score70": 82.55,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -7979,7 +8102,7 @@
       "rate": 5.98,
       "fill": 43.0,
       "pct70": 82.1,
-      "pct50": 77.0,
+      "pct50": null,
       "score70": 82.1,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -8048,7 +8171,7 @@
       "rate": 6.6,
       "fill": 14.0,
       "pct70": 83.15,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 83.15,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -8106,7 +8229,7 @@
       "rate": 8.7,
       "fill": 17.0,
       "pct70": 82.0,
-      "pct50": 84.0,
+      "pct50": null,
       "score70": 82.0,
       "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=615403",
@@ -16269,11 +16392,12 @@
       "quota": 39.0,
       "rate": 4.69,
       "fill": 51.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 89.45,
+      "pct50": null,
       "score70": 386.38,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16317,11 +16441,13 @@
       "avg80": 90.31,
       "score70": 386.38,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.31,
+      "adigaStandard": false
      }
     }
    },
@@ -16334,11 +16460,12 @@
       "quota": 37.0,
       "rate": 3.7,
       "fill": 16.0,
-      "pct70": 87.0,
-      "pct50": 89.0,
+      "pct70": 89.63,
+      "pct50": null,
       "score70": 386.4,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 87 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16382,11 +16509,13 @@
       "avg80": 90.08,
       "score70": 386.4,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.08,
+      "adigaStandard": false
      }
     }
    },
@@ -16399,11 +16528,12 @@
       "quota": 25.0,
       "rate": 4.2,
       "fill": 16.0,
-      "pct70": 89.0,
-      "pct50": 84.0,
+      "pct70": 89.2,
+      "pct50": null,
       "score70": 385.92,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -16436,11 +16566,13 @@
       "avg80": 89.53,
       "score70": 385.92,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.53,
+      "adigaStandard": false
      }
     }
    },
@@ -16453,11 +16585,12 @@
       "quota": 115.0,
       "rate": 3.47,
       "fill": 49.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 88.95,
+      "pct50": null,
       "score70": 380.85,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16490,11 +16623,13 @@
       "avg80": 90.07,
       "score70": 380.85,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.07,
+      "adigaStandard": false
      }
     }
    },
@@ -16507,11 +16642,12 @@
       "quota": 44.0,
       "rate": 4.66,
       "fill": 25.0,
-      "pct70": 91.0,
-      "pct50": 90.0,
+      "pct70": 90.25,
+      "pct50": null,
       "score70": 383.29,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16555,11 +16691,13 @@
       "avg80": 90.81,
       "score70": 383.29,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.81,
+      "adigaStandard": false
      }
     }
    },
@@ -16572,11 +16710,12 @@
       "quota": 26.0,
       "rate": 5.62,
       "fill": 13.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 89.8,
+      "pct50": null,
       "score70": 382.03,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16620,11 +16759,13 @@
       "avg80": 90.7,
       "score70": 382.03,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.7,
+      "adigaStandard": false
      }
     }
    },
@@ -16637,11 +16778,12 @@
       "quota": 17.0,
       "rate": 5.47,
       "fill": 15.0,
-      "pct70": 87.0,
-      "pct50": 87.0,
+      "pct70": 88.8,
+      "pct50": null,
       "score70": 386.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 87 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16685,11 +16827,13 @@
       "avg80": 88.88,
       "score70": 386.31,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.88,
+      "adigaStandard": false
      }
     }
    },
@@ -16702,11 +16846,12 @@
       "quota": 60.0,
       "rate": 3.47,
       "fill": 34.0,
-      "pct70": 90.0,
-      "pct50": 85.0,
+      "pct70": 88.4,
+      "pct50": null,
       "score70": 380.21,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -16750,11 +16895,13 @@
       "avg80": 89.2,
       "score70": 380.21,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.2,
+      "adigaStandard": false
      }
     }
    },
@@ -16767,11 +16914,12 @@
       "quota": 34.0,
       "rate": 3.82,
       "fill": 15.0,
-      "pct70": 86.0,
-      "pct50": 90.0,
+      "pct70": 87.6,
+      "pct50": null,
       "score70": 382.17,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 86 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -16793,11 +16941,13 @@
       "avg80": 88.56,
       "score70": 382.17,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.56,
+      "adigaStandard": false
      }
     }
    },
@@ -16810,11 +16960,12 @@
       "quota": 5.0,
       "rate": 9.0,
       "fill": 1.0,
-      "pct70": 91.0,
-      "pct50": 88.0,
+      "pct70": 89.45,
+      "pct50": null,
       "score70": 381.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -16836,11 +16987,13 @@
       "avg80": 88.69,
       "score70": 381.46,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.69,
+      "adigaStandard": false
      }
     }
    },
@@ -16853,11 +17006,12 @@
       "quota": 67.0,
       "rate": 4.4,
       "fill": 72.0,
-      "pct70": 91.0,
-      "pct50": 91.0,
+      "pct70": 90.88,
+      "pct50": null,
       "score70": 389.87,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -16890,11 +17044,13 @@
       "avg80": 91.53,
       "score70": 389.87,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.53,
+      "adigaStandard": false
      }
     }
    },
@@ -16936,10 +17092,11 @@
       "rate": 4.56,
       "fill": 4.0,
       "pct70": 88.0,
-      "pct50": 89.0,
+      "pct50": null,
       "score70": 379.44,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -16972,11 +17129,13 @@
       "avg80": 88.03,
       "score70": 379.44,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.03,
+      "adigaStandard": false
      }
     }
    },
@@ -16989,11 +17148,12 @@
       "quota": 30.0,
       "rate": 2.93,
       "fill": 14.0,
-      "pct70": 92.0,
-      "pct50": 93.0,
+      "pct70": 89.4,
+      "pct50": null,
       "score70": 383.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17037,11 +17197,13 @@
       "avg80": 89.56,
       "score70": 383.27,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.56,
+      "adigaStandard": false
      }
     }
    },
@@ -17054,11 +17216,12 @@
       "quota": 20.0,
       "rate": 5.15,
       "fill": 12.0,
-      "pct70": 91.0,
-      "pct50": 89.0,
+      "pct70": 90.8,
+      "pct50": null,
       "score70": 388.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -17091,11 +17254,13 @@
       "avg80": 91.23,
       "score70": 388.83,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.23,
+      "adigaStandard": false
      }
     }
    },
@@ -17108,11 +17273,12 @@
       "quota": 22.0,
       "rate": 3.41,
       "fill": 18.0,
-      "pct70": 89.0,
-      "pct50": 92.0,
+      "pct70": 89.15,
+      "pct50": null,
       "score70": 382.77,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17156,11 +17322,13 @@
       "avg80": 90.3,
       "score70": 382.77,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.3,
+      "adigaStandard": false
      }
     }
    },
@@ -17173,11 +17341,12 @@
       "quota": 36.0,
       "rate": 4.03,
       "fill": 21.0,
-      "pct70": 91.0,
-      "pct50": 90.0,
+      "pct70": 91.28,
+      "pct50": null,
       "score70": 390.5,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17221,11 +17390,13 @@
       "avg80": 91.83,
       "score70": 390.5,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.83,
+      "adigaStandard": false
      }
     }
    },
@@ -17238,11 +17409,12 @@
       "quota": 12.0,
       "rate": 4.67,
       "fill": 8.0,
-      "pct70": 92.0,
-      "pct50": 91.0,
+      "pct70": 91.45,
+      "pct50": null,
       "score70": 383.59,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -17275,11 +17447,13 @@
       "avg80": 91.39,
       "score70": 383.59,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.39,
+      "adigaStandard": false
      }
     }
    },
@@ -17292,11 +17466,12 @@
       "quota": 12.0,
       "rate": 4.42,
       "fill": 1.0,
-      "pct70": 84.0,
-      "pct50": 85.0,
+      "pct70": 87.7,
+      "pct50": null,
       "score70": 386.34,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 84 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17340,11 +17515,13 @@
       "avg80": 89.2,
       "score70": 386.34,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.2,
+      "adigaStandard": false
      }
     }
    },
@@ -17357,11 +17534,12 @@
       "quota": 37.0,
       "rate": 4.03,
       "fill": 20.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 89.48,
+      "pct50": null,
       "score70": 385.87,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17405,11 +17583,13 @@
       "avg80": 90.34,
       "score70": 385.87,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.34,
+      "adigaStandard": false
      }
     }
    },
@@ -17422,11 +17602,12 @@
       "quota": 13.0,
       "rate": 2.92,
       "fill": 6.0,
-      "pct70": 90.0,
-      "pct50": 89.0,
+      "pct70": 88.95,
+      "pct50": null,
       "score70": 381.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17470,11 +17651,13 @@
       "avg80": 90.16,
       "score70": 381.62,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.16,
+      "adigaStandard": false
      }
     }
    },
@@ -17487,11 +17670,12 @@
       "quota": 35.0,
       "rate": 4.29,
       "fill": 24.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 90.45,
+      "pct50": null,
       "score70": 387.89,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17535,11 +17719,13 @@
       "avg80": 90.96,
       "score70": 387.89,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.96,
+      "adigaStandard": false
      }
     }
    },
@@ -17552,11 +17738,12 @@
       "quota": 19.0,
       "rate": 4.05,
       "fill": 14.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 90.5,
+      "pct50": null,
       "score70": 389.18,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17600,11 +17787,13 @@
       "avg80": 91.09,
       "score70": 389.18,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.09,
+      "adigaStandard": false
      }
     }
    },
@@ -17617,11 +17806,12 @@
       "quota": 29.0,
       "rate": 4.48,
       "fill": 14.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 90.7,
+      "pct50": null,
       "score70": 388.72,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -17654,11 +17844,13 @@
       "avg80": 91.45,
       "score70": 388.72,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.45,
+      "adigaStandard": false
      }
     }
    },
@@ -17671,11 +17863,12 @@
       "quota": 19.0,
       "rate": 3.89,
       "fill": 9.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 90.63,
+      "pct50": null,
       "score70": 390.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17719,11 +17912,13 @@
       "avg80": 91.58,
       "score70": 390.08,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.58,
+      "adigaStandard": false
      }
     }
    },
@@ -17736,11 +17931,12 @@
       "quota": 9.0,
       "rate": 6.33,
       "fill": 4.0,
-      "pct70": 89.0,
-      "pct50": 88.0,
+      "pct70": 89.68,
+      "pct50": null,
       "score70": 385.64,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17784,11 +17980,13 @@
       "avg80": 89.29,
       "score70": 385.64,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.29,
+      "adigaStandard": false
      }
     }
    },
@@ -17801,11 +17999,12 @@
       "quota": 18.0,
       "rate": 6.44,
       "fill": 4.0,
-      "pct70": 84.0,
-      "pct50": 86.0,
+      "pct70": 87.83,
+      "pct50": null,
       "score70": 380.7,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 84 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -17838,11 +18037,13 @@
       "avg80": 88.43,
       "score70": 380.7,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.43,
+      "adigaStandard": false
      }
     }
    },
@@ -17902,11 +18103,12 @@
       "quota": 8.0,
       "rate": 6.0,
       "fill": 9.0,
-      "pct70": 93.0,
-      "pct50": 92.0,
+      "pct70": 90.25,
+      "pct50": null,
       "score70": 387.3,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 93 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -17950,11 +18152,13 @@
       "avg80": 90.92,
       "score70": 387.3,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.92,
+      "adigaStandard": false
      }
     }
    },
@@ -17967,11 +18171,12 @@
       "quota": 15.0,
       "rate": 5.0,
       "fill": 11.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 90.78,
+      "pct50": null,
       "score70": 387.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18004,11 +18209,13 @@
       "avg80": 90.85,
       "score70": 387.46,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.85,
+      "adigaStandard": false
      }
     }
    },
@@ -18021,11 +18228,12 @@
       "quota": 34.0,
       "rate": 4.09,
       "fill": 32.0,
-      "pct70": 92.0,
-      "pct50": 87.0,
+      "pct70": 90.4,
+      "pct50": null,
       "score70": 388.07,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18069,11 +18277,13 @@
       "avg80": 91.58,
       "score70": 388.07,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.58,
+      "adigaStandard": false
      }
     }
    },
@@ -18086,11 +18296,12 @@
       "quota": 11.0,
       "rate": 5.55,
       "fill": 4.0,
-      "pct70": 86.0,
-      "pct50": 89.0,
+      "pct70": 88.23,
+      "pct50": null,
       "score70": 385.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 86 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18134,11 +18345,13 @@
       "avg80": 88.73,
       "score70": 385.31,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.73,
+      "adigaStandard": false
      }
     }
    },
@@ -18151,11 +18364,12 @@
       "quota": 9.0,
       "rate": 5.22,
       "fill": 8.0,
-      "pct70": 92.0,
-      "pct50": 91.0,
+      "pct70": 90.58,
+      "pct50": null,
       "score70": 390.63,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18199,11 +18413,13 @@
       "avg80": 91.81,
       "score70": 390.63,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.81,
+      "adigaStandard": false
      }
     }
    },
@@ -18217,11 +18433,11 @@
       "rate": 5.81,
       "fill": 27.0,
       "pct70": 96.73,
-      "pct50": 98.0,
+      "pct50": null,
       "score70": 408.92,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(97.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 96.73 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18265,11 +18481,13 @@
       "avg80": 97.04,
       "score70": 408.92,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 97.04,
+      "adigaStandard": false
      }
     }
    },
@@ -18312,11 +18530,12 @@
       "quota": 19.0,
       "rate": 4.47,
       "fill": 5.0,
-      "pct70": 87.0,
-      "pct50": 87.0,
+      "pct70": 88.93,
+      "pct50": null,
       "score70": 386.09,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 87 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18349,11 +18568,13 @@
       "avg80": 88.84,
       "score70": 386.09,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.84,
+      "adigaStandard": false
      }
     }
    },
@@ -18366,11 +18587,12 @@
       "quota": 19.0,
       "rate": 6.58,
       "fill": 11.0,
-      "pct70": 89.0,
-      "pct50": 89.0,
+      "pct70": 90.03,
+      "pct50": null,
       "score70": 388.06,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18403,11 +18625,13 @@
       "avg80": 91.17,
       "score70": 388.06,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.17,
+      "adigaStandard": false
      }
     }
    },
@@ -18420,11 +18644,12 @@
       "quota": 27.0,
       "rate": 3.96,
       "fill": 14.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 89.83,
+      "pct50": null,
       "score70": 388.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18457,11 +18682,13 @@
       "avg80": 90.71,
       "score70": 388.27,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.71,
+      "adigaStandard": false
      }
     }
    },
@@ -18474,11 +18701,12 @@
       "quota": 11.0,
       "rate": 9.18,
       "fill": 8.0,
-      "pct70": 91.0,
-      "pct50": 91.0,
+      "pct70": 91.05,
+      "pct50": null,
       "score70": 390.24,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18522,11 +18750,13 @@
       "avg80": 91.66,
       "score70": 390.24,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.66,
+      "adigaStandard": false
      }
     }
    },
@@ -18539,11 +18769,12 @@
       "quota": 10.0,
       "rate": 4.4,
       "fill": 8.0,
-      "pct70": 90.0,
-      "pct50": 91.0,
+      "pct70": 89.73,
+      "pct50": null,
       "score70": 386.07,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18576,11 +18807,13 @@
       "avg80": 90.67,
       "score70": 386.07,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.67,
+      "adigaStandard": false
      }
     }
    },
@@ -18594,10 +18827,11 @@
       "rate": 3.79,
       "fill": 9.0,
       "pct70": 90.0,
-      "pct50": 88.0,
+      "pct50": null,
       "score70": 387.49,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18630,11 +18864,13 @@
       "avg80": 90.62,
       "score70": 387.49,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.62,
+      "adigaStandard": false
      }
     }
    },
@@ -18647,11 +18883,12 @@
       "quota": 17.0,
       "rate": 3.59,
       "fill": 14.0,
-      "pct70": 91.0,
-      "pct50": 90.0,
+      "pct70": 89.93,
+      "pct50": null,
       "score70": 387.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18684,11 +18921,13 @@
       "avg80": 90.61,
       "score70": 387.27,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.61,
+      "adigaStandard": false
      }
     }
    },
@@ -18701,11 +18940,12 @@
       "quota": 17.0,
       "rate": 4.41,
       "fill": 3.0,
-      "pct70": 88.0,
-      "pct50": 89.0,
+      "pct70": 88.3,
+      "pct50": null,
       "score70": 386.32,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -18738,11 +18978,13 @@
       "avg80": 88.77,
       "score70": 386.32,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.77,
+      "adigaStandard": false
      }
     }
    },
@@ -18755,11 +18997,12 @@
       "quota": 26.0,
       "rate": 3.85,
       "fill": 9.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 89.93,
+      "pct50": null,
       "score70": 387.72,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18803,11 +19046,13 @@
       "avg80": 90.47,
       "score70": 387.72,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.47,
+      "adigaStandard": false
      }
     }
    },
@@ -18861,11 +19106,12 @@
       "quota": 16.0,
       "rate": 3.5,
       "fill": 2.0,
-      "pct70": 84.0,
-      "pct50": 88.0,
+      "pct70": 89.65,
+      "pct50": null,
       "score70": 385.01,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 84 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18909,11 +19155,13 @@
       "avg80": 90.56,
       "score70": 385.01,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.56,
+      "adigaStandard": false
      }
     }
    },
@@ -18927,11 +19175,11 @@
       "rate": 4.31,
       "fill": 32.0,
       "pct70": 98.95,
-      "pct50": 99.0,
+      "pct50": null,
       "score70": 420.81,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(98.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 98.95 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -18975,11 +19223,13 @@
       "avg80": 99.03,
       "score70": 420.81,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 99.03,
+      "adigaStandard": false
      }
     }
    },
@@ -18992,11 +19242,12 @@
       "quota": 20.0,
       "rate": 5.05,
       "fill": 10.0,
-      "pct70": 91.0,
-      "pct50": 92.0,
+      "pct70": 90.3,
+      "pct50": null,
       "score70": 388.91,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19023,6 +19274,15 @@
       "note": "국/수/탐 백분위 70%컷",
       "source": "경희대학교 2025학년도 입학전형 통계자료",
       "url": "https://iphak.khu.ac.kr/"
+     },
+     "2026": {
+      "avg": 91.12,
+      "kind": "상위80% 평균",
+      "metric": "pct",
+      "adigaStandard": false,
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/"
      }
     }
    },
@@ -19035,11 +19295,12 @@
       "quota": 22.0,
       "rate": 4.82,
       "fill": 14.0,
-      "pct70": 84.0,
-      "pct50": 83.0,
+      "pct70": 86.98,
+      "pct50": null,
       "score70": 380.12,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 84 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19072,11 +19333,13 @@
       "avg80": 87.69,
       "score70": 380.12,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 87.69,
+      "adigaStandard": false
      }
     }
    },
@@ -19090,11 +19353,11 @@
       "rate": 3.45,
       "fill": 40.0,
       "pct70": 92.15,
-      "pct50": 93.0,
+      "pct50": null,
       "score70": 385.33,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(92.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92.15 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19138,11 +19401,13 @@
       "avg80": 92.66,
       "score70": 385.33,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 92.66,
+      "adigaStandard": false
      }
     }
    },
@@ -19155,11 +19420,12 @@
       "quota": 71.0,
       "rate": 4.27,
       "fill": 64.0,
-      "pct70": 90.0,
-      "pct50": 88.0,
+      "pct70": 88.95,
+      "pct50": null,
       "score70": 383.7,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19203,11 +19469,13 @@
       "avg80": 89.94,
       "score70": 383.7,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.94,
+      "adigaStandard": false
      }
     }
    },
@@ -19220,11 +19488,12 @@
       "quota": 13.0,
       "rate": 4.0,
       "fill": 9.0,
-      "pct70": 92.0,
-      "pct50": 91.0,
+      "pct70": 91.38,
+      "pct50": null,
       "score70": 390.47,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19257,11 +19526,13 @@
       "avg80": 92.48,
       "score70": 390.47,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 92.48,
+      "adigaStandard": false
      }
     }
    },
@@ -19275,11 +19546,11 @@
       "rate": 3.7,
       "fill": 39.0,
       "pct70": 91.5,
-      "pct50": 92.0,
+      "pct50": null,
       "score70": 391.36,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(88.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91.5 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19323,11 +19594,13 @@
       "avg80": 92.02,
       "score70": 391.36,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 92.02,
+      "adigaStandard": false
      }
     }
    },
@@ -19340,11 +19613,12 @@
       "quota": 16.0,
       "rate": 4.81,
       "fill": 11.0,
-      "pct70": 88.0,
-      "pct50": 92.0,
+      "pct70": 88.5,
+      "pct50": null,
       "score70": 382.75,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19388,11 +19662,13 @@
       "avg80": 89.63,
       "score70": 382.75,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.63,
+      "adigaStandard": false
      }
     }
    },
@@ -19405,11 +19681,12 @@
       "quota": 5.0,
       "rate": 5.4,
       "fill": 1.0,
-      "pct70": 88.0,
-      "pct50": 88.0,
+      "pct70": 90.15,
+      "pct50": null,
       "score70": 381.35,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19442,11 +19719,13 @@
       "avg80": 89.51,
       "score70": 381.35,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.51,
+      "adigaStandard": false
      }
     }
    },
@@ -19459,11 +19738,12 @@
       "quota": 23.0,
       "rate": 4.3,
       "fill": 6.0,
-      "pct70": 88.0,
-      "pct50": 87.0,
+      "pct70": 87.65,
+      "pct50": null,
       "score70": 380.0,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19496,11 +19776,13 @@
       "avg80": 87.71,
       "score70": 380.0,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 87.71,
+      "adigaStandard": false
      }
     }
    },
@@ -19513,11 +19795,12 @@
       "quota": 13.0,
       "rate": 3.77,
       "fill": 2.0,
-      "pct70": 92.0,
-      "pct50": 93.0,
+      "pct70": 90.3,
+      "pct50": null,
       "score70": 382.82,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 92 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19561,11 +19844,13 @@
       "avg80": 89.84,
       "score70": 386.74,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.67,
+      "adigaStandard": false
      }
     }
    },
@@ -19578,11 +19863,12 @@
       "quota": 14.0,
       "rate": 3.71,
       "fill": 15.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 89.1,
+      "pct50": null,
       "score70": 386.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19615,11 +19901,13 @@
       "avg80": 89.84,
       "score70": 386.74,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.84,
+      "adigaStandard": false
      }
     }
    },
@@ -19632,11 +19920,12 @@
       "quota": 14.0,
       "rate": 5.07,
       "fill": 11.0,
-      "pct70": 87.0,
-      "pct50": 87.0,
+      "pct70": 88.28,
+      "pct50": null,
       "score70": 386.42,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 87 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19669,11 +19958,13 @@
       "avg80": 88.66,
       "score70": 386.42,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.66,
+      "adigaStandard": false
      }
     }
    },
@@ -19728,11 +20019,11 @@
       "rate": 3.35,
       "fill": 22.0,
       "pct70": 97.63,
-      "pct50": 98.0,
+      "pct50": null,
       "score70": 414.96,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(98.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 97.63 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -19776,11 +20067,13 @@
       "avg80": 97.93,
       "score70": 414.96,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 97.93,
+      "adigaStandard": false
      }
     }
    },
@@ -19793,11 +20086,12 @@
       "quota": 44.0,
       "rate": 3.34,
       "fill": 16.0,
-      "pct70": 89.0,
-      "pct50": 93.0,
+      "pct70": 90.3,
+      "pct50": null,
       "score70": 389.38,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19823,6 +20117,15 @@
       "metric": "pct",
       "note": "국/수/탐 백분위 70%컷",
       "source": "경희대학교 2025학년도 입학전형 통계자료",
+      "url": "https://iphak.khu.ac.kr/"
+     },
+     "2026": {
+      "avg": 90.79,
+      "kind": "상위80% 평균",
+      "metric": "pct",
+      "adigaStandard": false,
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
       "url": "https://iphak.khu.ac.kr/"
      }
     }
@@ -19866,11 +20169,12 @@
       "quota": 18.0,
       "rate": 5.22,
       "fill": 10.0,
-      "pct70": 89.0,
-      "pct50": 92.0,
+      "pct70": 87.7,
+      "pct50": null,
       "score70": 379.35,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19903,11 +20207,13 @@
       "avg80": 88.53,
       "score70": 379.35,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.53,
+      "adigaStandard": false
      }
     }
    },
@@ -19920,11 +20226,12 @@
       "quota": 10.0,
       "rate": 5.1,
       "fill": 9.0,
-      "pct70": 90.0,
-      "pct50": 84.0,
+      "pct70": 87.58,
+      "pct50": null,
       "score70": 380.52,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -19957,11 +20264,13 @@
       "avg80": 88.51,
       "score70": 380.52,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.51,
+      "adigaStandard": false
      }
     }
    },
@@ -19974,11 +20283,12 @@
       "quota": 18.0,
       "rate": 5.56,
       "fill": 2.0,
-      "pct70": 93.0,
-      "pct50": 93.0,
+      "pct70": 93.48,
+      "pct50": null,
       "score70": 398.13,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 93 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20022,11 +20332,13 @@
       "avg80": 93.74,
       "score70": 398.13,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 93.74,
+      "adigaStandard": false
      }
     }
    },
@@ -20040,11 +20352,11 @@
       "rate": 4.8,
       "fill": 2.0,
       "pct70": 98.05,
-      "pct50": 98.0,
+      "pct50": null,
       "score70": 410.12,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(98.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 98.05 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -20077,11 +20389,13 @@
       "avg80": 97.26,
       "score70": 411.73,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 98.17,
+      "adigaStandard": false
      }
     }
    },
@@ -20095,11 +20409,11 @@
       "rate": 3.3,
       "fill": 9.0,
       "pct70": 96.88,
-      "pct50": 99.0,
+      "pct50": null,
       "score70": 411.73,
-      "source": "베리타스알파 「경희대 2026입결」(어디가 공개값)",
-      "url": "https://www.veritas-a.com/news/articleView.html?idxno=616377",
-      "note": "학점나비가 정수로 실은 어디가 값(97.0) 대신 대학이 낸 원값을 쓴다."
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 96.88 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20143,11 +20457,13 @@
       "avg80": 97.26,
       "score70": 411.73,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 97.26,
+      "adigaStandard": false
      }
     }
    },
@@ -20160,11 +20476,12 @@
       "quota": 29.0,
       "rate": 3.76,
       "fill": 14.0,
-      "pct70": 89.0,
-      "pct50": 91.0,
+      "pct70": 89.25,
+      "pct50": null,
       "score70": 383.49,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20208,11 +20525,13 @@
       "avg80": 89.88,
       "score70": 383.49,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 89.88,
+      "adigaStandard": false
      }
     }
    },
@@ -20225,11 +20544,12 @@
       "quota": 31.0,
       "rate": 4.39,
       "fill": 24.0,
-      "pct70": 91.0,
-      "pct50": 89.0,
+      "pct70": 89.7,
+      "pct50": null,
       "score70": 388.17,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -20262,11 +20582,13 @@
       "avg80": 90.88,
       "score70": 388.17,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.88,
+      "adigaStandard": false
      }
     }
    },
@@ -20279,11 +20601,12 @@
       "quota": 19.0,
       "rate": 4.42,
       "fill": 11.0,
-      "pct70": 91.0,
-      "pct50": 91.0,
+      "pct70": 91.1,
+      "pct50": null,
       "score70": 389.81,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 91 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20327,11 +20650,13 @@
       "avg80": 91.37,
       "score70": 389.81,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.37,
+      "adigaStandard": false
      }
     }
    },
@@ -20372,11 +20697,12 @@
       "quota": 23.0,
       "rate": 5.26,
       "fill": 7.0,
-      "pct70": 89.0,
-      "pct50": 89.0,
+      "pct70": 89.18,
+      "pct50": null,
       "score70": 386.35,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -20409,11 +20735,13 @@
       "avg80": 90.04,
       "score70": 386.35,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.04,
+      "adigaStandard": false
      }
     }
    },
@@ -20426,11 +20754,12 @@
       "quota": 43.0,
       "rate": 3.23,
       "fill": 14.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 89.35,
+      "pct50": null,
       "score70": 382.53,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20474,11 +20803,13 @@
       "avg80": 90.11,
       "score70": 382.53,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 90.11,
+      "adigaStandard": false
      }
     }
    },
@@ -20491,11 +20822,12 @@
       "quota": 16.0,
       "rate": 4.38,
       "fill": 6.0,
-      "pct70": 89.0,
-      "pct50": 90.0,
+      "pct70": 88.83,
+      "pct50": null,
       "score70": 385.5,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 89 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {
@@ -20528,11 +20860,13 @@
       "avg80": 88.71,
       "score70": 385.5,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 88.71,
+      "adigaStandard": false
      }
     }
    },
@@ -20545,11 +20879,12 @@
       "quota": 29.0,
       "rate": 5.24,
       "fill": 30.0,
-      "pct70": 90.0,
-      "pct50": 90.0,
+      "pct70": 90.35,
+      "pct50": null,
       "score70": 388.39,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "note": "학점나비 정수 90 대체 — 대학이 낸 국·수·탐 백분위 70%CUT"
      }
     },
     "gyogwa": {},
@@ -20571,11 +20906,13 @@
       "avg80": 91.1,
       "score70": 388.39,
       "total": 600.0,
-      "kind": "70%컷",
+      "kind": "상위80% 평균",
       "metric": "pct",
-      "note": "국/수/탐 백분위 70%컷",
-      "source": "경희대학교 2026학년도 입학전형 통계자료",
-      "url": "https://iphak.khu.ac.kr/"
+      "note": "국·수·탐 백분위 상위 80% 평균 (70%컷과 정의가 다르다)",
+      "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)",
+      "url": "https://iphak.khu.ac.kr/",
+      "avg": 91.1,
+      "adigaStandard": false
      }
     }
    },
@@ -20859,7 +21196,7 @@
       "rate": 2.78,
       "fill": 9.0,
       "pct70": 95.67,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 525.41,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -20915,7 +21252,7 @@
       "rate": 4.44,
       "fill": 5.0,
       "pct70": 95.17,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 523.5,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21136,7 +21473,7 @@
       "rate": 4.25,
       "fill": 1.0,
       "pct70": 95.0,
-      "pct50": 95.0,
+      "pct50": null,
       "score70": 519.68,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21209,7 +21546,7 @@
       "rate": 3.32,
       "fill": 1.0,
       "pct70": 95.17,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 529.23,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21705,7 +22042,7 @@
       "rate": 6.2,
       "fill": 0.0,
       "pct70": 95.07,
-      "pct50": 95.0,
+      "pct50": null,
       "score70": 519.97,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21761,7 +22098,7 @@
       "rate": 4.0,
       "fill": 0.0,
       "pct70": 94.88,
-      "pct50": 95.0,
+      "pct50": null,
       "score70": 516.23,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21817,7 +22154,7 @@
       "rate": 2.73,
       "fill": 0.0,
       "pct70": 95.12,
-      "pct50": 97.0,
+      "pct50": null,
       "score70": 522.25,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -21873,7 +22210,7 @@
       "rate": 11.14,
       "fill": 1.0,
       "pct70": 94.87,
-      "pct50": 95.0,
+      "pct50": null,
       "score70": 520.24,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -22149,7 +22486,7 @@
       "rate": 3.67,
       "fill": 0.0,
       "pct70": 94.73,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 527.59,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -22260,7 +22597,7 @@
       "rate": 3.38,
       "fill": 0.0,
       "pct70": 95.33,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 522.68,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -22811,7 +23148,7 @@
       "rate": 3.42,
       "fill": 25.0,
       "pct70": 95.33,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 517.61,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -23021,7 +23358,7 @@
       "rate": 3.0,
       "fill": 0.0,
       "pct70": 95.2,
-      "pct50": 95.0,
+      "pct50": null,
       "score70": 519.31,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -23077,7 +23414,7 @@
       "rate": 2.8,
       "fill": 1.0,
       "pct70": 95.48,
-      "pct50": 97.0,
+      "pct50": null,
       "score70": 525.46,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -23232,7 +23569,7 @@
       "rate": 4.0,
       "fill": 1.0,
       "pct70": 94.8,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 522.51,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -23483,7 +23820,7 @@
       "rate": 4.21,
       "fill": 4.0,
       "pct70": 95.83,
-      "pct50": 96.0,
+      "pct50": null,
       "score70": 524.44,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -23594,7 +23931,7 @@
       "rate": 4.8,
       "fill": 6.0,
       "pct70": 94.83,
-      "pct50": 97.0,
+      "pct50": null,
       "score70": 528.36,
       "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=614086",
@@ -28130,7 +28467,8 @@
       "pct50": 84.0,
       "score70": 886.15,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%8B%A8%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%8B%A8%EA%B5%AD%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 87.84
      }
     },
     "gyogwa": {
@@ -33800,7 +34138,8 @@
       "pct50": null,
       "score70": 828.0,
       "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
-      "url": "https://ipsi.mju.ac.kr/"
+      "url": "https://ipsi.mju.ac.kr/",
+      "pct100": 78.7
      }
     },
     "gyogwa": {
@@ -33886,7 +34225,8 @@
       "pct50": null,
       "score70": 864.6,
       "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
-      "url": "https://ipsi.mju.ac.kr/"
+      "url": "https://ipsi.mju.ac.kr/",
+      "pct100": 80.3
      }
     },
     "gyogwa": {
@@ -34112,7 +34452,8 @@
       "pct50": null,
       "score70": 848.0,
       "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
-      "url": "https://ipsi.mju.ac.kr/"
+      "url": "https://ipsi.mju.ac.kr/",
+      "pct100": 75.3
      }
     },
     "gyogwa": {
@@ -34344,7 +34685,8 @@
       "pct50": 82.0,
       "score70": 860.0,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 78.3
      }
     },
     "gyogwa": {
@@ -34417,7 +34759,8 @@
       "pct50": 82.0,
       "score70": 851.6,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 75.3
      }
     },
     "gyogwa": {},
@@ -34479,7 +34822,8 @@
       "pct50": 84.0,
       "score70": 844.5,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 76.0
      }
     },
     "gyogwa": {},
@@ -34541,7 +34885,8 @@
       "pct50": 82.0,
       "score70": 849.1,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 77.3
      }
     },
     "gyogwa": {},
@@ -34603,7 +34948,8 @@
       "pct50": 83.0,
       "score70": 876.0,
       "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/",
+      "pct100": 82.7
      }
     },
     "gyogwa": {},
@@ -37218,7 +37564,7 @@
       "rate": 5.3,
       "fill": 7.0,
       "pct70": 63.33,
-      "pct50": 68.0,
+      "pct50": null,
       "score70": 647.43,
       "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)",
       "url": "https://namuacademy.com/bbs/board.php?bo_table=4001&wr_id=576",
@@ -38069,7 +38415,7 @@
       "rate": 3.2,
       "fill": 16.0,
       "pct70": 87.67,
-      "pct50": 88.0,
+      "pct50": null,
       "score70": 707.41,
       "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)",
       "url": "https://namuacademy.com/bbs/board.php?bo_table=4001&wr_id=576",
@@ -38654,7 +39000,7 @@
       "rate": 5.0,
       "fill": 2.0,
       "pct70": 56.33,
-      "pct50": 66.0,
+      "pct50": null,
       "score70": 566.17,
       "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)",
       "url": "https://namuacademy.com/bbs/board.php?bo_table=4001&wr_id=576",
@@ -50894,15 +51240,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 14.0,
-      "rate": 5.21,
-      "fill": 21.0,
-      "pct70": 85.0,
-      "pct50": 85.0,
+      "group": "가",
+      "quota": 14,
+      "rate": 5.2,
+      "fill": 21,
+      "pct70": 85.33,
+      "pct50": null,
       "score70": 906.88,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 150,
+      "note": "학점나비 정수 85 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -50928,6 +51276,17 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
+    },
+    "official": {
+     "2026": {
+      "avg": 86.08,
+      "kind": "등록자 평균",
+      "metric": "pct",
+      "adigaStandard": false,
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/"
+     }
     }
    },
    {
@@ -50935,15 +51294,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
+      "group": "가",
+      "quota": 6,
       "rate": 6.0,
-      "fill": 8.0,
-      "pct70": 86.0,
-      "pct50": 85.0,
+      "fill": 8,
+      "pct70": 86.33,
+      "pct50": null,
       "score70": 905.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 133,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -50998,11 +51359,12 @@
      "2026": {
       "avg": 86.5,
       "cut70": 86.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51011,15 +51373,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 42.0,
-      "rate": 4.33,
-      "fill": 31.0,
-      "pct70": 87.0,
-      "pct50": 85.0,
+      "group": "가",
+      "quota": 42,
+      "rate": 4.3,
+      "fill": 31,
+      "pct70": 86.5,
+      "pct50": null,
       "score70": 903.87,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 74,
+      "note": "학점나비 정수 87 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51074,11 +51438,12 @@
      "2026": {
       "avg": 86.96,
       "cut70": 86.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51087,15 +51452,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 34.0,
-      "rate": 4.38,
-      "fill": 15.0,
-      "pct70": 86.0,
-      "pct50": 89.0,
+      "group": "가",
+      "quota": 34,
+      "rate": 4.4,
+      "fill": 15,
+      "pct70": 85.83,
+      "pct50": null,
       "score70": 901.99,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 44,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51150,11 +51517,12 @@
      "2026": {
       "avg": 86.57,
       "cut70": 85.83,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51163,15 +51531,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 7.63,
-      "fill": 7.0,
-      "pct70": 83.0,
-      "pct50": 78.0,
+      "group": "가",
+      "quota": 8,
+      "rate": 7.6,
+      "fill": 7,
+      "pct70": 80.33,
+      "pct50": null,
       "score70": 897.23,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 88,
+      "note": "학점나비 정수 83 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51226,11 +51596,12 @@
      "2026": {
       "avg": 81.67,
       "cut70": 80.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51239,15 +51610,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 16.0,
-      "rate": 5.13,
-      "fill": 6.0,
-      "pct70": 84.0,
-      "pct50": 82.0,
+      "group": "가",
+      "quota": 16,
+      "rate": 5.1,
+      "fill": 6,
+      "pct70": 82.33,
+      "pct50": null,
       "score70": 897.23,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 38,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51302,11 +51675,12 @@
      "2026": {
       "avg": 83.26,
       "cut70": 82.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51315,15 +51689,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 23.0,
-      "rate": 7.26,
-      "fill": 26.0,
-      "pct70": 86.0,
-      "pct50": 87.0,
+      "group": "다",
+      "quota": 23,
+      "rate": 7.3,
+      "fill": 26,
+      "pct70": 85.0,
+      "pct50": null,
       "score70": 904.66,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 113,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51378,11 +51754,12 @@
      "2026": {
       "avg": 85.88,
       "cut70": 85.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51391,15 +51768,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 24.0,
-      "rate": 3.79,
-      "fill": 10.0,
-      "pct70": 88.0,
-      "pct50": 87.0,
+      "group": "가",
+      "quota": 24,
+      "rate": 3.8,
+      "fill": 10,
+      "pct70": 86.0,
+      "pct50": null,
       "score70": 900.92,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 42,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51454,11 +51833,12 @@
      "2026": {
       "avg": 86.51,
       "cut70": 86.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51467,15 +51847,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 18.0,
-      "rate": 4.89,
-      "fill": 8.0,
-      "pct70": 87.0,
-      "pct50": 87.0,
+      "group": "가",
+      "quota": 18,
+      "rate": 4.9,
+      "fill": 8,
+      "pct70": 86.0,
+      "pct50": null,
       "score70": 904.27,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 44,
+      "note": "학점나비 정수 87 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51530,11 +51912,12 @@
      "2026": {
       "avg": 86.76,
       "cut70": 86.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51543,15 +51926,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 32.0,
-      "rate": 6.75,
-      "fill": 32.0,
-      "pct70": 88.0,
-      "pct50": 88.0,
+      "group": "다",
+      "quota": 32,
+      "rate": 6.8,
+      "fill": 32,
+      "pct70": 86.33,
+      "pct50": null,
       "score70": 909.05,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 100,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51606,11 +51991,12 @@
      "2026": {
       "avg": 87.14,
       "cut70": 86.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51636,15 +52022,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 10.78,
-      "fill": 18.0,
-      "pct70": 83.0,
-      "pct50": 83.0,
+      "group": "나",
+      "quota": 9,
+      "rate": 10.8,
+      "fill": 18,
+      "pct70": 82.67,
+      "pct50": null,
       "score70": 896.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 200,
+      "note": "학점나비 정수 83 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51699,11 +52087,12 @@
      "2026": {
       "avg": 82.42,
       "cut70": 82.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51712,15 +52101,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 13.0,
-      "rate": 7.54,
-      "fill": 10.0,
-      "pct70": 85.0,
-      "pct50": 84.0,
+      "group": "다",
+      "quota": 13,
+      "rate": 7.5,
+      "fill": 10,
+      "pct70": 84.0,
+      "pct50": null,
       "score70": 906.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 77,
+      "note": "학점나비 정수 85 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51775,11 +52166,12 @@
      "2026": {
       "avg": 85.33,
       "cut70": 84.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51788,15 +52180,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 22.0,
-      "rate": 5.41,
-      "fill": 10.0,
-      "pct70": 84.0,
-      "pct50": 83.0,
+      "group": "가",
+      "quota": 22,
+      "rate": 5.4,
+      "fill": 10,
+      "pct70": 82.33,
+      "pct50": null,
       "score70": 902.04,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 45,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51851,11 +52245,12 @@
      "2026": {
       "avg": 83.72,
       "cut70": 82.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51864,15 +52259,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 25.0,
-      "rate": 3.76,
-      "fill": 8.0,
-      "pct70": 86.0,
-      "pct50": 85.0,
+      "group": "가",
+      "quota": 25,
+      "rate": 3.8,
+      "fill": 8,
+      "pct70": 84.83,
+      "pct50": null,
       "score70": 899.19,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 32,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -51927,11 +52324,12 @@
      "2026": {
       "avg": 85.7,
       "cut70": 84.83,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -51940,15 +52338,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 6.0,
+      "group": "가",
+      "quota": 6,
       "rate": 7.5,
-      "fill": 2.0,
-      "pct70": 87.0,
-      "pct50": 81.0,
+      "fill": 2,
+      "pct70": 81.17,
+      "pct50": null,
       "score70": 894.21,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 33,
+      "note": "학점나비 정수 87 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52003,11 +52403,12 @@
      "2026": {
       "avg": 82.94,
       "cut70": 81.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52016,15 +52417,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 8.33,
-      "fill": 4.0,
-      "pct70": 80.0,
-      "pct50": 85.0,
+      "group": "가",
+      "quota": 9,
+      "rate": 8.3,
+      "fill": 4,
+      "pct70": 81.67,
+      "pct50": null,
       "score70": 894.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 44,
+      "note": "학점나비 정수 80 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52079,11 +52482,12 @@
      "2026": {
       "avg": 82.04,
       "cut70": 81.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52092,15 +52496,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 13.67,
-      "fill": 58.0,
-      "pct70": 82.0,
-      "pct50": 87.0,
+      "group": "다",
+      "quota": 15,
+      "rate": 13.7,
+      "fill": 58,
+      "pct70": 82.33,
+      "pct50": null,
       "score70": 896.96,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 387,
+      "note": "학점나비 정수 82 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52155,11 +52561,12 @@
      "2026": {
       "avg": 83.47,
       "cut70": 82.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52168,15 +52575,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 25.0,
-      "rate": 5.28,
-      "fill": 38.0,
-      "pct70": 86.0,
-      "pct50": 88.0,
+      "group": "가",
+      "quota": 25,
+      "rate": 5.3,
+      "fill": 38,
+      "pct70": 85.67,
+      "pct50": null,
       "score70": 903.94,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 152,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52231,11 +52640,12 @@
      "2026": {
       "avg": 85.6,
       "cut70": 85.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52244,15 +52654,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 11.38,
-      "fill": 14.0,
-      "pct70": 85.0,
-      "pct50": 88.0,
+      "group": "다",
+      "quota": 8,
+      "rate": 11.4,
+      "fill": 14,
+      "pct70": 85.33,
+      "pct50": null,
       "score70": 907.43,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 175,
+      "note": "학점나비 정수 85 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52307,11 +52719,12 @@
      "2026": {
       "avg": 85.73,
       "cut70": 85.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52320,15 +52733,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 28.0,
-      "rate": 5.89,
-      "fill": 31.0,
-      "pct70": 84.0,
-      "pct50": 86.0,
+      "group": "다",
+      "quota": 28,
+      "rate": 5.9,
+      "fill": 31,
+      "pct70": 84.67,
+      "pct50": null,
       "score70": 908.3,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 111,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52383,11 +52798,12 @@
      "2026": {
       "avg": 85.74,
       "cut70": 84.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52396,15 +52812,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 12.0,
-      "rate": 6.17,
-      "fill": 12.0,
-      "pct70": 79.0,
-      "pct50": 82.0,
+      "group": "가",
+      "quota": 12,
+      "rate": 6.2,
+      "fill": 12,
+      "pct70": 81.5,
+      "pct50": null,
       "score70": 898.57,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 100,
+      "note": "학점나비 정수 79 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52459,11 +52877,12 @@
      "2026": {
       "avg": 82.21,
       "cut70": 81.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52472,15 +52891,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 20.0,
-      "rate": 6.85,
-      "fill": 36.0,
-      "pct70": 81.0,
-      "pct50": 81.0,
+      "group": "나",
+      "quota": 20,
+      "rate": 6.9,
+      "fill": 36,
+      "pct70": 80.5,
+      "pct50": null,
       "score70": 895.36,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 180,
+      "note": "학점나비 정수 81 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52535,11 +52956,12 @@
      "2026": {
       "avg": 81.31,
       "cut70": 80.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52548,15 +52970,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 20.0,
+      "group": "다",
+      "quota": 20,
       "rate": 6.9,
-      "fill": 39.0,
-      "pct70": 88.0,
-      "pct50": 85.0,
+      "fill": 39,
+      "pct70": 85.0,
+      "pct50": null,
       "score70": 908.5,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 195,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52611,11 +53035,12 @@
      "2026": {
       "avg": 85.98,
       "cut70": 85.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52624,15 +53049,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 9.0,
+      "group": "가",
+      "quota": 9,
       "rate": 6.0,
-      "fill": 4.0,
-      "pct70": 84.0,
-      "pct50": 79.0,
+      "fill": 4,
+      "pct70": 81.5,
+      "pct50": null,
       "score70": 895.98,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 44,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52687,11 +53114,12 @@
      "2026": {
       "avg": 81.76,
       "cut70": 81.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52700,15 +53128,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 41.0,
-      "rate": 5.49,
-      "fill": 41.0,
-      "pct70": 88.0,
-      "pct50": 88.0,
+      "group": "다",
+      "quota": 41,
+      "rate": 5.5,
+      "fill": 41,
+      "pct70": 86.17,
+      "pct50": null,
       "score70": 909.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 100,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52763,11 +53193,12 @@
      "2026": {
       "avg": 86.71,
       "cut70": 86.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52776,15 +53207,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 29.0,
-      "rate": 5.66,
-      "fill": 29.0,
-      "pct70": 84.0,
-      "pct50": 88.0,
+      "group": "다",
+      "quota": 29,
+      "rate": 5.7,
+      "fill": 29,
+      "pct70": 86.33,
+      "pct50": null,
       "score70": 915.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 100,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52837,13 +53270,14 @@
       "url": "https://admission.ssu.ac.kr/"
      },
      "2026": {
-      "avg": 86.95,
+      "avg": 87.21,
       "cut70": 86.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52852,15 +53286,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 28.0,
-      "rate": 3.82,
-      "fill": 23.0,
-      "pct70": 87.0,
-      "pct50": 87.0,
+      "group": "나",
+      "quota": 28,
+      "rate": 3.8,
+      "fill": 23,
+      "pct70": 86.33,
+      "pct50": null,
       "score70": 912.77,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 82,
+      "note": "학점나비 정수 87 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -52915,11 +53351,12 @@
      "2026": {
       "avg": 86.95,
       "cut70": 86.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52928,15 +53365,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 12.0,
-      "rate": 8.75,
-      "fill": 26.0,
-      "pct70": 92.0,
-      "pct50": 90.0,
+      "group": "다",
+      "quota": 12,
+      "rate": 8.8,
+      "fill": 26,
+      "pct70": 92.17,
+      "pct50": null,
       "score70": 934.9,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 217,
+      "note": "학점나비 정수 92 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {},
@@ -52972,11 +53411,12 @@
      "2026": {
       "avg": 92.38,
       "cut70": 92.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -52985,15 +53425,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 10.0,
+      "group": "가",
+      "quota": 10,
       "rate": 4.8,
-      "fill": 3.0,
-      "pct70": 80.0,
-      "pct50": 84.0,
+      "fill": 3,
+      "pct70": 82.33,
+      "pct50": null,
       "score70": 898.75,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 30,
+      "note": "학점나비 정수 80 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53048,11 +53490,12 @@
      "2026": {
       "avg": 83.35,
       "cut70": 82.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53061,15 +53504,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 11.0,
-      "rate": 7.36,
-      "fill": 9.0,
-      "pct70": 90.0,
-      "pct50": 84.0,
+      "group": "다",
+      "quota": 11,
+      "rate": 7.4,
+      "fill": 9,
+      "pct70": 87.5,
+      "pct50": null,
       "score70": 903.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 82,
+      "note": "학점나비 정수 90 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53124,11 +53569,12 @@
      "2026": {
       "avg": 87.24,
       "cut70": 87.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53137,15 +53583,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 13.0,
-      "rate": 4.54,
-      "fill": 8.0,
-      "pct70": 80.0,
-      "pct50": 82.0,
+      "group": "가",
+      "quota": 13,
+      "rate": 4.5,
+      "fill": 8,
+      "pct70": 81.33,
+      "pct50": null,
       "score70": 897.8,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 62,
+      "note": "학점나비 정수 80 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53200,11 +53648,12 @@
      "2026": {
       "avg": 81.89,
       "cut70": 81.33,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53213,15 +53662,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 11.0,
-      "rate": 6.55,
-      "fill": 2.0,
-      "pct70": 82.0,
-      "pct50": 81.0,
+      "group": "가",
+      "quota": 11,
+      "rate": 6.5,
+      "fill": 2,
+      "pct70": 81.67,
+      "pct50": null,
       "score70": 895.05,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 18,
+      "note": "학점나비 정수 82 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53276,11 +53727,12 @@
      "2026": {
       "avg": 82.26,
       "cut70": 81.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53317,15 +53769,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 20.0,
-      "rate": 5.45,
-      "fill": 22.0,
-      "pct70": 90.0,
-      "pct50": 89.0,
+      "group": "다",
+      "quota": 20,
+      "rate": 5.5,
+      "fill": 22,
+      "pct70": 86.67,
+      "pct50": null,
       "score70": 911.08,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 110,
+      "note": "학점나비 정수 90 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53380,11 +53834,12 @@
      "2026": {
       "avg": 87.3,
       "cut70": 86.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53393,15 +53848,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 6.75,
-      "fill": 3.0,
-      "pct70": 87.0,
-      "pct50": 84.0,
+      "group": "가",
+      "quota": 8,
+      "rate": 6.8,
+      "fill": 3,
+      "pct70": 82.5,
+      "pct50": null,
       "score70": 893.17,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 38,
+      "note": "학점나비 정수 87 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53456,11 +53913,12 @@
      "2026": {
       "avg": 83.0,
       "cut70": 82.5,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53469,15 +53927,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 34.0,
-      "rate": 4.85,
-      "fill": 15.0,
-      "pct70": 81.0,
-      "pct50": 83.0,
+      "group": "가",
+      "quota": 34,
+      "rate": 4.9,
+      "fill": 15,
+      "pct70": 82.17,
+      "pct50": null,
       "score70": 899.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 44,
+      "note": "학점나비 정수 81 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53532,11 +53992,12 @@
      "2026": {
       "avg": 82.77,
       "cut70": 82.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53545,15 +54006,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 25.0,
-      "rate": 5.88,
-      "fill": 19.0,
-      "pct70": 86.0,
-      "pct50": 86.0,
+      "group": "다",
+      "quota": 25,
+      "rate": 5.9,
+      "fill": 19,
+      "pct70": 85.17,
+      "pct50": null,
       "score70": 907.88,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 76,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53608,11 +54071,12 @@
      "2026": {
       "avg": 86.01,
       "cut70": 85.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53621,15 +54085,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 17.0,
-      "rate": 6.88,
-      "fill": 22.0,
-      "pct70": 88.0,
-      "pct50": 83.0,
+      "group": "다",
+      "quota": 17,
+      "rate": 6.9,
+      "fill": 22,
+      "pct70": 84.17,
+      "pct50": null,
       "score70": 905.62,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 129,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53684,11 +54150,12 @@
      "2026": {
       "avg": 85.25,
       "cut70": 84.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53697,15 +54164,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 21.0,
-      "rate": 4.14,
-      "fill": 9.0,
-      "pct70": 86.0,
-      "pct50": 83.0,
+      "group": "가",
+      "quota": 21,
+      "rate": 4.1,
+      "fill": 9,
+      "pct70": 86.17,
+      "pct50": null,
       "score70": 902.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 43,
+      "note": "학점나비 정수 86 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53760,11 +54229,12 @@
      "2026": {
       "avg": 86.73,
       "cut70": 86.17,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53773,15 +54243,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 74.0,
-      "rate": 4.08,
-      "fill": 71.0,
-      "pct70": 88.0,
-      "pct50": 87.0,
+      "group": "가",
+      "quota": 74,
+      "rate": 4.1,
+      "fill": 71,
+      "pct70": 86.0,
+      "pct50": null,
       "score70": 910.22,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 96,
+      "note": "학점나비 정수 88 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53812,11 +54284,12 @@
      "2026": {
       "avg": 86.67,
       "cut70": 86.0,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53825,15 +54298,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 165.0,
-      "rate": 6.49,
-      "fill": 174.0,
-      "pct70": 84.0,
-      "pct50": 89.0,
+      "group": "다",
+      "quota": 165,
+      "rate": 6.5,
+      "fill": 174,
+      "pct70": 84.33,
+      "pct50": null,
       "score70": 900.74,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 105,
+      "note": "학점나비 정수 84 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53859,13 +54334,14 @@
       "url": "https://admission.ssu.ac.kr/"
      },
      "2026": {
-      "avg": 86.2,
+      "avg": 85.71,
       "cut70": 85.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    },
@@ -53874,15 +54350,17 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반전형)",
-      "group": null,
-      "quota": 192.0,
-      "rate": 3.69,
-      "fill": 152.0,
-      "pct70": 85.0,
-      "pct50": 86.0,
+      "group": "나",
+      "quota": 192,
+      "rate": 3.7,
+      "fill": 152,
+      "pct70": 85.67,
+      "pct50": null,
       "score70": 907.33,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EC%88%AD%EC%8B%A4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "fillRate": 79,
+      "note": "학점나비 정수 85 대체 — 국어·수학·탐구(2과목) 단순평균 70%"
      }
     },
     "gyogwa": {
@@ -53910,11 +54388,12 @@
      "2026": {
       "avg": 86.2,
       "cut70": 85.67,
-      "kind": "70%컷",
+      "kind": "등록자 평균",
       "metric": "pct",
-      "note": "수능 백분위 평균·70%컷",
-      "source": "숭실대학교 2026학년도 입학전형 통계",
-      "url": "https://admission.ssu.ac.kr/"
+      "note": "국·수·탐(2) 백분위 등록자 평균 (70%컷과 정의가 다르다)",
+      "source": "숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)",
+      "url": "https://admission.ssu.ac.kr/",
+      "adigaStandard": false
      }
     }
    }
@@ -53940,7 +54419,7 @@
       "rate": 7.0,
       "fill": 8.0,
       "pct70": 85.83,
-      "pct50": 87.0,
+      "pct50": null,
       "score70": 893.73,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -53982,7 +54461,7 @@
       "rate": 5.0,
       "fill": 23.0,
       "pct70": 86.33,
-      "pct50": 87.0,
+      "pct50": null,
       "score70": 904.45,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54024,7 +54503,7 @@
       "rate": 6.9,
       "fill": 10.0,
       "pct70": 86.5,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 906.98,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54066,7 +54545,7 @@
       "rate": 8.5,
       "fill": 1.0,
       "pct70": 85.67,
-      "pct50": 85.0,
+      "pct50": null,
       "score70": 905.21,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54108,7 +54587,7 @@
       "rate": 4.7,
       "fill": 16.0,
       "pct70": 89.5,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 917.23,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54191,7 +54670,7 @@
       "rate": 5.5,
       "fill": 13.0,
       "pct70": 90.5,
-      "pct50": 85.0,
+      "pct50": null,
       "score70": 909.59,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54233,7 +54712,7 @@
       "rate": 6.7,
       "fill": 17.0,
       "pct70": 86.83,
-      "pct50": 88.0,
+      "pct50": null,
       "score70": 917.49,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54330,7 +54809,7 @@
       "rate": 5.5,
       "fill": 15.0,
       "pct70": 86.17,
-      "pct50": 85.0,
+      "pct50": null,
       "score70": 898.92,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54372,7 +54851,7 @@
       "rate": 9.2,
       "fill": 6.0,
       "pct70": 84.83,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 885.89,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54414,7 +54893,7 @@
       "rate": 6.4,
       "fill": 23.0,
       "pct70": 85.67,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 887.97,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54579,7 +55058,7 @@
       "rate": 4.7,
       "fill": 34.0,
       "pct70": 86.17,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 907.7,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54744,7 +55223,7 @@
       "rate": 5.6,
       "fill": 5.0,
       "pct70": 90.33,
-      "pct50": 89.0,
+      "pct50": null,
       "score70": 906.43,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54827,7 +55306,7 @@
       "rate": 6.0,
       "fill": 9.0,
       "pct70": 85.67,
-      "pct50": 89.0,
+      "pct50": null,
       "score70": 903.43,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -54951,7 +55430,7 @@
       "rate": 5.7,
       "fill": 11.0,
       "pct70": 94.5,
-      "pct50": 94.0,
+      "pct50": null,
       "score70": 970.29,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -55023,7 +55502,7 @@
       "rate": 3.7,
       "fill": 0.0,
       "pct70": 98.83,
-      "pct50": 99.0,
+      "pct50": null,
       "score70": 989.71,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -55065,7 +55544,7 @@
       "rate": 4.1,
       "fill": 34.0,
       "pct70": 86.17,
-      "pct50": 89.0,
+      "pct50": null,
       "score70": 917.34,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -55107,7 +55586,7 @@
       "rate": 4.3,
       "fill": 29.0,
       "pct70": 85.5,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 899.9,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -55272,7 +55751,7 @@
       "rate": 4.1,
       "fill": 20.0,
       "pct70": 88.83,
-      "pct50": 90.0,
+      "pct50": null,
       "score70": 891.88,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -55303,7 +55782,7 @@
       "rate": 3.4,
       "fill": 58.0,
       "pct70": 85.83,
-      "pct50": 86.0,
+      "pct50": null,
       "score70": 907.61,
       "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=607059",
@@ -60083,7 +60562,7 @@
       "rate": 4.27,
       "fill": 20.0,
       "pct70": 85.0,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 802.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60207,7 +60686,7 @@
       "rate": 28.33,
       "fill": 3.0,
       "pct70": 83.0,
-      "pct50": 78.0,
+      "pct50": null,
       "score70": 795.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60249,7 +60728,7 @@
       "rate": 4.8,
       "fill": 7.0,
       "pct70": 83.4,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 810.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60332,7 +60811,7 @@
       "rate": 5.8,
       "fill": 1.0,
       "pct70": 81.9,
-      "pct50": 80.0,
+      "pct50": null,
       "score70": 799.3,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60415,7 +60894,7 @@
       "rate": 9.11,
       "fill": 3.0,
       "pct70": 83.3,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 806.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60457,7 +60936,7 @@
       "rate": 9.14,
       "fill": 8.0,
       "pct70": 83.9,
-      "pct50": 80.0,
+      "pct50": null,
       "score70": 800.3,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60540,7 +61019,7 @@
       "rate": 5.15,
       "fill": 5.0,
       "pct70": 85.1,
-      "pct50": 84.0,
+      "pct50": null,
       "score70": 839.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60787,7 +61266,7 @@
       "rate": 4.88,
       "fill": 1.0,
       "pct70": 82.5,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 803.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60870,7 +61349,7 @@
       "rate": 6.43,
       "fill": 3.0,
       "pct70": 81.8,
-      "pct50": 77.0,
+      "pct50": null,
       "score70": 788.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60953,7 +61432,7 @@
       "rate": 6.44,
       "fill": 3.0,
       "pct70": 84.4,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 817.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -60995,7 +61474,7 @@
       "rate": 6.13,
       "fill": 5.0,
       "pct70": 81.6,
-      "pct50": 78.0,
+      "pct50": null,
       "score70": 797.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -61395,7 +61874,7 @@
       "rate": 5.71,
       "fill": 12.0,
       "pct70": 84.6,
-      "pct50": 78.0,
+      "pct50": null,
       "score70": 801.3,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -61549,7 +62028,7 @@
       "rate": 9.33,
       "fill": 2.0,
       "pct70": 85.9,
-      "pct50": 82.0,
+      "pct50": null,
       "score70": 807.8,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -61714,7 +62193,7 @@
       "rate": 4.62,
       "fill": 5.0,
       "pct70": 83.5,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 812.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -61756,7 +62235,7 @@
       "rate": 4.65,
       "fill": 11.0,
       "pct70": 82.9,
-      "pct50": 81.0,
+      "pct50": null,
       "score70": 822.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -61962,7 +62441,7 @@
       "rate": 5.33,
       "fill": 51.0,
       "pct70": 84.3,
-      "pct50": 82.0,
+      "pct50": null,
       "score70": 816.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -62086,7 +62565,7 @@
       "rate": 10.75,
       "fill": 18.0,
       "pct70": 83.3,
-      "pct50": 80.0,
+      "pct50": null,
       "score70": 795.5,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -62169,7 +62648,7 @@
       "rate": 12.57,
       "fill": 7.0,
       "pct70": 83.3,
-      "pct50": 80.0,
+      "pct50": null,
       "score70": 811.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -62282,7 +62761,7 @@
       "rate": 5.89,
       "fill": 17.0,
       "pct70": 82.0,
-      "pct50": 79.0,
+      "pct50": null,
       "score70": 805.0,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -62343,7 +62822,7 @@
       "rate": 6.14,
       "fill": 1.0,
       "pct70": 83.8,
-      "pct50": 87.0,
+      "pct50": null,
       "score70": 424.4,
       "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=606760",
@@ -63817,7 +64296,7 @@
       "rate": 10.3,
       "fill": 45.0,
       "pct70": 98.17,
-      "pct50": 98.0,
+      "pct50": null,
       "score70": 986.99,
       "source": "베리타스알파 「인하대 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -85559,7 +86038,7 @@
       "rate": null,
       "fill": 42.0,
       "pct70": 82.5,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 882.71,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -86250,7 +86729,7 @@
       "rate": null,
       "fill": 13.0,
       "pct70": 82.67,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 892.24,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -86377,7 +86856,7 @@
       "rate": null,
       "fill": 4.0,
       "pct70": 82.5,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 891.03,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -86619,7 +87098,7 @@
       "rate": null,
       "fill": 12.0,
       "pct70": 82.5,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 893.34,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -86746,7 +87225,7 @@
       "rate": null,
       "fill": 7.0,
       "pct70": 83.17,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 888.45,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
@@ -86820,7 +87299,7 @@
       "rate": null,
       "fill": 11.0,
       "pct70": 82.33,
-      "pct50": 83.0,
+      "pct50": null,
       "score70": 888.95,
       "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)",
       "url": "https://www.veritas-a.com/news/articleView.html?idxno=604791",
