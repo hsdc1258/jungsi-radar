@@ -104,11 +104,17 @@ html, body {
   height: 1px;
   background: var(--seed-color-stroke-neutral-subtle);
 }
-/* ---- 화면 머리: 왼쪽 값, 오른쪽 ⓘ 하나 ---- */
+/* ---- 상단바 오른쪽: [ⓘ][테마] 두 아이콘 버튼 (FRAME §9.2) ---- */
+.jr-appbar-right {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+/* ---- 화면 머리: 값(스탯·셀렉트)만 남는다 ---- */
 .jr-screen-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   min-height: var(--jr-tap);
 }
@@ -302,32 +308,20 @@ html, body {
 :root[data-seed-color-mode="light-only"] { color-scheme: light; }
 :root[data-seed-color-mode="dark-only"] { color-scheme: dark; }
 
-/* ---- 필터: 칩 한 줄(가로 스크롤) + 셀렉트 한 줄. 두 줄을 넘기지 않는다 (FRAME §8.2). ---- */
+/* ---- 필터: 줄바꿈하는 칩 묶음 + 셀렉트 한 줄 + 검색 한 줄 (FRAME §9.1).
+   가로 스크롤·음수 마진은 쓰지 않는다 — 숨는 칩이 있으면 안 된다. ---- */
 .jr-chips {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   align-items: center;
   min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  /* 화면 끝까지 흐르게 — 좌우 여백만큼 넘겨 두고 같은 만큼 안쪽 여백을 준다. */
-  margin-inline: calc(var(--jr-gutter) * -1);
-  padding-inline: var(--jr-gutter);
 }
-.jr-chips::-webkit-scrollbar {
-  display: none;
-}
-/* 관심 대학 고르기처럼 접이식 안에 들어가는 칩 묶음은 줄바꿈한다. */
-.jr-chips-wrap {
-  flex-wrap: wrap;
-  overflow-x: visible;
-  margin-inline: 0;
-  padding-inline: 0;
-}
+/* 375px에서 두 줄로 끝나도록 칩 좌우 여백을 한 단 좁힌다 (FRAME §9.1). */
 .jr-chips .seed-chip-tabs__trigger {
+  min-width: 0;
   min-height: var(--jr-tap);
+  padding-inline: 10px;
 }
 .jr-filters {
   display: flex;
@@ -336,15 +330,30 @@ html, body {
   align-items: center;
   min-width: 0;
 }
-/* 셀렉트는 내용만큼만, 검색은 남는 폭을 가져간다. */
+/* 계열·판정·정렬이 폭을 삼등분한다. */
 .jr-filters > .jr-select {
-  flex: 0 1 auto;
+  flex: 1 1 0;
   width: auto;
   min-width: 0;
 }
-.jr-filters > .jr-search {
-  flex: 1 1 5em;
+/* 검색은 셀렉트 줄 아래 한 줄 전체 폭이다. */
+.jr-search-row {
+  display: flex;
   min-width: 0;
+}
+.jr-search-row > .jr-search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* 칩 묶음 · 셀렉트 줄 · 검색은 한 덩어리라 사이를 좁게 둔다. */
+.jr-filter-bar {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+/* 접이식 안의 칩 묶음(관심 대학 고르기)은 좌우 여백이 이미 있는 자리에 들어간다. */
+.jr-chips-inset {
+  margin-inline: 0;
 }
 .jr-actions {
   display: flex;
@@ -534,6 +543,56 @@ button.jr-row {
 :focus-visible {
   outline: 2px solid var(--seed-color-stroke-focus-ring, currentColor);
   outline-offset: 2px;
+}
+
+/* ---- 바텀시트 (768px 미만) — Seed bottom-sheet recipe 위에 자리만 잡는다 (FRAME §9.3) ---- */
+/* recipe 가 z-index 를 이 변수로 받는다(positioner 가 자기 자신에게 2를 박아 둬서 둘 다 짚어 준다).
+   고정 상단바(20)보다 위에 둔다 — 모달은 화면을 덮는다. 시트는 배경보다 뒤에 와 위에 깔린다. */
+.jr-sheet .seed-bottom-sheet__backdrop,
+.jr-sheet .seed-bottom-sheet__positioner {
+  --sheet-z-index: 40;
+}
+.jr-sheet-content {
+  /* 시트 안의 글은 본문과 같은 줄바꿈 규칙을 따른다 (recipe 기본은 break-all). */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+/* 본문은 60vh 안에서만 스크롤한다 — 시트가 화면을 다 먹지 않는다. */
+.jr-sheet-body {
+  gap: 6px;
+  max-height: 60vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.jr-sheet-body > .jr-group + .jr-group {
+  margin-top: 10px;
+}
+/* 바닥은 왼쪽 '모두 해제' · 오른쪽 '완료' 한 줄이다. */
+.jr-sheet-footer {
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+.jr-sheet-footer > .seed-action-button {
+  min-height: var(--jr-tap);
+}
+/* 버튼이 하나뿐일 때(고른 것이 없을 때)도 '완료'는 오른쪽이다. */
+.jr-sheet-footer > .seed-action-button:only-child {
+  margin-left: auto;
+}
+.jr-sheet .seed-bottom-sheet__header {
+  padding-top: 22px;
+}
+.jr-sheet [role="checkbox"] {
+  min-height: var(--jr-tap);
+}
+/* 행 오른쪽의 값과 꺾쇠. */
+.jr-value {
+  font-variant-numeric: tabular-nums;
+}
+.jr-chevron {
+  color: var(--seed-color-fg-neutral-muted);
 }
 
 /* Seed 컴포넌트는 display 를 클래스로 정하므로 hidden 속성이 먹히지 않는다. 되돌려 준다. */

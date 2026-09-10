@@ -192,18 +192,15 @@
     el('span', { class: 'jr-stat-value num', text: value }),
   ])));
 
-  // 정보 탭의 해당 절로 보내는 ⓘ 하나. 화면마다 오른쪽 위에 이것 말고 다른 안내는 두지 않는다.
-  const infoButton = (anchor) => el('button', {
-    type: 'button',
-    class: 'seed-action-button seed-action-button--variant_ghost seed-action-button--size_medium seed-action-button--layout_withText seed-action-button--size_medium-layout_withText jr-info',
-    'aria-label': '설명 보기',
-    onclick: () => { state.aboutFocus = anchor; go('about'); },
-  }, ['i']);
+  // ⓘ 는 상단바 오른쪽에 하나뿐이다 (FRAME §9.2). 화면 안에는 두지 않고, 탭마다 목적지만 바꾼다.
+  const INFO_ANCHORS = { diagnose: 'verdict', target: 'verdict', rules: 'basis' };
+  const infoAnchorFor = (view) => (view === 'scores'
+    ? (state.scores.mode === 'grade' ? 'convert' : 'scale')
+    : INFO_ANCHORS[view] || null);
 
-  // 화면 머리: 왼쪽은 값(스탯·셀렉트), 오른쪽은 ⓘ 하나.
-  const screenHead = (left, anchor) => el('div', { class: 'jr-screen-head' }, [
+  // 화면 머리: 값(스탯·셀렉트)만 남는다.
+  const screenHead = (left) => el('div', { class: 'jr-screen-head' }, [
     el('div', { class: 'jr-screen-head-main' }, [].concat(left).filter(Boolean)),
-    infoButton(anchor),
   ]);
 
   // 체크 아이콘(Seed checkmark ghost recipe). 켜지면 브랜드 색, 꺼지면 자리만 지킨다.
@@ -286,7 +283,9 @@
     top2: '국어·수학·탐구2평균 중 상위 2개 평균',
     score: '계산 불가',
   });
-  const TRACKS = ['전체', '인문', '자연', '의약', '자유전공', '예체능'];
+  // 계열은 칩이 아니라 셀렉트다 — 첫 옵션이 라벨을 대신한다 (FRAME §9.1).
+  const TRACKS = ['전체', '인문', '자연', '예체능', '의약', '자유전공'];
+  const TRACK_OPTIONS = TRACKS.map((track) => [track, track === '전체' ? '계열 전체' : track]);
   const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가', '보류', '기준 불일치'];
 
   // 등급 → 백분위 환산표. 상대평가 등급 구간의 정확한 중앙값이다 (1등급 96~100 → 98.0 …).
@@ -624,7 +623,7 @@
 
     liveRefresh();
     const stdBlocks = isStd ? [renderStdReadout(), renderStdScoreList()] : [];
-    return [screenHead(headStats, isGrade ? 'convert' : 'scale'), modeControl, rows, gpa, ...stdBlocks,
+    return [screenHead(headStats), modeControl, rows, gpa, ...stdBlocks,
       favUniversityPicker(), share, fallback, action].filter(Boolean);
   }
 
@@ -755,14 +754,25 @@
   // 관심 대학 고르기. 대학 이름 칩을 눌러 담고, localStorage에 대학 아이디만 남긴다.
   // 관심은 '우선 표시'다 — 목록을 좁히는 것은 아래 라인·대학 체크 목록이 맡는다.
   function favUniversityPicker({ open = false } = {}) {
-    const chips = el('div', { class: 'jr-chips jr-chips-wrap' }, DATA.universities.map((university) => el('button', {
+    const count = state.favUniversities.size;
+    // 좁은 폭에서는 아코디언 대신 행 하나가 시트를 연다 (FRAME §9.3).
+    if (isNarrow()) {
+      return el('div', { class: 'jr-section' }, [
+        el('div', { class: 'jr-list' }, [listItem({
+          title: '관심 대학',
+          suffix: [el('span', { class: 'jr-value num', text: `${count}곳` }), el('span', { class: 'jr-chevron', 'aria-hidden': 'true', text: '›' })],
+          attrs: { 'data-sheet-opener': 'favUniversity' },
+          onclick: (event) => openSheet('favUniversity', event.currentTarget || event.target),
+        })]),
+      ]);
+    }
+    const chips = el('div', { class: 'jr-chips jr-chips-inset' }, DATA.universities.map((university) => el('button', {
       type: 'button',
       'aria-pressed': String(isFavUniversity(university.id)),
       'data-selected': isFavUniversity(university.id) ? '' : null,
       class: 'seed-chip-tabs__trigger seed-chip-tabs__trigger--size_medium seed-chip-tabs__trigger--variant_neutralOutline',
       onclick: () => { toggleFavUniversity(university.id); render(); },
     }, [university.short])));
-    const count = state.favUniversities.size;
     return accordion('관심 대학', [
       chips,
       count > 0 ? el('div', { class: 'jr-actions' }, [button('모두 해제', {
@@ -809,6 +819,8 @@
     state.filters.limit = 8;
     saveFilters();
     diagnoseCache.key = null;
+    // 시트가 열려 있으면 시트 본문만 다시 그린다 — 패널을 다시 그리면 스크롤이 튄다 (FRAME §9.3).
+    if (sheet) { sheet.dirty = true; refreshSheet(); return; }
     render();
   }
   function clearFilterList(field) {
@@ -816,6 +828,7 @@
     state.filters.limit = 8;
     saveFilters();
     diagnoseCache.key = null;
+    if (sheet) { sheet.dirty = true; refreshSheet(); return; }
     render();
   }
 
@@ -851,6 +864,183 @@
     return null;
   }
 
+  // ---- 바텀시트 (768px 미만) ----------------------------------------------
+  // 라인·대학·관심 대학 고르기는 좁은 폭에서 Seed bottom-sheet 로 연다 (FRAME §7 예외·§9.3).
+  // 768px 이상은 지금 그대로 인라인이다.
+  const NARROW_QUERY = '(max-width: 767px)';
+  const isNarrow = () => Boolean(globalThis.matchMedia?.(NARROW_QUERY)?.matches);
+  const SHEET_TITLES = { line: '라인', university: '대학', favUniversity: '관심 대학' };
+  // 열려 있는 시트 하나. 저장하지 않는다.
+  let sheet = null;
+  let wasNarrow = isNarrow();
+
+  const sheetCount = (kind) => (kind === 'line' ? checkedLines().length
+    : kind === 'university' ? checkedUniversities().length
+    : state.favUniversities.size);
+
+  function sheetClear(kind) {
+    if (kind === 'favUniversity') {
+      state.favUniversities.clear();
+      saveFavUniversities();
+      diagnoseCache.key = null;
+      sheet.dirty = true;
+      refreshSheet();
+      return;
+    }
+    clearFilterList(kind === 'line' ? 'lines' : 'universities');
+  }
+
+  // 시트 본문 — 인라인 판과 같은 checkRow 묶음이다.
+  function sheetRows(kind) {
+    if (kind === 'line') {
+      const lines = checkedLines();
+      return [el('div', { class: 'jr-list' }, DATA.lines.map((line) => checkRow(line.label, lines.includes(line.label),
+        () => toggleFilterList('lines', line.label), `${line.ids.length}곳`)))];
+    }
+    const picks = kind === 'university' ? checkedUniversities() : null;
+    const lines = checkedLines();
+    // 대학 시트는 체크한 라인 안에서만 고른다. 관심 대학 시트는 늘 전체 라인이다.
+    const visible = kind === 'university' && lines.length > 0
+      ? DATA.lines.filter((line) => lines.includes(line.label))
+      : DATA.lines;
+    return visible.map((line) => el('div', { class: 'jr-group' }, [
+      listHeader(line.label),
+      el('div', { class: 'jr-list' }, line.ids.map((id) => {
+        const university = universityById.get(id);
+        if (!university) return null;
+        return kind === 'university'
+          ? checkRow(university.short, picks.includes(id), () => toggleFilterList('universities', id))
+          : checkRow(university.short, isFavUniversity(id), () => {
+            toggleFavUniversity(id);
+            sheet.dirty = true;
+            refreshSheet();
+          });
+      }).filter(Boolean)),
+    ]));
+  }
+
+  // 본문과 바닥만 다시 그린다 — 시트 바깥(패널)은 건드리지 않는다.
+  // 다시 그리면 눌렀던 행이 사라지므로, 같은 이름의 행으로 포커스를 되돌린다(Tab·Esc가 계속 시트 것이도록).
+  function refreshSheet() {
+    if (!sheet) return;
+    const { kind, body, footer } = sheet;
+    const active = document.activeElement;
+    const focused = active && body.contains?.(active)
+      ? active.querySelector?.('.seed-list-item__title')?.textContent || null
+      : null;
+    const keepScroll = body.scrollTop || 0;
+    body.replaceChildren();
+    for (const node of sheetRows(kind)) body.append(node);
+    if (focused) {
+      const again = [...body.querySelectorAll('[role="checkbox"]')]
+        .find((node) => node.querySelector('.seed-list-item__title')?.textContent === focused);
+      again?.focus?.({ preventScroll: true });
+    }
+    if (body.scrollTop !== undefined) body.scrollTop = keepScroll;
+    footer.replaceChildren();
+    if (sheetCount(kind) > 0) {
+      footer.append(button('모두 해제', { variant: 'ghost', onclick: () => sheetClear(kind) }));
+    }
+    footer.append(button('완료', { variant: 'brandSolid', onclick: () => closeSheet() }));
+  }
+
+  const FOCUSABLE = 'button, [href], select, input, [tabindex]:not([tabindex="-1"])';
+
+  function openSheet(kind, opener) {
+    if (sheet) closeSheet({ silent: true });
+    const titleId = `jr-sheet-title-${kind}`;
+    const body = el('div', { class: 'seed-bottom-sheet__body jr-sheet-body' });
+    const footer = el('div', { class: 'seed-bottom-sheet__footer jr-sheet-footer' });
+    const closeButton = el('button', {
+      type: 'button',
+      class: 'seed-bottom-sheet__closeButton',
+      'aria-label': '닫기',
+      onclick: () => closeSheet(),
+      html: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"'
+        + ' stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>',
+    });
+    const content = el('div', {
+      class: 'seed-bottom-sheet__content jr-sheet-content',
+      role: 'dialog',
+      'aria-modal': 'true',
+      'aria-labelledby': titleId,
+    }, [
+      el('div', { class: 'seed-bottom-sheet-handle__root', 'aria-hidden': 'true' }, [
+        el('div', { class: 'seed-bottom-sheet-handle__touchArea' }),
+      ]),
+      el('div', { class: 'seed-bottom-sheet__header seed-bottom-sheet__header--headerAlign_left' }, [
+        el('h2', {
+          class: 'seed-bottom-sheet__title seed-bottom-sheet__title--headerAlign_left',
+          id: titleId,
+          'data-show-close-button': true,
+          text: SHEET_TITLES[kind],
+        }),
+        closeButton,
+      ]),
+      body,
+      footer,
+    ]);
+    const backdrop = el('div', { class: 'seed-bottom-sheet__backdrop', onclick: () => closeSheet() });
+    // positioner 는 화면 전체를 덮고 그 안 아래쪽에 시트를 앉힌다 — 시트 밖(빈 자리)을 누르면 닫는다.
+    const positioner = el('div', {
+      class: 'seed-bottom-sheet__positioner',
+      onclick: (event) => { if (event.target === positioner) closeSheet(); },
+    }, [content]);
+    const root = el('div', { class: 'jr-sheet' }, [backdrop, positioner]);
+    // Esc 는 문서에서 받는다 — 시트를 다시 그리는 사이 포커스가 잠시 밖으로 나가도 닫힌다.
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      closeSheet();
+    };
+    root.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab') return;
+      const items = [...content.querySelectorAll(FOCUSABLE)].filter((node) => !node.hidden);
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !content.contains(active))) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && active === last) { event.preventDefault(); first.focus(); }
+    });
+
+    sheet = { kind, root, body, footer, opener, onKey, dirty: false, scrollY: globalThis.scrollY || 0 };
+    refreshSheet();
+    document.body.append(root);
+    document.addEventListener('keydown', onKey);
+    // 시트 뒤 화면은 스크롤하지 않는다.
+    if (document.documentElement.style) document.documentElement.style.overflow = 'hidden';
+    const firstRow = content.querySelector('[role="checkbox"]') || closeButton;
+    // preventScroll: 포커스 때문에 뒤 화면이 딸려 움직이면 안 된다.
+    firstRow?.focus?.({ preventScroll: true });
+  }
+
+  function closeSheet({ silent = false } = {}) {
+    if (!sheet) return;
+    const { root, opener, dirty, scrollY, kind, onKey } = sheet;
+    sheet = null;
+    document.removeEventListener?.('keydown', onKey);
+    root.remove?.();
+    if (document.documentElement.style) document.documentElement.style.removeProperty('overflow');
+    if (kind !== 'favUniversity') state.filterPanel = null;
+    if (silent) return;
+    // 고른 것이 있으면 패널을 다시 그리되 스크롤 자리는 그대로 둔다.
+    if (dirty) renderPanel();
+    globalThis.scrollTo?.(0, scrollY);
+    const back = document.querySelector(`[data-sheet-opener="${kind}"]`) || opener;
+    back?.focus?.({ preventScroll: true });
+  }
+
+  // 폭이 768px 위아래로 넘어가면 시트를 닫고 그 폭의 어법으로 다시 그린다.
+  function syncBreakpoint() {
+    const narrow = isNarrow();
+    if (narrow === wasNarrow) return;
+    wasNarrow = narrow;
+    if (sheet) closeSheet({ silent: true });
+    state.filterPanel = null;
+    render();
+  }
+
   function renderDiagnose() {
     if (!profileReady()) {
       return [banner('성적 탭에서 국어·수학·탐구를 먼저 입력하세요', 'criticalWeak'),
@@ -866,7 +1056,7 @@
       [estimated ? '국·수·탐 평균 (등급)' : '국·수·탐 평균', fmt(average, 2)],
       ['지원 가능', `${reachable}곳`],
       held > 0 ? ['보류', `${held}곳`] : ['관심', `${state.favorites.size}곳`],
-    ]), 'verdict');
+    ]));
 
     const resetLimit = () => { state.filters.limit = 8; };
     const chip = (label, on, onclick, attrs = {}) => el('button', {
@@ -877,27 +1067,28 @@
       onclick,
       ...attrs,
     }, [label]);
-    const openPanel = (name) => {
+    // 좁은 폭에서는 시트를 열고 패널은 그대로 둔다. 넓은 폭은 지금처럼 패널 안에서 펼친다.
+    const openPanel = (name, node) => {
+      if (isNarrow()) {
+        if (sheet && sheet.kind === name) { closeSheet(); return; }
+        state.filterPanel = name;
+        openSheet(name, node);
+        return;
+      }
       state.filterPanel = state.filterPanel === name ? null : name;
       render();
     };
     const lineCount = checkedLines().length;
     const uniCount = checkedUniversities().length;
-    // 한 줄 가로 스크롤 칩. 계열 · 체크 목록 · 관심 · 제외 토글이 모두 이 한 줄에 있다 (FRAME §8.2).
+    // 칩은 줄바꿈한다 — 숨는 칩이 없다 (FRAME §9.1). 계열은 아래 셀렉트로 갔다.
     const chips = el('div', { class: 'jr-chips', role: 'group', 'aria-label': '필터' }, [
       // 체크 목록 칩이 맨 앞이다 — 목록을 좁히는 가장 굵은 손잡이다.
       chip(lineCount > 0 ? `라인 ${lineCount}` : '라인', state.filterPanel === 'line' || lineCount > 0,
-        () => openPanel('line'), { 'aria-expanded': String(state.filterPanel === 'line') }),
+        (event) => openPanel('line', event.currentTarget || event.target),
+        { 'aria-expanded': String(state.filterPanel === 'line'), 'data-sheet-opener': 'line' }),
       chip(uniCount > 0 ? `대학 ${uniCount}` : '대학', state.filterPanel === 'university' || uniCount > 0,
-        () => openPanel('university'), { 'aria-expanded': String(state.filterPanel === 'university') }),
-      ...TRACKS.map((track) => chip(track, state.filters.track === track, () => {
-        state.filters.track = track;
-        // 예체능을 골랐는데 '예체능 제외'가 켜져 있으면 아무것도 안 남는다 — 함께 꺼 준다.
-        if (track === '예체능') state.filters.noArts = false;
-        resetLimit();
-        saveFilters();
-        render();
-      })),
+        (event) => openPanel('university', event.currentTarget || event.target),
+        { 'aria-expanded': String(state.filterPanel === 'university'), 'data-sheet-opener': 'university' }),
       chip('관심 학과', state.filters.favOnly, () => {
         state.filters.favOnly = !state.filters.favOnly; resetLimit(); saveFilters(); render();
       }),
@@ -919,11 +1110,22 @@
       }),
     ]);
 
+    // 셀렉트 줄은 계열 | 판정 | 정렬 셋이 폭을 삼등분하고, 검색은 아래 한 줄 전체 폭이다 (FRAME §9.1).
     const filters = el('div', { class: 'jr-filters' }, [
+      select(TRACK_OPTIONS, state.filters.track, (value) => {
+        state.filters.track = value;
+        // 예체능을 골랐는데 '예체능 제외'가 켜져 있으면 아무것도 안 남는다 — 함께 꺼 준다.
+        if (value === '예체능') state.filters.noArts = false;
+        resetLimit();
+        saveFilters();
+        render();
+      }, '계열'),
       select(BANDS.map((band) => [band, band === '전체' ? '판정 전체' : band]), state.filters.band,
         (value) => { state.filters.band = value; resetLimit(); saveFilters(); render(); }, '판정'),
       select(SORTS, state.filters.sort,
         (value) => { state.filters.sort = value; resetLimit(); saveFilters(); render(); }, '정렬'),
+    ]);
+    const search = el('div', { class: 'jr-search-row' }, [
       textInput({
         type: 'search', value: state.filters.query, placeholder: '검색', 'aria-label': '대학·학과 검색',
         oninput: (event) => {
@@ -934,9 +1136,13 @@
         },
       }, 'jr-search'),
     ]);
+    // 칩 묶음 · 셀렉트 줄 · 검색은 한 덩어리다 (FRAME §9.1).
+    const filterBar = el('div', { class: 'jr-filter-bar' }, [chips, filters, search]);
+    // 좁은 폭에서는 체크 목록이 시트로 간다 — 패널 안에는 펼치지 않는다 (FRAME §9.3).
+    const checklist = isNarrow() ? null : filterChecklist();
 
     if (rows.length === 0) {
-      return [head, chips, filters, filterChecklist(), banner('조건에 맞는 곳이 없습니다')].filter(Boolean);
+      return [head, filterBar, checklist, banner('조건에 맞는 곳이 없습니다')].filter(Boolean);
     }
 
     const rowItem = (row) => {
@@ -1033,7 +1239,7 @@
       })])
       : null;
 
-    return [head, chips, filters, filterChecklist(), ...blocks, more].filter(Boolean);
+    return [head, filterBar, checklist, ...blocks, more].filter(Boolean);
   }
 
   // ---------------------------------------------------------------- 목표 화면
@@ -1099,7 +1305,7 @@
     if (target.status === 'no-cut' || target.status === 'basis-mismatch' || target.status === 'hold') {
       // 사유는 두세 단어만. 무엇이 있어야 판정하는지는 정보 탭의 표가 말한다 (FRAME §8.1).
       const label = target.status === 'basis-mismatch' ? '기준 불일치' : '보류';
-      return [screenHead(pickers, 'verdict'),
+      return [screenHead(pickers),
         el('p', { class: 'jr-verdict-badges' }, [badge(label, 'neutral')]),
         banner(target.hold?.reason || '컷 없음', 'neutralWeak'), renderBasis(dept, target)];
     }
@@ -1186,7 +1392,7 @@
 
     const favAction = el('div', { class: 'jr-actions' }, [favoriteButton(university.id, dept.name)]);
 
-    return [screenHead(pickers, 'verdict'), verdict, favAction, planBlock, conditionBlock, renderStdScore(university, dept),
+    return [screenHead(pickers), verdict, favAction, planBlock, conditionBlock, renderStdScore(university, dept),
       renderBasis(dept, target), renderSusi(target), compare].filter(Boolean);
   }
 
@@ -1308,7 +1514,7 @@
         render();
       }, '대학'),
     ]);
-    const head = screenHead(picker, 'basis');
+    const head = screenHead(picker);
 
     if (!rule) return [head, banner('반영 방법 자료 없음')];
 
@@ -1735,8 +1941,18 @@
     indicator.style.setProperty('--indicator-width', `${active.offsetWidth}px`);
   }
 
+  // 상단바 ⓘ. 탭마다 목적지를 바꾸고, 정보 탭에서는 감춘다 (FRAME §9.2).
+  function syncInfoButton() {
+    const node = document.getElementById('infoButton');
+    if (!node) return;
+    const anchor = infoAnchorFor(state.view);
+    node.hidden = !anchor;
+    node.setAttribute('data-anchor', anchor || '');
+  }
+
   function render() {
     syncTabs();
+    syncInfoButton();
     renderPanel();
   }
 
@@ -1798,6 +2014,16 @@
       });
     });
 
+    const info = document.getElementById('infoButton');
+    if (info) {
+      info.addEventListener('click', () => {
+        const anchor = info.getAttribute('data-anchor');
+        if (!anchor) return;
+        state.aboutFocus = anchor;
+        go('about');
+      });
+    }
+
     const stored = readStore(STORE.theme, 'system');
     if (!followHostTheme()) applyTheme(['system', 'light-only', 'dark-only'].includes(stored) ? stored : 'system');
     // 호스트가 나중에 테마를 바꿔도 따라간다.
@@ -1812,8 +2038,9 @@
 
     if (!VIEWS[state.view]) state.view = 'scores';
     render();
-    // 글자 크기·창 폭이 바뀌면 탭 밑줄 자리도 다시 잡는다.
-    globalThis.addEventListener?.('resize', syncTabIndicator);
+    // 글자 크기·창 폭이 바뀌면 탭 밑줄 자리도 다시 잡고, 768px을 넘나들면 시트/인라인을 바꾼다.
+    globalThis.addEventListener?.('resize', () => { syncTabIndicator(); syncBreakpoint(); });
+    globalThis.matchMedia?.(NARROW_QUERY)?.addEventListener?.('change', syncBreakpoint);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
