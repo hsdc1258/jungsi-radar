@@ -267,6 +267,18 @@
     return base;
   };
 
+  // 70%컷 옆에 적는 참고 숫자 — 최종등록자 최저선(100%컷)과 추가합격.
+  const extraCutText = (result) => {
+    const parts = [];
+    if (result.floor) parts.push(`100%컷 ${fmt(result.floor.value, 1)}`);
+    if (result.fill && result.fill.count > 0) {
+      const wait = result.fill.lastWait ? ` · 예비 ${result.fill.lastWait}번` : '';
+      const rate = result.fill.rate !== null ? ` ${fmt(result.fill.rate, 0)}%` : '';
+      parts.push(`추합 ${result.fill.count}명${rate}${wait}`);
+    }
+    return parts.join(' · ');
+  };
+
   const saveScores = () => writeStore(STORE.scores, state.scores);
   // 더 보기로 늘린 개수(limit)는 저장하지 않는다 — 새로고침했더니 목록이 수백 줄인 일을 막는다.
   const saveFilters = () => writeStore(STORE.filters, { ...state.filters, limit: undefined });
@@ -653,9 +665,11 @@
     const rowItem = (row) => {
       const result = row.jeongsi;
       const band = bandOf(result);
+      const extra = extraCutText(result);
       const detail = result.status === 'blocked'
         ? `${result.score.blockers[0]} · ${spreadText(result)}`
-        : `${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`;
+        : [`${spreadText(result)} · 내 환산 ${fmt(result.mine, 1)}${result.group ? ` · ${result.group}군` : ''}`, extra]
+          .filter(Boolean).join(' · ');
       return listItem({
         title: `${row.universityName} ${deptLabel(row.dept.name)}`,
         detail,
@@ -803,6 +817,11 @@
     ]) : null;
 
     const notes = [];
+    if (target.floor?.cleared) {
+      notes.push(callout('최종등록자 최저선은 넘김',
+        `${target.floor.year}학년도 최종등록자 100%컷 ${fmt(target.floor.value, 1)}보다 내 환산 ${fmt(target.mine, 1)}이 높습니다. 판정은 70%컷으로만 합니다.`,
+        'positive'));
+    }
     if (plan && plan.blockers.length > 0) notes.push(callout('지원 제한', plan.blockers.join(' · '), 'critical'));
     if (plan && plan.adjustments.length > 0) {
       notes.push(callout('선택과목·가감점',
@@ -826,8 +845,17 @@
       row.basis === 'derived' ? '대학 공식값의 연도 변화량으로 환산' : (row.basis === 'official' ? '대학 공식 발표' : '어디가 공개값'),
     ]);
     const meta = [];
+    const cuts = [];
     for (const [year, row] of Object.entries(dept.jeongsi || {}).sort().reverse()) {
-      meta.push([`${year}학년도`, row.quota ?? '—', row.rate ?? '—', row.fill ?? '—', row.group ? `${row.group}군` : '—']);
+      meta.push([
+        `${year}학년도`, row.quota ?? '—', row.rate ?? '—',
+        row.fill === null || row.fill === undefined ? '—'
+          : `${row.fill}명${row.fillRate === null || row.fillRate === undefined ? '' : ` (${fmt(row.fillRate, 0)}%)`}`,
+        row.lastWait ?? '—', row.group ? `${row.group}군` : '—',
+      ]);
+      if (row.metric === 'pct') {
+        cuts.push([`${year}학년도`, fmt(row.cut50, 1), fmt(row.cut70, 1), fmt(row.cut100, 1), row.kind || '—']);
+      }
     }
     const officialRows = Object.entries(dept.official || {}).sort().reverse().map(([year, row]) => [
       `${year}학년도`, fmt(row.cut70 ?? row.avg, 2), row.kind || '—', row.note || '',
@@ -835,7 +863,11 @@
 
     return accordion('기준이 된 숫자', [
       yearRows.length > 0 ? table(['연도', '컷', '종류', '출처'], yearRows) : muted('연도별 컷 자료가 없습니다.'),
-      meta.length > 0 ? table(['연도', '모집인원', '경쟁률', '충원', '군'], meta) : null,
+      cuts.length > 0 ? el('div', {}, [
+        el('p', { class: 'jr-muted', text: '같은 해 컷 세 가지 — 50%컷은 위, 100%컷은 최종등록자 최저선입니다. 판정은 70%컷으로만 합니다.' }),
+        table(['연도', '50%컷', '70%컷', '100%컷', '종류'], cuts),
+      ]) : null,
+      meta.length > 0 ? table(['연도', '모집인원', '경쟁률', '추합', '예비번호', '군'], meta) : null,
       officialRows.length > 0 ? el('div', {}, [
         el('p', { class: 'jr-muted', text: '대학이 직접 낸 값(정의가 대학마다 다릅니다)' }),
         table(['연도', '값', '종류', '설명'], officialRows),
@@ -1017,6 +1049,32 @@
     return found;
   }
 
+  // 어디가(학점나비)가 정수로만 실은 컷이 얼마나 남았는지 센다. 정보 탭이 대학 이름을 그대로 나열한다.
+  function cutPrecision() {
+    let total = 0;
+    let exact = 0;
+    const integerOnly = [];
+    const partial = [];
+    for (const university of DATA.universities) {
+      let rows = 0;
+      let fixed = 0;
+      for (const dept of university.departments) {
+        for (const row of Object.values(dept.jeongsi || {})) {
+          if (row.metric !== 'pct' || typeof row.cut70 !== 'number') continue;
+          rows += 1;
+          if (!Number.isInteger(row.cut70)) fixed += 1;
+        }
+      }
+      if (rows === 0) continue;
+      total += rows;
+      exact += fixed;
+      if (fixed === 0) integerOnly.push(university.short);
+      else if (fixed < rows) partial.push({ short: university.short, exact: fixed, total: rows });
+    }
+    partial.sort((left, right) => (right.exact / right.total) - (left.exact / left.total));
+    return { total, exact, integerOnly, partial };
+  }
+
   function renderAbout() {
     const sources = [
       DATA.sources?.results && { title: DATA.sources.results.title, url: DATA.sources.results.url, note: DATA.sources.results.note },
@@ -1029,6 +1087,7 @@
       .map((university) => `${university.short} (${university.volatility === null ? '연도 변동폭 없음' : `연도 변동폭 ±${fmt(university.volatility, 1)}`})`);
 
     const unconfirmed = unconfirmedNotes();
+    const precision = cutPrecision();
 
     return [
       callout('판정 기준', verdictLegend(), 'informative'),
@@ -1072,10 +1131,16 @@
         muted('아래 항목은 시행계획 원문에서 값을 찾지 못해 비워 두거나 가정했습니다. 판정에 그만큼 오차가 있습니다.'),
         el('div', { class: 'jr-list' }, unconfirmed.map((note) => listItem({ title: note }))),
       ]),
-      accordion('어디가 값의 정밀도', [
-        muted('우리가 쓰는 어디가 70%컷은 집계 페이지가 정수로만 싣습니다. 대학이 낸 원값은 소수 둘째 자리까지 있어(경희대 의예 98.95 등) 최대 1점 가까이 차이가 납니다.'),
-        muted('표본 105곳을 대학 공식 발표와 대조해 95곳을 원값으로 고쳤고, 그중 50곳은 0.5점을 넘게 달랐습니다. 나머지 모집단위는 아직 정수 값 그대로입니다 — 판정이 한 칸 옮겨 갈 수 있습니다.'),
-      ]),
+      accordion(`어디가 값의 정밀도 — 아직 정수뿐인 대학 ${precision.integerOnly.length}곳`, [
+        muted('우리가 쓰는 어디가 70%컷은 집계 페이지가 정수로만 싣습니다. 대학이 낸 원값은 소수 둘째 자리까지 있어(경희대 의예 98.95 등) 값이 여러 점 달라지기도 합니다.'),
+        muted(`지금 정시 컷 ${precision.total}곳 가운데 ${precision.exact}곳을 대학 공식 표의 원값으로 바꿨습니다. 나머지 ${precision.total - precision.exact}곳은 정수 그대로라 판정이 한 칸 옮겨 갈 수 있습니다.`),
+        el('p', { class: 'jr-muted', text: '아래 대학은 아직 한 모집단위도 원값으로 바꾸지 못했습니다.' }),
+        precision.integerOnly.length > 0 ? muted(precision.integerOnly.join(' · ')) : muted('없음'),
+        precision.partial.length > 0 ? el('div', {}, [
+          el('p', { class: 'jr-muted', text: '일부만 바꾼 대학 (바꾼 곳 / 전체)' }),
+          muted(precision.partial.map((row) => `${row.short} ${row.exact}/${row.total}`).join(' · ')),
+        ]) : null,
+      ].filter(Boolean)),
       accordion('그 밖의 한계', [
         el('div', { class: 'jr-list' }, [
           listItem({ title: '환산점수만 공개된 모집단위', detail: '백분위로 되돌리면 오차가 커서 판정을 보류합니다.' }),

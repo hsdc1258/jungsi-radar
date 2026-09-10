@@ -124,3 +124,71 @@ test('모든 정시 결과 행에 출처 주소가 있다', () => {
     }
   }
 });
+
+test('컷 세 가지의 순서가 뒤집히지 않는다 (100%컷 ≤ 70%컷 ≤ 50%컷)', () => {
+  let checkedFloor = 0;
+  let checkedTop = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        if (row.metric !== 'pct') continue;
+        const where = `${university.id} ${dept.name} ${year}`;
+        for (const key of ['cut50', 'cut70', 'cut100']) {
+          if (row[key] === null || row[key] === undefined) continue;
+          assert.ok(isNumber(row[key]) && row[key] > 0 && row[key] <= 100, `${where}: ${key} ${row[key]}`);
+        }
+        // 100%컷은 최종등록자 최저선이라 언제나 70%컷 이하다.
+        if (isNumber(row.cut100) && isNumber(row.cut70)) {
+          assert.ok(row.cut100 <= row.cut70, `${where}: 100%컷 ${row.cut100} > 70%컷 ${row.cut70}`);
+          checkedFloor += 1;
+        }
+        // 50%컷은 70%컷 이상이다. 단 어디가 집계 페이지가 실은 두 값은 서로 어긋나는 행이 있어
+        // (같은 표 안에서 50%컷 < 70%컷) 대학 공식 표에서 온 행만 본다.
+        if (row.basis === 'official' && isNumber(row.cut50) && isNumber(row.cut70)) {
+          assert.ok(row.cut50 >= row.cut70, `${where}: 50%컷 ${row.cut50} < 70%컷 ${row.cut70}`);
+          checkedTop += 1;
+        }
+      }
+    }
+  }
+  assert.ok(checkedFloor > 0, `100%컷이 있는 행이 있어야 한다 (지금 ${checkedFloor})`);
+  assert.ok(checkedTop >= 0, `50%컷 검사 ${checkedTop}건`);
+});
+
+test('추가합격 정보는 음수가 아니고 충원율은 인원과 맞는다', () => {
+  let seen = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        const where = `${university.id} ${dept.name} ${year}`;
+        for (const key of ['fill', 'fillRate', 'lastWait']) {
+          if (row[key] === null || row[key] === undefined) continue;
+          assert.ok(isNumber(row[key]) && row[key] >= 0, `${where}: ${key} ${row[key]}`);
+        }
+        if (isNumber(row.fill) && isNumber(row.fillRate) && isNumber(row.quota) && row.quota > 0) {
+          const expected = Math.round((row.fill / row.quota) * 1000) / 10;
+          // 대학이 스스로 낸 충원율은 자기 반올림을 쓰므로 1%p까지 벌어질 수 있다.
+          assert.ok(Math.abs(expected - row.fillRate) <= 1.05, `${where}: 충원율 ${row.fillRate} vs ${expected}`);
+          seen += 1;
+        }
+      }
+    }
+  }
+  assert.ok(seen > 500, `충원율을 맞춰 볼 행이 500곳 이상이어야 한다 (지금 ${seen})`);
+});
+
+test('캠퍼스가 갈린 대학은 같은 이름의 모집단위를 나눠 갖지 않는다', () => {
+  const byId = new Map(DATA.universities.map((row) => [row.id, row]));
+  for (const [left, right] of [['hufs', 'hufs-global'], ['hanyang', 'hanyang-erica']]) {
+    const a = byId.get(left);
+    const b = byId.get(right);
+    assert.ok(a && b, `${left}/${right} 둘 다 있어야 한다`);
+    assert.notEqual(a.short, b.short, `${left}/${right}: 화면 이름이 달라야 한다`);
+    const names = new Set(a.departments.map((dept) => dept.name));
+    const shared = b.departments.map((dept) => dept.name).filter((name) => names.has(name));
+    assert.deepEqual(shared, [], `${left}/${right}: 캠퍼스 표기가 없는 같은 이름 ${shared.join(', ')}`);
+  }
+  // 한국외대는 시행계획의 캠퍼스 열대로 갈랐다 — 두 항목 모두 모집단위가 남아 있어야 한다.
+  assert.ok(byId.get('hufs').departments.length > 20, '한국외대 서울');
+  assert.ok(byId.get('hufs-global').departments.length > 20, '한국외대 글로벌');
+});

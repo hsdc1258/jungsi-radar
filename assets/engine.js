@@ -424,6 +424,18 @@
     const band = bandOf(gap, VERDICT_BANDS);
     // 연도별 변동폭 — 컷이 흔들린 만큼 판정도 흔들린다. 반값을 ± 오차로 보여준다.
     const spread = reference.spread;
+    // 판정은 70%컷만 본다. 100%컷(최종등록자 최저)과 추가합격은 옆에 적기만 하는 참고값이다.
+    const latest = dept.jeongsi?.[reference.primary.year] || null;
+    const floor = latest && isNumber(latest.cut100)
+      ? { year: reference.primary.year, value: latest.cut100, cleared: score.value >= latest.cut100 }
+      : null;
+    const fill = latest && isNumber(latest.fill)
+      ? {
+        year: reference.primary.year, count: latest.fill,
+        rate: isNumber(latest.fillRate) ? latest.fillRate : null,
+        lastWait: isNumber(latest.lastWait) ? latest.lastWait : null,
+      }
+      : null;
     return {
       status: score.blockers.length > 0 ? 'blocked' : 'ok',
       universityId: university.id,
@@ -436,6 +448,9 @@
       gap,
       band,
       spread,
+      floor,
+      fill,
+      cut50: latest && isNumber(latest.cut50) ? latest.cut50 : null,
       reference,
       score,
     };
