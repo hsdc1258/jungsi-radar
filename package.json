@@ -6,6 +6,8 @@
   "description": "수능 백분위·등급으로 서울 주요 대학 정시 지원선을 진단하는 정적 사이트",
   "scripts": {
     "build": "node scripts/build-data.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "bundle": "node scripts/bundle.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run bundle && node scripts/shots.mjs"
   }
 }
