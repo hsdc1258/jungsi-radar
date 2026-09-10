@@ -20538,7 +20538,20 @@
    },
    {
     "name": "공간디자인학과",
-    "jeongsi": {},
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 2,
+      "rate": 13.0,
+      "fill": null,
+      "pct70": 78.7,
+      "pct50": null,
+      "score70": 828.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
     "gyogwa": {
      "2026": {
       "typeName": "학생부교과(교과면접전형)",
@@ -20561,6 +20574,23 @@
       "cut50": 3.57,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2024": {
+      "cut70": 78.7,
+      "avg": 79.5,
+      "max": 80.3,
+      "min": 78.7,
+      "score70": 828.0,
+      "quota": 2,
+      "rate": 13.0,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -20594,7 +20624,20 @@
    },
    {
     "name": "반도체공학부",
-    "jeongsi": {},
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 9,
+      "rate": 6.89,
+      "fill": null,
+      "pct70": 80.3,
+      "pct50": null,
+      "score70": 864.6,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
     "gyogwa": {
      "2026": {
       "typeName": "학생부교과(교과면접전형)",
@@ -20617,6 +20660,23 @@
       "cut50": 3.28,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2024": {
+      "cut70": 80.3,
+      "avg": 82.1,
+      "max": 83.7,
+      "min": 80.3,
+      "score70": 864.6,
+      "quota": 9,
+      "rate": 6.89,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -20790,7 +20850,20 @@
    },
    {
     "name": "전기전자공학부",
-    "jeongsi": {},
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 58,
+      "rate": 4.52,
+      "fill": null,
+      "pct70": 81.3,
+      "pct50": null,
+      "score70": 848.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
     "gyogwa": {
      "2026": {
       "typeName": "학생부교과(교과면접전형)",
@@ -20813,6 +20886,23 @@
       "cut50": 3.19,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2024": {
+      "cut70": 81.3,
+      "avg": 79.9,
+      "max": 84.7,
+      "min": 75.3,
+      "score70": 848.0,
+      "quota": 58,
+      "rate": 4.52,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -20842,6 +20932,23 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
+    },
+    "official": {
+     "2024": {
+      "cut70": 78.0,
+      "avg": 78.7,
+      "max": 81.3,
+      "min": 75.3,
+      "score70": 833.0,
+      "quota": 39,
+      "rate": 4.05,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
     }
    },
    {
@@ -20869,6 +20976,23 @@
       "cut50": 3.13,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2024": {
+      "cut70": 78.0,
+      "avg": 79.2,
+      "max": 82.7,
+      "min": 72.0,
+      "score70": 843.8,
+      "quota": 43,
+      "rate": 3.95,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -20995,6 +21119,38 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
+    },
+    "official": {
+     "2025": {
+      "cut70": 79.7,
+      "avg": 79.6,
+      "max": 88.0,
+      "min": 75.3,
+      "score70": 839.3,
+      "quota": 69,
+      "rate": 6.01,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "cut70": 79.0,
+      "avg": 82.1,
+      "max": 89.0,
+      "min": 78.3,
+      "score70": 859.8,
+      "quota": 73,
+      "rate": 5.95,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
     }
    },
    {
@@ -21024,6 +21180,38 @@
       "cut50": 3.75,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2025": {
+      "cut70": 77.7,
+      "avg": 79.0,
+      "max": 88.3,
+      "min": 73.0,
+      "score70": 834.6,
+      "quota": 139,
+      "rate": 4.68,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "cut70": 81.7,
+      "avg": 81.5,
+      "max": 88.0,
+      "min": 75.3,
+      "score70": 851.5,
+      "quota": 138,
+      "rate": 3.43,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -21055,6 +21243,38 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
+    },
+    "official": {
+     "2025": {
+      "cut70": 79.3,
+      "avg": 78.7,
+      "max": 84.7,
+      "min": 74.3,
+      "score70": 831.5,
+      "quota": 106,
+      "rate": 4.4,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "cut70": 78.7,
+      "avg": 80.5,
+      "max": 86.7,
+      "min": 76.0,
+      "score70": 844.1,
+      "quota": 107,
+      "rate": 4.37,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
     }
    },
    {
@@ -21084,6 +21304,38 @@
       "cut50": 3.16,
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+     }
+    },
+    "official": {
+     "2025": {
+      "cut70": 77.7,
+      "avg": 77.7,
+      "max": 84.3,
+      "min": 75.0,
+      "score70": 827.4,
+      "quota": 39,
+      "rate": 6.15,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "cut70": 78.7,
+      "avg": 81.0,
+      "max": 86.3,
+      "min": 77.3,
+      "score70": 848.7,
+      "quota": 42,
+      "rate": 5.81,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
      }
     }
    },
@@ -21115,7 +21367,472 @@
       "source": "adiga-hakjum",
       "url": "https://hakjum.school/admissions/%EB%AA%85%EC%A7%80%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
      }
+    },
+    "official": {
+     "2025": {
+      "cut70": 83.7,
+      "avg": 83.4,
+      "max": 87.7,
+      "min": 80.7,
+      "score70": 869.5,
+      "quota": 9,
+      "rate": 7.33,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "cut70": 85.0,
+      "avg": 84.7,
+      "max": 87.3,
+      "min": 82.7,
+      "score70": 873.0,
+      "quota": 9,
+      "rate": 4.67,
+      "kind": "70%컷",
+      "metric": "pct",
+      "adigaStandard": true,
+      "note": "최종등록자 국어·수학·탐구(상위 1과목) 백분위 평균의 70%컷",
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
     }
+   },
+   {
+    "name": "어문학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 65,
+      "rate": 4.72,
+      "fill": null,
+      "pct70": 79.3,
+      "pct50": null,
+      "score70": 822.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "인문학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 22,
+      "rate": 5.36,
+      "fill": null,
+      "pct70": 78.0,
+      "pct50": null,
+      "score70": 823.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "미래사회인재학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 61,
+      "rate": 5.11,
+      "fill": null,
+      "pct70": 78.0,
+      "pct50": null,
+      "score70": 824.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "청소년지도·아동학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 13,
+      "rate": 4.54,
+      "fill": null,
+      "pct70": 79.3,
+      "pct50": null,
+      "score70": 810.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "디지털미디어학과",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 14,
+      "rate": 5.14,
+      "fill": null,
+      "pct70": 80.7,
+      "pct50": null,
+      "score70": 844.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "경영대학",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 117,
+      "rate": 5.53,
+      "fill": null,
+      "pct70": 77.0,
+      "pct50": null,
+      "score70": 825.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2025": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 58,
+      "rate": 7.72,
+      "fill": null,
+      "pct70": 83.0,
+      "pct50": null,
+      "score70": 854.0,
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 58,
+      "rate": 7.97,
+      "fill": null,
+      "pct70": 85.0,
+      "pct50": null,
+      "score70": 874.0,
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "법학과",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 23,
+      "rate": 5.61,
+      "fill": null,
+      "pct70": 79.7,
+      "pct50": null,
+      "score70": 831.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "전공자유학부(인문)",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 74,
+      "rate": 5.47,
+      "fill": null,
+      "pct70": 79.7,
+      "pct50": null,
+      "score70": 834.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "융합소프트웨어학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 20,
+      "rate": 7.25,
+      "fill": null,
+      "pct70": 85.7,
+      "pct50": null,
+      "score70": 888.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "자연과학대학",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 38,
+      "rate": 7.13,
+      "fill": null,
+      "pct70": 77.3,
+      "pct50": null,
+      "score70": 828.3,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "화공신소재환경공학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 45,
+      "rate": 4.29,
+      "fill": null,
+      "pct70": 76.3,
+      "pct50": null,
+      "score70": 815.4,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "컴퓨터공학과",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 43,
+      "rate": 3.95,
+      "fill": null,
+      "pct70": 78.0,
+      "pct50": null,
+      "score70": 843.8,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "토목교통공학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 34,
+      "rate": 3.94,
+      "fill": null,
+      "pct70": 76.7,
+      "pct50": null,
+      "score70": 828.5,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "기계산업경영공학부",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 49,
+      "rate": 4.69,
+      "fill": null,
+      "pct70": 78.0,
+      "pct50": null,
+      "score70": 834.8,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "정보통신공학과",
+    "jeongsi": {
+     "2024": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 39,
+      "rate": 4.05,
+      "fill": null,
+      "pct70": 78.0,
+      "pct50": null,
+      "score70": 833.0,
+      "source": "명지대학교 2024학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "인문대학",
+    "jeongsi": {
+     "2025": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 85,
+      "rate": 4.54,
+      "fill": null,
+      "pct70": 78.7,
+      "pct50": null,
+      "score70": 836.5,
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 85,
+      "rate": 4.06,
+      "fill": null,
+      "pct70": 84.3,
+      "pct50": null,
+      "score70": 851.0,
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "사회과학대학",
+    "jeongsi": {
+     "2025": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 90,
+      "rate": 5.01,
+      "fill": null,
+      "pct70": 82.0,
+      "pct50": null,
+      "score70": 843.0,
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 89,
+      "rate": 4.47,
+      "fill": null,
+      "pct70": 83.7,
+      "pct50": null,
+      "score70": 856.0,
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "미디어·휴먼라이프대학",
+    "jeongsi": {
+     "2025": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 23,
+      "rate": 5.17,
+      "fill": null,
+      "pct70": 80.0,
+      "pct50": null,
+      "score70": 830.5,
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 23,
+      "rate": 4.74,
+      "fill": null,
+      "pct70": 80.3,
+      "pct50": null,
+      "score70": 854.0,
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
+   },
+   {
+    "name": "인공지능·소프트웨어융합대학",
+    "jeongsi": {
+     "2025": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 25,
+      "rate": 9.64,
+      "fill": null,
+      "pct70": 81.7,
+      "pct50": null,
+      "score70": 879.4,
+      "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     },
+     "2026": {
+      "typeName": "수능(일반전형)",
+      "group": null,
+      "quota": 26,
+      "rate": 8.19,
+      "fill": null,
+      "pct70": 84.7,
+      "pct50": null,
+      "score70": 889.1,
+      "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과",
+      "url": "https://ipsi.mju.ac.kr/"
+     }
+    },
+    "gyogwa": {},
+    "hakjong": {}
    }
   ],
   "counts": {
