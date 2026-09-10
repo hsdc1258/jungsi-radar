@@ -366,3 +366,10 @@ button.jr-row {
 [hidden] {
   display: none !important;
 }
+
+/* 아주 좁은 화면(320px)에서는 라벨과 숫자 칸을 줄여 선택과목 이름이 더 보이게 한다. */
+@media (max-width: 360px) {
+  .jr-input-row > .jr-input-label { min-width: 3.6em; }
+  .jr-input-controls > .jr-number { flex-basis: 4.4em; width: 4.4em; }
+  .jr-input-row { gap: 8px; }
+}
