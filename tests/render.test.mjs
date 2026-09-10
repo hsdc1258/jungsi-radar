@@ -78,6 +78,9 @@ function buildContext() {
   panel.setAttribute('id', 'panel');
   const toggle = new FakeElement('button');
   toggle.setAttribute('id', 'themeToggle');
+  // ⓘ 는 상단바에 있다 — 패널이 아니라 index.html 이 들고 있는 버튼이다 (FRAME §9.2).
+  const info = new FakeElement('button');
+  info.setAttribute('id', 'infoButton');
   const tabs = ['scores', 'diagnose', 'target', 'rules', 'about'].map((view) => {
     const tab = new FakeElement('button');
     tab.setAttribute('class', 'seed-tabs__trigger');
@@ -85,10 +88,10 @@ function buildContext() {
     return tab;
   });
   const body = new FakeElement('body');
-  body.append(panel, toggle, ...tabs);
+  body.append(panel, toggle, info, ...tabs);
   root.append(body);
 
-  const byId = { panel, themeToggle: toggle };
+  const byId = { panel, themeToggle: toggle, infoButton: info };
   fakeDocument = {
     documentElement: root,
     activeElement: null,
@@ -98,6 +101,7 @@ function buildContext() {
     querySelector: (selector) => root.querySelector(selector),
     querySelectorAll: (selector) => root.querySelectorAll(selector),
     addEventListener() {},
+    body,
   };
 
   const storage = new Map();
@@ -121,7 +125,7 @@ function buildContext() {
   for (const file of ['assets/data.js', 'assets/engine.js']) {
     vm.runInContext(readFileSync(path.join(ROOT, file), 'utf8'), context, { filename: file });
   }
-  return { context, panel, tabs, toggle };
+  return { context, panel, tabs, toggle, info };
 }
 
 function boot(scores) {
@@ -456,17 +460,59 @@ test('체크한 대학이 있으면 목표 탭 셀렉트도 그 대학만 보여
   assert.deepEqual(shown.sort(), ['cau', 'sogang']);
 });
 
-test('화면마다 ⓘ 버튼 하나가 정보 탭의 절로 보낸다', () => {
+test('ⓘ 는 상단바에 하나뿐이고 탭마다 다른 절로 보낸다', () => {
   const built = boot(FULL_SCORES);
-  for (const view of ['scores', 'diagnose', 'target', 'rules']) {
+  const anchors = { scores: 'scale', diagnose: 'verdict', target: 'verdict', rules: 'basis' };
+  for (const [view, anchor] of Object.entries(anchors)) {
     built.tabs.find((tab) => tab.getAttribute('data-view') === view).dispatch('click');
-    const info = built.panel.querySelectorAll('.jr-info');
-    assert.equal(info.length, 1, `${view}: ⓘ 버튼은 하나다`);
-    info[0].dispatch('click');
+    // 화면 안에는 ⓘ 가 없다 (FRAME §9.2).
+    assert.equal(built.panel.querySelectorAll('.jr-info').length, 0, `${view}: 화면 안에 ⓘ 가 남아 있다`);
+    assert.equal(built.info.hidden, false, `${view}: 상단바 ⓘ 가 보여야 한다`);
+    assert.equal(built.info.getAttribute('data-anchor'), anchor, `${view}: ⓘ 목적지`);
+    built.info.dispatch('click');
     assert.equal(built.tabs.find((tab) => tab.getAttribute('data-view') === 'about').getAttribute('aria-selected'), 'true',
       `${view}: ⓘ 가 정보 탭을 연다`);
-    assert.ok(built.panel.querySelector('#jr-about-verdict'), '정보 탭에 판정 절이 있다');
+    assert.ok(built.panel.querySelector(`#jr-about-${anchor}`), `정보 탭에 ${anchor} 절이 있다`);
+    // 정보 탭에서는 ⓘ 를 감춘다.
+    assert.equal(built.info.hidden, true, '정보 탭에서는 ⓘ 가 숨는다');
   }
+});
+
+test('등급 모드에서는 ⓘ 가 등급 표로 간다', () => {
+  const built = boot({ ...FULL_SCORES, mode: 'grade', kor: '2', math: '1', inq1: '3', inq2: '3' });
+  built.tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
+  assert.equal(built.info.getAttribute('data-anchor'), 'convert');
+});
+
+test('계열은 셀렉트로, 나머지 필터는 줄바꿈하는 칩으로 나온다', () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  // 칩 목록은 FRAME §9.1 의 일곱 개뿐이다 — 계열 칩은 없다.
+  const chips = panel.querySelector('.jr-chips').querySelectorAll('.seed-chip-tabs__trigger').map((node) => node.text.trim());
+  assert.deepEqual(chips, ['라인', '대학', '관심 학과', '관심 대학', '예체능 제외', '말도 안되는거 제외', '여대 제외']);
+  for (const gone of ['인문', '자연', '자유전공']) {
+    assert.ok(!chips.includes(gone), `계열 칩 '${gone}' 이 남아 있다`);
+  }
+  // 계열 셀렉트가 셀렉트 줄 맨 앞이다.
+  const selects = panel.querySelector('.jr-filters').querySelectorAll('.jr-select');
+  assert.equal(selects.length, 3, '계열·판정·정렬 셋이다');
+  assert.equal(selects[0].getAttribute('aria-label'), '계열');
+  const options = selects[0].querySelectorAll('option').map((node) => node.text.trim());
+  assert.deepEqual(options, ['계열 전체', '인문', '자연', '예체능', '의약', '자유전공']);
+  // 검색은 셀렉트 줄 아래 한 줄이다.
+  assert.ok(panel.querySelector('.jr-search-row').querySelector('[type="search"]'), '검색이 제 줄에 있어야 한다');
+});
+
+test('계열 셀렉트로 예체능을 고르면 예체능 제외 칩이 꺼진다', () => {
+  const { panel, tabs, context } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const track = panel.querySelector('.jr-filters').querySelectorAll('.jr-select').find((node) => node.getAttribute('aria-label') === '계열');
+  track.dispatch('change', { target: { value: '예체능' } });
+  const saved = JSON.parse(context.localStorage.getItem('jr.filters'));
+  assert.equal(saved.track, '예체능');
+  assert.equal(saved.noArts, false, '예체능 제외가 함께 꺼져야 한다');
+  const arts = panel.querySelector('.jr-chips').querySelectorAll('.seed-chip-tabs__trigger').find((node) => node.text.trim() === '예체능 제외');
+  assert.equal(arts.getAttribute('aria-pressed'), 'false');
 });
 
 test('라인과 대학을 어긋나게 체크하면 목록이 비고 안내 한 줄만 남는다', () => {

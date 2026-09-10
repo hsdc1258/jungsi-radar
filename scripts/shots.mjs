@@ -1,15 +1,16 @@
 // 브라우저 점검: 정적 서버를 띄우고 폭 6종 × 라이트/다크 × 다섯 탭을 모두 연다.
 // 가로 넘침, 고정바 겹침, 잘린 텍스트, 콘솔 오류, 실패한 요청이 하나라도 있으면 실패로 끝난다.
 // 단일 파일 번들(dist/jungsi-radar.html)도 호스트 테마를 찍은 경우와 아닌 경우로 함께 본다.
-import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { chromium } from '/home/user/hvsdcm1/node_modules/@playwright/test/index.mjs';
+import { chromium } from '@playwright/test';
+import { serve } from './serve.mjs';
+import { measure } from './measure.mjs';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, '_shots');
 const PORT = Number(process.env.PORT || 4183);
-const CHROME = process.env.PW_CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = process.env.PW_CHROME || '';
 const VIEWS = ['scores', 'diagnose', 'target', 'rules', 'about'];
 const WIDTHS = [320, 375, 414, 768, 1024, 1280];
 const SHOT_WIDTHS = new Set([375, 1280]);
@@ -42,97 +43,10 @@ if (!existsSync(seedCache)) {
 const seedCss = readFileSync(seedCache, 'utf8');
 
 const problems = [];
-const web = spawn('python3', ['-m', 'http.server', String(PORT)], { cwd: ROOT, stdio: 'ignore' });
-await new Promise((resolve) => setTimeout(resolve, 1200));
-const browser = await chromium.launch({ executablePath: CHROME });
-
-// 한 화면에서 재는 것들. 브라우저 안에서 도는 함수라 밖의 변수를 쓰지 않는다.
-function measure() {
-  const out = { over: 0, offenders: [], truncated: [], overlaps: [], small: [], contrast: [], empty: false };
-  out.over = document.documentElement.scrollWidth - window.innerWidth;
-  if (out.over > 0) {
-    for (const node of document.querySelectorAll('body *')) {
-      const rect = node.getBoundingClientRect();
-      if (rect.width > 0 && rect.right > window.innerWidth + 1) {
-        out.offenders.push(`${node.tagName}.${(node.className || '').toString().split(' ')[0]} right=${Math.round(rect.right)}`);
-      }
-    }
-    out.offenders = out.offenders.slice(0, 5);
-  }
-  const panel = document.getElementById('panel');
-  out.empty = !panel || panel.childElementCount === 0;
-  // 잘린 텍스트: 넘치는 것을 숨기는 칸인데 내용이 더 넓다.
-  for (const node of document.querySelectorAll('#panel *')) {
-    if (node.children.length > 0) continue;
-    const style = getComputedStyle(node);
-    if (style.overflowX === 'visible' && style.overflow === 'visible') continue;
-    if (style.overflowX === 'auto' || style.overflowX === 'scroll') continue;
-    if (node.scrollWidth > node.clientWidth + 1) {
-      out.truncated.push(`${node.tagName}.${(node.className || '').toString().split(' ')[0]}: ${(node.textContent || '').slice(0, 24)}`);
-    }
-  }
-  out.truncated = out.truncated.slice(0, 4);
-  // 대비: 본문·부제·머리글이 배경과 4.5:1 이상인지 (WCAG AA). 반투명 배경은 재지 않는다.
-  const luminance = (color) => {
-    const parts = (color.match(/[\d.]+/gu) || []).map(Number);
-    if (parts.length < 3) return null;
-    if (parts.length > 3 && parts[3] < 1) return null;
-    const [r, g, b] = parts.slice(0, 3).map((value) => {
-      const channel = value / 255;
-      return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  };
-  const backgroundOf = (node) => {
-    let current = node;
-    while (current) {
-      const color = getComputedStyle(current).backgroundColor;
-      if (color && !/rgba\(0, 0, 0, 0\)|transparent/u.test(color)) return color;
-      current = current.parentElement;
-    }
-    return 'rgb(255, 255, 255)';
-  };
-  for (const selector of ['.seed-list-item__title', '.seed-list-item__detail', '.jr-group-head', '.jr-stat-label', '.jr-muted', '.jr-gap']) {
-    const node = document.querySelector(`#panel ${selector}`);
-    if (!node) continue;
-    const front = luminance(getComputedStyle(node).color);
-    const back = luminance(backgroundOf(node));
-    if (front === null || back === null) continue;
-    const ratio = (Math.max(front, back) + 0.05) / (Math.min(front, back) + 0.05);
-    if (ratio < 4.5) out.contrast.push(`${selector} ${Math.round(ratio * 100) / 100}:1`);
-  }
-  // 터치 타깃: 누를 수 있는 것은 44px 이상이어야 한다 (Apple HIG).
-  const seen = new Set();
-  for (const node of document.querySelectorAll('#panel button, #panel select, #panel input, #panel summary, #panel a, #panel [role="checkbox"]')) {
-    const rect = node.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) continue;
-    if (rect.height >= 43.5 && rect.width >= 43.5) continue;
-    const key = `${node.tagName}.${(node.className || '').toString().split(' ')[0]}: ${Math.round(rect.width)}x${Math.round(rect.height)}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.small.push(`${key} "${(node.textContent || '').trim().slice(0, 12)}"`);
-  }
-  out.small = out.small.slice(0, 6);
-  // 겹침: 맨 위에서 첫 내용이 고정바에 가리는지, 스크롤 중 고정바가 비치거나 내용에 덮이는지.
-  const head = document.querySelector('.jr-head');
-  if (head && panel) {
-    window.scrollTo(0, 0);
-    const headRect = head.getBoundingClientRect();
-    const first = panel.firstElementChild;
-    if (first && first.getBoundingClientRect().top < headRect.bottom - 1) {
-      out.overlaps.push(`첫 내용이 고정바에 가림 (${Math.round(first.getBoundingClientRect().top)} < ${Math.round(headRect.bottom)})`);
-    }
-    const background = getComputedStyle(head).backgroundColor;
-    if (/rgba\(/u.test(background) && !/,\s*1\)$/u.test(background)) out.overlaps.push(`고정바 배경이 비침 ${background}`);
-    window.scrollTo(0, 400);
-    const probe = document.elementFromPoint(Math.round(headRect.left + headRect.width / 2), Math.round(headRect.bottom - 6));
-    if (probe && !head.contains(probe)) {
-      out.overlaps.push(`스크롤 중 내용이 고정바 위로 올라옴: ${probe.tagName}.${(probe.className || '').toString().split(' ')[0]}`);
-    }
-    window.scrollTo(0, 0);
-  }
-  return out;
-}
+const web = serve(ROOT, PORT);
+await web.ready;
+// 내려받아 둔 크로미움을 그대로 쓴다. PW_CHROME 이 있으면 그 실행 파일로 대신 연다(리눅스 컨테이너용).
+const browser = await chromium.launch(CHROME ? { executablePath: CHROME } : {});
 
 async function auditPage(page, tag, { shots = false, prefix = '' } = {}) {
   for (const view of VIEWS) {
@@ -160,6 +74,70 @@ function watch(page, tag) {
   });
 }
 
+// 필터 칩 묶음. 줄바꿈해서 모든 칩이 뷰포트 안에 있어야 한다 (FRAME §9.1).
+function chipFit() {
+  const chips = document.querySelector('.jr-chips');
+  if (!chips) return { missing: true, out: [], rows: 0 };
+  const style = getComputedStyle(chips);
+  const items = [...chips.children];
+  return {
+    missing: false,
+    wrap: style.flexWrap,
+    overflowX: style.overflowX,
+    marginLeft: style.marginLeft,
+    count: items.length,
+    rows: new Set(items.map((node) => Math.round(node.getBoundingClientRect().top))).size,
+    out: items
+      .filter((node) => node.getBoundingClientRect().right > window.innerWidth + 0.5)
+      .map((node) => `${node.textContent.trim()} right=${Math.round(node.getBoundingClientRect().right)}`),
+  };
+}
+
+// 칩을 글자로 찾아 누른다 (칩에는 체크 수가 붙을 수 있다).
+async function clickChip(page, text) {
+  await page.evaluate((label) => {
+    const chip = [...document.querySelectorAll('.jr-chips .seed-chip-tabs__trigger')]
+      .find((node) => node.textContent.trim().split(' ')[0] === label);
+    chip?.click();
+  }, text);
+}
+
+// 시트가 떠 있는지, 그 안이 어떤지. 브라우저 안에서 도는 함수라 밖의 변수를 쓰지 않는다.
+function sheetShape() {
+  const content = document.querySelector('.jr-sheet .seed-bottom-sheet__content');
+  const body = document.querySelector('.jr-sheet .seed-bottom-sheet__body');
+  const inline = document.querySelector('#panel [role="checkbox"]');
+  const rows = content
+    ? content.querySelectorAll('[role="checkbox"]').length
+    : document.querySelectorAll('#panel [role="checkbox"]').length;
+  const small = [];
+  for (const node of content ? content.querySelectorAll('button, [role="checkbox"]') : []) {
+    const rect = node.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) continue;
+    // Seed 의 닫기 버튼은 28px 원 둘레에 :after 로 44px 손가락 자리를 둔다.
+    if (node.classList.contains('seed-bottom-sheet__closeButton')) continue;
+    if (rect.height >= 43.5) continue;
+    small.push(`${(node.className || '').toString().split(' ')[0]} ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+  }
+  const active = document.activeElement;
+  return {
+    open: Boolean(content) && content.getBoundingClientRect().height > 0,
+    title: content?.querySelector('.seed-bottom-sheet__title')?.textContent.trim() || '',
+    labelled: Boolean(content?.getAttribute('aria-labelledby')
+      && document.getElementById(content.getAttribute('aria-labelledby'))),
+    rows,
+    checked: content ? content.querySelectorAll('[aria-checked="true"]').length : 0,
+    clearButton: Boolean(content && [...content.querySelectorAll('button')]
+      .some((node) => node.textContent.trim() === '모두 해제')),
+    inline: Boolean(inline),
+    bodyOverflow: body ? getComputedStyle(body).overflowY : '',
+    small: small.slice(0, 4),
+    focus: active ? `${active.tagName}.${(active.className || '').toString().split(' ')[0]}` : '',
+    focusInside: Boolean(content && active && content.contains(active)),
+    locked: getComputedStyle(document.documentElement).overflow === 'hidden',
+  };
+}
+
 try {
   for (const width of WIDTHS) {
     for (const theme of ['light', 'dark']) {
@@ -176,6 +154,22 @@ try {
       await page.waitForSelector('#panel .seed-segmented-control__root');
       const shots = SHOT_WIDTHS.has(width);
       await auditPage(page, tag, { shots, prefix: `${width === 375 ? 'mobile' : 'desktop'}-${theme}-` });
+      // 좁은 폭에서 숨는 칩이 없는지 — 진단 화면에서 칩 묶음을 직접 잰다 (FRAME §9.1).
+      if (width <= 375) {
+        await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+        await page.waitForSelector('.jr-chips');
+        const fit = await page.evaluate(chipFit);
+        if (fit.missing) problems.push(`${tag}: 칩 묶음이 없다`);
+        else {
+          for (const item of fit.out) problems.push(`${tag}: 칩이 뷰포트를 넘는다 — ${item}`);
+          if (fit.wrap !== 'wrap') problems.push(`${tag}: 칩 묶음이 줄바꿈하지 않는다 (flex-wrap: ${fit.wrap})`);
+          if (fit.overflowX === 'auto' || fit.overflowX === 'scroll') {
+            problems.push(`${tag}: 칩 묶음이 가로 스크롤한다 (overflow-x: ${fit.overflowX})`);
+          }
+          if (fit.marginLeft.startsWith('-')) problems.push(`${tag}: 칩 묶음에 음수 마진이 남아 있다 (${fit.marginLeft})`);
+          if (fit.count !== 7) problems.push(`${tag}: 칩이 ${fit.count}개다 (계열 칩은 셀렉트로 갔다)`);
+        }
+      }
       await page.close();
     }
   }
@@ -218,9 +212,10 @@ try {
     await page.close();
   }
 
-  // 라인·대학 체크 목록. 칩을 눌러 펼친 상태를 좁은 폭·넓은 폭에서 한 번씩 본다.
+  // 라인·대학 체크 목록. 768px 미만은 바텀시트, 그 위는 패널 안 인라인이다 (FRAME §9.3).
   for (const width of [320, 375, 1280]) {
     for (const theme of ['light', 'dark']) {
+      const narrow = width < 768;
       const page = await browser.newPage({ viewport: { width, height: 812 }, colorScheme: theme });
       const tag = `체크목록/${width}px/${theme}`;
       watch(page, tag);
@@ -233,24 +228,98 @@ try {
       await page.click('.seed-tabs__trigger[data-view="diagnose"]');
       await page.waitForSelector('.jr-chips');
       for (const [name, label] of [['line', '라인'], ['university', '대학']]) {
-        await page.evaluate((text) => {
-          const chip = [...document.querySelectorAll('.jr-chips .seed-chip-tabs__trigger')]
-            .find((node) => node.textContent.trim().split(' ')[0] === text);
-          chip?.click();
-        }, label);
-        await page.waitForTimeout(140);
+        await clickChip(page, label);
+        await page.waitForTimeout(160);
         const info = await page.evaluate(measure);
         if (info.over > 0) problems.push(`${tag}/${name}: 가로 넘침 +${info.over}px — ${info.offenders.join(' | ')}`);
         for (const item of info.truncated) problems.push(`${tag}/${name}: 잘린 텍스트 ${item}`);
         for (const item of info.small) problems.push(`${tag}/${name}: 터치 타깃 44px 미만 ${item}`);
         for (const item of info.contrast) problems.push(`${tag}/${name}: 대비 4.5:1 미만 ${item}`);
         for (const item of info.overlaps) problems.push(`${tag}/${name}: ${item}`);
-        const rows = await page.evaluate(() => document.querySelectorAll('[role="checkbox"]').length);
-        if (rows === 0) problems.push(`${tag}/${name}: 체크 목록이 비었다`);
+        const shape = await page.evaluate(sheetShape);
+        if (narrow) {
+          if (!shape.open) problems.push(`${tag}/${name}: 768px 미만인데 시트가 열리지 않았다`);
+          if (shape.title !== label) problems.push(`${tag}/${name}: 시트 제목이 ${shape.title}`);
+          if (!shape.labelled) problems.push(`${tag}/${name}: 시트에 aria-labelledby 가 없다`);
+          if (shape.rows === 0) problems.push(`${tag}/${name}: 시트가 비었다`);
+          for (const item of shape.small) problems.push(`${tag}/${name}: 시트 터치 타깃 44px 미만 ${item}`);
+          if (shape.inline) problems.push(`${tag}/${name}: 시트와 인라인 목록이 같이 떠 있다`);
+          if (shape.bodyOverflow !== 'auto' && shape.bodyOverflow !== 'scroll') {
+            problems.push(`${tag}/${name}: 시트 본문이 안에서 스크롤하지 않는다 (${shape.bodyOverflow})`);
+          }
+        } else {
+          if (shape.open) problems.push(`${tag}/${name}: 768px 이상인데 시트가 떴다`);
+          if (!shape.inline) problems.push(`${tag}/${name}: 인라인 체크 목록이 없다`);
+          if (shape.rows === 0) problems.push(`${tag}/${name}: 체크 목록이 비었다`);
+        }
         if (width === 375 && theme === 'light') await page.screenshot({ path: path.join(OUT, `check-${name}.png`) });
+        if (narrow) { await page.keyboard.press('Escape'); await page.waitForTimeout(120); }
       }
       await page.close();
     }
+  }
+
+  // 시트 동작 한 판: 열림·포커스·Esc·패널 스크롤 보존 (FRAME §9.3).
+  {
+    const page = await browser.newPage({ viewport: { width: 375, height: 812 }, colorScheme: 'light' });
+    const tag = '시트/375px';
+    watch(page, tag);
+    await page.route(SEED_CDN, (route) => route.fulfill({ status: 200, contentType: 'text/css', body: seedCss }));
+    await page.addInitScript((scores) => {
+      localStorage.setItem('jr.scores', JSON.stringify(scores));
+      localStorage.setItem('jr.theme', JSON.stringify('light-only'));
+    }, SCORES);
+    await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
+    await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+    await page.waitForSelector('.jr-chips');
+    // 패널을 한참 내려 둔 채로 연다 — 닫은 뒤 그 자리에 그대로 있어야 한다.
+    await page.evaluate(() => window.scrollTo(0, 420));
+    await page.waitForTimeout(80);
+    const before = await page.evaluate(() => Math.round(window.scrollY));
+    await clickChip(page, '라인');
+    await page.waitForTimeout(200);
+    const open = await page.evaluate(sheetShape);
+    if (!open.open) problems.push(`${tag}: 라인 시트가 열리지 않았다`);
+    if (!open.focusInside) problems.push(`${tag}: 포커스가 시트 밖에 있다 (${open.focus})`);
+    if (!open.locked) problems.push(`${tag}: 뒤 화면 스크롤이 잠기지 않았다`);
+    await page.screenshot({ path: path.join(OUT, 'sheet-line.png') });
+    // Esc 로 닫으면 목록은 그대로이므로 스크롤 자리도 그대로여야 한다.
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(200);
+    const closed = await page.evaluate(sheetShape);
+    if (closed.open) problems.push(`${tag}: Esc 로 닫히지 않는다`);
+    if (closed.locked) problems.push(`${tag}: 닫았는데 스크롤 잠금이 남았다`);
+    const after = await page.evaluate(() => Math.round(window.scrollY));
+    if (Math.abs(after - before) > 4) problems.push(`${tag}: 패널 스크롤이 ${before} → ${after} 로 튀었다`);
+    const focusBack = await page.evaluate(() => document.activeElement?.getAttribute('data-sheet-opener') || '');
+    if (focusBack !== 'line') problems.push(`${tag}: 닫은 뒤 포커스가 칩으로 돌아오지 않았다 (${focusBack})`);
+    // 다시 열어 행을 하나 고르고 '완료'로 닫는다 — 시트는 열린 채 체크만 바뀌고, 닫으면 칩이 말한다.
+    await clickChip(page, '라인');
+    await page.waitForTimeout(180);
+    await page.evaluate(() => document.querySelector('.jr-sheet [role="checkbox"]')?.click());
+    await page.waitForTimeout(160);
+    const picked = await page.evaluate(sheetShape);
+    if (!picked.open) problems.push(`${tag}: 행을 고르면 시트가 닫혀 버린다`);
+    if (picked.checked === 0) problems.push(`${tag}: 고른 행에 체크가 없다`);
+    if (!picked.focusInside) problems.push(`${tag}: 행을 고른 뒤 포커스가 시트 밖으로 나갔다 (${picked.focus})`);
+    if (!picked.clearButton) problems.push(`${tag}: 고른 것이 있는데 '모두 해제'가 없다`);
+    await page.evaluate(() => [...document.querySelectorAll('.jr-sheet-footer button')]
+      .find((node) => node.textContent.trim() === '완료')?.click());
+    await page.waitForTimeout(220);
+    const done = await page.evaluate(sheetShape);
+    if (done.open) problems.push(`${tag}: '완료'로 닫히지 않는다`);
+    if (done.locked) problems.push(`${tag}: '완료' 뒤에 스크롤 잠금이 남았다`);
+    const chipLabel = await page.evaluate(() => document.querySelector('[data-sheet-opener="line"]')?.textContent.trim() || '');
+    if (chipLabel !== '라인 1') problems.push(`${tag}: 닫은 뒤 칩이 '${chipLabel}' 이다`);
+    // 768px 이상으로 넓히면 시트를 닫고 인라인으로 돌아간다.
+    await clickChip(page, '대학');
+    await page.waitForTimeout(180);
+    await page.setViewportSize({ width: 1280, height: 812 });
+    await page.waitForTimeout(300);
+    const wide = await page.evaluate(sheetShape);
+    if (wide.open) problems.push(`${tag}: 폭을 넓혔는데 시트가 남아 있다`);
+    if (wide.locked) problems.push(`${tag}: 폭을 넓혔는데 스크롤 잠금이 남았다`);
+    await page.close();
   }
 
   // 단일 파일 번들. 호스트가 감싼 문서 안에서(테마를 찍은 경우와 아닌 경우) 같은 점검을 한다.
@@ -292,8 +361,8 @@ try {
   }
 } finally {
   await browser.close();
-  web.kill();
+  await web.close();
 }
 
-console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 등급모드 2판 + 체크목록 6판 + 번들 4판 통과 (${OUT})`);
+console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 등급모드 2판 + 체크목록 6판 + 시트 1판 + 번들 4판 통과 (${OUT})`);
 process.exit(problems.length ? 1 : 0);
