@@ -32,7 +32,7 @@
   const state = {
     view: readStore(STORE.view, 'scores'),
     scores: { ...EMPTY_SCORES, ...readStore(STORE.scores, {}) },
-    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, sort: 'cut', noArts: true, noDream: true, limit: 8, ...readStore(STORE.filters, {}) },
+    filters: { track: '전체', line: '전체', band: '전체', query: '', favOnly: false, sort: 'cut', noArts: true, noDream: true, noWomen: true, limit: 8, ...readStore(STORE.filters, {}) },
     favorites: new Set(readStore(STORE.favorites, [])),
     target: { university: '', dept: '' },
     rulesUniversity: 'snu',
@@ -231,18 +231,21 @@
     return `${row.grade}등급 → ${fmt(row.mid, 1)}(구간 중앙)`;
   };
 
-  // 목록에서 걸러 내는 두 가지. 토글은 기본으로 켜져 있고 localStorage에 남는다.
+  // 목록에서 걸러 내는 세 가지. 토글은 기본으로 켜져 있고 localStorage에 남는다.
   //   예체능 제외    — 실기 비중이 커서 수능 컷만으로는 판정이 어려운 모집단위.
   //   말도 안되는거 제외 — 의·치·한·약·수의 최상위 모집단위와 서울대·연세대·고려대 전체.
+  //   여대 제외      — 여자대학교(이화여대·숙명여대). 값은 생성물에 그대로 있고 화면만 감춘다.
   // 관심 목록·공유 링크로 직접 연 모집단위는 숨기지 않는다(아래 hiddenBy 호출부에서 예외).
   const DREAM_UNIVERSITIES = new Set(['snu', 'yonsei', 'korea']);
   // 간호·물리치료·보건 등은 빼지 않는다 — 의·치·한·약·수의만 본다.
   const DREAM_DEPT = /의예|의학과|치의예|치의학|한의예|한의학|약학|수의예|수의학/u;
   const isArtsDept = (dept) => dept?.track === '예체능';
   const isDreamDept = (universityId, dept) => DREAM_UNIVERSITIES.has(universityId) || DREAM_DEPT.test(String(dept?.name || ''));
+  const womenOnlyIds = new Set(DATA.universities.filter((row) => row.womenOnly).map((row) => row.id));
   function hiddenBy(universityId, dept) {
     if (state.filters.noArts && isArtsDept(dept)) return 'arts';
     if (state.filters.noDream && isDreamDept(universityId, dept)) return 'dream';
+    if (state.filters.noWomen && womenOnlyIds.has(universityId)) return 'women';
     return null;
   }
   // 관심 학과로 담아 두었거나 지금 목표로 열어 둔 모집단위는 숨김 규칙을 비켜 간다.
@@ -616,6 +619,12 @@
         saveFilters();
         render();
       }),
+      toggleChip('여대 제외', state.filters.noWomen, () => {
+        state.filters.noWomen = !state.filters.noWomen;
+        state.filters.limit = 8;
+        saveFilters();
+        render();
+      }),
     ]);
 
     const filters = el('div', { class: 'jr-filters' }, [
@@ -643,7 +652,8 @@
 
     const legend = el('p', { class: 'jr-muted jr-legend', text: verdictLegend() });
     const sortNote = state.filters.sort === 'band' ? '판정별로 묶어' : '지원 가능한 곳부터 예상 컷 높은 순으로';
-    const hiddenNote = [state.filters.noArts ? '예체능' : null, state.filters.noDream ? '의·치·한·약·수의와 서·연·고' : null]
+    const hiddenNote = [state.filters.noArts ? '예체능' : null, state.filters.noDream ? '의·치·한·약·수의와 서·연·고' : null,
+      state.filters.noWomen ? '여자대학교' : null]
       .filter(Boolean).join('·');
     const summary = callout('내 국·수·탐 평균',
       `${fmt(average, 2)} 백분위 · 조건에 맞는 모집단위 ${rows.length}곳을 ${sortNote} 봅니다 · 관심 ${state.favorites.size}곳${hiddenNote ? ` · ${hiddenNote} 제외` : ''}`, 'informative');
@@ -653,7 +663,8 @@
       : null;
 
     if (rows.length === 0) {
-      const off = [state.filters.noArts ? '예체능 제외' : null, state.filters.noDream ? '말도 안되는거 제외' : null].filter(Boolean);
+      const off = [state.filters.noArts ? '예체능 제외' : null, state.filters.noDream ? '말도 안되는거 제외' : null,
+        state.filters.noWomen ? '여대 제외' : null].filter(Boolean);
       const empty = state.filters.favOnly && state.favorites.size === 0
         ? '관심 학과가 아직 없습니다. 목록에서 관심을 눌러 담아 보세요.'
         : off.length > 0

@@ -30,6 +30,7 @@ export const LINES = [
   { label: '인가경', ids: ['incheon', 'gachon', 'kyonggi'] },
   { label: '경기·인천', ids: ['hanyang-erica', 'kau', 'hufs-global'] },
   { label: '지거국', ids: ['pnu', 'knu', 'jnu', 'jbnu', 'cnu', 'cbnu', 'kangwon', 'gnu', 'jejunu'] },
+  { label: '여대', ids: ['ewha', 'sookmyung'] },
 ];
 const SHORT = {
   snu: '서울대', yonsei: '연세대', korea: '고려대', sogang: '서강대', skku: '성균관대', hanyang: '한양대 서울',
@@ -42,7 +43,11 @@ const SHORT = {
   'hanyang-erica': '한양대 ERICA', kau: '한국항공대',
   pnu: '부산대', knu: '경북대', jnu: '전남대', jbnu: '전북대', cnu: '충남대',
   cbnu: '충북대', kangwon: '강원대', gnu: '경상국립대', jejunu: '제주대',
+  ewha: '이화여대', sookmyung: '숙명여대',
 };
+
+// 여자대학교. 화면의 '여대 제외' 토글이 이 표를 본다 — 생성물에서 빼지 않고 숨김만 한다.
+export const WOMEN_ONLY = new Set(['ewha', 'sookmyung']);
 
 const SEPARATORS = /[·・･ㆍ‧∙⋅\s]/gu;
 // 계열 판정용 정규화. 구분점·공백을 지우고 '전공'을 떼어 '자유전공학'이 '공학'에 걸리지 않게 한다.
@@ -190,6 +195,7 @@ function buildUniversities(adiga, rules) {
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({
         id, name: rule?.name || source?.name || id, short: SHORT[id] || id, line: line.label, order: 0,
+        womenOnly: WOMEN_ONLY.has(id),
         medianCut: medianCutOf(departments),
         resultUrl: source?.url || null, volatility: volatilityOf(departments), departments,
       });
@@ -233,7 +239,7 @@ export function buildData() {
   const rules = read('rules-2027.json');
   const scales = read('scales-2026.json');
   const universities = buildUniversities(adiga, rules);
-  // 라인에 없는 대학(여자대학교 등)은 생성물에 넣지 않는다 — 소스에는 남겨 두되 화면에는 내보내지 않는다.
+  // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};
   for (const [id, rule] of Object.entries(rules.universities)) if (listed.has(id)) ruleMap[id] = rule;

@@ -24188,15 +24188,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 8.75,
+      "group": "가",
+      "quota": 8,
+      "rate": 8.8,
       "fill": 7.0,
       "pct70": 85.0,
-      "pct50": 83.0,
-      "score70": 702.92,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct50": null,
+      "score70": 692.92,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 87.5,
+      "lastWait": 7,
+      "note": "학점나비 정수 85 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24261,15 +24264,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 12.0,
-      "rate": 7.08,
+      "group": "가",
+      "quota": 14,
+      "rate": 6.1,
       "fill": 15.0,
-      "pct70": 83.0,
-      "pct50": 83.0,
-      "score70": 702.16,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.33,
+      "pct50": null,
+      "score70": 692.16,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 107.1,
+      "lastWait": 15,
+      "note": "학점나비 정수 83 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24334,15 +24340,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 21.0,
-      "rate": 5.48,
+      "group": "나",
+      "quota": 22,
+      "rate": 5.2,
       "fill": 10.0,
-      "pct70": 85.0,
-      "pct50": 88.0,
-      "score70": 697.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 84.67,
+      "pct50": null,
+      "score70": 687.31,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 45.5,
+      "lastWait": 10,
+      "note": "학점나비 정수 85 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24397,15 +24406,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 5.73,
+      "group": "나",
+      "quota": 15,
+      "rate": 5.7,
       "fill": 3.0,
       "pct70": 80.0,
-      "pct50": 87.0,
-      "score70": 697.35,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct50": null,
+      "score70": 687.13,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 20.0,
+      "lastWait": 3,
+      "note": "학점나비 정수 80 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24460,15 +24472,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 6.83,
+      "group": "나",
+      "quota": 6,
+      "rate": 6.8,
       "fill": 1.0,
-      "pct70": 79.0,
-      "pct50": 81.0,
-      "score70": 694.49,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 81.0,
+      "pct50": null,
+      "score70": 685.25,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 16.7,
+      "lastWait": 1,
+      "note": "학점나비 정수 79 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24533,15 +24548,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 11.0,
-      "rate": 6.09,
+      "group": "나",
+      "quota": 11,
+      "rate": 6.1,
       "fill": 6.0,
-      "pct70": 79.0,
-      "pct50": 80.0,
-      "score70": 694.31,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 82.0,
+      "pct50": null,
+      "score70": 684.31,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 54.5,
+      "lastWait": 6,
+      "note": "학점나비 정수 79 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24606,15 +24624,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 6.0,
-      "rate": 6.67,
+      "group": "나",
+      "quota": 6,
+      "rate": 6.7,
       "fill": 1.0,
-      "pct70": 82.0,
-      "pct50": 85.0,
-      "score70": 696.44,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 84.83,
+      "pct50": null,
+      "score70": 687.13,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 16.7,
+      "lastWait": 1,
+      "note": "학점나비 정수 82 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24679,15 +24700,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 10.0,
+      "group": "나",
+      "quota": 10,
       "rate": 6.2,
       "fill": 4.0,
-      "pct70": 81.0,
-      "pct50": 83.0,
-      "score70": 694.23,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 80.5,
+      "pct50": null,
+      "score70": 684.23,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 40.0,
+      "lastWait": 4,
+      "note": "학점나비 정수 81 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24752,15 +24776,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 14.0,
-      "rate": 5.64,
+      "group": "나",
+      "quota": 15,
+      "rate": 5.3,
       "fill": 10.0,
-      "pct70": 80.0,
-      "pct50": 82.0,
-      "score70": 696.4,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 79.83,
+      "pct50": null,
+      "score70": 686.4,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 66.7,
+      "lastWait": 10,
+      "note": "학점나비 정수 80 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24825,15 +24852,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 22.0,
-      "rate": 5.45,
+      "group": "가",
+      "quota": 22,
+      "rate": 5.5,
       "fill": 25.0,
-      "pct70": 84.0,
-      "pct50": 83.0,
-      "score70": 706.63,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.67,
+      "pct50": null,
+      "score70": 696.63,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 113.6,
+      "lastWait": 25,
+      "note": "학점나비 정수 84 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24878,15 +24908,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 15.0,
-      "rate": 6.07,
+      "group": "나",
+      "quota": 17,
+      "rate": 5.4,
       "fill": 11.0,
-      "pct70": 81.0,
-      "pct50": 81.0,
-      "score70": 695.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 81.17,
+      "pct50": null,
+      "score70": 685.46,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 64.7,
+      "lastWait": 11,
+      "note": "학점나비 정수 81 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -24951,15 +24984,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 10.0,
+      "group": "나",
+      "quota": 10,
       "rate": 7.0,
       "fill": 3.0,
       "pct70": 82.0,
-      "pct50": 80.0,
-      "score70": 695.83,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct50": null,
+      "score70": 686.03,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 30.0,
+      "lastWait": 3,
+      "note": "학점나비 정수 82 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25024,15 +25060,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 12.0,
+      "group": "가",
+      "quota": 8,
+      "rate": 10.5,
       "fill": 7.0,
-      "pct70": 83.0,
-      "pct50": 83.0,
-      "score70": 703.76,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.33,
+      "pct50": null,
+      "score70": 693.76,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 87.5,
+      "lastWait": 7,
+      "note": "학점나비 정수 83 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25097,15 +25136,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 8.0,
+      "group": "나",
+      "quota": 8,
       "rate": 6.0,
       "fill": 2.0,
-      "pct70": 79.0,
-      "pct50": 81.0,
-      "score70": 694.56,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 79.17,
+      "pct50": null,
+      "score70": 684.56,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 25.0,
+      "lastWait": 2,
+      "note": "학점나비 정수 79 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25170,15 +25212,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 10.0,
-      "rate": 6.4,
+      "group": "가",
+      "quota": 11,
+      "rate": 5.8,
       "fill": 17.0,
-      "pct70": 84.0,
-      "pct50": 82.0,
-      "score70": 703.02,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.83,
+      "pct50": null,
+      "score70": 693.02,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 154.5,
+      "lastWait": 17,
+      "note": "학점나비 정수 84 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25243,15 +25288,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 18.0,
-      "rate": 6.61,
+      "group": "가",
+      "quota": 19,
+      "rate": 6.3,
       "fill": 22.0,
-      "pct70": 87.0,
-      "pct50": 88.0,
-      "score70": 710.92,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 87.17,
+      "pct50": null,
+      "score70": 701.12,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 115.8,
+      "lastWait": 22,
+      "note": "학점나비 정수 87 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25316,15 +25364,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 7.0,
-      "rate": 12.14,
+      "group": "가",
+      "quota": 7,
+      "rate": 12.1,
       "fill": 5.0,
-      "pct70": 83.0,
-      "pct50": 83.0,
-      "score70": 702.58,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 82.83,
+      "pct50": null,
+      "score70": 692.58,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 71.4,
+      "lastWait": 5,
+      "note": "학점나비 정수 83 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25389,15 +25440,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 6.67,
+      "group": "가",
+      "quota": 9,
+      "rate": 6.7,
       "fill": 8.0,
-      "pct70": 81.0,
-      "pct50": 83.0,
-      "score70": 702.51,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 81.17,
+      "pct50": null,
+      "score70": 692.51,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 88.9,
+      "lastWait": 8,
+      "note": "학점나비 정수 81 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25462,15 +25516,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 10.0,
+      "group": "가",
+      "quota": 10,
       "rate": 6.9,
       "fill": 7.0,
-      "pct70": 86.0,
-      "pct50": 85.0,
-      "score70": 705.82,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 85.67,
+      "pct50": null,
+      "score70": 695.82,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 70.0,
+      "lastWait": 7,
+      "note": "학점나비 정수 86 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25535,15 +25592,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 9.0,
-      "rate": 6.56,
+      "group": "가",
+      "quota": 10,
+      "rate": 5.9,
       "fill": 12.0,
-      "pct70": 84.0,
-      "pct50": 85.0,
-      "score70": 704.54,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.83,
+      "pct50": null,
+      "score70": 694.54,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 120.0,
+      "lastWait": 12,
+      "note": "학점나비 정수 84 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25608,15 +25668,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 5.63,
+      "group": "나",
+      "quota": 8,
+      "rate": 5.6,
       "fill": 2.0,
       "pct70": 81.0,
-      "pct50": 82.0,
-      "score70": 696.69,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct50": null,
+      "score70": 686.69,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 25.0,
+      "lastWait": 2,
+      "note": "학점나비 정수 81 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25681,15 +25744,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 11.0,
-      "rate": 6.18,
+      "group": "가",
+      "quota": 11,
+      "rate": 6.2,
       "fill": 10.0,
-      "pct70": 87.0,
-      "pct50": 86.0,
-      "score70": 704.16,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 86.67,
+      "pct50": null,
+      "score70": 694.16,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 90.9,
+      "lastWait": 10,
+      "note": "학점나비 정수 87 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25754,15 +25820,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 8.0,
-      "rate": 7.25,
+      "group": "가",
+      "quota": 8,
+      "rate": 7.3,
       "fill": 6.0,
-      "pct70": 81.0,
-      "pct50": 83.0,
-      "score70": 702.46,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 80.83,
+      "pct50": null,
+      "score70": 692.46,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 75.0,
+      "lastWait": 6,
+      "note": "학점나비 정수 81 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25827,15 +25896,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 8.0,
+      "group": "가",
+      "quota": 8,
       "rate": 9.0,
       "fill": 4.0,
-      "pct70": 84.0,
-      "pct50": 83.0,
-      "score70": 702.39,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 84.33,
+      "pct50": null,
+      "score70": 692.39,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 50.0,
+      "lastWait": 4,
+      "note": "학점나비 정수 84 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25900,15 +25972,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 14.0,
+      "group": "가",
+      "quota": 14,
       "rate": 6.0,
       "fill": 10.0,
-      "pct70": 84.0,
-      "pct50": 84.0,
-      "score70": 705.59,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 84.17,
+      "pct50": null,
+      "score70": 695.79,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 71.4,
+      "lastWait": 10,
+      "note": "학점나비 정수 84 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -25973,15 +26048,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 13.0,
-      "rate": 5.77,
+      "group": "가",
+      "quota": 14,
+      "rate": 5.4,
       "fill": 6.0,
-      "pct70": 82.0,
-      "pct50": 83.0,
-      "score70": 698.84,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 82.17,
+      "pct50": null,
+      "score70": 688.84,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 42.9,
+      "lastWait": 6,
+      "note": "학점나비 정수 82 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -26046,15 +26124,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 12.0,
+      "group": "가",
+      "quota": 12,
       "rate": 9.5,
       "fill": 11.0,
-      "pct70": 83.0,
-      "pct50": 82.0,
-      "score70": 703.19,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.33,
+      "pct50": null,
+      "score70": 693.19,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 91.7,
+      "lastWait": 11,
+      "note": "학점나비 정수 83 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -26119,15 +26200,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 29.0,
-      "rate": 4.76,
+      "group": "가",
+      "quota": 30,
+      "rate": 4.6,
       "fill": 35.0,
-      "pct70": 83.0,
-      "pct50": 82.0,
-      "score70": 704.13,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 83.33,
+      "pct50": null,
+      "score70": 694.13,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 116.7,
+      "lastWait": 35,
+      "note": "학점나비 정수 83 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {
@@ -26179,15 +26263,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 146.0,
-      "rate": 7.34,
+      "group": "다",
+      "quota": 146,
+      "rate": 7.3,
       "fill": 118.0,
-      "pct70": 82.0,
-      "pct50": 85.0,
-      "score70": 699.15,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 82.17,
+      "pct50": null,
+      "score70": 689.15,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 80.8,
+      "lastWait": 118,
+      "note": "학점나비 정수 82 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {},
@@ -26220,15 +26307,18 @@
     "jeongsi": {
      "2026": {
       "typeName": "수능(일반학생전형)",
-      "group": null,
-      "quota": 257.0,
+      "group": "다",
+      "quota": 257,
       "rate": 6.5,
       "fill": 182.0,
-      "pct70": 82.0,
-      "pct50": 83.0,
-      "score70": 703.18,
-      "source": "adiga-hakjum",
-      "url": "https://hakjum.school/admissions/%EA%B4%91%EC%9A%B4%EB%8C%80%ED%95%99%EA%B5%90-%EB%B3%B8%EA%B5%90/"
+      "pct70": 81.83,
+      "pct50": null,
+      "score70": 693.18,
+      "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)",
+      "url": "https://iphak.kw.ac.kr/",
+      "fillRate": 70.8,
+      "lastWait": 182,
+      "note": "학점나비 정수 82 대체 — 70%컷 학생의 국·수·탐 백분위 산술평균"
      }
     },
     "gyogwa": {},

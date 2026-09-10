@@ -138,6 +138,39 @@ def soongsil():
     return out
 
 
+# ---------------------------------------------------------------- 광운대
+# 2026학년도 신입학 정시모집 입시결과. 표 아래에 "최종등록자의 환산점수 기준 70% 컷의 학생의 성적",
+# "수능 등급, 백분위, 표준점수는 영역별 반영비율 및 가산점이 적용되지 않은 산술평균"이라고 적혀 있다 —
+# 백분위(국,수,탐) 열이 곧 어디가 70%컷과 같은 정의다(베리타스알파가 옮긴 2025 전기공 88.33과 같다).
+# 첫 쪽(수능 일반학생전형)만 쓰고 뒤의 기회균형·정원외 표는 덮어쓰지 않는다.
+def kwangwoon():
+    text = read('dl/kw2026.txt')
+    head = text.split('수능(기회균형전형)')[0]
+    row = re.compile(r'^(?:인문|자연|예체능)?\s*(?P<name>\D+?)\s+(?P<quota>\d+)\s+(?P<applied>[\d,]+)\s+'
+                     r'(?P<rate>\d+\.\d)\s+(?P<score>\d+\.\d\d)\s+(?P<grade>\d\.\d\d)\s+'
+                     r'(?P<pct>\d+\.\d\d)\s+(?P<std>\d+\.\d\d)\s+(?P<wait>\d+)\s+(?P<fillRate>\d+\.\d)\s*'
+                     r'정시\s*(?P<group>[가나다])군\s*$')
+    out, buffer = {}, ''
+    for line in head.split('\n'):
+        line = re.sub(r'\s+', ' ', line).strip()
+        if not line:
+            continue
+        # PDF가 긴 이름을 줄 가운데서 자른다('반도체시스템공학부 반' / '도체시스템공학전공 22 …').
+        # 앞줄 꼬리와 이어 붙인 쪽을 먼저 본다.
+        match = (row.match(buffer + line) if buffer else None) or row.match(line)
+        if not match:
+            buffer = line if len(line) < 40 and not re.search(r'\d', line) else ''
+            continue
+        buffer = ''
+        out.setdefault(match.group('name').strip(), {
+            'cut70': float(match.group('pct')), 'group': match.group('group'),
+            'quota': int(match.group('quota')), 'rate': float(match.group('rate')),
+            'lastWait': int(match.group('wait')), 'fillRate': float(match.group('fillRate')),
+            'score70': float(match.group('score')),
+        })
+    return out
+
+
 # ---------------------------------------------------------------- 이름 맞추기
 SEP = '·・･ㆍ‧∙⋅/,-–—〮&'
 
@@ -184,10 +217,12 @@ def merge(university, table, source, url, kind_note, type_name):
             continue
         hit = index.get(key) or index.get(norm(dept['name'], drop_paren=True)) or tails.get(key)
         if hit is None:
-            loose = [k for k in index if k and (k.startswith(key) or key.startswith(k)) and abs(len(k) - len(key)) <= 3]
-            hit = index[loose[0]] if len(loose) == 1 else None
-            if hit:
-                key = loose[0]
+            for pool in (index, tails):
+                loose = [k for k in pool if k and (k.startswith(key) or key.startswith(k)) and abs(len(k) - len(key)) <= 3]
+                if len(loose) == 1:
+                    key = loose[0]
+                    hit = pool[key]
+                    break
         if hit is None:
             continue
         used.add(key)
@@ -239,6 +274,8 @@ SOURCES = {
             'https://iphak.khu.ac.kr/', ' — 대학이 낸 국·수·탐 백분위 70%CUT', '수능위주'),
     'konkuk': (konkuk, '건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)',
                'https://enter.konkuk.ac.kr/', ' — 과목별 70%Cut의 국·수·탐 산술평균', '수능(KU일반학생)'),
+    'kw': (kwangwoon, '광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)',
+           'https://iphak.kw.ac.kr/', ' — 70%컷 학생의 국·수·탐 백분위 산술평균', '수능(일반학생전형)'),
     'soongsil': (soongsil, '숭실대학교 2027학년도 입학전형 통계(정시 일반전형 수능 백분위 70%)',
                  'https://admission.ssu.ac.kr/', ' — 국어·수학·탐구(2과목) 단순평균 70%', '수능(일반전형)'),
 }

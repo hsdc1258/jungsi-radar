@@ -179,15 +179,32 @@ test('진단 목록은 머리글 없는 한 목록이고 지원 가능한 곳이
   assert.ok(cuts.length > 3, `컷이 여럿 보여야 한다 (${cuts.length})`);
 });
 
-test('기본 토글 두 개가 켜져 있어 예체능과 서·연·고·의약 최상위를 감춘다', () => {
+test('기본 토글 세 개가 켜져 있어 예체능·서연고·의약 최상위·여대를 감춘다', () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   const text = panel.text;
   assert.match(text, /예체능 제외/u);
   assert.match(text, /말도 안되는거 제외/u);
-  assert.match(text, /의·치·한·약·수의와 서·연·고 제외/u);
-  assert.ok(!/서울대|연세대|고려대/u.test(text.split('예상 컷')[1] || ''), '서·연·고가 목록에 없다');
+  assert.match(text, /여대 제외/u);
+  assert.match(text, /의·치·한·약·수의와 서·연·고·여자대학교 제외/u);
+  const list = text.split('예상 컷')[1] || '';
+  assert.ok(!/서울대|연세대|고려대/u.test(list), '서·연·고가 목록에 없다');
+  assert.ok(!/이화여대|숙명여대/u.test(list), '여자대학교가 목록에 없다');
   assert.ok(!/의예/u.test(text), '의예 모집단위가 목록에 없다');
+});
+
+test("'여대 제외'를 끄면 여자대학교가 목록에 나타난다", () => {
+  const { panel, tabs } = boot(FULL_SCORES);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const count = () => Number(/모집단위 (\d+)곳/u.exec(panel.text)[1]);
+  const before = count();
+  const chip = panel.querySelectorAll('.seed-chip-tabs__trigger').find((node) => node.text.trim() === '여대 제외');
+  assert.ok(chip, "'여대 제외' 칩이 있어야 한다");
+  chip.dispatch('click');
+  assert.ok(count() > before, `여대를 켜면 목록이 늘어야 한다 (${before} → ${count()})`);
+  assert.ok(!/여자대학교 제외|·여자대학교/u.test(panel.text), '숨김 안내에서 여자대학교가 빠진다');
+  // 대학 셀렉트(목표 탭)와 라인 목록에는 여대가 보인다.
+  assert.match(panel.text, /여대/u);
 });
 
 test('등급으로 넣으면 구간 중앙 백분위가 화면에 보인다', () => {
