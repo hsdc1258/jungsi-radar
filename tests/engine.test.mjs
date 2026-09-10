@@ -498,33 +498,37 @@ test('서로 다른 눈금을 빼지 않는다 — 컷 정의가 다르면 내 �
   assert.equal(at('subject-mean70').approxDef, true);
 });
 
-test('컷 정의별 comparableScore는 손 계산과 같다 — 명지·건국 예체능·서경', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
+test('컷 정의별 comparableScore는 손 계산과 같다 — 명지·서경', { skip: !existsSync(path.join(ROOT, DATA_FILE)) && 'data.js not generated' }, () => {
   const data = load(DATA_FILE, 'IPSI_DATA');
   // 국 78 · 수 62 · 탐 80/77 (탐구 2과목 평균 78.5 · 상위 1과목 80)
   const profile = engine.normalizeProfile({ mode: 'pct', kor: 78, math: 62, eng: 2, hist: 3, inq1Subject: '생활과윤리', inq1: 80, inq2Subject: '사회문화', inq2: 77 }, data.scales, data.std);
+  // 판정은 가장 최근 연도의 정의로 내리므로 고를 때도 최근 연도를 본다.
+  const latest = (dept) => {
+    const years = Object.keys(dept.jeongsi || {}).sort().reverse();
+    return years.length > 0 ? dept.jeongsi[years[0]] : null;
+  };
   const pick = (id, def) => {
     const university = data.universities.find((row) => row.id === id);
-    const dept = university.departments.find((row) => Object.values(row.jeongsi || {}).some((cut) => cut.def === def));
-    return engine.evaluateJeongsi(profile, university, dept, data.rules[id], university.volatility);
+    const dept = university.departments.find((row) => latest(row)?.def === def);
+    return dept ? engine.evaluateJeongsi(profile, university, dept, data.rules[id], university.volatility) : null;
   };
   // 명지대 — 국·수·탐(상위 1과목) 평균 = (78 + 62 + 80) / 3 = 73.33
   const mju = pick('mju', 'ksi1-mean');
   assert.equal(mju.def, 'ksi1-mean');
   assert.equal(mju.mine, 73.33);
   assert.equal(mju.status, 'ok');
-  // 건국대 예체능 — 국·탐 2영역 평균 = (78 + 78.5) / 2 = 78.25 (수학 미반영)
-  const konkuk = pick('konkuk', 'kor-inq-mean');
-  assert.equal(konkuk.def, 'kor-inq-mean');
-  assert.equal(konkuk.mine, 78.25);
-  assert.equal(konkuk.status, 'ok');
   // 서경대 — 국·수·탐 중 상위 2개 평균 = (78.5 + 78) / 2 = 78.25
   const skuniv = pick('skuniv', 'top2-mean');
   assert.equal(skuniv.def, 'top2-mean');
   assert.equal(skuniv.mine, 78.25);
   assert.equal(skuniv.status, 'ok');
-  // 국·수·탐(2) 평균(73.0)을 세 곳 어디에도 그대로 쓰지 않는다.
+  // 건국대 예체능의 '국·탐 2영역 평균'은 이제 데이터에 없다 — 어디가 원값(평균백분위)이
+  // 수학까지 넣은 국·수·탐(2) 평균이라 그 정의로 덮였다(docs/MODEL.md §0). 엔진의 계산 자체는
+  // 위 '컷 정의별 내 점수' 테스트가 합성 입력으로 계속 검사한다.
+  assert.equal(pick('konkuk', 'kor-inq-mean'), null, '건국대에 국·탐 2영역 평균 컷이 남아 있으면 안 된다');
+  // 국·수·탐(2) 평균(72.83)을 두 곳 어디에도 그대로 쓰지 않는다.
   assert.equal(engine.simpleAverage(profile), 72.83);
-  for (const result of [mju, konkuk, skuniv]) assert.notEqual(result.mine, 72.83);
+  for (const result of [mju, skuniv]) assert.notEqual(result.mine, 72.83);
 });
 
 test('반영비율 가중 지수는 컷에서 빼지 않는다 (비교값은 국·수·탐 단순평균 하나뿐)', () => {
@@ -632,11 +636,12 @@ test('재현 입력(3·4·2·3·3·4)에서 숭실대에 근거 없는 적정이
     assert.ok(result.gapRange && result.gapRange.minBand && result.gapRange.maxBand, `${name}: 구간 판정이 있어야 한다`);
     assert.ok(result.bounds.min < result.mine && result.mine < result.bounds.max, `${name}: 가정값은 구간 안이다`);
   }
-  // 숭실대 사회복지학부는 컷 82.36, 차이 −4.2 → 위험이다.
+  // 숭실대 사회복지학부는 컷 82.03(2026 어디가 원값 82 + 대학 공식값으로 환산한 이전 연도 가중),
+  // 차이 −3.9 → 위험이다.
   const welfare = soongsil.departments.find((row) => row.name === '사회복지학부');
   const result = engine.evaluateJeongsi(profile, soongsil, welfare, data.rules.soongsil, soongsil.volatility);
-  assert.equal(result.cut.value, 82.36);
-  assert.equal(result.gap, -4.2);
+  assert.equal(result.cut.value, 82.03);
+  assert.equal(result.gap, -3.9);
   assert.equal(result.band.label, '위험');
 });
 

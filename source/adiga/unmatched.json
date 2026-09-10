@@ -1,0 +1,6149 @@
+{
+ "note": "어디가 원값과 results.json 모집단위를 이름 정규화 뒤 정확히 맞춰 본 결과. scripts/build-data.mjs 가 만든다.",
+ "years": [
+  "2025",
+  "2026"
+ ],
+ "counts": {
+  "adigaRows": 5390,
+  "adigaOnly": 114,
+  "oursOnly": 33,
+  "moved": 347
+ },
+ "adigaOnly": [
+  {
+   "id": "kyonggi",
+   "dept": "창의공과대학",
+   "years": [
+    "2025"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반학생전형)",
+   "score70": 82.1
+  },
+  {
+   "id": "ajou",
+   "dept": "국방디지털융합학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(국방IT우수인재2전형)",
+   "score70": 891.01
+  },
+  {
+   "id": "dankook",
+   "dept": "공학계열광역",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반학생)",
+   "score70": null
+  },
+  {
+   "id": "dongguk",
+   "dept": "경영대학(광역화 모집단위)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(다군(일반))",
+   "score70": 687.84
+  },
+  {
+   "id": "dongguk",
+   "dept": "바이오시스템대학(광역화 모집단위)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(다군(일반))",
+   "score70": 691.49
+  },
+  {
+   "id": "dongguk",
+   "dept": "조소전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(나군(일반-조소전공))",
+   "score70": 366.2
+  },
+  {
+   "id": "dongguk",
+   "dept": "체육교육과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(가군(일반-체육교육과))",
+   "score70": 368.57
+  },
+  {
+   "id": "ewha",
+   "dept": "공과대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "도자예술전공(신)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 475.94
+  },
+  {
+   "id": "ewha",
+   "dept": "동양화전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 495.05
+  },
+  {
+   "id": "ewha",
+   "dept": "디자인학부(신)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 534.5
+  },
+  {
+   "id": "ewha",
+   "dept": "사회과학대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(농어촌학생))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "서양화전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 529.05
+  },
+  {
+   "id": "ewha",
+   "dept": "섬유・패션학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(기회균형전형(농어촌학생-실기))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "섬유예술전공(섬유・패션학부)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 514.99
+  },
+  {
+   "id": "ewha",
+   "dept": "신산업융합대학(인문)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "신산업융합대학(자연)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "융합전자반도체공학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(장애인등대상자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "인문과학대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(기초생활수급자및차상위계층,한부모가족 지원대상자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "자연과학대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(기회균형전형(기초생활수급자및차상위계층,한부모가족 지원대상자))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "조소전공(신)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 501.58
+  },
+  {
+   "id": "ewha",
+   "dept": "조형예술학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(기회균형전형(장애인등대상자-실기))",
+   "score70": null
+  },
+  {
+   "id": "ewha",
+   "dept": "체육과학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 528.28
+  },
+  {
+   "id": "ewha",
+   "dept": "패션디자인전공(섬유・패션학부)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(예체능실기전형)",
+   "score70": 497.24
+  },
+  {
+   "id": "gachon",
+   "dept": "건설환경공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "경제학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "관광경영학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "금융・빅데이터학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "도시계획・조경학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "미술・디자인학부(조소전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "미술・디자인학부(회화전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "미술·디자인학부(산업디자인)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "미술·디자인학부(시각디자인)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "바이오나노학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "법과대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "사회복지학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "생명과학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "스마트보안학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "스마트시티학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "스마트팩토리학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "식품생명공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "식품영양학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "심리학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "연기예술학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "운동재활학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "유아교육학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "음악학부(기악)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "음악학부(성악)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "음악학부(작곡)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "응급구조학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "응용통계학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "의공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "의료산업경영학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "자유전공학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "체육학부(체육)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "체육학부(태권도)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(실기)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "치위생학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "패션산업학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "화공생명배터리공학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "화학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "회계세무학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "gachon",
+   "dept": "AI인문대학",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형1)",
+   "score70": null
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "건설환경공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반)",
+   "score70": 886.81
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "경영학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반)",
+   "score70": 885.27
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "국방전략기술공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(국방전략기술공학)",
+   "score70": null
+  },
+  {
+   "id": "hufs",
+   "dept": "외국어교육학부(독일어교육전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "hufs",
+   "dept": "외국어교육학부(중국어교육전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "hufs",
+   "dept": "외국어교육학부(프랑스어교육전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "inha",
+   "dept": "디자인융합학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(특성화고교졸업자)",
+   "score70": null
+  },
+  {
+   "id": "inha",
+   "dept": "연극영화학과(연출)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(특성화고교졸업자)",
+   "score70": null
+  },
+  {
+   "id": "jbnu",
+   "dept": "독어교육과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반학생 전형)",
+   "score70": null
+  },
+  {
+   "id": "jejunu",
+   "dept": "지리교육과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반학생 전형)",
+   "score70": null
+  },
+  {
+   "id": "jnu",
+   "dept": "음악교육과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반)",
+   "score70": null
+  },
+  {
+   "id": "jnu",
+   "dept": "체육교육과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반)",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "디지털콘텐츠학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시{나군-기회균형전형-특성화고교 졸업자(정원외)}]",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "무용학부(발레)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시-나군-수능위주전형-무용)]",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "무용학부(한국무용)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시-나군-수능위주전형-무용)]",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "무용학부(현대무용)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시-나군-수능위주전형-무용)]",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "스포츠지도학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시(나군-수능위주전형-체육)]",
+   "score70": null
+  },
+  {
+   "id": "khu",
+   "dept": "PostModern음악학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능[정시(나군-수능위주전형)]",
+   "score70": null
+  },
+  {
+   "id": "knu",
+   "dept": "디자인학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반학생 실기전형)",
+   "score70": 394.95
+  },
+  {
+   "id": "knu",
+   "dept": "미술학과(한국화전공, 서양화전공, 조소전공, 조형예술이론전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반학생)",
+   "score70": null
+  },
+  {
+   "id": "knu",
+   "dept": "유럽어교육학부 독어교육전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반학생)",
+   "score70": null
+  },
+  {
+   "id": "konkuk",
+   "dept": "매체연기학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(KU일반학생)-가군",
+   "score70": null
+  },
+  {
+   "id": "konkuk",
+   "dept": "의상디자인학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(KU일반학생)-나군",
+   "score70": 669.01
+  },
+  {
+   "id": "kookmin",
+   "dept": "글로벌한국어전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반학생전형)",
+   "score70": null
+  },
+  {
+   "id": "korea",
+   "dept": "반도체공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능:일반전형(계약학과)",
+   "score70": 668.17
+  },
+  {
+   "id": "korea",
+   "dept": "사이버국방학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능:일반전형(계약학과)",
+   "score70": 520.11
+  },
+  {
+   "id": "korea",
+   "dept": "스마트모빌리티학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능:일반전형(계약학과)",
+   "score70": 672.42
+  },
+  {
+   "id": "korea",
+   "dept": "차세대통신학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능:일반전형(계약학과)",
+   "score70": 667.5
+  },
+  {
+   "id": "mju",
+   "dept": "미술사・역사학전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(농어촌학생전형)",
+   "score70": 800
+  },
+  {
+   "id": "mju",
+   "dept": "자율전공학부(인문)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형)",
+   "score70": 860.5
+  },
+  {
+   "id": "pnu",
+   "dept": "조형학과 섬유금속전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(수능전형)",
+   "score70": null
+  },
+  {
+   "id": "pnu",
+   "dept": "한국음악학과 관악타악전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(수능전형)",
+   "score70": null
+  },
+  {
+   "id": "sejong",
+   "dept": "국방AI로봇융합공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(국방AI로봇융합공학 특별전형)",
+   "score70": 540.98
+  },
+  {
+   "id": "sejong",
+   "dept": "국방AI융합시스템공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(국방AI융합시스템공학 특별전형)",
+   "score70": 549
+  },
+  {
+   "id": "sejong",
+   "dept": "사이버국방학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(사이버국방 특별전형)",
+   "score70": 555.27
+  },
+  {
+   "id": "sejong",
+   "dept": "우주항공시스템공학부(항공시스템공학전공)",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(항공시스템공학 특별전형)",
+   "score70": 694.31
+  },
+  {
+   "id": "skku",
+   "dept": "반도체시스템공학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형 가군-계약학과)",
+   "score70": 672.64
+  },
+  {
+   "id": "skku",
+   "dept": "배터리학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형 다군-계약학과)",
+   "score70": 676.43
+  },
+  {
+   "id": "skku",
+   "dept": "지능형소프트웨어학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형 나군-계약학과)",
+   "score70": 977
+  },
+  {
+   "id": "snu",
+   "dept": "공예과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "동양화과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "서양화과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "성악과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "음악학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "작곡과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "snu",
+   "dept": "조소과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능위주전형(정시모집 일반전형)",
+   "score70": null
+  },
+  {
+   "id": "soongsil",
+   "dept": "예술창작학부 영화예술전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(나)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "syu",
+   "dept": "신학과",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(신학특별)",
+   "score70": null
+  },
+  {
+   "id": "uos",
+   "dept": "첨단융합학부 융합바이오헬스전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "uos",
+   "dept": "첨단융합학부 첨단인공지능전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(다)",
+   "typeName": "수능(일반전형)",
+   "score70": null
+  },
+  {
+   "id": "yonsei",
+   "dept": "글로벌인재학부",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형[국제계열])",
+   "score70": null
+  },
+  {
+   "id": "yonsei",
+   "dept": "언더우드 생명과학공학전공",
+   "years": [
+    "2026"
+   ],
+   "period": "정시(가)",
+   "typeName": "수능(일반전형[국제계열])",
+   "score70": null
+  }
+ ],
+ "oursOnly": [
+  {
+   "id": "konkuk",
+   "dept": "의상디자인학과(수능)"
+  },
+  {
+   "id": "konkuk",
+   "dept": "의상디자인학과(실기)"
+  },
+  {
+   "id": "mju",
+   "dept": "공간디자인학과"
+  },
+  {
+   "id": "mju",
+   "dept": "반도체공학부"
+  },
+  {
+   "id": "mju",
+   "dept": "전기전자공학부"
+  },
+  {
+   "id": "mju",
+   "dept": "어문학부"
+  },
+  {
+   "id": "mju",
+   "dept": "인문학부"
+  },
+  {
+   "id": "mju",
+   "dept": "미래사회인재학부"
+  },
+  {
+   "id": "mju",
+   "dept": "청소년지도·아동학부"
+  },
+  {
+   "id": "mju",
+   "dept": "디지털미디어학과"
+  },
+  {
+   "id": "mju",
+   "dept": "법학과"
+  },
+  {
+   "id": "mju",
+   "dept": "전공자유학부(인문)"
+  },
+  {
+   "id": "mju",
+   "dept": "융합소프트웨어학부"
+  },
+  {
+   "id": "mju",
+   "dept": "자연과학대학"
+  },
+  {
+   "id": "mju",
+   "dept": "화공신소재환경공학부"
+  },
+  {
+   "id": "mju",
+   "dept": "컴퓨터공학과"
+  },
+  {
+   "id": "mju",
+   "dept": "토목교통공학부"
+  },
+  {
+   "id": "mju",
+   "dept": "기계산업경영공학부"
+  },
+  {
+   "id": "mju",
+   "dept": "정보통신공학과"
+  },
+  {
+   "id": "hansung",
+   "dept": "글로벌패션산업학부(야)"
+  },
+  {
+   "id": "hansung",
+   "dept": "사회과학부(야)"
+  },
+  {
+   "id": "hansung",
+   "dept": "크리에이티브인문학부(야)"
+  },
+  {
+   "id": "hansung",
+   "dept": "AI응용학과(야)"
+  },
+  {
+   "id": "hansung",
+   "dept": "IT 공과대학(야)"
+  },
+  {
+   "id": "skuniv",
+   "dept": "미래융합학부1"
+  },
+  {
+   "id": "skuniv",
+   "dept": "미래융합학부2"
+  },
+  {
+   "id": "skuniv",
+   "dept": "자유전공학부"
+  },
+  {
+   "id": "skuniv",
+   "dept": "군사학과-남자"
+  },
+  {
+   "id": "skuniv",
+   "dept": "군사학과-여자"
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "건설환경공학과(ERICA)"
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "경영학부(ERICA)"
+  },
+  {
+   "id": "jejunu",
+   "dept": "행정학과(야)"
+  },
+  {
+   "id": "jejunu",
+   "dept": "경영학과(야)"
+  }
+ ],
+ "moved": [
+  {
+   "id": "korea",
+   "dept": "가정교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 523.38,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 656.05
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "간호대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 523.13,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 657.36
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "건축사회환경공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 524.06,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 658.98
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "건축학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 521.79,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 658.43
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "경영대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.67,
+    "score70": 525.41,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 659.91
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "경제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.17,
+    "score70": 523.5,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 655.5
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "교육학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 516.62,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 653.9
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "국어교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 521.1,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 655.34
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92,
+    "score70": 521.37,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 655.25
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "국제학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 519.68,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 656.83
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "기계공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.17,
+    "score70": 529.23,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 659.72
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "노어노문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92,
+    "score70": 519.27,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 651.46
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "데이터과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92,
+    "score70": 521.14,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 655.11
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "독어독문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92,
+    "score70": 517.69,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 653.02
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "미디어학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 523.51,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 656.05
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "바이오시스템의과학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 519.78,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 653.35
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "바이오의공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 526.42,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 660.06
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "보건정책관리학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 520.15,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 654.72
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "보건환경융합과학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 523.92,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 656.48
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "불어불문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.07,
+    "score70": 519.97,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 652.97
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "사학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.88,
+    "score70": 516.23,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 654.16
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "사회학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.12,
+    "score70": 522.25,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 655.9
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "산업경영공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.87,
+    "score70": 520.24,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 661.78
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "생명공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91,
+    "score70": 525.77,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 656.95
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "생명과학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 525.2,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 659.29
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "서어서문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91,
+    "score70": 518.82,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 652.8
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "수학교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 523.05,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 657.18
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "스마트보안학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.73,
+    "score70": 527.59,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 97,
+    "score70": 656.12
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "식품공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 524.69,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 658.03
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "식품자원경제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.33,
+    "score70": 522.68,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 656.47
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "신소재공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 527.62,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 660.74
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "심리학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 519.69,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 656.59
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "역사교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 513.14,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 651.38
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "영어교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 519.92,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 652.36
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "영어영문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 517.97,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 653.13
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "융합에너지공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 524.42,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 660.04
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 99,
+    "score70": 558.41,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 99,
+    "score70": 698.74
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "인공지능학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 524.15,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 661.34
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "일어일문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 520.46,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 651.59
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "전기전자공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.33,
+    "score70": 517.61,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 665.44
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "정치외교학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 523.44,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 656.93
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "중어중문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 517.8,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 651.4
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "지구환경과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 523.59,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 658.15
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "지리교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.2,
+    "score70": 519.31,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 651.08
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "통계학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.48,
+    "score70": 525.46,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 657.89
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "행정학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 512.45,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 656.49
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 525.36,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 657.65
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "환경생태공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.8,
+    "score70": 522.51,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 657.73
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "물리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 526.06,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 660.28
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 524.66,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 655.58
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "언어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 519.86,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 650.6
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "자유전공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.83,
+    "score70": 524.44,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 660.36
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "철학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93,
+    "score70": 522.02,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 656.1
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "컴퓨터학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.83,
+    "score70": 528.36,
+    "source": "베리타스알파 「2026고려대 입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 659.82
+   }
+  },
+  {
+   "id": "korea",
+   "dept": "화공생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 524.21,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 657.13
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "간호학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.45,
+    "score70": 386.38,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 386.38
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "건축공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.63,
+    "score70": 386.4,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 386.4
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "건축학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.2,
+    "score70": 385.92,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 385.92
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "경영회계계열",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.95,
+    "score70": 380.85,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 380.85
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "경제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.25,
+    "score70": 383.29,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 383.29
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "관광・엔터테인먼트학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.8,
+    "score70": 382.03,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 382.03
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.8,
+    "score70": 386.31,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 386.31
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "국제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.4,
+    "score70": 380.21,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 380.21
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "글로벌커뮤니케이션학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.6,
+    "score70": 382.17,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 382.17
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "글로벌Hospitality・관광학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.45,
+    "score70": 381.46,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 381.46
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "기계공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.88,
+    "score70": 389.87,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 389.87
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "무역학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.4,
+    "score70": 383.27,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 383.27
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "물리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.8,
+    "score70": 388.83,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 388.83
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "미디어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.15,
+    "score70": 382.77,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 382.77
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "미래정보디스플레이학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.28,
+    "score70": 390.5,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 390.5
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "빅데이터응용학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.45,
+    "score70": 383.59,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 383.59
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "사학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.7,
+    "score70": 386.34,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 386.34
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "사회기반시스템공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.48,
+    "score70": 385.87,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 385.87
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "사회학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.95,
+    "score70": 381.62,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 381.62
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "산업경영공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.45,
+    "score70": 387.89,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 387.89
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "생물학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.5,
+    "score70": 389.18,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 389.18
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "소프트웨어융합학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.7,
+    "score70": 388.72,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 388.72
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.63,
+    "score70": 390.08,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 390.08
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "스마트팜과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.68,
+    "score70": 385.64,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 385.64
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "스페인어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 380.7,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 380.7
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "식품생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.25,
+    "score70": 387.3,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 387.3
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "식품영양학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.78,
+    "score70": 387.46,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 387.46
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "신소재공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.4,
+    "score70": 388.07,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 388.07
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "아동가족학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.23,
+    "score70": 385.31,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 385.31
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "약과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.58,
+    "score70": 390.63,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 390.63
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "약학과(6년제)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 96.73,
+    "score70": 408.92,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 97,
+    "score70": 408.92
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "영어영문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.93,
+    "score70": 386.09,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 386.09
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "우주과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.03,
+    "score70": 388.06,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 388.06
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "원자력공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.83,
+    "score70": 388.27,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 388.27
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "유전생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.05,
+    "score70": 390.24,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 390.24
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "융합바이오・신소재공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.73,
+    "score70": 386.07,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 386.07
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "응용수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.93,
+    "score70": 387.27,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 387.27
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "응용영어통번역학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.3,
+    "score70": 386.32,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 386.32
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "응용화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.93,
+    "score70": 387.72,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 387.72
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "의상학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.65,
+    "score70": 385.01,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 385.01
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "의예과(자연계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.95,
+    "score70": 420.81,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 420.81
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "인공지능학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.3,
+    "score70": 388.91,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 388.91
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "일본어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.98,
+    "score70": 380.12,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 380.12
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "자유전공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92.15,
+    "score70": 385.33,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 385.33
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "자율전공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.95,
+    "score70": 383.7,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 383.7
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "전자공학부 반도체공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.38,
+    "score70": 390.47,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 390.47
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "전자공학부 전자공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.5,
+    "score70": 391.36,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 391.36
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "정치외교학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.5,
+    "score70": 382.75,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 382.75
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "조리&푸드디자인학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.15,
+    "score70": 381.35,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 381.35
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "중국어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.65,
+    "score70": 380,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 380
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "지리학과(인문계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.3,
+    "score70": 382.82,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 382.82
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "지리학과(자연계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.1,
+    "score70": 386.74,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 386.74
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "철학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.28,
+    "score70": 386.42,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 386.42
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "치의예과(자연계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 97.63,
+    "score70": 414.96,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 414.96
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "컴퓨터공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.3,
+    "score70": 389.38,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 389.38
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "프랑스어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.7,
+    "score70": 379.35,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 379.35
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "한국어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.58,
+    "score70": 380.52,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 380.52
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "한약학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 93.48,
+    "score70": 398.13,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 398.13
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "한의예과(인문계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.05,
+    "score70": 410.12,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 410.12
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "한의예과(자연계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 96.88,
+    "score70": 411.73,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 97,
+    "score70": 411.73
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "행정학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.25,
+    "score70": 383.49,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 383.49
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "화학공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.7,
+    "score70": 388.17,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 388.17
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.1,
+    "score70": 389.81,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 389.81
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "환경학및환경공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.18,
+    "score70": 386.35,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 386.35
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "Hospitality경영학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.35,
+    "score70": 382.53,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 382.53
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "주거환경학과(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 385.5,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 385.5
+   }
+  },
+  {
+   "id": "khu",
+   "dept": "생체의공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.35,
+    "score70": 388.39,
+    "source": "경희대학교 2026학년도 입학전형 통계자료(정시 수능위주 백분위 70%CUT)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 388.39
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "건축학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.17,
+    "score70": 667.54,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 667.54
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "경영학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.83,
+    "score70": 667.07,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 667.07
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "경제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.33,
+    "score70": 667.49,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 667.49
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "교육공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 670.83,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 670.83
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 673.35,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 673.35
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "국제무역학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 666.61,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 666.61
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "기계・로봇・자동차공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92.5,
+    "score70": 671.81,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 671.81
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "기술경영학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.5,
+    "score70": 667.98,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 667.98
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "동물자원・식품과학・유통학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.33,
+    "score70": 666.99,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 666.99
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "문화콘텐츠학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.17,
+    "score70": 672.6,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 672.6
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "물리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.67,
+    "score70": 667.72,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 667.72
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "미디어커뮤니케이션학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.17,
+    "score70": 666.51,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 666.51
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "부동산학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.67,
+    "score70": 668.81,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 668.81
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "사학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.17,
+    "score70": 670.83,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 670.83
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "사회환경공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.5,
+    "score70": 668.41,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 668.41
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "산업공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.5,
+    "score70": 670.14,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 670.14
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "생물공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.33,
+    "score70": 669.86,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 669.86
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "수의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 96.33,
+    "score70": 705.71,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 705.71
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.5,
+    "score70": 668.71,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 668.71
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "수학교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.83,
+    "score70": 669.14,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 669.14
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "시스템생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.17,
+    "score70": 671.64,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 671.64
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "식량자원과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.67,
+    "score70": 667.35,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 667.35
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "융합생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.17,
+    "score70": 673.66,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 673.66
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "응용통계학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 664.65,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 664.65
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "재료공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.33,
+    "score70": 671.07,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 671.07
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "중어중문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.67,
+    "score70": 670.15,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 670.15
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "첨단바이오공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.83,
+    "score70": 668.81,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 668.81
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "컴퓨터공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.83,
+    "score70": 669.97,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 669.97
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "항공우주・모빌리티공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.33,
+    "score70": 671.15,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 671.15
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "화공・생명・에너지공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.33,
+    "score70": 671.44,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 671.44
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 670.47,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 670.47
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "환경보건・산림조경학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.5,
+    "score70": 665.91,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 665.91
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "KU자유전공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.83,
+    "score70": 676.45,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 676.45
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "공과대학자유전공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.83,
+    "score70": 671.55,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 671.55
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "영상학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 79.5,
+    "score70": 408.657,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 408.66
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "현대미술학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 65.25,
+    "score70": 392.105,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 65,
+    "score70": 392.11
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "리빙디자인학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 77.75,
+    "score70": 409.416,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 78,
+    "score70": 409.42
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "음악교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 79.5,
+    "score70": 411.078,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 411.08
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "체육교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.75,
+    "score70": 417.323,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 417.32
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "커뮤니케이션디자인학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 79.75,
+    "score70": 410.637,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 410.64
+   }
+  },
+  {
+   "id": "konkuk",
+   "dept": "산업디자인학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.75,
+    "score70": 433.779,
+    "source": "건국대학교 2026학년도 전형결과(수능 KU일반학생 과목별 백분위 70% Cut)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 433.78
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "건축학부 건축학·건축공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.33,
+    "score70": 906.88,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 906.88
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "건축학부 실내건축전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.33,
+    "score70": 905.31,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 905.31
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "경영학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.5,
+    "score70": 903.87,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 903.87
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "경제학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.83,
+    "score70": 901.99,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 901.99
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80.33,
+    "score70": 897.23,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 897.23
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "국제법무학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.33,
+    "score70": 897.23,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 897.23
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "글로벌미디어학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 904.66,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 904.66
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "글로벌통상학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86,
+    "score70": 900.92,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 900.92
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "금융학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86,
+    "score70": 904.27,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 904.27
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "기계공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.33,
+    "score70": 909.05,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 909.05
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "독어독문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.67,
+    "score70": 896.74,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 896.74
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "물리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84,
+    "score70": 906.15,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 906.15
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "법학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.33,
+    "score70": 902.04,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 902.04
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "벤처중소기업학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.83,
+    "score70": 899.19,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 899.19
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "불어불문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.17,
+    "score70": 894.21,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 894.21
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "사학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.67,
+    "score70": 894.31,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 894.31
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "사회복지학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.33,
+    "score70": 896.96,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 896.96
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "산업정보시스템공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 903.94,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 903.94
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.33,
+    "score70": 907.43,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 907.43
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "신소재공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.67,
+    "score70": 908.3,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 908.3
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "언론홍보학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.5,
+    "score70": 898.57,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 898.57
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "영어영문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80.5,
+    "score70": 895.36,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 895.36
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "의생명시스템학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 908.5,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 908.5
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "일어일문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.5,
+    "score70": 895.98,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 895.98
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "전기공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.17,
+    "score70": 909.74,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 909.74
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "전자정보공학부 전자공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.33,
+    "score70": 915.83,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 915.83
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "전자정보공학부 IT융합전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.33,
+    "score70": 912.77,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 912.77
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "정보보호학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 92.17,
+    "score70": 934.9,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 934.9
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "정보사회학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.33,
+    "score70": 898.75,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 898.75
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "정보통계・보험수리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.5,
+    "score70": 903.15,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 903.15
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "정치외교학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.33,
+    "score70": 897.8,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 897.8
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "중어중문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.67,
+    "score70": 895.05,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 895.05
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "컴퓨터학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.67,
+    "score70": 911.08,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 911.08
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "평생교육학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.5,
+    "score70": 893.17,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 893.17
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "행정학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.17,
+    "score70": 899.62,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 899.62
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "화학공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.17,
+    "score70": 907.88,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 907.88
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.17,
+    "score70": 905.62,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 905.62
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "회계학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.17,
+    "score70": 902.83,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 902.83
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "AI소프트웨어학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86,
+    "score70": 910.22,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 910.22
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "자유전공학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.33,
+    "score70": 900.74,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 900.74
+   }
+  },
+  {
+   "id": "soongsil",
+   "dept": "자유전공학부(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 907.33,
+    "source": "숭실대학교 「2027학년도 입학전형 통계」 책자에 실린 2026학년도 입시결과 — 정시 일반전형 수능(백분위) 70% p.29·31"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 907.33
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "건축공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 692.92,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 702.92
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "건축학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.33,
+    "score70": 692.16,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 702.16
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "경영학부 경영학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.67,
+    "score70": 687.31,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 697.31
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "경영학부 빅데이터경영전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80,
+    "score70": 687.13,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 697.35
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81,
+    "score70": 685.25,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 694.49
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "국제통상학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 684.31,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 694.31
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "국제학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.83,
+    "score70": 687.13,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 696.44
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "동북아문화산업학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80.5,
+    "score70": 684.23,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 694.23
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "미디어커뮤니케이션학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 79.83,
+    "score70": 686.4,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 696.4
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "반도체시스템공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.67,
+    "score70": 696.63,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 706.63
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "법학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.17,
+    "score70": 685.46,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 695.46
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "산업심리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 686.03,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 695.83
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.33,
+    "score70": 693.76,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 703.76
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "영어산업학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 79.17,
+    "score70": 684.56,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 694.56
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전기공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.83,
+    "score70": 693.02,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 703.02
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전자공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.17,
+    "score70": 701.12,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 710.92
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전자바이오물리학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.83,
+    "score70": 692.58,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 702.58
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전자융합공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.17,
+    "score70": 692.51,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 702.51
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전자재료공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 695.82,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 705.82
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "전자통신공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.83,
+    "score70": 694.54,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 704.54
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "행정학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81,
+    "score70": 686.69,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 696.69
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "화학공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.67,
+    "score70": 694.16,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 704.16
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80.83,
+    "score70": 692.46,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 702.46
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "환경공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.33,
+    "score70": 692.39,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 702.39
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "소프트웨어학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.17,
+    "score70": 695.79,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 705.59
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "정보융합학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.17,
+    "score70": 688.84,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 698.84
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "컴퓨터정보공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.33,
+    "score70": 693.19,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 703.19
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "AI로봇전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.33,
+    "score70": 694.13,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 704.13
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "자율전공학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.17,
+    "score70": 689.15,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 699.15
+   }
+  },
+  {
+   "id": "kw",
+   "dept": "자율전공학부(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.83,
+    "score70": 693.18,
+    "source": "광운대학교 2026학년도 신입학 정시모집 입시결과(수능 일반학생전형 백분위 70%컷)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 703.18
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "경영대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 874,
+    "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 875
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "인문대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.3,
+    "score70": 851,
+    "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 851
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "사회과학대학",
+   "year": "2025",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 843,
+    "source": "명지대학교 2025학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 856
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "사회과학대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.7,
+    "score70": 856,
+    "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 856
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "미디어·휴먼라이프대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80.3,
+    "score70": 854,
+    "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 855.5
+   }
+  },
+  {
+   "id": "mju",
+   "dept": "인공지능·소프트웨어융합대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.7,
+    "score70": 889.1,
+    "source": "명지대학교 2026학년도 정시모집 수능(일반전형) 입시결과"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 889.9
+   }
+  },
+  {
+   "id": "hansung",
+   "dept": "글로벌패션산업학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 72,
+    "score70": 833.3,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 70,
+    "score70": 796.1
+   }
+  },
+  {
+   "id": "hansung",
+   "dept": "사회과학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 71,
+    "score70": 827.35,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 68,
+    "score70": 794.3
+   }
+  },
+  {
+   "id": "inha",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.17,
+    "score70": 986.99,
+    "source": "베리타스알파 「인하대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 99,
+    "score70": 986.99
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "금융공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.83,
+    "score70": 893.73,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 893.73
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "미래모빌리티공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.33,
+    "score70": 904.45,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 904.45
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "소프트웨어학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.5,
+    "score70": 906.98,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 906.98
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "응용화학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 905.21,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 905.21
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "지능형반도체공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.5,
+    "score70": 917.23,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 917.23
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "첨단신소재공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.5,
+    "score70": 909.59,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 909.59
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "간호학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.83,
+    "score70": 917.49,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 917.49
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "건축학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.17,
+    "score70": 898.92,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 898.92
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "경영인텔리전스학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.83,
+    "score70": 885.89,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 885.89
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "경영학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 887.97,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 887.97
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "기계공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.17,
+    "score70": 907.7,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 907.7
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "사이버보안학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.33,
+    "score70": 906.43,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 906.43
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "산업공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.67,
+    "score70": 903.43,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 903.43
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "약학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94.5,
+    "score70": 970.29,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 970.29
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "의학과(예과)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.83,
+    "score70": 989.71,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 99,
+    "score70": 989.71
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "전자공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86.17,
+    "score70": 917.34,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 917.34
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "프런티어과학학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.5,
+    "score70": 899.9,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 899.9
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "자유전공학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 891.88,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 891.88
+   }
+  },
+  {
+   "id": "ajou",
+   "dept": "자유전공학부(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.83,
+    "score70": 907.61,
+    "source": "베리타스알파 「아주대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 907.61
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "LIONS자율전공학부(전계열)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.5,
+    "score70": 882.71,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 882.71
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "반도체・디스플레이공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.67,
+    "score70": 892.24,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 892.24
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "산업경영공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.5,
+    "score70": 891.03,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 891.03
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "인공지능학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.5,
+    "score70": 893.34,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 893.34
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "지능형클라우드전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.17,
+    "score70": 888.45,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 888.45
+   }
+  },
+  {
+   "id": "hanyang-erica",
+   "dept": "컴퓨터전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.33,
+    "score70": 888.95,
+    "source": "베리타스알파 「한양대ERICA 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 888.95
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "공과대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81,
+    "score70": 560.75,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 545.75
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "스마트드론공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84,
+    "score70": 559.25,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 86,
+    "score70": 559.25
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "항공・경영대학(사회적성)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 564,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 564
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "항공운항학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95,
+    "score70": 588,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 588
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "AI융합대학",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 80,
+    "score70": 560,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 545.25
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "AI자율주행시스템공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 560,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 560
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "자유전공학부(공학적성)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86,
+    "score70": 565,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 565
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "자유전공학부(사회적성)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 568.5,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 568.5
+   }
+  },
+  {
+   "id": "kau",
+   "dept": "자유전공학부(이학적성)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81,
+    "score70": 566.75,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 566.75
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "건축학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.6,
+    "score70": 82.6,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 82.6
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "공공안전학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.05,
+    "score70": 84.05,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 84.05
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "기계시스템공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.2,
+    "score70": 83.2,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 74,
+    "score70": 83.2
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "바이오융합학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.05,
+    "score70": 83.05,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 83.05
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "법학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.85,
+    "score70": 82.85,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 82.85
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "사회에너지시스템공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.85,
+    "score70": 81.85,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 81.85
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "산업경영공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.85,
+    "score70": 81.85,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 77,
+    "score70": 81.85
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "수학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.1,
+    "score70": 83.1,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 76,
+    "score70": 83.1
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "스마트시티공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.05,
+    "score70": 82.05,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 82.05
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "신소재화학공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.25,
+    "score70": 83.25,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 77,
+    "score70": 83.25
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "전자공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.65,
+    "score70": 83.65,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 81,
+    "score70": 83.65
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "AI컴퓨터공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.55,
+    "score70": 82.55,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 75,
+    "score70": 82.55
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "창의공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.1,
+    "score70": 82.1,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 76,
+    "score70": 82.1
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "인공지능전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.15,
+    "score70": 83.15,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 83.15
+   }
+  },
+  {
+   "id": "kyonggi",
+   "dept": "AI컴퓨터공학부 SW안전보안전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 82,
+    "source": "베리타스알파 「경기대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 82
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "경영학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85,
+    "score70": 802.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 802.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "국어국문학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83,
+    "score70": 795.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 795.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "기계공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.4,
+    "score70": 810,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 810
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "데이터과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.9,
+    "score70": 799.3,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 799.3
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "도시공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.3,
+    "score70": 806.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 806.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "도시행정학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.9,
+    "score70": 800.3,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 800.3
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "동북아국제통상전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.1,
+    "score70": 839,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 85,
+    "score70": 839
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "분자의생명전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.5,
+    "score70": 803.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 78,
+    "score70": 803.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "사회복지학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.8,
+    "score70": 788,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 78,
+    "score70": 788
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "생명공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.4,
+    "score70": 817,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 817
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "생명과학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 81.6,
+    "score70": 797,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 77,
+    "score70": 797
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "영어교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.6,
+    "score70": 801.3,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 801.3
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "윤리교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 85.9,
+    "score70": 807.8,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 807.8
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "전기공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.5,
+    "score70": 812,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 812
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "전자공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82.9,
+    "score70": 822.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 82,
+    "score70": 822.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "컴퓨터공학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 84.3,
+    "score70": 816,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 83,
+    "score70": 816
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "행정학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.3,
+    "score70": 795.5,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 80,
+    "score70": 795.5
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "환경공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.3,
+    "score70": 811,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 78,
+    "score70": 811
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "자유전공학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 82,
+    "score70": 805,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 79,
+    "score70": 805
+   }
+  },
+  {
+   "id": "incheon",
+   "dept": "체육교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 83.8,
+    "score70": 424.4,
+    "source": "베리타스알파 「인천대 2026입결」(어디가 공개값)"
+   },
+   "adiga": {
+    "pct70": 84,
+    "score70": 424.4
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "약학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 96,
+    "score70": 749.65,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 747.24
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "간호학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 77,
+    "score70": 678.13,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 77,
+    "score70": 677.49
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "치의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 97,
+    "score70": 607.49,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 596.35
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "원예생명과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 63.33,
+    "score70": 647.43,
+    "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)"
+   },
+   "adiga": {
+    "pct70": 68,
+    "score70": 647.43
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "화공생명공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.67,
+    "score70": 707.41,
+    "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 707.41
+   }
+  },
+  {
+   "id": "pnu",
+   "dept": "스포츠과학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 56.33,
+    "score70": 566.17,
+    "source": "나무아카데미 「2026학년도 정시 전형 — 부산대」(부산대 입학처 지원결과 인용)"
+   },
+   "adiga": {
+    "pct70": 59,
+    "score70": 566.17
+   }
+  },
+  {
+   "id": "knu",
+   "dept": "간호학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 86,
+    "score70": 680.47,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 680.43
+   }
+  },
+  {
+   "id": "knu",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 99,
+    "score70": 739.91,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 736.34
+   }
+  },
+  {
+   "id": "jnu",
+   "dept": "의학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 97,
+    "score70": 976.27,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 969.2
+   }
+  },
+  {
+   "id": "jnu",
+   "dept": "치의학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98,
+    "score70": 968.25,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 961.19
+   }
+  },
+  {
+   "id": "cnu",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 202.7,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 200.34
+   }
+  },
+  {
+   "id": "cbnu",
+   "dept": "수의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 94,
+    "score70": 989.94,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 94,
+    "score70": 986.01
+   }
+  },
+  {
+   "id": "cbnu",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 96,
+    "score70": 990.87,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 989.28
+   }
+  },
+  {
+   "id": "gnu",
+   "dept": "의예과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 97,
+    "score70": 977.71,
+    "source": "adiga-hakjum"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 959.97
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "과학교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88,
+    "score70": 931.09,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 931.09
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "약학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.83,
+    "score70": 974.45,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 96,
+    "score70": 974.45
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "의예과(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.17,
+    "score70": 995.17,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 995.17
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "인공지능데이터사이언스학부(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90,
+    "score70": 937.38,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 937.38
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "교육공학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88,
+    "score70": 920.94,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 920.94
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "교육학과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 88.83,
+    "score70": 920.82,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 920.82
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "국어교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 921.51,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 89,
+    "score70": 921.51
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "뇌인지과학부(자연)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 91.67,
+    "score70": 946.1,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 946.1
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "영어교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 923.04,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 923.04
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "유아교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 919.72,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 919.72
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "지능형반도체공학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.67,
+    "score70": 937.75,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 937.75
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "초등교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90,
+    "score70": 922.77,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 922.77
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "특수교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 87.83,
+    "score70": 919.09,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 88,
+    "score70": 919.09
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "간호학부",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.5,
+    "score70": 937.81,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 93,
+    "score70": 937.81
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "뇌인지과학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 90.67,
+    "score70": 929.19,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 929.19
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "미래산업약학전공",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 95.33,
+    "score70": 970.4,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 95,
+    "score70": 970.4
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "사회과교육과",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.5,
+    "score70": 921.51,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 92,
+    "score70": 921.51
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "의예과(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 98.17,
+    "score70": 985.76,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 98,
+    "score70": 985.76
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "인공지능데이터사이언스학부(인문)",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89,
+    "score70": 929.39,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 87,
+    "score70": 929.39
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "인문계열",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.5,
+    "score70": 925.41,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 91,
+    "score70": 925.41
+   }
+  },
+  {
+   "id": "ewha",
+   "dept": "자연계열",
+   "year": "2026",
+   "hakjum": {
+    "pct70": 89.17,
+    "score70": 933.82,
+    "source": "이화여자대학교 2026학년도 수능전형 입시결과"
+   },
+   "adiga": {
+    "pct70": 90,
+    "score70": 933.82
+   }
+  }
+ ]
+}

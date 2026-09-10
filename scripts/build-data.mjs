@@ -8,9 +8,10 @@
 //
 // 계열 분류는 모집단위 이름의 키워드로 정한다. 어디가 표에는 계열이 없으므로 여기서 도출하고,
 // 애매한 이름은 인문으로 둔다(자연계 가산점을 잘못 얹는 쪽보다 안전하다).
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { computeAccuracy } from './accuracy-report.mjs';
+import { normalizeDept } from './source-parsers/dept-name.mjs';
 
 const ROOT = process.cwd();
 const SOURCE = path.join(ROOT, 'source');
@@ -292,6 +293,10 @@ function volatilityOf(departments) {
   const spreads = departments
     .map((dept) => stdev((dept.series || []).map((row) => row.value)))
     .filter((value) => typeof value === 'number' && Number.isFinite(value));
+  // 어디가는 직전 학년도 하나만 공개하므로 연도가 두 해 이상 있는 모집단위가 대학마다 적다.
+  // 표본이 둘 이하인 대학의 '흔들림 0'은 흔들리지 않았다는 뜻이 아니라 잰 적이 없다는 뜻이라
+  // 값으로 내지 않는다 — 그런 대학은 전체 대표값(data.volatility)을 오차범위로 쓴다.
+  if (spreads.length < 3) return null;
   const value = median(spreads);
   return value === null ? null : round2(value);
 }
@@ -314,27 +319,164 @@ function medianCutOf(departments) {
   return value === null ? null : round2(value);
 }
 
-function buildUniversities(adiga, rules, anomalies = new Map()) {
+// ── 어디가 원값 (source/adiga/<학년도>.json) ─────────────────────────────────
+// scripts/source-parsers/fetch-adiga.mjs 가 어디가에서 직접 받아 둔 행. docs/MODEL.md §1.1 이
+// 형식을 정한다. 같은 모집단위에 이 행이 있으면 **이 값이 1차 자료**이고, 학점나비 전사값을 덮는다.
+export const ADIGA_SOURCE = '대입정보포털 어디가 대학별 입시결과(직접 수집)';
+const PERIOD_GROUP = { '정시(가)': '가', '정시(나)': '나', '정시(다)': '다' };
+
+// 한 모집단위·한 해에 어디가 행이 여럿일 때(모집시기·전형이 갈릴 때) 무엇을 대표로 쓸지.
+// 컷이 공개된 행 > 영역별 값만 있는 행 > 모집인원만 있는 행 순이고, 같으면 모집인원이 큰 쪽이다.
+export function rankAdigaRow(row) {
+  if (!row) return -1;
+  if (typeof row.score?.p70 === 'number') return 3;
+  if (row.student?.p70) return 2;
+  if ((row.quota?.final ?? 0) > 0) return 1;
+  return 0;
+}
+export function preferAdigaRow(left, right) {
+  const gap = rankAdigaRow(right) - rankAdigaRow(left);
+  if (gap !== 0) return gap > 0 ? right : left;
+  return (right.quota?.final ?? 0) > (left.quota?.final ?? 0) ? right : left;
+}
+
+export function indexAdiga(files) {
+  const index = new Map();
+  const years = new Set();
+  let rows = 0;
+  for (const file of files) {
+    for (const row of file.rows || []) {
+      rows += 1;
+      const year = String(row.year);
+      years.add(year);
+      const key = `${row.university}::${normalizeDept(row.dept)}`;
+      if (!index.has(key)) index.set(key, new Map());
+      const byYear = index.get(key);
+      byYear.set(year, byYear.has(year) ? preferAdigaRow(byYear.get(year), row) : row);
+    }
+  }
+  return { index, years: [...years].sort(), rows };
+}
+
+function readAdiga() {
+  const dir = path.join(SOURCE, 'adiga');
+  if (!existsSync(dir)) return indexAdiga([]);
+  const files = readdirSync(dir)
+    .filter((name) => /^\d{4}\.json$/u.test(name))
+    .map((name) => JSON.parse(readFileSync(path.join(dir, name), 'utf8')));
+  return indexAdiga(files);
+}
+
+// 생성물은 브라우저가 통째로 내려받는 파일이라, 값이 없는 칸(80·90·100% cut 은 대학별 선택공개라
+// 대부분 비어 있다)은 키째 뺀다. 소스 파일(source/adiga/*.json)은 MODEL §1.1 대로 null 을 남긴다.
+const compact = (value) => {
+  if (!value) return null;
+  const out = {};
+  for (const [key, item] of Object.entries(value)) if (item !== null && item !== undefined) out[key] = item;
+  return Object.keys(out).length > 0 ? out : null;
+};
+
+// 어디가 행을 results.json 의 정시 행 모양으로 옮긴다. 아래 매핑 코드가 한 갈래만 보도록,
+// 어디가 값도 학점나비 값도 같은 모양으로 만들어 넘긴다.
+export function mergeAdigaRow(base, hit) {
+  if (!hit) return base ? { row: base, extra: { aggregation: 'unknown' } } : null;
+  const student = hit.student || {};
+  // 선발인원 3명 이하면 어디가가 컷을 공개하지 않는다(각주 원문) — 그 행은 컷을 덮지 않는다.
+  const disclosed = typeof hit.score?.p70 === 'number' || typeof student.p70?.avg === 'number';
+  const quota = (hit.quota?.final ?? 0) > 0 ? hit.quota.final : null;
+  const extra = {
+    aggregation: disclosed ? 'adiga-score-rank' : 'unknown',
+    consistent: disclosed ? hit.consistent : null,
+    period: hit.period || null,
+    score: compact(hit.score),
+    student: disclosed ? compact(student) : null,
+    quotaDetail: compact(hit.quota),
+    adigaNote: hit.note || '',
+    fetchedOn: hit.source?.fetchedOn || null,
+  };
+  if (!disclosed) {
+    // 컷은 없어도 모집인원·경쟁률·충원은 원문이 맞다 — 있으면 그 값으로 바꾼다.
+    if (!base) return null;
+    return {
+      row: {
+        ...base,
+        quota: quota ?? base.quota ?? null,
+        rate: quota === null ? base.rate ?? null : hit.rate ?? null,
+        fill: quota === null ? base.fill ?? null : hit.fill ?? null,
+        fillRate: quota === null ? base.fillRate ?? null : null,
+      },
+      extra,
+    };
+  }
+  return {
+    row: {
+      typeName: hit.typeName || base?.typeName || '',
+      group: PERIOD_GROUP[hit.period] ?? null,
+      quota, rate: hit.rate ?? null, fill: hit.fill ?? null, fillRate: null,
+      lastWait: base?.lastWait ?? null,
+      // 어디가의 '평균백분위'는 환산점수 순 70% 지점 학생 한 명의 국·수·탐 평균이다(MODEL §0).
+      pct70: student.p70?.avg ?? null, pct50: student.p50?.avg ?? null, pct100: student.p100?.avg ?? null,
+      // 학점나비가 정수로 실었던 같은 값. 정확도 보고서가 원값과 짝지어 센다.
+      adigaCut70: base?.adigaCut70 ?? (typeof base?.pct70 === 'number' && base?.source === 'adiga-hakjum' ? base.pct70 : null),
+      score70: hit.score?.p70 ?? null,
+      kind: '70%컷', note: '',
+      source: ADIGA_SOURCE, url: hit.source?.url || null, sourceGrade: 'A',
+    },
+    extra,
+  };
+}
+
+function buildUniversities(adiga, rules, anomalies = new Map(), adigaRows = indexAdiga([])) {
   const byId = new Map(adiga.map((row) => [row.id, row]));
+  const used = new Set();
+  const compare = [];
+  const oursOnly = [];
   const universities = [];
   for (const line of LINES) {
     for (const id of line.ids) {
       const source = byId.get(id);
       const rule = rules.universities[id];
+      // 정시 결과가 없던 모집단위도 어디가에 행이 있으면 들어온다 — 그래서 거르는 일은
+      // 값을 다 실어 본 **뒤에** 한다(아래 filter).
       const departments = (source?.departments || [])
-        .filter((dept) => Object.keys(dept.jeongsi || {}).length > 0)
         .map((dept) => {
           const guessed = classifyTrack(dept.name);
           // 자동 분류가 틀리는 이름은 TRACK_OVERRIDES 표가 못박는다.
           const track = overrideTrack(id, dept.name) || guessed.track;
           // 소스가 계열을 못박아 둔 모집단위(캠퍼스별 반영비율이 다른 한국외대)는 그 값을 쓴다.
           const ruleTrack = dept.ruleTrack || guessed.ruleTrack;
+          // 어디가 원값이 있는 모집단위면 그 값이 이긴다. 연도는 두 출처의 합집합이다 —
+          // 어디가에만 있는 해(2025·2024)도 그대로 싣는다.
+          const key = `${id}::${normalizeDept(dept.name)}`;
+          const adigaYears = adigaRows.index.get(key) || null;
+          if (adigaYears) used.add(key);
+          // 정시 결과가 있던 모집단위인데 어디가에서 짝을 못 찾은 것만 남긴다(이름 표기 차이).
+          else if (Object.keys(dept.jeongsi || {}).length > 0) oursOnly.push({ id, dept: dept.name });
+          const years = new Set(Object.keys(dept.jeongsi || {}).filter((name) => name !== 'alts'));
+          if (adigaYears) for (const year of adigaYears.keys()) years.add(year);
+
           const jeongsi = {};
-          for (const [year, row] of Object.entries(dept.jeongsi)) {
-            if (year === 'alts') continue;
+          for (const year of [...years].sort()) {
+            const merged = mergeAdigaRow(dept.jeongsi?.[year] || null, adigaYears?.get(year) || null);
+            if (!merged) continue;
+            const { row, extra } = merged;
+            const before = dept.jeongsi?.[year] || null;
+            // 학점나비 전사값과 어디가 원값이 어긋난 행은 세어 둔다(docs/ACCURACY.md).
+            if (before && extra.aggregation === 'adiga-score-rank') {
+              const moved = (left, right) => (left ?? null) !== (right ?? null)
+                && !(typeof left === 'number' && typeof right === 'number' && Math.abs(left - right) < 0.005);
+              if (moved(before.pct70, row.pct70) || moved(before.score70, row.score70)) {
+                compare.push({
+                  id, dept: dept.name, year,
+                  hakjum: { pct70: before.pct70 ?? null, score70: before.score70 ?? null, source: before.source },
+                  adiga: { pct70: row.pct70, score70: row.score70 },
+                });
+              }
+            }
             const quota = row.quota ?? null;
             const fill = row.fill ?? null;
             jeongsi[year] = {
+              ...extra,
               cut70: row.pct70 ?? null, cut50: row.pct50 ?? null, cut100: row.pct100 ?? null,
               // 같은 모집단위를 학점나비가 정수로 실은 값. 정확도 보고서가 원값과 짝지어 센다.
               adigaCut70: row.adigaCut70 ?? null,
@@ -342,18 +484,19 @@ function buildUniversities(adiga, rules, anomalies = new Map()) {
               metric: row.pct70 !== null && row.pct70 !== undefined ? 'pct' : 'score',
               // 통계 정의(무엇을 재서 낸 값인가). 비교 가능성은 여기서 갈린다.
               def: cutDefinition(row),
-              kind: row.kind || '70%컷', basis: row.source === 'adiga-hakjum' ? 'adiga' : 'official',
+              kind: row.kind || '70%컷',
+              basis: row.source === 'adiga-hakjum' || row.source === ADIGA_SOURCE ? 'adiga' : 'official',
               group: row.group || null, quota, rate: row.rate ?? null, fill,
               // 충원율은 대학이 낸 값을 그대로 쓰고, 없으면 추합 인원 ÷ 모집인원으로 만든다.
               fillRate: row.fillRate ?? (typeof fill === 'number' && typeof quota === 'number' && quota > 0
                 ? Math.round((fill / quota) * 1000) / 10 : null),
               lastWait: row.lastWait ?? null,
               // docs/MODEL.md §1.1 — 환산점수와 그 지점 학생 한 명의 성적표. 어디가 원문 그대로다.
-              score: row.score ?? null,
-              student: row.student ?? null,
+              score: extra.score ?? row.score ?? null,
+              student: extra.student ?? row.student ?? null,
               // 집계 방식. 어디가 각주 정의(환산점수 순 정렬)가 아니면 'unknown' 이고,
               // unknown 인 행에는 정밀 판정(L1·L2)을 내리지 않는다.
-              aggregation: row.aggregation || (row.source === 'adiga-hakjum' ? 'adiga-score-rank' : 'unknown'),
+              aggregation: extra.aggregation || row.aggregation || (row.source === 'adiga-hakjum' ? 'adiga-score-rank' : 'unknown'),
               typeName: row.typeName || '', note: row.note || '', source: row.source, url: row.url,
               sourceGrade: row.sourceGrade || 'E',
             };
@@ -376,6 +519,8 @@ function buildUniversities(adiga, rules, anomalies = new Map()) {
             jeongsi, official, series, gyogwa: susi('gyogwa'), hakjong: susi('hakjong'),
           };
         })
+        // 정시 값이 하나도 없는 모집단위는 이 화면이 다루지 않는다(수시만 뽑는 곳).
+        .filter((dept) => Object.keys(dept.jeongsi).length > 0)
         .sort((left, right) => left.name.localeCompare(right.name, 'ko'));
       universities.push({
         id, name: rule?.name || source?.name || id, short: SHORT[id] || id, line: line.label, order: 0,
@@ -387,9 +532,39 @@ function buildUniversities(adiga, rules, anomalies = new Map()) {
   }
   // 순서는 라인 표 그대로다. 대표 컷(medianCut)은 값으로만 남겨 정보 탭 표가 쓴다.
   universities.forEach((university, index) => { university.order = index + 1; });
-  return universities;
+  // 이름이 맞지 않아 짝을 못 지은 행. 이름 정규화만으로는 못 잇는 곳을 눈에 보이게 남긴다.
+  const adigaOnly = [];
+  for (const [key, byYear] of adigaRows.index) {
+    if (used.has(key)) continue;
+    const sample = [...byYear.values()].sort((left, right) => rankAdigaRow(right) - rankAdigaRow(left))[0];
+    adigaOnly.push({
+      id: key.split('::')[0], dept: sample.dept, years: [...byYear.keys()].sort(),
+      period: sample.period, typeName: sample.typeName, score70: sample.score?.p70 ?? null,
+    });
+  }
+  return { universities, unmatched: { adigaOnly, oursOnly, compare } };
 }
 
+
+// 어디가 행과 우리 모집단위가 이름으로 짝지어지지 않은 목록. 빌드마다 다시 쓴다 —
+// 이 파일이 비어 갈수록 이름 표기를 맞춘 것이고, 남아 있는 줄이 곧 손볼 자리다.
+function writeUnmatched(unmatched, adigaRows) {
+  if (adigaRows.rows === 0) return;
+  const file = path.join(SOURCE, 'adiga/unmatched.json');
+  writeFileSync(file, `${JSON.stringify({
+    note: '어디가 원값과 results.json 모집단위를 이름 정규화 뒤 정확히 맞춰 본 결과. scripts/build-data.mjs 가 만든다.',
+    years: adigaRows.years,
+    counts: {
+      adigaRows: adigaRows.rows,
+      adigaOnly: unmatched.adigaOnly.length,
+      oursOnly: unmatched.oursOnly.length,
+      moved: unmatched.compare.length,
+    },
+    adigaOnly: unmatched.adigaOnly,
+    oursOnly: unmatched.oursOnly,
+    moved: unmatched.compare,
+  }, null, 1)}\n`);
+}
 
 // 이상치 판정표. `npm run anomalies`(scripts/anomalies.mjs)가 먼저 돌아 source/anomalies.json 을
 // 만들고, 여기서는 읽기만 한다 — 판정 규칙은 그 파일 하나에 있다. 파일이 없으면 anomaly 는 전부 null 이다.
@@ -437,7 +612,10 @@ export function buildData() {
   const conv = read('conv-2026.json');
   const rules2026 = readOptional('rules-2026.json');
   const formulaCheck = readOptional('formula-check.json');
-  const universities = buildUniversities(adiga, rules, readAnomalies());
+  const adigaRows = readAdiga();
+  const built = buildUniversities(adiga, rules, readAnomalies(), adigaRows);
+  const { universities } = built;
+  writeUnmatched(built.unmatched, adigaRows);
   // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};

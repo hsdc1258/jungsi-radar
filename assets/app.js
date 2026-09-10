@@ -421,6 +421,13 @@
   const ratioText = (track) => {
     const note = String(track?.note || '').split(' (')[0].trim();
     if (/^[국수영탐한]\s?[\d.]/u.test(note)) return note.replace(/·/gu, ' ');
+    // 요강 표기가 "반영점수 국어 400·수학 300·영어 100·탐구 200." 꼴이면 그것을 줄여 쓴다 — 계수(factor)는
+    // 산식용이라 요강의 반영점수와 다를 수 있다(국민대 영어 100 → factor 200).
+    const stated = note.match(/반영점수\s+((?:[가-힣]+\s?[\d.]+[·\s]*)+)/u);
+    if (stated) {
+      const short = { 국어: '국', 수학: '수', 영어: '영', 탐구: '탐', 한국사: '한' };
+      return stated[1].trim().replace(/[.。]$/u, '').split(/[·]/u).map((piece) => piece.trim().replace(/^([가-힣]+)\s?([\d.]+)$/u, (all, name, value) => `${short[name] || name}${value}`)).join(' ');
+    }
     const parts = [];
     for (const [key, short] of Object.entries(AREA_SHORT)) {
       const factor = track?.areas?.[key]?.factor;

@@ -13,6 +13,7 @@
 - ⓘ 를 상단바로(FRAME §9.2): `index.html` 의 `#infoButton` 하나가 탭마다 목적지를 바꾸고(성적 scale/convert · 진단·목표 verdict · 반영 basis) 정보 탭에서는 `hidden` 이다. `screenHead` 는 왼쪽 값만 남았다.
 - 768px 미만 바텀시트(FRAME §9.3): 라인·대학·관심 대학 고르기를 Seed `bottom-sheet` recipe 로 연다. 스크롤 잠금·첫 행 포커스·Tab 트랩·Esc/배경/닫기/완료, 닫으면 포커스는 열었던 칩으로, 패널 스크롤 자리는 그대로(시트를 여닫을 때 패널을 다시 그리지 않는다). 768px 이상으로 넘어가면 **시트만** 닫고 `state.filterPanel` 은 그대로 둬 같은 체크 목록이 인라인으로 이어진다(칩도 `aria-expanded="true"`); 관심 대학 시트는 아코디언이 열린 채로 이어진다(`favPickerOpen`). 좁아질 때는 인라인 목록을 접는다. 성적·정보 탭의 관심 대학은 좁은 폭에서 행 하나(`관심 대학 … N곳 ›`)가 시트를 연다. 체크 아이콘은 켜진 행에만 그린다 — 꺼진 행은 `visibility: hidden` 으로 자리(22px)만 지킨다.
 - 점검 이식성: `scripts/serve.mjs`(Node 내장 http)와 `scripts/measure.mjs`(공용 측정 함수)를 새로 두고, `scripts/shots.mjs` 는 `@playwright/test` 의 크로미움을 쓴다(`PW_CHROME` 이 있을 때만 `executablePath`). 윈도우에서도 그대로 돈다.
+- **어디가 원값 직접 수집**(`scripts/source-parsers/fetch-adiga.mjs` → `source/adiga/`). 대입정보포털 어디가의 정시(수능위주) 대학별 입시결과를 우리 43개 대학에 대해 그대로 받아 온다. 표 81칸의 열 배치를 `adiga-table.mjs` 상수에 박고 국민대 자유전공(A) 행으로 단위 테스트한다(`tests/adiga.test.mjs`). 산출물은 `universities.json`(우리 id → 어디가 대학코드·캠퍼스 근거), `<학년도>.json`(MODEL §1.1 행 + 원본 셀 `raw`), `notes.json`(용어 안내 원문), 빌드가 만드는 `unmatched.json`(이름으로 못 이은 목록). `scripts/build-data.mjs` 가 이 행을 읽어 `dept.jeongsi[year]` 에 `score`·`student`·`aggregation`·`consistent`·`quotaDetail`·`period` 를 싣고 기존 컷 값을 덮는다 — 정시 값 2,019개 중 1,961개가 어디가 원값(A)이 됐다(어디가에 없는 행은 `aggregation: 'unknown'`).
 - `scripts/e2e.mjs` + `npm run e2e`: 성적→진단→목표→반영→정보 전 흐름을 실제 클릭·타이핑으로, 375·768·1280 × 라이트/다크 × 백분위·등급·표점, 공유 링크 복원, 시트 열기·완료·스크롤 보존, 375에서 시트를 연 채 1280으로 넓히면 시트가 사라지고 인라인 체크 행이 남는지(`widenRun`), 칩 뷰포트 안까지 단언한다.
 
 ## 2. 진행 중 (미완)
@@ -22,4 +23,4 @@
 
 ## 3. 남은 할 일
 - 없음 — 2026-09-11 main에 합쳐 GitHub Pages 배포 확인(https://hsdc1258.github.io/jungsi-radar/). `npm run bundle` 사본(dist/jungsi-radar.html)은 필요한 곳이 정해지면 복사한다.
-- 데이터 한계는 그대로: 34개 대학은 어디가 집계 정수값(D)뿐 → 어디가 2026 공개표준안이 나오면 전수 교체.
+- 어디가 원값 전수 교체는 끝났다(아래). 남은 데이터 한계는 어디가가 **직전 학년도 하나만** 공개한다는 것 — 2025·2024는 표의 틀만 있고 값이 비어 있어 연도 추이는 대학 공식 자료로만 잇는다.
