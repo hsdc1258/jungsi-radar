@@ -74,10 +74,11 @@
     ...attrs,
   }, [label]);
 
-  const select = (options, value, onchange, label) => {
+  const select = (options, value, onchange, label, id) => {
     const node = el('select', {
       class: 'seed-select-trigger__root seed-select-trigger__root--size_medium jr-select',
       'aria-label': label,
+      id,
       onchange: (event) => onchange(event.target.value),
     });
     for (const option of options) {
@@ -87,8 +88,8 @@
     return node;
   };
 
-  const numberInput = (value, onchange, { label, min = 0, max = 100, step = 1, placeholder = '' }) => el('input', {
-    type: 'number', value, min, max, step, placeholder, inputmode: 'decimal',
+  const numberInput = (value, onchange, { label, id, min = 0, max = 100, step = 1, placeholder = '' }) => el('input', {
+    type: 'number', value, min, max, step, placeholder, inputmode: 'decimal', id,
     'aria-label': label,
     class: 'seed-text-input__root seed-text-input__root--variant_outline seed-text-input__root--size_medium jr-number',
     oninput: (event) => onchange(event.target.value),
@@ -217,9 +218,10 @@
   const INQ_SUBJECTS = [...ENGINE.SOCIAL_SUBJECTS, ...ENGINE.SCIENCE_SUBJECTS];
   const GRADES = Array.from({ length: 9 }, (unused, index) => [String(index + 1), `${index + 1}등급`]);
 
-  function inputRow(label, controls, hint) {
+  // 한 줄 = 라벨 + 컨트롤. 라벨은 진짜 <label>이라 눌러도 입력으로 초점이 간다.
+  function inputRow(label, controls, hint, forId) {
     return el('div', { class: 'jr-input-row' }, [
-      el('span', { class: 'jr-input-label' }, [label, hint ? el('span', { class: 'jr-muted', text: ` ${hint}` }) : null]),
+      el('label', { class: 'jr-input-label', for: forId }, [label, hint ? el('span', { class: 'jr-muted', text: ` ${hint}` }) : null]),
       el('span', { class: 'jr-input-controls' }, [].concat(controls)),
     ]);
   }
@@ -248,6 +250,7 @@
     ]);
 
     const numberFor = (field, label) => numberInput(state.scores[field], (value) => setScore(field, value), {
+      id: `jr-${field}`,
       label: `${label} ${unit}`,
       min: isGrade ? 1 : 0,
       max: isGrade ? 9 : 100,
@@ -259,23 +262,23 @@
       listHeader('영역별 성적', `${unit} 입력`),
       el('div', { class: 'jr-list jr-inputs' }, [
         inputRow('국어', [
-          select(KOR_ELECTIVES, state.scores.korElective, (value) => { setScore('korElective', value); }, '국어 선택과목'),
+          select(KOR_ELECTIVES, state.scores.korElective, (value) => setScore('korElective', value), '국어 선택과목'),
           numberFor('kor', '국어'),
-        ]),
+        ], null, 'jr-kor'),
         inputRow('수학', [
-          select(MATH_ELECTIVES, state.scores.mathElective, (value) => { setScore('mathElective', value); }, '수학 선택과목'),
+          select(MATH_ELECTIVES, state.scores.mathElective, (value) => setScore('mathElective', value), '수학 선택과목'),
           numberFor('math', '수학'),
-        ]),
-        inputRow('영어', [select(GRADES, state.scores.eng, (value) => setScore('eng', value), '영어 등급')], '등급'),
-        inputRow('한국사', [select(GRADES, state.scores.hist, (value) => setScore('hist', value), '한국사 등급')], '등급'),
+        ], null, 'jr-math'),
+        inputRow('영어', [select(GRADES, state.scores.eng, (value) => setScore('eng', value), '영어 등급', 'jr-eng')], '등급', 'jr-eng'),
+        inputRow('한국사', [select(GRADES, state.scores.hist, (value) => setScore('hist', value), '한국사 등급', 'jr-hist')], '등급', 'jr-hist'),
         inputRow('탐구 1', [
           select(INQ_SUBJECTS, state.scores.inq1Subject, (value) => setScore('inq1Subject', value), '탐구 1 과목'),
           numberFor('inq1', '탐구 1'),
-        ]),
+        ], null, 'jr-inq1'),
         inputRow('탐구 2', [
           select(INQ_SUBJECTS, state.scores.inq2Subject, (value) => setScore('inq2Subject', value), '탐구 2 과목'),
           numberFor('inq2', '탐구 2'),
-        ]),
+        ], null, 'jr-inq2'),
       ]),
     ]);
 
@@ -283,8 +286,8 @@
       listHeader('내신 등급', '선택'),
       el('div', { class: 'jr-list jr-inputs' }, [
         inputRow('학생부 교과 평균', [numberInput(state.scores.gpa, (value) => setScore('gpa', value), {
-          label: '내신 등급', min: 1, max: 9, step: 0.01, placeholder: '등급',
-        })], '수시 참고용'),
+          id: 'jr-gpa', label: '내신 등급', min: 1, max: 9, step: 0.01, placeholder: '등급',
+        })], '수시 참고용', 'jr-gpa'),
       ]),
     ]);
 
@@ -672,7 +675,11 @@
       rule.changes2027 ? callout('2027학년도 변경', rule.changes2027, 'informative') : null,
       cutRows.length > 0 ? section([
         listHeader(`${EXAM_YEAR}학년도 수능 선택과목 원점수 컷`, exam.status === 'final' ? '실채점 확정' : '가채점 예상'),
-        table(['과목', '1등급', '2등급', '3등급', '만점 표준점수'], cutRows),
+        el('div', { class: 'jr-list' }, cutRows.map(([subject, first, second, third, maxStd]) => listItem({
+          title: subject,
+          detail: `1등급 ${first} · 2등급 ${second} · 3등급 ${third}`,
+          suffix: el('span', { class: 'jr-muted num', text: `만점 표준점수 ${maxStd}` }),
+        }))),
       ]) : null,
       accordion('2027학년도 수능 체제', [
         muted(DATA.scales?.policy2027?.summary || '공통+선택 체제가 유지됩니다.'),

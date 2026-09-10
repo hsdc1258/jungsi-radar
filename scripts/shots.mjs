@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { chromium } from '/home/user/hvsdcm1/node_modules/@playwright/test/index.mjs';
 
 const ROOT = process.cwd();
@@ -18,7 +18,14 @@ const SCORES = {
 
 const SEED_CDN = 'https://cdn.jsdelivr.net/npm/@seed-design/css@2.7.0/all.min.css';
 mkdirSync(OUT, { recursive: true });
-const seedCss = readFileSync(path.join(OUT, 'seed-all.min.css'), 'utf8');
+// 검사용 브라우저에는 바깥 네트워크가 없다. 처음 한 번 CDN 사본을 받아 두고 그 뒤로는 그것을 쓴다.
+const seedCache = path.join(OUT, 'seed-all.min.css');
+if (!existsSync(seedCache)) {
+  const response = await fetch(SEED_CDN);
+  if (!response.ok) throw new Error(`Seed CSS 사본을 받지 못했습니다: ${response.status}`);
+  writeFileSync(seedCache, await response.text(), 'utf8');
+}
+const seedCss = readFileSync(seedCache, 'utf8');
 const web = spawn('python3', ['-m', 'http.server', String(PORT)], { cwd: ROOT, stdio: 'ignore' });
 await new Promise((resolve) => setTimeout(resolve, 1200));
 

@@ -3,3 +3,4 @@ _shots/
 node_modules/
 .DS_Store
 _seed/work/
+scripts/source-parsers/official.json
