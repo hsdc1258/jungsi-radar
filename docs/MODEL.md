@@ -78,6 +78,18 @@
   `scale {multiply: 1000, divide: 200000}`, total 1000. (기존 `conv-2026.json`의 연세대 `formula`도
   이 형식으로 옮긴다.)
 - 반영비율만 알고 산식·총점을 모르는 트랙은 `sourceGrade: 'B'`, `metric`을 비워 둔다 → L2까지만.
+- **확장 필드**(2026 요강 원문이 기본 산식 하나로 안 담겨 등록자가 덧붙인 것. 없으면 기본 동작):
+  - `areas.<area>.denominator` — factor를 곱하기 전에 영역값을 나누는 기준. `{kind:'maxStd', area, perSubject?, sumOfTwo?}` =
+    그 해 전국 최고 표준점수(탐구는 perSubject면 과목별 최고점, sumOfTwo면 두 과목 최고점 합), `{kind:'maxConv', multiplier}` =
+    변환표준점수 최고점 × n, `{kind:'const', value}`. 숙명·숭실·아주·인하·이화·외대·ERICA·경상국립 등.
+  - `areas.<area>.base` — 그 영역의 기본점수(충북·한양).
+  - `areas.<area>.bonus.of` — `'value'`(지표에 곱한 뒤 산식) · `'areaScore'`(그 영역 환산점수의 %) · `'pctToTotal'`(취득 백분위의 %를 총점에 가산,
+    숭실). `per:'subject'`면 탐구 과목마다, `requireBoth`면 두 과목 모두 해당 종류일 때만.
+  - `areas.eng.mode:'penalty'`(배점 없이 감점, 충남) · `areas.hist.mode:'none'`(미반영, 인천·충북·경상국립).
+  - `pickBest: true` — 같은 모집단위에 걸리는 형제 트랙(인하 A/B, 항공 산출1·2, 이화 간호·약학) 중 높은 점수.
+  - `optional {pick:'best'|'top2'|'rankedWeights', of:[…], weights?}` — 상위 n개 영역만 반영하거나 성적 순 가중.
+  - `basePoints` · `formulaText` · `basis` — 기본점수 총점, 산식 원문 요약, 활용지표 요약(표시용).
+  - 검산(§1.4)이 이 필드들을 실제로 소비하는지 보는 기준은 **어디가 환산점수 재현**이다. 재현이 안 되는 트랙은 `mismatch`로 남긴다.
 
 ### 1.3 척도
 - `std-<학년도>.json`: 그 수능의 영역·과목별 표준점수 도수분포(백분위 포함). **백분위 → 표준점수**는
