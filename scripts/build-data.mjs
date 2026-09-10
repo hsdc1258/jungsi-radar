@@ -81,9 +81,11 @@ const SEPARATORS = /[·・･ㆍ‧∙⋅\s]/gu;
 const baseName = (text) => String(text || '').replace(SEPARATORS, '').replace(/전공/gu, '');
 
 const MEDICAL = /의예|의학|치의|한의|약학|수의|간호|물리치료|임상병리|방사선|치위생|작업치료|응급구조|보건/u;
-const MEDICAL_EXCEPT = /보건행정|보건관리|의료경영|의료산업|보건정책|보건환경|환경보건|스포츠의학|의학공학/u;
+// 이름에 '의학'이 들어가도 의약 계열이 아닌 모집단위. 식물의학·수산생명의학·해양식품생명의학은 농·수산계다.
+const MEDICAL_EXCEPT = /보건행정|보건관리|의료경영|의료산업|보건정책|보건환경|환경보건|스포츠의학|의학공학|식물의학|수산생명의학|해양식품생명의학/u;
 const ARTS = /음악|미술|디자인|회화|동양화|서양화|한국화|판화|조소|조형|무용|체육|스포츠|연극|영화|연기|뮤지컬|작곡|성악|피아노|관현악|국악|공예|도예|사진|애니메이션|만화|패션|뷰티|모델|실용음악|예술|골프|경기지도|아트|서예|의상|공연|태권도/u;
-const ARTS_EXCEPT = /스포츠경영|공연기획|예술경영|문화예술경영|영상학과|미디어/u;
+// 예체능 키워드가 들어가도 실기 없이 수능으로 뽑는 모집단위.
+const ARTS_EXCEPT = /스포츠경영|공연기획|예술경영|문화예술경영|영상학과|미디어|고고미술사|미술사학|음악학과\(인문\)|패션산업|패션의류|의류산업|생태조경/u;
 const FREE = /자유전공|자율전공|열린전공|광역|무전공|혁신칼리지|융합자유|창의융합자유/u;
 // 자연계 키워드. '화학'은 '문화학과'에 걸리지 않도록 앞 글자가 '문'이 아닐 때만 본다.
 const SCIENCE = /공학|공과|과학|물리|(?<!문)화학|생명|생물|지구|천문|수학|통계|전자|전기|기계|컴퓨터|컴퓨팅|소프트웨어|정보|데이터|인공지능|AI|ICT|반도체|신소재|재료|건축|토목|환경|에너지|화공|산업공|산업경영|산업시스템|산업데이터|산업정보|산업보안|시스템|로봇|항공|자동차|조선|해양|원자력|바이오|식품|농|원예|산림|축산|동물|의생명|나노|모빌리티|자연|IT|메카|보안|디스플레이|스마트|기술|섬유|영양|가정|간호|수의|약학|이과|공대|SW|테크|지능|네트워크|배터리|양자|우주|사이버|전산|조경|기후|첨단융합/u;
@@ -104,7 +106,8 @@ export function classifyTrack(name) {
   if (MEDICAL.test(text) && !MEDICAL_EXCEPT.test(base)) return { track: '의약', ruleTrack: null };
   // 공학으로 끝나는 이름은 디자인·조형이 붙어 있어도 자연계다(예: 시스템디자인공학과).
   if (ENGINEERING.test(base) && !/\(인문\)/u.test(text)) return { track: '자연', ruleTrack: null };
-  if (ARTS.test(text) && !ARTS_EXCEPT.test(text)) return { track: '예체능', ruleTrack: null };
+  // 대학이 이름에 (인문)/(자연)을 박아 둔 모집단위는 실기 없는 수능 전형이다 — 예체능으로 접지 않는다.
+  if (ARTS.test(text) && !ARTS_EXCEPT.test(text) && !/\(인문\)|\(자연\)|\(인문계열\)|\(자연계열\)/u.test(text)) return { track: '예체능', ruleTrack: null };
   if (HUMAN_OVERRIDE.test(base)) return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
   if (/\(인문\)|\(문\)|\(인문계열\)/u.test(text)) return { track: '인문', ruleTrack: BUSINESS.test(text) ? '상경' : null };
   if (/\(자연\)|\(이\)|\(자연계열\)/u.test(text)) return { track: '자연', ruleTrack: null };
@@ -121,10 +124,16 @@ export const CUT_DEFS = Object.freeze({
   'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', comparable: true, approx: true },
   // 국·수·탐 중 상위 2개만 평균한 값. 반영 과목 자체가 달라 우리 비교값과 뺄 수 없다.
   'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', comparable: false, approx: false },
+  // 수학을 반영하지 않는 예체능 모집단위. 국어와 탐구 둘만 평균해 눈금이 다르다.
+  'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', comparable: false, approx: false },
+  // 국어·수학·탐구 상위 1과목만 평균한 값. 탐구 과목 수가 달라 우리 비교값과 뺄 수 없다.
+  'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', comparable: false, approx: false },
 });
 export function cutDefinition(row) {
   const note = String(row?.note || '');
   if (/상위\s*2\s*개\s*영역/u.test(note)) return 'top2-mean';
+  if (/수학\s*미반영|국·탐\s*2영역/u.test(note)) return 'kor-inq-mean';
+  if (/상위\s*1\s*과목/u.test(note)) return 'ksi1-mean';
   if (/과목별\s*70%\s*Cut/iu.test(note)) return 'subject-mean70';
   return 'ksi-mean';
 }
@@ -159,6 +168,7 @@ function buildSeries(jeongsi, official) {
     series.push({
       year, value: jeongsi[year].cut70, kind: jeongsi[year].kind || '70%컷', def: jeongsi[year].def,
       basis: jeongsi[year].basis || 'adiga', source: jeongsi[year].source, url: jeongsi[year].url,
+      sourceGrade: jeongsi[year].sourceGrade || 'E',
     });
   }
   const anchorRow = anchorYear ? official[anchorYear] : null;
@@ -167,8 +177,11 @@ function buildSeries(jeongsi, official) {
     if (row.metric && row.metric !== 'pct') continue;
     if (row.adigaStandard) {
       const value = row.cut70 ?? row.avg ?? null;
-      if (value === null) continue;
-      series.push({ year, value: round2(value), kind: row.kind || '70%컷', def: 'ksi-mean', basis: 'official', source: row.source, url: row.url });
+      // 통계 정의는 어디가 표준이라고 적혀 있어도 행의 note 가 말하는 대로 정한다 —
+      // 비교할 수 없는 정의(탐구 1과목 평균 등)는 계열에 넣지 않는다.
+      const def = cutDefinition(row);
+      if (value === null || !CUT_DEFS[def]?.comparable) continue;
+      series.push({ year, value: round2(value), kind: row.kind || '70%컷', def, basis: 'official', source: row.source, url: row.url, sourceGrade: row.sourceGrade || 'E' });
       continue;
     }
     if (!anchorYear || !anchorRow) continue;
@@ -182,7 +195,7 @@ function buildSeries(jeongsi, official) {
         kind: row.kind, statistic: pair.statistic, value: pair.value,
         anchorYear, anchorValue: pair.anchor, anchorKind: anchorRow.kind || null,
       },
-      source: row.source, url: row.url,
+      source: row.source, url: row.url, sourceGrade: row.sourceGrade || 'E',
     });
   }
   return series.sort((left, right) => left.year.localeCompare(right.year));
@@ -239,7 +252,8 @@ function buildUniversities(adiga, rules) {
         .filter((dept) => Object.keys(dept.jeongsi || {}).length > 0)
         .map((dept) => {
           const guessed = classifyTrack(dept.name);
-          const track = guessed.track;
+          // 소스가 계열을 못박아 둔 모집단위(자동 분류가 틀리는 이름)는 그 값을 쓴다.
+          const track = dept.track || guessed.track;
           // 소스가 계열을 못박아 둔 모집단위(캠퍼스별 반영비율이 다른 한국외대)는 그 값을 쓴다.
           const ruleTrack = dept.ruleTrack || guessed.ruleTrack;
           const jeongsi = {};
@@ -262,6 +276,7 @@ function buildUniversities(adiga, rules) {
                 ? Math.round((fill / quota) * 1000) / 10 : null),
               lastWait: row.lastWait ?? null,
               typeName: row.typeName || '', note: row.note || '', source: row.source, url: row.url,
+              sourceGrade: row.sourceGrade || 'E',
             };
           }
           const official = dept.official || {};

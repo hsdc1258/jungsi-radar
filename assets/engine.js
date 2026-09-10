@@ -64,6 +64,8 @@
     'ksi-mean': { label: '국·수·탐(2) 백분위 단순평균', comparable: true, approx: false },
     'subject-mean70': { label: '과목별 70%컷의 국·수·탐 산술평균', comparable: true, approx: true },
     'top2-mean': { label: '국·수·탐(2) 중 상위 2개 영역 백분위 평균', comparable: false, approx: false },
+    'kor-inq-mean': { label: '국·탐 2영역 백분위 평균(수학 미반영)', comparable: false, approx: false },
+    'ksi1-mean': { label: '국·수·탐(상위 1과목) 백분위 평균', comparable: false, approx: false },
   });
   const COMPARE_BASIS = 'ksi-mean';
   const cutDefInfo = (key) => CUT_DEFS[key] || CUT_DEFS[COMPARE_BASIS];
