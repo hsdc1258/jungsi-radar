@@ -6,8 +6,8 @@
    "track": "자연1",
    "year": 2025,
    "depts": 72,
-   "match": 0,
-   "mismatch": 62,
+   "match": 7,
+   "mismatch": 55,
    "unchecked": 82,
    "status": "mismatch"
   },
@@ -26,8 +26,8 @@
    "track": "자연",
    "year": 2025,
    "depts": 19,
-   "match": 0,
-   "mismatch": 38,
+   "match": 34,
+   "mismatch": 4,
    "unchecked": 0,
    "status": "mismatch"
   },
@@ -66,8 +66,8 @@
    "track": "자연",
    "year": 2025,
    "depts": 60,
-   "match": 5,
-   "mismatch": 51,
+   "match": 9,
+   "mismatch": 47,
    "unchecked": 64,
    "status": "mismatch"
   },
@@ -76,10 +76,10 @@
    "track": "인문계열",
    "year": 2025,
    "depts": 72,
-   "match": 3,
-   "mismatch": 19,
+   "match": 20,
+   "mismatch": 2,
    "unchecked": 122,
-   "status": "mismatch"
+   "status": "verified"
   },
   "gachon::한의예": {
    "university": "gachon",
@@ -156,8 +156,8 @@
    "track": "인문(융합학부 제외)",
    "year": 2025,
    "depts": 55,
-   "match": 6,
-   "mismatch": 46,
+   "match": 45,
+   "mismatch": 7,
    "unchecked": 58,
    "status": "mismatch"
   },
@@ -216,10 +216,10 @@
    "track": "자연",
    "year": 2025,
    "depts": 92,
-   "match": 60,
-   "mismatch": 26,
+   "match": 83,
+   "mismatch": 3,
    "unchecked": 98,
-   "status": "mismatch"
+   "status": "verified"
   },
   "knu::자연": {
    "university": "knu",
@@ -236,10 +236,10 @@
    "track": "수리중심(B)",
    "year": 2025,
    "depts": 104,
-   "match": 57,
-   "mismatch": 23,
+   "match": 78,
+   "mismatch": 2,
    "unchecked": 128,
-   "status": "mismatch"
+   "status": "verified"
   },
   "kookmin::예체능(조형대학·회화전공)": {
    "university": "kookmin",
@@ -256,8 +256,8 @@
    "track": "자연",
    "year": 2025,
    "depts": 168,
-   "match": 21,
-   "mismatch": 107,
+   "match": 19,
+   "mismatch": 109,
    "unchecked": 208,
    "status": "mismatch"
   },
@@ -266,8 +266,8 @@
    "track": "자연",
    "year": 2025,
    "depts": 64,
-   "match": 6,
-   "mismatch": 66,
+   "match": 7,
+   "mismatch": 65,
    "unchecked": 56,
    "status": "mismatch"
   },
@@ -306,10 +306,10 @@
    "track": "인문",
    "year": 2025,
    "depts": 18,
-   "match": 10,
-   "mismatch": 6,
+   "match": 15,
+   "mismatch": 1,
    "unchecked": 20,
-   "status": "mismatch"
+   "status": "verified"
   },
   "smu::인문": {
    "university": "smu",
@@ -356,10 +356,10 @@
    "track": "인문",
    "year": 2025,
    "depts": 31,
-   "match": 2,
-   "mismatch": 56,
+   "match": 57,
+   "mismatch": 1,
    "unchecked": 4,
-   "status": "mismatch"
+   "status": "verified"
   },
   "syu::인문": {
    "university": "syu",
@@ -386,8 +386,8 @@
    "track": "인문1(경영대학·간호학과 일반전형4)",
    "year": 2026,
    "depts": 7,
-   "match": 0,
-   "mismatch": 10,
+   "match": 7,
+   "mismatch": 3,
    "unchecked": 4,
    "status": "mismatch"
   },
@@ -396,10 +396,10 @@
    "track": "인문2",
    "year": 2026,
    "depts": 21,
-   "match": 2,
-   "mismatch": 18,
+   "match": 20,
+   "mismatch": 0,
    "unchecked": 22,
-   "status": "mismatch"
+   "status": "verified"
   },
   "ajou::자연2(의학과·국방디지털융합학과)": {
    "university": "ajou",
@@ -446,18 +446,18 @@
    "track": "인문(사회과학·경영경제·간호 인문)",
    "year": 2026,
    "depts": 15,
-   "match": 0,
-   "mismatch": 30,
+   "match": 28,
+   "mismatch": 2,
    "unchecked": 0,
-   "status": "mismatch"
+   "status": "verified"
   },
   "cau::인문·예체능(인문대·사범대·공연영상·디자인)": {
    "university": "cau",
    "track": "인문·예체능(인문대·사범대·공연영상·디자인)",
    "year": 2026,
    "depts": 11,
-   "match": 0,
-   "mismatch": 22,
+   "match": 18,
+   "mismatch": 4,
    "unchecked": 0,
    "status": "mismatch"
   },
@@ -556,10 +556,10 @@
    "track": "인문",
    "year": 2026,
    "depts": 59,
-   "match": 40,
-   "mismatch": 25,
+   "match": 61,
+   "mismatch": 4,
    "unchecked": 53,
-   "status": "mismatch"
+   "status": "verified"
   },
   "dongguk::예체능(조소전공)": {
    "university": "dongguk",
@@ -576,8 +576,8 @@
    "track": "간호학부·미래산업약학전공(인문 비율)",
    "year": 2026,
    "depts": 5,
-   "match": 0,
-   "mismatch": 4,
+   "match": 1,
+   "mismatch": 3,
    "unchecked": 6,
    "status": "mismatch"
   },
@@ -586,8 +586,8 @@
    "track": "자연계열",
    "year": 2026,
    "depts": 89,
-   "match": 6,
-   "mismatch": 14,
+   "match": 8,
+   "mismatch": 12,
    "unchecked": 158,
    "status": "mismatch"
   },
@@ -816,8 +816,8 @@
    "track": "자연(융합학부 제외)",
    "year": 2026,
    "depts": 76,
-   "match": 0,
-   "mismatch": 72,
+   "match": 9,
+   "mismatch": 63,
    "unchecked": 80,
    "status": "mismatch"
   },
@@ -1026,10 +1026,10 @@
    "track": "사회",
    "year": 2026,
    "depts": 19,
-   "match": 12,
-   "mismatch": 8,
+   "match": 20,
+   "mismatch": 0,
    "unchecked": 18,
-   "status": "mismatch"
+   "status": "verified"
   },
   "khu::예술·체육": {
    "university": "khu",
@@ -1046,8 +1046,8 @@
    "track": "인문",
    "year": 2026,
    "depts": 60,
-   "match": 23,
-   "mismatch": 25,
+   "match": 32,
+   "mismatch": 16,
    "unchecked": 72,
    "status": "mismatch"
   },
@@ -1096,8 +1096,8 @@
    "track": "언어중심(A)",
    "year": 2026,
    "depts": 35,
-   "match": 13,
-   "mismatch": 5,
+   "match": 15,
+   "mismatch": 3,
    "unchecked": 52,
    "status": "mismatch"
   },
@@ -1186,8 +1186,8 @@
    "track": "인문",
    "year": 2026,
    "depts": 176,
-   "match": 22,
-   "mismatch": 100,
+   "match": 17,
+   "mismatch": 105,
    "unchecked": 230,
    "status": "mismatch"
   },
@@ -1196,20 +1196,20 @@
    "track": "상경",
    "year": 2026,
    "depts": 12,
-   "match": 10,
-   "mismatch": 2,
+   "match": 12,
+   "mismatch": 0,
    "unchecked": 12,
-   "status": "mismatch"
+   "status": "verified"
   },
   "kw::인문": {
    "university": "kw",
    "track": "인문",
    "year": 2026,
    "depts": 29,
-   "match": 20,
-   "mismatch": 16,
+   "match": 34,
+   "mismatch": 2,
    "unchecked": 22,
-   "status": "mismatch"
+   "status": "verified"
   },
   "kyonggi::인문(B형)": {
    "university": "kyonggi",
@@ -1396,8 +1396,8 @@
    "track": "자연",
    "year": 2026,
    "depts": 46,
-   "match": 2,
-   "mismatch": 26,
+   "match": 1,
+   "mismatch": 27,
    "unchecked": 64,
    "status": "mismatch"
   },
@@ -1416,8 +1416,8 @@
    "track": "자연계열2·자유전공학부(자연)",
    "year": 2026,
    "depts": 22,
-   "match": 0,
-   "mismatch": 44,
+   "match": 8,
+   "mismatch": 36,
    "unchecked": 0,
    "status": "mismatch"
   },
@@ -1426,8 +1426,8 @@
    "track": "경상",
    "year": 2026,
    "depts": 16,
-   "match": 2,
-   "mismatch": 30,
+   "match": 22,
+   "mismatch": 10,
    "unchecked": 0,
    "status": "mismatch"
   },
@@ -1436,8 +1436,8 @@
    "track": "자연계열1",
    "year": 2026,
    "depts": 24,
-   "match": 0,
-   "mismatch": 48,
+   "match": 1,
+   "mismatch": 47,
    "unchecked": 0,
    "status": "mismatch"
   },
@@ -1456,10 +1456,10 @@
    "track": "자유전공학부(인문)",
    "year": 2026,
    "depts": 1,
-   "match": 0,
-   "mismatch": 2,
+   "match": 2,
+   "mismatch": 0,
    "unchecked": 0,
-   "status": "mismatch"
+   "status": "verified"
   },
   "syu::의약(약학과)": {
    "university": "syu",
@@ -1496,8 +1496,8 @@
    "track": "자연Ⅰ",
    "year": 2026,
    "depts": 82,
-   "match": 13,
-   "mismatch": 23,
+   "match": 20,
+   "mismatch": 16,
    "unchecked": 128,
    "status": "mismatch"
   },
@@ -1506,8 +1506,8 @@
    "track": "인문Ⅰ",
    "year": 2026,
    "depts": 23,
-   "match": 9,
-   "mismatch": 1,
+   "match": 10,
+   "mismatch": 0,
    "unchecked": 36,
    "status": "verified"
   },
@@ -1516,8 +1516,8 @@
    "track": "자연Ⅱ",
    "year": 2026,
    "depts": 18,
-   "match": 1,
-   "mismatch": 7,
+   "match": 3,
+   "mismatch": 5,
    "unchecked": 28,
    "status": "mismatch"
   },
@@ -1526,10 +1526,10 @@
    "track": "인문Ⅱ",
    "year": 2026,
    "depts": 36,
-   "match": 4,
-   "mismatch": 14,
+   "match": 17,
+   "mismatch": 1,
    "unchecked": 54,
-   "status": "mismatch"
+   "status": "verified"
   },
   "uos::예체능(스포츠과학과)": {
    "university": "uos",
@@ -1578,18 +1578,18 @@
     "dept": "약학과",
     "point": "p70",
     "adiga": 970.29,
-    "min": 947.1121,
-    "max": 954.6661,
-    "off": 15.62,
+    "min": 952.2389,
+    "max": 959.7928,
+    "off": 10.5,
     "reason": null
    },
    {
     "dept": "약학과",
     "point": "p50",
     "adiga": 970.76,
-    "min": 949.9114,
-    "max": 957.4653,
-    "off": 13.29,
+    "min": 952.7071,
+    "max": 960.2611,
+    "off": 10.5,
     "reason": null
    }
   ],
@@ -1615,21 +1615,21 @@
   ],
   "cau::자연": [
    {
-    "dept": "약학부",
+    "dept": "소프트웨어학부",
     "point": "p70",
-    "adiga": 799.65,
-    "min": 789.505,
-    "max": 795.505,
-    "off": 4.14,
+    "adiga": 777.2,
+    "min": 765.772,
+    "max": 767.272,
+    "off": 9.93,
     "reason": null
    },
    {
-    "dept": "약학부",
+    "dept": "소프트웨어학부",
     "point": "p50",
-    "adiga": 800.98,
-    "min": 790.071,
-    "max": 797.821,
-    "off": 3.16,
+    "adiga": 777.9,
+    "min": 767.182,
+    "max": 770.682,
+    "off": 7.22,
     "reason": null
    }
   ],
@@ -1678,38 +1678,18 @@
     "dept": "전자전기공학부",
     "point": "p70",
     "adiga": 695.95,
-    "min": 688.348,
-    "max": 688.348,
-    "off": 7.6,
+    "min": 689.444,
+    "max": 689.444,
+    "off": 6.51,
     "reason": null
    },
    {
     "dept": "전자전기공학부",
     "point": "p50",
     "adiga": 696.82,
-    "min": 689.35,
-    "max": 689.35,
-    "off": 7.47,
-    "reason": null
-   }
-  ],
-  "ewha::인문계열": [
-   {
-    "dept": "초등교육과",
-    "point": "p70",
-    "adiga": 922.77,
-    "min": 920.9216,
-    "max": 920.9216,
-    "off": 1.85,
-    "reason": null
-   },
-   {
-    "dept": "초등교육과",
-    "point": "p50",
-    "adiga": 926.7,
-    "min": 920.997,
-    "max": 923.0379,
-    "off": 3.66,
+    "min": 690.313,
+    "max": 690.313,
+    "off": 6.51,
     "reason": null
    }
   ],
@@ -1795,21 +1775,21 @@
   ],
   "inha::인문(융합학부 제외)": [
    {
-    "dept": "국어교육과",
-    "point": "p70",
-    "adiga": 888.91,
-    "min": 885.87,
-    "max": 885.87,
-    "off": 3.04,
+    "dept": "경영융합학부",
+    "point": "p50",
+    "adiga": 886.46,
+    "min": 884.78,
+    "max": 884.78,
+    "off": 1.68,
     "reason": null
    },
    {
-    "dept": "국어교육과",
-    "point": "p50",
-    "adiga": 893.64,
-    "min": 891.86,
-    "max": 891.86,
-    "off": 1.78,
+    "dept": "사회과학융합학부",
+    "point": "p70",
+    "adiga": 882.07,
+    "min": 879.74,
+    "max": 879.74,
+    "off": 2.33,
     "reason": null
    }
   ],
@@ -1873,26 +1853,6 @@
     "reason": null
    }
   ],
-  "khu::자연": [
-   {
-    "dept": "미래정보디스플레이학부",
-    "point": "p70",
-    "adiga": 390.5,
-    "min": 389.1625,
-    "max": 389.1625,
-    "off": 1.34,
-    "reason": null
-   },
-   {
-    "dept": "빅데이터응용학과",
-    "point": "p70",
-    "adiga": 383.59,
-    "min": 386.3535,
-    "max": 386.3535,
-    "off": 2.76,
-    "reason": null
-   }
-  ],
   "knu::자연": [
    {
     "dept": "고분자공학과",
@@ -1913,43 +1873,23 @@
     "reason": null
    }
   ],
-  "konkuk::수리중심(B)": [
-   {
-    "dept": "건축학부",
-    "point": "p50",
-    "adiga": 668.31,
-    "min": 666.76,
-    "max": 666.76,
-    "off": 1.55,
-    "reason": null
-   },
-   {
-    "dept": "경제학과",
-    "point": "p50",
-    "adiga": 667.88,
-    "min": 666.53,
-    "max": 666.53,
-    "off": 1.35,
-    "reason": null
-   }
-  ],
   "korea::자연": [
    {
     "dept": "건축학과",
     "point": "p70",
     "adiga": 658.43,
-    "min": 650.575,
-    "max": 652.1375,
-    "off": 6.29,
+    "min": 652.6731,
+    "max": 654.2356,
+    "off": 4.19,
     "reason": null
    },
    {
     "dept": "가정교육과",
     "point": "p70",
     "adiga": 656.05,
-    "min": 641.8536,
-    "max": 643.4161,
-    "off": 12.63,
+    "min": 642.8675,
+    "max": 644.43,
+    "off": 11.62,
     "reason": null
    }
   ],
@@ -1958,38 +1898,18 @@
     "dept": "건축학과",
     "point": "p70",
     "adiga": 702.16,
-    "min": 694.539,
-    "max": 694.539,
-    "off": 7.62,
+    "min": 695.803,
+    "max": 695.803,
+    "off": 6.36,
     "reason": null
    },
    {
     "dept": "건축학과",
     "point": "p50",
     "adiga": 703.21,
-    "min": 695.552,
-    "max": 695.552,
-    "off": 7.66,
-    "reason": null
-   }
-  ],
-  "sejong::인문": [
-   {
-    "dept": "경상호텔관광계열",
-    "point": "p70",
-    "adiga": 680.78,
-    "min": 679.68,
-    "max": 679.68,
-    "off": 1.1,
-    "reason": null
-   },
-   {
-    "dept": "경상호텔관광계열",
-    "point": "p70",
-    "adiga": 696.9,
-    "min": 695.53,
-    "max": 695.53,
-    "off": 1.37,
+    "min": 696.703,
+    "max": 696.703,
+    "off": 6.51,
     "reason": null
    }
   ],
@@ -2018,38 +1938,18 @@
     "dept": "경제학부",
     "point": "p70",
     "adiga": 899.26,
-    "min": 883.9608,
-    "max": 883.9608,
-    "off": 15.3,
+    "min": 888.432,
+    "max": 888.432,
+    "off": 10.83,
     "reason": null
    },
    {
     "dept": "경제학부",
     "point": "p50",
     "adiga": 900.41,
-    "min": 913.8948,
-    "max": 913.8948,
-    "off": 13.48,
-    "reason": null
-   }
-  ],
-  "soongsil::인문": [
-   {
-    "dept": "사학과",
-    "point": "p70",
-    "adiga": 894.31,
-    "min": 891.2491,
-    "max": 891.2491,
-    "off": 3.06,
-    "reason": null
-   },
-   {
-    "dept": "사학과",
-    "point": "p50",
-    "adiga": 898.63,
-    "min": 894.7129,
-    "max": 894.7129,
-    "off": 3.92,
+    "min": 917.6863,
+    "max": 917.6863,
+    "off": 17.28,
     "reason": null
    }
   ],
@@ -2075,41 +1975,21 @@
   ],
   "ajou::인문1(경영대학·간호학과 일반전형4)": [
    {
-    "dept": "경영인텔리전스학과",
+    "dept": "경영학과",
     "point": "p70",
-    "adiga": 885.89,
-    "min": 882.5137,
-    "max": 882.5137,
-    "off": 3.38,
+    "adiga": 862.11,
+    "min": 856.254,
+    "max": 856.254,
+    "off": 5.86,
     "reason": null
    },
    {
-    "dept": "경영인텔리전스학과",
-    "point": "p50",
-    "adiga": 886.06,
-    "min": 882.5422,
-    "max": 882.5422,
-    "off": 3.52,
-    "reason": null
-   }
-  ],
-  "ajou::인문2": [
-   {
-    "dept": "경제정치사회융합학부",
+    "dept": "국방디지털융합학과",
     "point": "p70",
-    "adiga": 881.28,
-    "min": 878.7616,
-    "max": 878.7616,
-    "off": 2.52,
-    "reason": null
-   },
-   {
-    "dept": "경제정치사회융합학부",
-    "point": "p50",
-    "adiga": 882.93,
-    "min": 879.7602,
-    "max": 879.7602,
-    "off": 3.17,
+    "adiga": 891.01,
+    "min": 883.722,
+    "max": 883.722,
+    "off": 7.29,
     "reason": null
    }
   ],
@@ -2118,18 +1998,18 @@
     "dept": "의학과(예과)",
     "point": "p70",
     "adiga": 989.71,
-    "min": 974.9659,
-    "max": 984.9595,
-    "off": 4.75,
+    "min": 977.9692,
+    "max": 987.9628,
+    "off": 1.75,
     "reason": null
    },
    {
     "dept": "의학과(예과)",
     "point": "p50",
     "adiga": 994.6,
-    "min": 973.8914,
-    "max": 983.885,
-    "off": 10.72,
+    "min": 979.898,
+    "max": 989.8917,
+    "off": 4.71,
     "reason": null
    }
   ],
@@ -2173,43 +2053,23 @@
     "reason": null
    }
   ],
-  "cau::인문(사회과학·경영경제·간호 인문)": [
-   {
-    "dept": "간호학과(인문)",
-    "point": "p70",
-    "adiga": 749.48,
-    "min": 746.3,
-    "max": 747.8,
-    "off": 1.68,
-    "reason": null
-   },
-   {
-    "dept": "간호학과(인문)",
-    "point": "p50",
-    "adiga": 751.87,
-    "min": 747.385,
-    "max": 748.885,
-    "off": 2.99,
-    "reason": null
-   }
-  ],
   "cau::인문·예체능(인문대·사범대·공연영상·디자인)": [
    {
     "dept": "공연영상창작학부(영화전공)",
     "point": "p70",
     "adiga": 757,
-    "min": 761.203,
-    "max": 761.203,
-    "off": 4.2,
+    "min": 768.645,
+    "max": 768.645,
+    "off": 11.64,
     "reason": null
    },
    {
     "dept": "공연영상창작학부(영화전공)",
     "point": "p50",
     "adiga": 757.41,
-    "min": 759.759,
-    "max": 759.759,
-    "off": 2.35,
+    "min": 769.443,
+    "max": 769.443,
+    "off": 12.03,
     "reason": null
    }
   ],
@@ -2333,43 +2193,23 @@
     "reason": null
    }
   ],
-  "dongguk::인문": [
-   {
-    "dept": "경영대학(광역화 모집단위)",
-    "point": "p50",
-    "adiga": 688.93,
-    "min": 687.575,
-    "max": 687.575,
-    "off": 1.35,
-    "reason": null
-   },
-   {
-    "dept": "경영대학(광역화 모집단위)",
-    "point": "p70",
-    "adiga": 661.53,
-    "min": 660.063,
-    "max": 660.063,
-    "off": 1.47,
-    "reason": null
-   }
-  ],
   "dongguk::예체능(조소전공)": [
    {
     "dept": "체육교육과",
     "point": "p70",
     "adiga": 368.57,
-    "min": 375.012,
-    "max": 375.012,
-    "off": 6.44,
+    "min": 374.844,
+    "max": 374.844,
+    "off": 6.27,
     "reason": null
    },
    {
     "dept": "체육교육과",
     "point": "p50",
     "adiga": 370.07,
-    "min": 387.63,
-    "max": 387.63,
-    "off": 17.56,
+    "min": 388.902,
+    "max": 388.902,
+    "off": 18.83,
     "reason": null
    }
   ],
@@ -2378,18 +2218,18 @@
     "dept": "간호학부",
     "point": "p70",
     "adiga": 937.81,
-    "min": 924.6601,
-    "max": 924.6601,
-    "off": 13.15,
+    "min": 927.9672,
+    "max": 927.9672,
+    "off": 9.84,
     "reason": null
    },
    {
     "dept": "간호학부",
     "point": "p50",
     "adiga": 941.21,
-    "min": 924.2777,
-    "max": 924.2777,
-    "off": 16.93,
+    "min": 926.8486,
+    "max": 926.8486,
+    "off": 14.36,
     "reason": null
    }
   ],
@@ -2398,18 +2238,18 @@
     "dept": "과학교육과",
     "point": "p70",
     "adiga": 931.09,
-    "min": 924.8826,
-    "max": 924.8826,
-    "off": 6.21,
+    "min": 929.5136,
+    "max": 929.5136,
+    "off": 1.58,
     "reason": null
    },
    {
     "dept": "과학교육과",
     "point": "p50",
     "adiga": 933.13,
-    "min": 926.4993,
-    "max": 926.4993,
-    "off": 6.63,
+    "min": 931.5371,
+    "max": 931.5371,
+    "off": 1.59,
     "reason": null
    }
   ],
@@ -2618,18 +2458,18 @@
     "dept": "간호학과",
     "point": "p70",
     "adiga": 893.91,
-    "min": 879.47,
-    "max": 879.47,
-    "off": 14.44,
+    "min": 884.77,
+    "max": 884.77,
+    "off": 9.14,
     "reason": null
    },
    {
     "dept": "간호학과",
     "point": "p50",
     "adiga": 897.85,
-    "min": 885.17,
-    "max": 891.97,
-    "off": 5.88,
+    "min": 888.85,
+    "max": 895.66,
+    "off": 2.19,
     "reason": null
    }
   ],
@@ -2638,18 +2478,18 @@
     "dept": "생활과학계열",
     "point": "p70",
     "adiga": 312.57,
-    "min": 317.96,
-    "max": 317.96,
-    "off": 5.39,
+    "min": 317.82,
+    "max": 317.82,
+    "off": 5.25,
     "reason": null
    },
    {
     "dept": "자연과학계열 1",
     "point": "p70",
     "adiga": 317.88,
-    "min": 322.04,
-    "max": 322.04,
-    "off": 4.16,
+    "min": 320.88,
+    "max": 320.88,
+    "off": 3,
     "reason": null
    }
   ],
@@ -2658,18 +2498,18 @@
     "dept": "체육교육과",
     "point": "p70",
     "adiga": 496.33,
-    "min": 584.37,
-    "max": 584.37,
-    "off": 88.04,
+    "min": 583.92,
+    "max": 583.92,
+    "off": 87.59,
     "reason": "총점 850 ≠ 산식 1000"
    },
    {
     "dept": "체육교육과",
     "point": "p50",
     "adiga": 504.56,
-    "min": 592.74,
-    "max": 592.74,
-    "off": 88.18,
+    "min": 593.6,
+    "max": 593.6,
+    "off": 89.04,
     "reason": "총점 850 ≠ 산식 1000"
    }
   ],
@@ -2693,63 +2533,43 @@
     "reason": null
    }
   ],
-  "khu::사회": [
-   {
-    "dept": "경영회계계열",
-    "point": "p70",
-    "adiga": 362.71,
-    "min": 361.519,
-    "max": 361.519,
-    "off": 1.19,
-    "reason": null
-   },
-   {
-    "dept": "경영회계계열",
-    "point": "p50",
-    "adiga": 368.23,
-    "min": 366.922,
-    "max": 366.922,
-    "off": 1.31,
-    "reason": null
-   }
-  ],
   "khu::예술·체육": [
    {
     "dept": "태권도학과",
     "point": "p70",
     "adiga": 642.02,
-    "min": 427.332,
-    "max": 427.332,
-    "off": 214.69,
+    "min": 428.016,
+    "max": 428.016,
+    "off": 214,
     "reason": "총점 900 ≠ 산식 600"
    },
    {
     "dept": "태권도학과",
     "point": "p50",
     "adiga": 646.14,
-    "min": 429.256,
-    "max": 429.256,
-    "off": 216.88,
+    "min": 430.096,
+    "max": 430.096,
+    "off": 216.04,
     "reason": "총점 900 ≠ 산식 600"
    }
   ],
   "khu::인문": [
    {
-    "dept": "국어국문학과",
+    "dept": "국제학과",
     "point": "p70",
-    "adiga": 386.31,
-    "min": 385.173,
-    "max": 385.173,
-    "off": 1.14,
+    "adiga": 380.21,
+    "min": 382.5225,
+    "max": 382.5225,
+    "off": 2.31,
     "reason": null
    },
    {
-    "dept": "국어국문학과",
+    "dept": "국제학과",
     "point": "p50",
-    "adiga": 386.75,
-    "min": 384.3925,
-    "max": 385.5925,
-    "off": 1.16,
+    "adiga": 380.84,
+    "min": 384.561,
+    "max": 385.761,
+    "off": 3.72,
     "reason": null
    }
   ],
@@ -2826,21 +2646,21 @@
   ],
   "konkuk::언어중심(A)": [
    {
-    "dept": "문화콘텐츠학과",
-    "point": "p50",
-    "adiga": 672.94,
-    "min": 671.85,
-    "max": 671.85,
-    "off": 1.09,
+    "dept": "정치외교학과",
+    "point": "p70",
+    "adiga": 665.81,
+    "min": 669.31,
+    "max": 669.31,
+    "off": 3.5,
     "reason": null
    },
    {
-    "dept": "영어영문학과",
+    "dept": "정치외교학과",
     "point": "p50",
-    "adiga": 671.88,
-    "min": 668.41,
-    "max": 670.41,
-    "off": 1.47,
+    "adiga": 666.26,
+    "min": 667.76,
+    "max": 667.76,
+    "off": 1.5,
     "reason": null
    }
   ],
@@ -2858,9 +2678,9 @@
     "dept": "의상디자인학과",
     "point": "p50",
     "adiga": 669.59,
-    "min": 732.97,
-    "max": 732.97,
-    "off": 63.38,
+    "min": 734.635,
+    "max": 734.635,
+    "off": 65.04,
     "reason": null
    }
   ],
@@ -2909,59 +2729,19 @@
     "dept": "경영대학",
     "point": "p70",
     "adiga": 641.89,
-    "min": 633.6571,
-    "max": 633.6571,
-    "off": 8.23,
+    "min": 635.5286,
+    "max": 635.5286,
+    "off": 6.36,
     "reason": null
    },
    {
     "dept": "경영대학",
-    "point": "p50",
-    "adiga": 645,
-    "min": 641.3429,
-    "max": 643.1286,
-    "off": 1.87,
-    "reason": null
-   }
-  ],
-  "kw::상경": [
-   {
-    "dept": "경영학부 빅데이터경영전공",
     "point": "p70",
-    "adiga": 677.23,
-    "min": 678.4,
-    "max": 679.9,
-    "off": 1.17,
-    "reason": null
-   },
-   {
-    "dept": "경영학부 빅데이터경영전공",
-    "point": "p50",
-    "adiga": 677.23,
-    "min": 678.4,
-    "max": 679.9,
-    "off": 1.17,
-    "reason": null
-   }
-  ],
-  "kw::인문": [
-   {
-    "dept": "국어국문학과",
-    "point": "p70",
-    "adiga": 694.49,
-    "min": 693.225,
-    "max": 693.225,
-    "off": 1.26,
-    "reason": null
-   },
-   {
-    "dept": "국어국문학과",
-    "point": "p50",
-    "adiga": 695.25,
-    "min": 693.338,
-    "max": 693.338,
-    "off": 1.91,
-    "reason": null
+    "adiga": 525.41,
+    "min": 652.9429,
+    "max": 656.5143,
+    "off": 127.53,
+    "reason": "총점 800 ≠ 산식 1000"
    }
   ],
   "mju::예체능(수능 실기전형)": [
@@ -3100,18 +2880,18 @@
     "dept": "공과계열",
     "point": "p70",
     "adiga": 691.68,
-    "min": 684.8515,
-    "max": 684.8515,
-    "off": 6.83,
+    "min": 685.276375,
+    "max": 685.276375,
+    "off": 6.4,
     "reason": null
    },
    {
     "dept": "공과계열",
     "point": "p50",
     "adiga": 693.73,
-    "min": 686.88425,
-    "max": 686.88425,
-    "off": 6.85,
+    "min": 687.322,
+    "max": 687.322,
+    "off": 6.41,
     "reason": null
    }
   ],
@@ -3120,18 +2900,18 @@
     "dept": "국방AI로봇융합공학과",
     "point": "p70",
     "adiga": 540.98,
-    "min": 683.1625,
-    "max": 683.1625,
-    "off": 142.18,
+    "min": 683.66125,
+    "max": 683.66125,
+    "off": 142.68,
     "reason": "총점 800 ≠ 산식 1000"
    },
    {
     "dept": "국방AI로봇융합공학과",
     "point": "p50",
     "adiga": 545.72,
-    "min": 681.3125,
-    "max": 681.3125,
-    "off": 135.59,
+    "min": 682.15,
+    "max": 682.15,
+    "off": 136.43,
     "reason": "총점 800 ≠ 산식 1000"
    }
   ],
@@ -3140,18 +2920,18 @@
     "dept": "창의소프트학부(만화애니메이션텍전공)",
     "point": "p70",
     "adiga": 694.12,
-    "min": 697.805,
-    "max": 699.555,
-    "off": 3.68,
+    "min": 698.365,
+    "max": 700.115,
+    "off": 4.25,
     "reason": null
    },
    {
     "dept": "창의소프트학부(만화애니메이션텍전공)",
     "point": "p50",
     "adiga": 694.12,
-    "min": 697.805,
-    "max": 699.555,
-    "off": 3.68,
+    "min": 698.365,
+    "max": 700.115,
+    "off": 4.25,
     "reason": null
    }
   ],
@@ -3220,18 +3000,18 @@
     "dept": "기계시스템학부",
     "point": "p70",
     "adiga": 899.81,
-    "min": 877.0575,
-    "max": 877.0575,
-    "off": 22.75,
+    "min": 880.1196,
+    "max": 880.1196,
+    "off": 19.69,
     "reason": null
    },
    {
     "dept": "기계시스템학부",
     "point": "p50",
     "adiga": 900.36,
-    "min": 902.6515,
-    "max": 902.6515,
-    "off": 2.29,
+    "min": 906.618,
+    "max": 906.618,
+    "off": 6.26,
     "reason": null
    }
   ],
@@ -3240,29 +3020,29 @@
     "dept": "자유전공학부",
     "point": "p50",
     "adiga": 892.96,
-    "min": 894.0698,
-    "max": 894.0698,
-    "off": 1.11,
+    "min": 898.7138,
+    "max": 898.7138,
+    "off": 5.75,
     "reason": null
    }
   ],
   "soongsil::자연계열2·자유전공학부(자연)": [
    {
     "dept": "건축학부 건축학·건축공학전공",
-    "point": "p70",
-    "adiga": 854.99,
-    "min": 852.5421,
-    "max": 852.5421,
-    "off": 2.45,
+    "point": "p50",
+    "adiga": 888.01,
+    "min": 882.0109,
+    "max": 882.0109,
+    "off": 6,
     "reason": null
    },
    {
     "dept": "건축학부 건축학·건축공학전공",
-    "point": "p50",
-    "adiga": 888.01,
-    "min": 877.7316,
-    "max": 877.7316,
-    "off": 10.28,
+    "point": "p70",
+    "adiga": 906.88,
+    "min": 900.6845,
+    "max": 900.6845,
+    "off": 6.2,
     "reason": null
    }
   ],
@@ -3270,19 +3050,19 @@
    {
     "dept": "경영학부",
     "point": "p70",
-    "adiga": 879.77,
-    "min": 875.4495,
-    "max": 875.4495,
-    "off": 4.32,
+    "adiga": 865.16,
+    "min": 863.2961,
+    "max": 863.2961,
+    "off": 1.86,
     "reason": null
    },
    {
     "dept": "경영학부",
     "point": "p50",
-    "adiga": 880.82,
-    "min": 876.0456,
-    "max": 876.0456,
-    "off": 4.77,
+    "adiga": 869.01,
+    "min": 867.6115,
+    "max": 867.6115,
+    "off": 1.4,
     "reason": null
    }
   ],
@@ -3291,38 +3071,18 @@
     "dept": "기계공학부",
     "point": "p70",
     "adiga": 871.77,
-    "min": 861.0515,
-    "max": 861.0515,
-    "off": 10.72,
+    "min": 863.2266,
+    "max": 863.2266,
+    "off": 8.54,
     "reason": null
    },
    {
     "dept": "기계공학부",
     "point": "p50",
     "adiga": 872.55,
-    "min": 861.138,
-    "max": 861.138,
-    "off": 11.41,
-    "reason": null
-   }
-  ],
-  "soongsil::자유전공학부(인문)": [
-   {
-    "dept": "자유전공학부(인문)",
-    "point": "p70",
-    "adiga": 900.74,
-    "min": 896.9321,
-    "max": 896.9321,
-    "off": 3.81,
-    "reason": null
-   },
-   {
-    "dept": "자유전공학부(인문)",
-    "point": "p50",
-    "adiga": 902.34,
-    "min": 897.4474,
-    "max": 897.4474,
-    "off": 4.89,
+    "min": 863.869,
+    "max": 863.869,
+    "off": 8.68,
     "reason": null
    }
   ],
@@ -3368,21 +3128,21 @@
   ],
   "uos::자연Ⅰ": [
    {
-    "dept": "건축학부 건축공학전공",
+    "dept": "기계정보공학과",
     "point": "p50",
-    "adiga": 905.56,
-    "min": 903.9954,
-    "max": 903.9954,
-    "off": 1.56,
+    "adiga": 913.55,
+    "min": 912.3699,
+    "max": 912.3699,
+    "off": 1.18,
     "reason": null
    },
    {
-    "dept": "건축학부 건축학전공(5년제)",
+    "dept": "도시공학과",
     "point": "p70",
-    "adiga": 905.24,
-    "min": 901.1935,
-    "max": 903.2343,
-    "off": 2.01,
+    "adiga": 910.5,
+    "min": 909.2822,
+    "max": 909.2822,
+    "off": 1.22,
     "reason": null
    }
   ],
@@ -3391,38 +3151,18 @@
     "dept": "교통공학과",
     "point": "p70",
     "adiga": 908.12,
-    "min": 905.5464,
-    "max": 905.5464,
-    "off": 2.57,
+    "min": 906.6216,
+    "max": 906.6216,
+    "off": 1.5,
     "reason": null
    },
    {
-    "dept": "교통공학과",
-    "point": "p50",
-    "adiga": 908.8,
-    "min": 906.8467,
-    "max": 906.8467,
-    "off": 1.95,
-    "reason": null
-   }
-  ],
-  "uos::인문Ⅱ": [
-   {
-    "dept": "국사학과",
+    "dept": "융합응용화학과",
     "point": "p70",
-    "adiga": 912.48,
-    "min": 910.561,
-    "max": 910.561,
-    "off": 1.92,
-    "reason": null
-   },
-   {
-    "dept": "국제관계학과",
-    "point": "p70",
-    "adiga": 915.17,
-    "min": 913.8667,
-    "max": 913.8667,
-    "off": 1.3,
+    "adiga": 912.85,
+    "min": 911.3564,
+    "max": 911.3564,
+    "off": 1.49,
     "reason": null
    }
   ],

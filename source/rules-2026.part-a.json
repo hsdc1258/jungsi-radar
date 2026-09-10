@@ -560,7 +560,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 30,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -629,7 +629,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 30,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -1021,7 +1021,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 20,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -1088,7 +1088,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 20,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -1181,7 +1181,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 30,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -2123,7 +2123,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 35,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -2190,7 +2190,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 30,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -2258,7 +2258,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 35,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": null,
@@ -2334,7 +2334,7 @@
        "count": 1,
        "aggregate": "top1",
        "factor": 40,
-       "conversion": "approx",
+       "conversion": "official",
        "offset": 100
       },
       "hist": {
@@ -2412,7 +2412,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 80,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -2480,7 +2480,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 100,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -2560,7 +2560,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "bonus",
@@ -2630,7 +2630,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 20,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "bonus",
@@ -2705,7 +2705,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -3810,7 +3810,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -3883,7 +3883,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 25,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -3955,7 +3955,7 @@
        "count": 2,
        "aggregate": "sum",
        "factor": 40,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
@@ -5733,7 +5733,7 @@
        "count": 2,
        "aggregate": "sumHalf",
        "factor": 150,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "social",
         "rate": 0.03,
@@ -5815,7 +5815,7 @@
        "count": 2,
        "aggregate": "sumHalf",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "social",
         "rate": 0.03,
@@ -5888,7 +5888,7 @@
        "count": 2,
        "aggregate": "sumHalf",
        "factor": 200,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -5965,7 +5965,7 @@
        "count": 2,
        "aggregate": "sumHalf",
        "factor": 250,
-       "conversion": "approx",
+       "conversion": "official",
        "bonus": {
         "type": "science",
         "rate": 0.03,
@@ -6039,7 +6039,7 @@
        "count": 2,
        "aggregate": "sumHalf",
        "factor": 0,
-       "conversion": "approx"
+       "conversion": "official"
       },
       "hist": {
        "mode": "penalty",
