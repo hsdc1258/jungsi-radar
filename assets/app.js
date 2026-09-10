@@ -1600,9 +1600,15 @@
         table(['상태', '사유', '곳'], statusRows()),
       ]),
       aboutSection('convert', [
+        // 성적 탭의 ⓘ가 등급 모드에서 여기로 온다 — 안내 문장은 화면이 아니라 이 표에만 둔다.
         listHeader('등급 → 백분위'),
         table(['등급', '백분위 구간', '환산'],
           GRADE_TABLE.map((row) => [`${row.grade}등급`, `${fmt(row.low, 0)} ~ ${fmt(row.high, 0)}`, fmt(row.mid, 1)])),
+        table(['입력', '판정'], [
+          ['등급', '구간 중앙 백분위로 판정 · 뱃지 추정'],
+          ['백분위', '추정이 아닌 판정'],
+          ['표준점수', '도수분포로 백분위를 읽어 판정'],
+        ]),
       ]),
       aboutSection('order', [
         listHeader('대학 순서', '라인 순위'),
