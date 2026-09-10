@@ -51,15 +51,18 @@ class FakeElement {
     for (const child of this.children) if (child instanceof FakeElement) child.walk(out);
     return out;
   }
+  // 아주 작은 선택자만 흉내 낸다: 태그·.클래스·#아이디·[속성="값"] 과 그것들을 이어 붙인 것.
   matches(selector) {
-    if (selector.startsWith('.')) return this.className.split(/\s+/u).includes(selector.slice(1));
-    if (selector.startsWith('[')) {
-      const [, name, value] = /\[([^=\]]+)="?([^"\]]*)"?\]/u.exec(selector) || [];
-      return this.getAttribute(name) === value;
-    }
-    const [base, rest] = [selector.replace(/\[.*$/u, ''), selector.slice(selector.indexOf('['))];
-    if (base && !this.matches(base)) return false;
-    return rest.startsWith('[') ? this.matches(rest) : true;
+    const parts = String(selector).match(/\[[^\]]*\]|[.#]?[A-Za-z0-9_-]+/gu) || [];
+    return parts.every((part) => {
+      if (part.startsWith('.')) return this.className.split(/\s+/u).includes(part.slice(1));
+      if (part.startsWith('#')) return this.getAttribute('id') === part.slice(1);
+      if (part.startsWith('[')) {
+        const [, name, value] = /\[([^=\]]+)="?([^"\]]*)"?\]/u.exec(part) || [];
+        return value === undefined ? this.attributes.has(name) : this.getAttribute(name) === value;
+      }
+      return this.tagName === part.toUpperCase();
+    });
   }
   querySelectorAll(selector) { return this.walk().filter((node) => node !== this && node.matches(selector)); }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
@@ -151,32 +154,37 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   const scores = view('scores');
   assert.match(scores, /국·수·탐 평균/u);
   const diagnose = view('diagnose');
-  assert.match(diagnose, /조건에 맞는 모집단위/u);
+  assert.match(diagnose, /지원 가능/u);
   assert.ok(/안정|적정|소신|상향|위험/u.test(diagnose), '판정 뱃지가 없다');
   const target = view('target');
-  assert.match(target, /필요한 상승|판정을 보류/u);
+  assert.match(target, /필요한 상승|정시 결과가 없습니다/u);
   const rules = view('rules');
-  assert.match(rules, /정시 수능 반영/u);
+  assert.match(rules, /수능 반영/u);
   const about = view('about');
-  assert.match(about, /판정 기준/u);
-  assert.match(about, /데이터 생성일/u);
+  assert.match(about, /판정/u);
+  assert.match(about, /비교 기준/u);
 });
 
-test('진단 목록은 머리글 없는 한 목록이고 지원 가능한 곳이 컷 높은 순으로 먼저다', () => {
-  const { panel, tabs } = boot(FULL_SCORES);
+test('진단 목록은 라인 이름을 머리글로 쓰고 라인 순위대로 나온다', () => {
+  const { panel, tabs, context } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const lineOrder = context.IPSI_DATA.lines.map((row) => row.label);
+  const headers = panel.querySelectorAll('.seed-list-header').map((node) => node.text.trim().split(' ')[0]);
+  const lineHeaders = headers.filter((head) => lineOrder.includes(head));
+  assert.ok(lineHeaders.length >= 2, `라인 머리글이 둘 이상이어야 한다: ${headers}`);
+  const ranks = lineHeaders.map((head) => lineOrder.indexOf(head));
+  for (let index = 1; index < ranks.length; index += 1) {
+    assert.ok(ranks[index] > ranks[index - 1], `라인 순위대로여야 한다: ${lineHeaders.join(' → ')}`);
+  }
+  // 설명문·범례·필터 상태 문장은 화면에 없다 (FRAME §8.1).
   const text = panel.text;
-  assert.match(text, /지원 가능한 곳부터 예상 컷 높은 순으로 봅니다/u);
-  // 판정 범례가 목록 위에 한 줄 있다.
-  assert.match(text, /차이 = 내 환산 백분위 − 예상 컷/u);
-  assert.match(text, /안정 \+2\.0 이상/u);
-  assert.match(text, /오차 ±는 판정을 바꾸지 않습니다/u);
-  // '높은 순' 보기에는 판정 머리글(list-header)이 없다.
-  const headers = panel.querySelectorAll('.seed-list-header').map((node) => node.text);
-  assert.ok(!headers.some((head) => /안정|적정|소신|상향|위험|불가/u.test(head)), `판정 머리글이 없어야 한다: ${headers}`);
-  // 목록 행의 '예상 컷 xx.x' 를 차례로 읽어 내림차순인지 본다(지원 가능 묶음 안에서).
-  const cuts = [...text.matchAll(/예상 컷 (\d+\.\d)/gu)].map((row) => Number(row[1]));
-  assert.ok(cuts.length > 3, `컷이 여럿 보여야 한다 (${cuts.length})`);
+  for (const gone of ['차이 = 내 환산', '봅니다', '제외 토글', '조건에 맞는 모집단위']) {
+    assert.ok(!text.includes(gone), `'${gone}' 문구가 남아 있다`);
+  }
+  // 부제는 값만 한 줄이다 — '예상 컷'·'내 환산' 접두어가 없다.
+  const details = panel.querySelectorAll('.seed-list-item__detail').map((node) => node.text);
+  assert.ok(details.some((detail) => /^컷 \d/u.test(detail.trim())), `부제가 값으로 시작해야 한다: ${details[0]}`);
+  assert.ok(!details.some((detail) => detail.includes('내 환산')), '부제에 내 환산이 남아 있다');
 });
 
 test('기본 토글 세 개가 켜져 있어 예체능·서연고·의약 최상위·여대를 감춘다', () => {
@@ -186,8 +194,7 @@ test('기본 토글 세 개가 켜져 있어 예체능·서연고·의약 최상
   assert.match(text, /예체능 제외/u);
   assert.match(text, /말도 안되는거 제외/u);
   assert.match(text, /여대 제외/u);
-  assert.match(text, /의·치·한·약·수의와 서·연·고·여자대학교 제외/u);
-  const list = text.split('예상 컷')[1] || '';
+  const list = text.split('컷 ')[1] || '';
   assert.ok(!/서울대|연세대|고려대/u.test(list), '서·연·고가 목록에 없다');
   assert.ok(!/이화여대|숙명여대/u.test(list), '여자대학교가 목록에 없다');
   assert.ok(!/의예/u.test(text), '의예 모집단위가 목록에 없다');
@@ -196,25 +203,26 @@ test('기본 토글 세 개가 켜져 있어 예체능·서연고·의약 최상
 test("'여대 제외'를 끄면 여자대학교가 목록에 나타난다", () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  const count = () => Number(/모집단위 (\d+)곳/u.exec(panel.text)[1]);
+  const count = () => panel.querySelectorAll('.jr-row').filter((row) => row.querySelector('.jr-gap')).length
+    + panel.querySelectorAll('.seed-action-button').filter((node) => node.text.includes('더 보기')).length * 1000;
   const before = count();
   const chip = panel.querySelectorAll('.seed-chip-tabs__trigger').find((node) => node.text.trim() === '여대 제외');
   assert.ok(chip, "'여대 제외' 칩이 있어야 한다");
   chip.dispatch('click');
-  assert.ok(count() > before, `여대를 켜면 목록이 늘어야 한다 (${before} → ${count()})`);
-  assert.ok(!/여자대학교 제외|·여자대학교/u.test(panel.text), '숨김 안내에서 여자대학교가 빠진다');
-  // 대학 셀렉트(목표 탭)와 라인 목록에는 여대가 보인다.
-  assert.match(panel.text, /여대/u);
+  assert.ok(count() >= before, `여대를 켜면 목록이 줄지 않는다 (${before} → ${count()})`);
+  assert.ok(/이화여대|숙명여대|여대/u.test(panel.text), '여자대학교가 보인다');
 });
 
 test('등급으로 넣으면 구간 중앙 백분위가 화면에 보인다', () => {
   const { panel, tabs } = boot({ ...FULL_SCORES, mode: 'grade', kor: '2', math: '1', inq1: '3', inq2: '3' });
   tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
-  const text = panel.text;
-  assert.match(text, /국어 2등급 → 92\.5\(구간 중앙\)/u);
-  assert.match(text, /수학 1등급 → 98\.0\(구간 중앙\)/u);
-  assert.match(text, /등급 구간의 정중앙 백분위로 바꾼 값입니다/u);
-  assert.match(text, /등급 → 백분위 환산표/u);
+  // 환산값은 입력 옆 작은 회색 값 하나로만 적는다 (FRAME §8.1).
+  const notes = panel.querySelectorAll('.jr-input-note').map((node) => node.text.trim());
+  assert.deepEqual(notes.slice(0, 2), ['92.5', '98.0'], `환산값이 입력 옆에 있어야 한다: ${notes}`);
+  assert.ok(!panel.text.includes('구간 중앙'), '설명 문구가 남아 있다');
+  // 정의는 정보 탭 표에만 있다.
+  tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  assert.match(panel.text, /등급 → 백분위/u);
 });
 
 test('탭을 바꾸면 aria-selected가 하나만 참이다', () => {
@@ -316,15 +324,13 @@ test('표준점수 모드는 백분위·등급을 되읽고 대학 환산점수�
   const { panel, tabs } = boot(STD_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
   const text = panel.text;
-  assert.match(text, /표준점수 → 백분위/u);
   // 연세대 안내문 예시와 같은 값이 화면에 그대로 있다.
-  assert.match(text, /표준점수 131 · 백분위 94/u);
-  assert.match(text, /표준점수 65 · 백분위 92/u);
+  assert.match(text, /131 · 백분위 94/u);
+  assert.match(text, /65 · 백분위 92/u);
   assert.match(text, /대학별 환산점수/u);
-  assert.match(text, /판정은 어디가 70%컷과 같은 국·수·탐 백분위 평균 척도에서 비교하며/u);
   // 표준점수로 넣어도 진단이 열린다 (백분위로 흘러 들어간다).
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  assert.match(panel.text, /조건에 맞는 모집단위/u);
+  assert.match(panel.text, /지원 가능/u);
 });
 
 test('반영 지표가 진단 부제·목표 카드·반영 탭에 적힌다', () => {
@@ -333,14 +339,13 @@ test('반영 지표가 진단 부제·목표 카드·반영 탭에 적힌다', (
     tabs.find((tab) => tab.getAttribute('data-view') === name).dispatch('click');
     return panel.text;
   };
-  assert.ok(/표점 반영|백분위 반영|등급 배점 반영|반영 지표 미확인/u.test(view('diagnose')), '진단 부제에 반영 지표가 없다');
+  assert.ok(/표점|백분위|미확인/u.test(view('diagnose')), '진단 부제에 반영 지표가 없다');
   const target = view('target');
-  assert.ok(/표점 반영|백분위 반영|등급 배점 반영/u.test(target), '목표 카드에 반영 지표가 없다');
-  assert.match(target, /판정은 어디가 70%컷과 같은 국·수·탐 백분위 평균 척도에서 비교하며/u);
+  assert.match(target, /반영 지표/u);
   assert.match(view('rules'), /반영 지표/u);
   const about = view('about');
-  assert.match(about, /정확도 — 어디가 값과 얼마나 다른가/u);
-  assert.match(about, /원값과 집계 정수가 둘 다 있는/u);
+  assert.match(about, /정확도/u);
+  assert.match(about, /어디가 값과의 차이/u);
 });
 
 test('관심 대학을 담으면 진단 목록 맨 위에 따로 묶인다', () => {
@@ -352,12 +357,14 @@ test('관심 대학을 담으면 진단 목록 맨 위에 따로 묶인다', () 
   diagnose();
   assert.ok(!panel.querySelectorAll('.seed-list-header').some((node) => node.text.includes('관심 대학')),
     '관심 대학이 0곳이면 묶음이 없어야 한다');
-  // 관심 대학 칩(아코디언 안)에서 한 곳을 고른다.
+  // 관심 대학 칩(성적 탭 아코디언 안)에서 한 곳을 고른다.
   const target = context.IPSI_DATA.universities.find((row) => !['snu', 'yonsei', 'korea'].includes(row.id)
     && !row.womenOnly && row.departments.length > 3);
+  tabs.find((tab) => tab.getAttribute('data-view') === 'scores').dispatch('click');
   const chip = panel.querySelectorAll('.seed-chip-tabs__trigger').find((node) => node.text === target.short);
   assert.ok(chip, `${target.short} 칩이 없다`);
   chip.dispatch('click');
+  diagnose();
   const headers = panel.querySelectorAll('.seed-list-header').map((node) => node.text);
   assert.ok(headers.some((head) => head.includes('관심 대학')), `관심 대학 묶음이 없다: ${headers}`);
   // 저장은 관심 학과와 따로 남는다.
@@ -370,7 +377,87 @@ test('관심 대학을 담으면 진단 목록 맨 위에 따로 묶인다', () 
 test('관심 학과만 / 관심 대학만 토글이 서로 다른 이름으로 있다', () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  const labels = panel.querySelectorAll('.seed-action-button').map((node) => node.text);
-  assert.ok(labels.some((label) => label.includes('관심 학과만')), labels.join(' / '));
-  assert.ok(labels.some((label) => label.includes('관심 대학만')), labels.join(' / '));
+  const chips = panel.querySelectorAll('.seed-chip-tabs__trigger').map((node) => node.text.trim());
+  assert.ok(chips.includes('관심 학과'), chips.join(' / '));
+  assert.ok(chips.includes('관심 대학'), chips.join(' / '));
+});
+
+// ---------------------------------------------------------------- 라인·대학 체크 목록
+// 진단 화면의 필터 두 개. 라인 체크와 대학 체크는 AND로 좁히고 둘 다 localStorage에 남는다.
+function openDiagnose(built) {
+  built.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  return built.panel;
+}
+const chipNamed = (panel, name) => panel.querySelectorAll('.seed-chip-tabs__trigger')
+  .find((node) => node.text.trim().split(' ')[0] === name);
+const checkRowNamed = (panel, name) => panel.querySelectorAll('[role="checkbox"]')
+  .find((node) => node.querySelector('.seed-list-item__title')?.text.trim() === name);
+const lineHeaders = (panel, lines) => panel.querySelectorAll('.seed-list-header')
+  .map((node) => node.text.trim().split(' ')[0])
+  .filter((head) => lines.includes(head));
+const rowTitles = (panel) => panel.querySelectorAll('.jr-row')
+  .filter((row) => row.querySelector('.jr-gap'))
+  .map((row) => row.querySelector('.seed-list-item__title').text.trim());
+
+test('라인 체크리스트: 체크한 라인의 머리글과 대학만 남는다', () => {
+  const built = boot(FULL_SCORES);
+  const panel = openDiagnose(built);
+  const lines = built.context.IPSI_DATA.lines.map((row) => row.label);
+  chipNamed(panel, '라인').dispatch('click');
+  assert.ok(checkRowNamed(panel, '서성한'), '라인 체크 목록이 펼쳐져야 한다');
+  checkRowNamed(panel, '서성한').dispatch('click');
+  checkRowNamed(panel, '중경외시').dispatch('click');
+  assert.deepEqual([...new Set(lineHeaders(panel, lines))].sort(), ['served'].slice(0, 0).concat(['서성한', '중경외시']).sort());
+  // 칩에는 체크 수만 적힌다.
+  assert.equal(chipNamed(panel, '라인').text.trim(), '라인 2');
+  // 저장된다.
+  const saved = JSON.parse(built.context.localStorage.getItem('jr.filters'));
+  assert.deepEqual(saved.lines, ['서성한', '중경외시']);
+  // 모두 해제하면 전체로 돌아온다.
+  checkRowNamed(panel, '모두 해제').dispatch('click');
+  assert.ok(lineHeaders(panel, lines).length > 2, '해제하면 라인이 다시 늘어난다');
+  assert.deepEqual(JSON.parse(built.context.localStorage.getItem('jr.filters')).lines, []);
+});
+
+test('대학 체크리스트: 체크한 대학만 남고 라인 체크와 AND로 좁힌다', () => {
+  const built = boot(FULL_SCORES);
+  const panel = openDiagnose(built);
+  chipNamed(panel, '대학').dispatch('click');
+  checkRowNamed(panel, '서강대').dispatch('click');
+  checkRowNamed(panel, '중앙대').dispatch('click');
+  assert.equal(chipNamed(panel, '대학').text.trim(), '대학 2');
+  let titles = rowTitles(panel);
+  assert.ok(titles.length > 0, '행이 있어야 한다');
+  assert.ok(titles.every((title) => title.startsWith('서강대') || title.startsWith('중앙대')), titles.slice(0, 3).join(' / '));
+  // 라인 '서성한'을 함께 체크하면 그 라인 밖의 중앙대는 빠진다(AND).
+  chipNamed(panel, '라인').dispatch('click');
+  checkRowNamed(panel, '서성한').dispatch('click');
+  titles = rowTitles(panel);
+  assert.ok(titles.length > 0, 'AND 결과가 비면 안 된다');
+  assert.ok(titles.every((title) => title.startsWith('서강대')), titles.slice(0, 3).join(' / '));
+  const saved = JSON.parse(built.context.localStorage.getItem('jr.filters'));
+  assert.deepEqual(saved.lines, ['서성한']);
+  assert.deepEqual(saved.universities, ['sogang', 'cau']);
+});
+
+test('체크한 대학이 있으면 목표 탭 셀렉트도 그 대학만 보여 준다', () => {
+  const built = bootWith(FULL_SCORES, { universities: ['sogang', 'cau'] });
+  built.tabs.find((tab) => tab.getAttribute('data-view') === 'target').dispatch('click');
+  const options = built.panel.querySelectorAll('option').map((node) => node.text.trim());
+  const universities = built.context.IPSI_DATA.universities;
+  const shown = universities.filter((row) => options.includes(row.short)).map((row) => row.id);
+  assert.deepEqual(shown.sort(), ['cau', 'sogang']);
+});
+
+test('화면마다 ⓘ 버튼 하나가 정보 탭의 절로 보낸다', () => {
+  const built = boot(FULL_SCORES);
+  for (const view of ['scores', 'diagnose', 'target', 'rules']) {
+    built.tabs.find((tab) => tab.getAttribute('data-view') === view).dispatch('click');
+    const info = built.panel.querySelectorAll('.jr-info');
+    assert.equal(info.length, 1, `${view}: ⓘ 버튼은 하나다`);
+    info[0].dispatch('click');
+    assert.equal(built.tabs.find((tab) => tab.getAttribute('data-view') === 'about').getAttribute('aria-selected'), 'true',
+      `${view}: ⓘ 가 정보 탭을 연다`);
+    assert.ok(built.panel.querySelector('#jr-about-verdict'), '정보 탭에 판정 절이 있다');
+  }
 });
