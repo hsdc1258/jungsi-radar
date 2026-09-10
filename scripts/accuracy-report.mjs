@@ -12,7 +12,7 @@
 //   (d) 판정 민감도: 컷이 ±0.5 / ±1.0 흔들릴 때 판정이 바뀌는 모집단위 비율 (성적 세 벌)
 //   (e) 반영 규칙 : 확인·미확인 건수와 반영 지표를 못 밝힌 대학 수
 //   (f) 등급컷    : 2026학년도 실채점 확정 여부와 도수분포 확보 과목 수
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
@@ -48,6 +48,7 @@ const quantile = (values, ratio) => {
 
 // 기준값의 출처 종류. 화면과 문서가 같은 다섯 갈래를 쓴다.
 const SOURCE_KINDS = [
+  ['adigaDirect', '어디가 원값(직접 수집)'],
   ['official', '대학 공식 원값'],
   ['adigaExact', '어디가 원값(기사 인용)'],
   ['adigaInt', '어디가 집계 정수'],
@@ -56,9 +57,19 @@ const SOURCE_KINDS = [
 ];
 function sourceKind(row) {
   const source = String(row?.source || '');
+  // scripts/source-parsers/fetch-adiga.mjs 가 어디가에서 바로 받아 온 값 — 우리 1차 자료다.
+  if (/직접 수집/u.test(source)) return 'adigaDirect';
   if (source === 'adiga-hakjum') return 'adigaInt';
   if (/베리타스알파|어디가 공개값/u.test(source)) return 'adigaExact';
   return 'official';
+}
+
+// 어디가 팝업의 용어 안내(각주) 원문. source/adiga/notes.json 에 긁어 둔 그대로 싣는다.
+function readAdigaNotes() {
+  const file = path.join(ROOT, 'source/adiga/notes.json');
+  if (!existsSync(file)) return null;
+  const parsed = JSON.parse(readFileSync(file, 'utf8'));
+  return { fetchedOn: parsed.fetchedOn || null, sections: parsed.sections || null, lines: parsed.lines || [] };
 }
 
 // 민감도에 쓰는 성적 세 벌. 상위·중위·하위 한 벌씩 — 한 성적만 보면 컷 근처 밀도에 휘둘린다.
@@ -127,19 +138,31 @@ export function computeAccuracy(data, engine = loadEngine()) {
       .sort((left, right) => right.meanAbs - left.meanAbs),
   };
 
-  // (c) 50%컷이 70%컷보다 낮은 행 (같은 해, 같은 표)
+  // (c) 50% 지점이 70% 지점보다 낮은 행 (같은 해, 같은 표). 두 눈금을 따로 센다 —
+  // 평균 백분위가 뒤집히는 것은 오류가 아니고(줄 세운 기준이 환산점수다, docs/MODEL.md §0),
+  // 환산점수가 뒤집히면 같은 정렬에서 있을 수 없는 일이라 오류다(§6).
   let bothColumns = 0;
   let flipped = 0;
+  let scoreRows = 0;
+  let scoreFlipped = 0;
   for (const university of data.universities) {
     for (const dept of university.departments) {
       for (const row of Object.values(dept.jeongsi || {})) {
-        if (typeof row?.cut50 !== 'number' || typeof row.cut70 !== 'number') continue;
-        bothColumns += 1;
-        if (row.cut50 < row.cut70) flipped += 1;
+        if (typeof row?.cut50 === 'number' && typeof row.cut70 === 'number') {
+          bothColumns += 1;
+          if (row.cut50 < row.cut70) flipped += 1;
+        }
+        if (typeof row?.score?.p50 === 'number' && typeof row.score?.p70 === 'number') {
+          scoreRows += 1;
+          if (row.score.p50 < row.score.p70) scoreFlipped += 1;
+        }
       }
     }
   }
-  const columns = { rows: bothColumns, flipped, rate: round((flipped / (bothColumns || 1)) * 100, 1) };
+  const columns = {
+    rows: bothColumns, flipped, rate: round((flipped / (bothColumns || 1)) * 100, 1),
+    scoreRows, scoreFlipped, scoreRate: round((scoreFlipped / (scoreRows || 1)) * 100, 1),
+  };
 
   // (c2) 컷의 통계 정의. 정의마다 내 성적을 같은 정의로 계산해 뺀다 — 계산 불가일 때만 보류한다.
   const defCounts = new Map();
@@ -290,6 +313,7 @@ export function computeAccuracy(data, engine = loadEngine()) {
     sensitivity,
     rules,
     exams,
+    adigaNotes: readAdigaNotes(),
     thirdParty: THIRD_PARTY,
   };
 }
@@ -336,12 +360,33 @@ export function renderMarkdown(accuracy) {
     lines.push(`- **${row.label}** — ${row.universities.join(' · ')}`);
   }
   lines.push('');
-  lines.push('## 2. 원값과 집계 정수의 차이');
+  lines.push('## 1-2. 70%컷의 정의');
+  lines.push('');
+  if (!accuracy.adigaNotes || accuracy.adigaNotes.lines.length === 0) {
+    lines.push('어디가 각주를 아직 받아 두지 않았다 — `node scripts/source-parsers/fetch-adiga.mjs --year 2026 --ids all` 을 돌리면 `source/adiga/notes.json` 이 생긴다.');
+  } else {
+    lines.push('아래는 어디가 입시결과 팝업의 용어 안내를 **원문 그대로** 옮긴 것이다');
+    lines.push(`(\`source/adiga/notes.json\`, ${accuracy.adigaNotes.fetchedOn} 수집). 우리 판정은 이 정의를 따른다.`);
+    lines.push('');
+    for (const entry of accuracy.adigaNotes.sections?.수능 || []) {
+      if (entry.lines.length === 0) continue;
+      lines.push(`- **${entry.term || '안내'}**`);
+      for (const line of entry.lines) lines.push(`  - ${line}`);
+    }
+    for (const line of accuracy.adigaNotes.sections?.공통 || []) lines.push(`- ${line}`);
+    lines.push('');
+    lines.push('즉 70%컷은 **환산점수 순으로 줄 세운 뒤 상위 70% 지점 학생 한 명**의 점수이고,');
+    lines.push('영역별 백분위·등급도 그 학생 한 명의 성적표다. "평균 백분위 순 70%컷"이 아니다 —');
+    lines.push('그래서 같은 행에서 50% 지점의 평균 백분위가 70% 지점보다 낮을 수 있다(오류가 아니다).');
+  }
+  lines.push('');
+  lines.push('## 2. 우리가 쓰는 값과 학점나비 전사값의 차이');
   lines.push('');
   if (accuracy.gap.pairs === 0) {
     lines.push('짝지을 수 있는 값이 아직 없다.');
   } else {
-    lines.push(`같은 모집단위·같은 해에 **대학(또는 기사)의 원값**과 **학점나비가 정수로 실은 어디가 값**이 둘 다 있는 ${accuracy.gap.pairs}곳을 견주었다.`);
+    lines.push(`같은 모집단위·같은 해에 **지금 판정에 쓰는 값**(어디가에서 직접 받은 원값, 없으면 대학·기사 원값)과`);
+    lines.push(`**학점나비가 정수로 옮겨 실었던 값**이 둘 다 있는 ${accuracy.gap.pairs}곳을 견주었다.`);
     lines.push('');
     lines.push('| 지표 | 값 (백분위 점) |');
     lines.push('|---|---:|');
@@ -359,10 +404,13 @@ export function renderMarkdown(accuracy) {
     }
   }
   lines.push('');
-  lines.push('## 3. 50%컷과 70%컷이 뒤집힌 행');
+  lines.push('## 3. 50% 지점과 70% 지점이 뒤집힌 행');
   lines.push('');
-  lines.push(`두 값이 함께 있는 ${accuracy.columns.rows}행 가운데 ${accuracy.columns.flipped}행(${percent(accuracy.columns.rate)})에서 50%컷이 70%컷보다 낮다.`);
-  lines.push('상위 50% 컷이 상위 70% 컷보다 낮을 수는 없으므로 집계 표의 두 열이 어긋나 있다는 뜻이다. 판정은 70%컷만 쓴다.');
+  lines.push(`평균 백분위가 둘 다 있는 ${accuracy.columns.rows}행 가운데 ${accuracy.columns.flipped}행(${percent(accuracy.columns.rate)})에서 50% 지점이 70% 지점보다 낮다.`);
+  lines.push('**이것은 오류가 아니다.** 1-2번의 정의대로 두 지점은 *환산점수* 순으로 뽑은 학생이라,');
+  lines.push('국어 배점이 큰 모집단위에서는 평균 백분위가 낮은 학생이 위에 설 수 있다.');
+  lines.push('');
+  lines.push(`같은 정렬에서 있을 수 없는 것은 **환산점수**가 뒤집히는 경우다 — 환산점수 50%·70%가 둘 다 있는 ${accuracy.columns.scoreRows}행 가운데 ${accuracy.columns.scoreFlipped}행(${percent(accuracy.columns.scoreRate)})이다.`);
   lines.push('');
   lines.push('## 3-2. 컷의 통계 정의');
   lines.push('');

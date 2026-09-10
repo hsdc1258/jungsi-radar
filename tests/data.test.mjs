@@ -108,10 +108,12 @@ test('비교 계열(series)에는 눈금이 같은 값만 들어간다', () => {
       }
     }
   }
-  // 서경대 상위 2개 평균 5곳 · 건국대 예체능 국·탐 평균 7곳 · 명지대 상위 1과목 22곳.
-  assert.ok((nonStandard['top2-mean'] || 0) >= 5, `서경대 상위 2개 평균 (지금 ${nonStandard['top2-mean']})`);
-  assert.ok((nonStandard['kor-inq-mean'] || 0) >= 7, `건국대 국·탐 평균 (지금 ${nonStandard['kor-inq-mean']})`);
-  assert.ok((nonStandard['ksi1-mean'] || 0) >= 20, `명지대 상위 1과목 (지금 ${nonStandard['ksi1-mean']})`);
+  // 어디가 원값을 직접 받으면서 대부분의 행이 어디가 '평균백분위' = 국·수·탐(2) 평균(ksi-mean)으로
+  // 바뀌었다(docs/MODEL.md §0 — 탐구·수학 미반영 모집단위도 평균백분위에는 네 영역이 다 들어간다).
+  // 그래서 대학별 곳수를 못박지 않는다. 남아 있는 비표준 정의가 여전히 계산 가능한지만 본다.
+  for (const [def, count] of Object.entries(nonStandard)) {
+    assert.ok(count > 0 && ENGINE.cutDefInfo(def).comparable, `${def}: 계산할 수 없는 정의가 남아 있다`);
+  }
 });
 
 test('대학 변동폭과 전체 변동폭은 양수이거나 없음이다', () => {
@@ -424,4 +426,71 @@ test('이상치는 다섯 분류 중 하나이고 계열 차·이력 차가 서�
   }
   assert.ok(count > 0, '이상치 후보가 하나도 없다');
   assert.ok(priorSeen > 0, '이력 기준으로 걸린 값이 하나도 없다');
+});
+
+// ── 어디가 원값 (docs/MODEL.md §0·§1.1) ─────────────────────────────────────
+// 판정의 1차 자료가 표에서 읽은 그대로 실렸는지 한 행으로 못박는다. 어디가가 열을 밀거나
+// 빌드가 값을 덮어쓰면 여기서 먼저 깨진다.
+test('국민대 자유전공(A) 2026 정시 행이 어디가 원값 그대로 실린다', () => {
+  const kookmin = DATA.universities.find((university) => university.id === 'kookmin');
+  assert.ok(kookmin, '국민대가 없다');
+  const dept = kookmin.departments.find((row) => row.name === '자유전공(A)');
+  assert.ok(dept, '국민대 자유전공(A)가 없다');
+  const row = dept.jeongsi['2026'];
+  assert.ok(row, '2026 정시 값이 없다');
+
+  assert.equal(row.aggregation, 'adiga-score-rank');
+  assert.equal(row.sourceGrade, 'A');
+  assert.equal(row.basis, 'adiga');
+  assert.equal(row.period, '정시(가)');
+  assert.equal(row.group, '가');
+  assert.equal(row.typeName, '수능(일반학생전형)');
+  assert.deepEqual(row.quotaDetail, { initial: 120, carried: 0, final: 120 });
+  assert.equal(row.quota, 120);
+  assert.equal(row.rate, 5.75);
+  assert.equal(row.fill, 121);
+
+  // 수능 환산점수 — 50% 660.5 · 70% 659 · 총점 1000
+  assert.equal(row.score.p50, 660.5);
+  assert.equal(row.score.p70, 659);
+  assert.equal(row.score.total, 1000);
+  assert.equal(row.score70, 659);
+
+  // 70% 지점 학생 한 명의 성적표. 그 학생의 평균 백분위(78)가 cut70 이다.
+  assert.deepEqual(row.student.p70, {
+    kor: 97, math: 69, inq1: { kind: '사탐', pct: 86 }, inq2: { kind: '사탐', pct: 52 },
+    avg: 78, hist: 1, eng: 2,
+  });
+  assert.equal(row.cut70, 78);
+  // 50% 지점 학생은 평균이 더 높다(81) — 환산점수 순 정렬이라 뒤집혀도 오류가 아니다.
+  assert.deepEqual(row.student.p50, {
+    kor: 98, math: 76, inq1: { kind: '사탐', pct: 62 }, inq2: { kind: '과탐', pct: 77 },
+    avg: 81, hist: 2, eng: 3,
+  });
+  assert.equal(row.cut50, 81);
+  assert.equal(row.consistent, true);
+});
+
+test('어디가에서 온 행은 집계 방식을 밝히고, 아닌 행은 unknown 이다', () => {
+  const kinds = new Set(['adiga-score-rank', 'unknown']);
+  let direct = 0;
+  for (const university of DATA.universities) {
+    for (const dept of university.departments) {
+      for (const [year, row] of Object.entries(dept.jeongsi || {})) {
+        const where = `${university.id} ${dept.name} ${year}`;
+        assert.ok(kinds.has(row.aggregation), `${where}: 집계 방식 ${row.aggregation}`);
+        if (row.aggregation === 'adiga-score-rank') {
+          direct += 1;
+          // MODEL §1.1 — 영역별 값을 한 학생 성적표로 쓸 수 있는지는 consistent 가 정한다.
+          assert.ok([true, false, null].includes(row.consistent ?? null), where);
+          // 어디가가 공개한 행이면 환산점수든 컷 지점 학생의 영역별 백분위든 적어도 하나는 있다.
+          assert.ok(isNumber(row.score?.p70) || row.student?.p70 || row.student?.p50, `${where}: 컷 값이 비었다`);
+          assert.match(String(row.source), /어디가/u, `${where}: 출처가 어디가가 아니다`);
+        } else {
+          assert.equal(row.consistent ?? null, null, `${where}: 집계 방식을 모르는데 검산값이 있다`);
+        }
+      }
+    }
+  }
+  assert.ok(direct > 1000, `어디가 원값 행이 너무 적다 (${direct})`);
 });
