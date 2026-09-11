@@ -927,7 +927,7 @@ const hasTypeCut = (row) => typeof row?.cut70 === 'number' || typeof row?.score7
 // 기준 숫자 표에 적히는 행인가 — 컷이 있거나 최종 모집인원이 남아 있어야 한다 (FRAME §11).
 const typeQuotaOf = (row) => (typeof row?.quota === 'number' ? row.quota
   : typeof row?.quotaDetail?.final === 'number' ? row.quotaDetail.final : 0);
-const hasTypeValues = (row) => hasTypeCut(row) || typeQuotaOf(row) > 0;
+const hasTypeValues = (row) => hasTypeCut(row);
 const typeRowsOf = (yearRow) => (Array.isArray(yearRow?.types) && yearRow.types.length > 0 ? yearRow.types : [yearRow]);
 // 표에 남는 행. 대표(일반) 행은 비어 있어도 남는다.
 const shownTypeRowsOf = (yearRow) => typeRowsOf(yearRow)

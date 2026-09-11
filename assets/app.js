@@ -339,7 +339,7 @@
   const typeQuota = (row) => (typeof row?.quota === 'number' ? row.quota
     : typeof row?.quotaDetail?.final === 'number' ? row.quotaDetail.final : 0);
   // 표에 적을 값이 하나라도 있는 행인가 — 컷도 최종 모집인원도 없으면 소음이다 (FRAME §11).
-  const hasTypeValues = (row) => hasTypeCut(row) || typeQuota(row) > 0;
+  const hasTypeValues = (row) => hasTypeCut(row);
   // 그 모집단위에 컷이 공개된 전형 kind 집합. types[]가 없으면 `일반` 하나다.
   function deptTypeKinds(dept) {
     const kinds = new Set();
