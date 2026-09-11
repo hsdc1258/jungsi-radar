@@ -41,12 +41,15 @@
     filters: {
       track: '전체', band: '전체', query: '', favOnly: false, favUniOnly: false, sort: 'cut',
       noArts: true, noDream: true, noWomen: true, limit: 8, lines: [], universities: [],
+      // 전형은 하나만 고른다 (docs/MODEL.md §1.1-2 · FRAME §11). 기본은 일반전형이다.
+      type: 'general',
       ...readStore(STORE.filters, {}),
     },
     favorites: new Set(readStore(STORE.favorites, [])),
     // 관심 대학은 관심 학과와 따로 저장한다 — 대학을 담아도 학과 별표는 그대로다.
     favUniversities: new Set(readStore(STORE.favUniversities, [])),
-    target: { university: '', dept: '' },
+    // 목표 화면이 열어 둔 곳. type 은 그 모집단위에서 고른 전형이다(비면 진단에서 고른 것).
+    target: { university: '', dept: '', type: '' },
     rulesUniversity: 'snu',
     copied: false,
     // 정보 탭으로 보낼 때 열어 둘 절(ⓘ 버튼이 넣는다). 저장하지 않는다.
@@ -238,7 +241,11 @@
   });
   // 체크 목록의 한 줄. 눌러서 켜고 끈다.
   const checkRow = (label, on, onclick, detail) => listItem({
-    title: label, detail, onclick, suffix: checkIcon(on), attrs: { role: 'checkbox', 'aria-checked': String(on) },
+    title: label, detail, onclick, suffix: checkIcon(on), attrs: { role: 'checkbox', 'aria-checked': String(on), 'data-pick': 'check' },
+  });
+  // 단일 선택 목록의 한 줄. 모양은 같고(켜진 행만 체크 표시) 뜻만 라디오다 (FRAME §11).
+  const radioRow = (label, on, onclick, detail) => listItem({
+    title: label, detail, onclick, suffix: checkIcon(on), attrs: { role: 'radio', 'aria-checked': String(on), 'data-pick': 'radio' },
   });
 
   // list-item 한 줄. suffix에는 뱃지·버튼이 들어간다.
@@ -310,6 +317,66 @@
   const TRACKS = ['전체', '인문', '자연', '예체능', '의약', '자유전공'];
   const TRACK_OPTIONS = TRACKS.map((track) => [track, track === '전체' ? '계열 전체' : track]);
   const BANDS = ['전체', '안정', '적정', '소신', '상향', '위험', '불가', '보류', '기준 불일치'];
+
+  // ---- 전형 (docs/MODEL.md §1.1-2 · FRAME §11) ----------------------------
+  // 어디가 전형명 177종을 분류 키 하나로 접은 것이다. 차례는 FRAME §11이 적은 차례 — 일반이 맨 앞이다.
+  const TYPE_KINDS = Object.freeze([
+    ['general', '일반'], ['rural', '농어촌'], ['vocational', '특성화고'], ['equal', '기회균형'],
+    ['disability', '특수교육'], ['regional', '지역인재'], ['overseas', '재외국민'],
+    ['practical', '실기·특기'], ['other', '기타'],
+  ]);
+  const TYPE_LABEL = Object.freeze(Object.fromEntries(TYPE_KINDS));
+  const DEFAULT_TYPE = 'general';
+  // 한 해 행의 전형 목록. 빌드가 types[]를 싣기 전에는 그 행 하나가 곧 `일반`이다 (MODEL §1.1-2).
+  const typeRowsOf = (yearRow) => (Array.isArray(yearRow?.types) && yearRow.types.length > 0
+    ? yearRow.types.map((row) => ({ ...row, kind: TYPE_LABEL[row?.kind] ? row.kind : DEFAULT_TYPE }))
+    : [{ ...yearRow, kind: TYPE_LABEL[yearRow?.kind] ? yearRow.kind : DEFAULT_TYPE }]);
+  // 컷이 공개된 행인가. 환산점수 70%든 평균 백분위 70%든 하나만 있으면 센다.
+  const hasTypeCut = (row) => typeof row?.cut70 === 'number' || typeof row?.score70 === 'number'
+    || typeof row?.score?.p70 === 'number';
+  // 그 모집단위에 컷이 공개된 전형 kind 집합. types[]가 없으면 `일반` 하나다.
+  function deptTypeKinds(dept) {
+    const kinds = new Set();
+    for (const [year, yearRow] of Object.entries(dept?.jeongsi || {})) {
+      if (year === 'alts') continue;
+      for (const row of typeRowsOf(yearRow)) if (hasTypeCut(row)) kinds.add(row.kind);
+    }
+    return kinds;
+  }
+  // kind 별 모집단위 수와 전형명 예 둘. 전 대학을 한 번만 훑고 그대로 쥐고 있는다.
+  let typeCountCache = null;
+  function typeCounts() {
+    if (typeCountCache) return typeCountCache;
+    const counts = new Map(TYPE_KINDS.map(([kind]) => [kind, 0]));
+    const samples = new Map(TYPE_KINDS.map(([kind]) => [kind, []]));
+    for (const university of DATA.universities) {
+      for (const dept of university.departments || []) {
+        const seen = new Set();
+        for (const [year, yearRow] of Object.entries(dept.jeongsi || {})) {
+          if (year === 'alts') continue;
+          for (const row of typeRowsOf(yearRow)) {
+            if (!hasTypeCut(row)) continue;
+            seen.add(row.kind);
+            const list = samples.get(row.kind);
+            const name = String(row.typeName || '').trim();
+            if (name && list.length < 2 && !list.includes(name)) list.push(name);
+          }
+        }
+        for (const kind of seen) counts.set(kind, counts.get(kind) + 1);
+      }
+    }
+    typeCountCache = { counts, samples };
+    return typeCountCache;
+  }
+  // 고를 수 있는 전형. 데이터에 types[]가 없으면 `일반` 하나뿐이다 (FRAME §11).
+  const typeOptions = () => {
+    const { counts } = typeCounts();
+    return TYPE_KINDS.filter(([kind]) => kind === DEFAULT_TYPE || counts.get(kind) > 0);
+  };
+  const typeNow = () => (typeOptions().some(([kind]) => kind === state.filters.type) ? state.filters.type : DEFAULT_TYPE);
+  const typeLabelNow = () => TYPE_LABEL[typeNow()];
+  // 일반이 아닐 때만 라벨을 덧붙인다 — `지원 가능 · 농어촌` (FRAME §11).
+  const withTypeLabel = (text) => (typeNow() === DEFAULT_TYPE ? text : `${text} · ${typeLabelNow()}`);
 
   // 등급 → 백분위 환산표. 상대평가 등급 구간의 정확한 중앙값이다 (1등급 96~100 → 98.0 …).
   // 엔진의 GRADE_FLOORS·GRADE_MIDPOINTS를 그대로 읽어 화면과 계산이 절대 어긋나지 않게 한다.
@@ -545,12 +612,16 @@
   };
   // 판정 뱃지 자리에 세울 띠 하나. 띠가 없으면 `미확인`이다.
   const rowBand = (result) => bandOf(result) || UNKNOWN_BAND;
-  // 뱃지 순서: 모의/목표/추정 → 근사(L2) → 참고(L3) → 실기 → 이상 → 판정 (FRAME §10.1).
+  // 특별전형을 일반전형 산식으로 판정했음을 밝히는 뱃지 (MODEL §1.1-2 · FRAME §11).
+  const assumedFormula = (result) => (result?.flags || []).includes('type-formula-assumed');
+  const assumedBadge = (result) => (assumedFormula(result) ? badge('산식 가정', 'neutral') : null);
+  // 뱃지 순서: 모의/목표/추정 → 산식 가정 → 근사(L2) → 참고(L3) → 실기 → 이상 → 판정 (FRAME §10.1·§11).
   // 판정 띠가 없는 L0은 그 자리에 `미확인`이 선다.
   const resultBadges = (result, dept) => {
     const band = rowBand(result);
     return [
       sourceBadge(result),
+      assumedBadge(result),
       result?.status === 'ok' && LEVEL_BADGE[result.level] ? badge(LEVEL_BADGE[result.level], 'neutral') : null,
       dept?.practical === true ? badge('실기', 'neutral') : null,
       isFlaggedAnomaly(dept) ? badge('이상', 'critical') : null,
@@ -608,6 +679,8 @@
     k: 'kor', m: 'math', e: 'eng', h: 'hist', i1: 'inq1', i2: 'inq2',
     ke: 'korElective', me: 'mathElective', s1: 'inq1Subject', s2: 'inq2Subject', g: 'gpa', md: 'mode',
   };
+  // 전형은 성적이 아니라 필터라 따로 적는다 (FRAME §11).
+  const TYPE_QUERY = 't';
   function readQuery() {
     const params = new URLSearchParams(location.search);
     let touched = false;
@@ -621,6 +694,15 @@
     if (touched) {
       state.scores.mode = state.scores.mode === 'grade' ? 'grade' : 'pct';
       saveScores();
+    }
+    // 전형은 성적과 따로 복원한다 — `t=rural` 하나만 있어도 그 전형으로 진단을 연다 (FRAME §11).
+    const kind = params.get(TYPE_QUERY);
+    const restoredType = Boolean(kind) && Boolean(TYPE_LABEL[kind]);
+    if (restoredType) {
+      state.filters.type = kind;
+      writeStore(STORE.filters, { ...state.filters, limit: undefined });
+    }
+    if (touched || restoredType) {
       state.view = 'diagnose';
       // 주소에 성적이 남아 있으면 새로고침할 때마다 내가 고친 값을 덮어쓴다. 한 번 읽고 지운다.
       try { globalThis.history?.replaceState?.(null, '', location.pathname); } catch (error) { /* 무시 */ }
@@ -632,6 +714,8 @@
       const value = state.scores[field];
       if (value !== '' && value !== null && value !== undefined) params.set(key, String(value));
     }
+    // 일반전형은 기본값이라 적지 않는다.
+    if (typeNow() !== DEFAULT_TYPE) params.set(TYPE_QUERY, typeNow());
     return `${location.origin}${location.pathname}?${params.toString()}`;
   }
 
@@ -956,17 +1040,21 @@
   // 성적·계열·체크한 라인/대학·정렬이 그대로면 지난 결과를 그대로 쓴다('더 보기'와 검색은 이 뒤에서 거른다).
   let diagnoseCache = { key: null, rows: null };
   function diagnoseAll() {
-    const key = JSON.stringify([state.scores, state.filters.track, state.filters.lines, state.filters.universities, state.filters.sort]);
+    const key = JSON.stringify([state.scores, state.filters.track, state.filters.lines,
+      state.filters.universities, state.filters.sort, typeNow()]);
     if (diagnoseCache.key !== key) {
+      const type = typeNow();
       diagnoseCache = {
         key,
+        // 전형은 옵션 객체와 넷째 인자 양쪽으로 넘긴다 — 엔진이 아직 옵션을 안 읽어도 화면은 돈다 (FRAME §11).
         rows: ENGINE.diagnose(profile(), DATA, {
           track: state.filters.track,
           universities: checkedUniversityIds(),
+          type,
           // 기본은 라인 순위(서연고→…)가 1차, 예상 컷 내림차순이 2차다 (FRAME §8.3).
           // '판정별'을 고르면 판정 묶음 안에서 아슬아슬한 순(차이 오름차순)으로 본다.
           sort: state.filters.sort === 'band' ? 'gap' : 'cut',
-        }),
+        }, { type }),
       };
     }
     return diagnoseCache.rows;
@@ -977,9 +1065,13 @@
     const query = state.filters.query.trim();
     // 체크한 라인·대학의 교집합. 비어 있으면(서로 어긋나게 체크했으면) 아무것도 남지 않는다.
     const allowed = checkedUniversityIds();
+    const type = typeNow();
     return rows.filter((row) => {
       if (allowed && !allowed.has(row.universityId)) return false;
       if (row.jeongsi.status === 'no-cut' || row.jeongsi.status === 'no-profile') return false;
+      // 고른 전형이 없는 모집단위는 목록에서 뺀다 (FRAME §11). 엔진의 판정과 데이터 양쪽으로 본다.
+      if (row.jeongsi.status === 'no-type') return false;
+      if (type !== DEFAULT_TYPE && !deptTypeKinds(row.dept).has(type)) return false;
       if (hiddenNow(row.universityId, row.dept)) return false;
       if (state.filters.band !== '전체' && bandOf(row.jeongsi)?.label !== state.filters.band) return false;
       if (state.filters.favOnly && !state.favorites.has(deptKey(row.universityId, row.dept.name))) return false;
@@ -1067,6 +1159,25 @@
     if (sheet) { sheet.dirty = true; refreshSheet(); return; }
     render();
   }
+  // 전형은 하나만 고른다 — 고르는 순간 목록이 그 전형으로 다시 선다 (FRAME §11).
+  function setFilterType(kind) {
+    state.filters.type = TYPE_LABEL[kind] ? kind : DEFAULT_TYPE;
+    // 목표 화면이 잡아 둔 전형은 놓아 준다 — 진단에서 고른 것이 다시 기본이 된다.
+    state.target = { ...state.target, type: '' };
+    state.filters.limit = 8;
+    saveFilters();
+    diagnoseCache.key = null;
+    if (sheet) { sheet.dirty = true; refreshSheet(); return; }
+    render();
+  }
+  // 전형 단일 선택 목록. 인라인과 시트가 같은 묶음을 쓴다.
+  function typeRadioGroup() {
+    const now = typeNow();
+    const { counts } = typeCounts();
+    return el('div', { class: 'jr-list', role: 'radiogroup', 'aria-label': '전형' },
+      typeOptions().map(([kind, label]) => radioRow(label, kind === now, () => setFilterType(kind), `${counts.get(kind)}곳`)));
+  }
+
   function clearFilterList(field) {
     state.filters[field] = [];
     state.filters.limit = 8;
@@ -1078,6 +1189,9 @@
 
   // 펼쳐진 체크 목록 하나. 라인은 라인 표 순서, 대학은 라인 머리글 아래 라인 순서다.
   function filterChecklist() {
+    if (state.filterPanel === 'type') {
+      return el('div', { class: 'jr-section' }, [listHeader('전형', typeLabelNow()), typeRadioGroup()]);
+    }
     if (state.filterPanel === 'line') {
       const lines = checkedLines();
       return el('div', { class: 'jr-section' }, [
@@ -1113,12 +1227,14 @@
   // 768px 이상은 지금 그대로 인라인이다.
   const NARROW_QUERY = '(max-width: 767px)';
   const isNarrow = () => Boolean(globalThis.matchMedia?.(NARROW_QUERY)?.matches);
-  const SHEET_TITLES = { line: '라인', university: '대학', favUniversity: '관심 대학' };
+  const SHEET_TITLES = { type: '전형', line: '라인', university: '대학', favUniversity: '관심 대학' };
   // 열려 있는 시트 하나. 저장하지 않는다.
   let sheet = null;
   let wasNarrow = isNarrow();
 
-  const sheetCount = (kind) => (kind === 'line' ? checkedLines().length
+  // 바닥의 '모두 해제'가 뜨는 조건. 전형은 단일 선택이라 해제할 것이 없다(늘 0).
+  const sheetCount = (kind) => (kind === 'type' ? 0
+    : kind === 'line' ? checkedLines().length
     : kind === 'university' ? checkedUniversities().length
     : state.favUniversities.size);
 
@@ -1136,6 +1252,7 @@
 
   // 시트 본문 — 인라인 판과 같은 checkRow 묶음이다.
   function sheetRows(kind) {
+    if (kind === 'type') return [typeRadioGroup()];
     if (kind === 'line') {
       const lines = checkedLines();
       return [el('div', { class: 'jr-list' }, DATA.lines.map((line) => checkRow(line.label, lines.includes(line.label),
@@ -1176,7 +1293,8 @@
     body.replaceChildren();
     for (const node of sheetRows(kind)) body.append(node);
     if (focused) {
-      const again = [...body.querySelectorAll('[role="checkbox"]')]
+      // 체크(다중)든 라디오(전형)든 고르는 행은 data-pick 하나로 찾는다.
+      const again = [...body.querySelectorAll('[data-pick]')]
         .find((node) => node.querySelector('.seed-list-item__title')?.textContent === focused);
       again?.focus?.({ preventScroll: true });
     }
@@ -1254,7 +1372,7 @@
     document.addEventListener('keydown', onKey);
     // 시트 뒤 화면은 스크롤하지 않는다.
     if (document.documentElement.style) document.documentElement.style.overflow = 'hidden';
-    const firstRow = content.querySelector('[role="checkbox"]') || closeButton;
+    const firstRow = content.querySelector('[data-pick]') || closeButton;
     // preventScroll: 포커스 때문에 뒤 화면이 딸려 움직이면 안 된다.
     firstRow?.focus?.({ preventScroll: true });
   }
@@ -1287,7 +1405,7 @@
     if (narrow) {
       state.filterPanel = null;
     } else {
-      state.filterPanel = kind === 'line' || kind === 'university' ? kind : null;
+      state.filterPanel = kind === 'type' || kind === 'line' || kind === 'university' ? kind : null;
       // 관심 대학은 넓은 폭에서 아코디언이다 — 시트가 열려 있었으면 열린 채로 잇는다.
       favPickerOpen = kind === 'favUniversity';
     }
@@ -1307,7 +1425,8 @@
 
     const head = screenHead(stats([
       [estimated ? '국·수·탐 평균 (등급)' : '국·수·탐 평균', fmt(average, 2)],
-      ['지원 가능', `${reachable}곳`],
+      // 일반이 아니면 어느 전형의 `지원 가능`인지 라벨로 붙인다 (FRAME §11).
+      [withTypeLabel('지원 가능'), `${reachable}곳`],
       held > 0 ? ['보류', `${held}곳`] : ['관심', `${state.favorites.size}곳`],
     ]));
 
@@ -1342,6 +1461,14 @@
       chip(uniCount > 0 ? `대학 ${uniCount}` : '대학', state.filterPanel === 'university' || uniCount > 0,
         (event) => openPanel('university', event.currentTarget || event.target),
         { 'aria-expanded': String(state.filterPanel === 'university'), 'data-sheet-opener': 'university' }),
+      // 전형 칩의 글자는 고른 전형 라벨이다 — 기본은 `일반` (FRAME §11).
+      chip(typeLabelNow(), state.filterPanel === 'type' || typeNow() !== DEFAULT_TYPE,
+        (event) => openPanel('type', event.currentTarget || event.target),
+        {
+          'aria-expanded': String(state.filterPanel === 'type'),
+          'aria-label': `전형 ${typeLabelNow()}`,
+          'data-sheet-opener': 'type',
+        }),
       chip('관심 학과', state.filters.favOnly, () => {
         state.filters.favOnly = !state.filters.favOnly; resetLimit(); saveFilters(); render();
       }),
@@ -1525,7 +1652,7 @@
     const picked = currentTarget();
     if (!picked) return [banner('데이터를 불러오지 못했습니다', 'criticalWeak')];
     const { university, dept } = picked;
-    state.target = { university: university.id, dept: dept.name };
+    state.target = { university: university.id, dept: dept.name, type: state.target.type };
 
     const universityOptions = targetUniversities();
     if (!universityOptions.some((row) => row.id === university.id)) universityOptions.unshift(university);
@@ -1544,18 +1671,33 @@
     const pickers = el('div', { class: 'jr-filters' }, [
       universitySelect,
       select(deptOptions.map((row) => [row.name, deptLabel(row.name)]), dept.name, (value) => {
-        state.target = { university: university.id, dept: value };
+        state.target = { university: university.id, dept: value, type: state.target.type };
         render();
       }, '모집단위'),
     ]);
 
+    // 전형 셀렉트는 그 모집단위에 있는 전형만 담고, 기본은 진단에서 고른 것이다 (FRAME §11).
+    const kinds = deptTypeKinds(dept);
+    const typePicks = TYPE_KINDS.filter(([kind]) => kinds.has(kind));
+    const typeList = typePicks.length > 0 ? typePicks : [[DEFAULT_TYPE, TYPE_LABEL[DEFAULT_TYPE]]];
+    const hasKind = (kind) => typeList.some(([row]) => row === kind);
+    const pickedType = hasKind(state.target.type) ? state.target.type
+      : hasKind(typeNow()) ? typeNow() : typeList[0][0];
+    state.target.type = pickedType;
+    const typeRow = el('div', { class: 'jr-filters' }, [
+      select(typeList, pickedType, (value) => {
+        state.target = { university: university.id, dept: dept.name, type: value };
+        render();
+      }, '전형'),
+    ]);
+
     // 층위 판정에 필요한 산식·도수분포·검산은 생성 데이터에 있다 (docs/MODEL.md §3).
     const target = ENGINE.analyzeTarget(profile(), university, dept, DATA.rules[university.id],
-      university.volatility ?? DATA.volatility, ENGINE.layerContext(DATA));
+      university.volatility ?? DATA.volatility, ENGINE.layerContext(DATA), { type: pickedType });
     if (target.status === 'no-cut' || target.status === 'basis-mismatch' || target.status === 'hold') {
       // 사유는 두세 단어만. 무엇이 있어야 판정하는지는 정보 탭의 표가 말한다 (FRAME §8.1).
       const label = target.status === 'basis-mismatch' ? '기준 불일치' : '보류';
-      return [screenHead(pickers),
+      return [screenHead([pickers, typeRow]),
         el('p', { class: 'jr-verdict-badges' }, [badge(label, 'neutral')]),
         banner(target.hold?.reason || '컷 없음', 'neutralWeak'), renderBasis(dept, target)];
     }
@@ -1583,6 +1725,7 @@
       el('p', { class: 'jr-verdict-badges' }, [
         badge(targetBand.label, BAND_TONE[targetBand.key]),
         sourceBadge(target),
+        assumedBadge(target),
         target.status === 'ok' && LEVEL_BADGE[target.level] ? badge(LEVEL_BADGE[target.level], 'neutral') : null,
       ].filter(Boolean)),
       el('p', { class: 'jr-muted', text: `${university.short} ${deptLabel(dept.name)} · ${cutChip(target)} · ${mineLine}${gradeChip}${avgChip}` }),
@@ -1657,11 +1800,11 @@
     conditions.push(listItem({ title: '반영 지표', detail: basisOf(university.id)?.text || '미확인', suffix: badge(basisShort(university.id), isApproxBasis(university.id) ? 'warning' : 'neutral') }));
     const conditionBlock = section([listHeader('조건'), el('div', { class: 'jr-list' }, conditions)]);
 
-    const compare = renderCompare(university, dept);
+    const compare = renderCompare(university, dept, pickedType);
 
     const favAction = el('div', { class: 'jr-actions' }, [favoriteButton(university.id, dept.name)]);
 
-    return [screenHead(pickers), verdict, renderEvidence(university, dept, target), favAction,
+    return [screenHead([pickers, typeRow]), verdict, renderEvidence(university, dept, target), favAction,
       planBlock, conditionBlock, renderStdScore(university, dept),
       renderBasis(dept, target), renderSusi(target), compare].filter(Boolean);
   }
@@ -1832,23 +1975,27 @@
         row.lastWait ?? '—', row.group ? `${row.group}군` : '—',
       ]);
       const changed = (changedYears.get(String(year)) || []).length > 0;
-      const scoreCell = (key) => {
-        const value = scoreOf(row, key);
-        const text = value === null ? '—' : fmt(value, 1);
-        return changed ? el('span', { class: 'jr-muted num', text }) : text;
-      };
-      const student = row.student?.p70 || null;
-      adiga.push([
-        el('span', {}, [`${year}학년도`, changed ? badge('참고', 'neutral') : null].filter(Boolean)),
-        scoreCell('p50'), scoreCell('p70'),
-        fmt(row.cut50, 1), fmt(row.cut70, 1),
-        studentCell(student, 'kor'), studentCell(student, 'math'),
-        studentCell(student, 'inq1'), studentCell(student, 'inq2'),
-        studentCell(student, 'eng'), studentCell(student, 'hist'),
-        row.rate ?? '—',
-        row.fill === null || row.fill === undefined ? '—'
-          : `${row.fill}명${row.fillRate === null || row.fillRate === undefined ? '' : ` (${fmt(row.fillRate, 0)}%)`}`,
-      ]);
+      // 표에는 그 모집단위의 **전 전형 행**을 다 적는다 (FRAME §11). types[]가 없으면 그 행 하나가 일반이다.
+      for (const entry of typeRowsOf(row)) {
+        const scoreCell = (key) => {
+          const value = scoreOf(entry, key);
+          const text = value === null ? '—' : fmt(value, 1);
+          return changed ? el('span', { class: 'jr-muted num', text }) : text;
+        };
+        const student = entry.student?.p70 || null;
+        adiga.push([
+          el('span', {}, [`${year}학년도`, changed ? badge('참고', 'neutral') : null].filter(Boolean)),
+          TYPE_LABEL[entry.kind] || TYPE_LABEL[DEFAULT_TYPE],
+          scoreCell('p50'), scoreCell('p70'),
+          fmt(entry.cut50, 1), fmt(entry.cut70, 1),
+          studentCell(student, 'kor'), studentCell(student, 'math'),
+          studentCell(student, 'inq1'), studentCell(student, 'inq2'),
+          studentCell(student, 'eng'), studentCell(student, 'hist'),
+          entry.rate ?? '—',
+          entry.fill === null || entry.fill === undefined ? '—'
+            : `${entry.fill}명${entry.fillRate === null || entry.fillRate === undefined ? '' : ` (${fmt(entry.fillRate, 0)}%)`}`,
+        ]);
+      }
     }
     const officialRows = Object.entries(dept.official || {}).sort().reverse().map(([year, row]) => [
       `${year}학년도`, fmt(row.cut70 ?? row.avg, 2), row.kind || '—', row.note || '',
@@ -1862,7 +2009,7 @@
         suffix: el('span', { class: 'jr-gap num', text: `${ANOMALY_LABEL[anomaly.kind]} · ${signed(-anomalyGap(anomaly), 1)}` }),
       })]) : null,
       adiga.length > 0
-        ? table(['연도', '환산 50', '환산 70', '평균 50', '평균 70', '국', '수', '탐1', '탐2', '영', '한', '경쟁률', '충원'], adiga)
+        ? table(['연도', '전형', '환산 50', '환산 70', '평균 50', '평균 70', '국', '수', '탐1', '탐2', '영', '한', '경쟁률', '충원'], adiga)
         : null,
       yearRows.length > 0 ? table(['연도', '컷', '종류', '출처'], yearRows) : muted('연도별 컷 자료 없음'),
       meta.length > 0 ? table(['연도', '모집인원', '예비번호', '군'], meta) : null,
@@ -1891,7 +2038,7 @@
     return accordion('수시', [el('div', { class: 'jr-list' }, rows)]);
   }
 
-  function renderCompare(university, dept) {
+  function renderCompare(university, dept, pickedType = DEFAULT_TYPE) {
     const keys = [...state.favorites].slice(0, 3);
     const picks = [];
     for (const key of keys) {
@@ -1918,13 +2065,15 @@
     picks.push(...visible);
     if (picks.length < 2) return null;
     // 진단 목록과 같은 정렬 — 예상 컷이 높은 곳부터, 같으면 대학 라인 순.
+    // 비교도 같은 전형으로 본다 — 그 모집단위에 그 전형이 없으면 일반으로 내린다 (FRAME §11).
+    const typeFor = (row) => (deptTypeKinds(row).has(pickedType) ? pickedType : DEFAULT_TYPE);
     const rows = picks
       .map((pick) => ({
         pick,
         universityOrder: pick.university.order ?? 0,
         dept: pick.dept,
         jeongsi: ENGINE.evaluateJeongsi(profile(), pick.university, pick.dept, DATA.rules[pick.university.id],
-          pick.university.volatility ?? DATA.volatility, ENGINE.layerContext(DATA)),
+          pick.university.volatility ?? DATA.volatility, ENGINE.layerContext(DATA), { type: typeFor(pick.dept) }),
       }))
       .sort(ENGINE.byCutDesc)
       .map(({ pick, jeongsi: result }) => [
@@ -2420,6 +2569,14 @@
         accordion('컷 중앙값 순', [
           table(['대학', '라인', '중앙값'], byMedian.map((row) => [row.short, row.line, fmt(row.medianCut, 1)])),
         ]),
+      ]),
+      // 전형 분류 (docs/MODEL.md §1.1-2). kind · 라벨 · 모집단위 수 · 전형명 예 둘, 값만 (FRAME §11).
+      aboutSection('types', [
+        listHeader('전형 분류', `${typeOptions().length}종`),
+        table(['kind', '라벨', '모집단위', '전형명 예'], typeOptions().map(([kind, label]) => [
+          kind, label, `${typeCounts().counts.get(kind)}곳`,
+          (typeCounts().samples.get(kind) || []).join(' · ') || '—',
+        ])),
       ]),
       aboutSection('basis', [
         listHeader('대학별 반영 지표', `표점 ${DATA.universities.filter((row) => isApproxBasis(row.id)).length}곳`),

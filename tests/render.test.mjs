@@ -490,9 +490,10 @@ test('등급 모드에서는 ⓘ 가 등급 표로 간다', () => {
 test('계열은 셀렉트로, 나머지 필터는 줄바꿈하는 칩으로 나온다', () => {
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  // 칩 목록은 FRAME §9.1 의 일곱 개뿐이다 — 계열 칩은 없다.
+  // 칩 목록은 FRAME §9.1 의 일곱 개에 §11 의 전형 칩 하나뿐이다 — 계열 칩은 없다.
+  // 전형 칩의 글자는 고른 전형 라벨이라 기본값에서는 `일반`이고, 자리는 `대학` 다음이다.
   const chips = panel.querySelector('.jr-chips').querySelectorAll('.seed-chip-tabs__trigger').map((node) => node.text.trim());
-  assert.deepEqual(chips, ['라인', '대학', '관심 학과', '관심 대학', '예체능 제외', '말도 안되는거 제외', '여대 제외']);
+  assert.deepEqual(chips, ['라인', '대학', '일반', '관심 학과', '관심 대학', '예체능 제외', '말도 안되는거 제외', '여대 제외']);
   for (const gone of ['인문', '자연', '자유전공']) {
     assert.ok(!chips.includes(gone), `계열 칩 '${gone}' 이 남아 있다`);
   }
@@ -908,4 +909,185 @@ test('정보 탭에 층위 네 줄·산식 검산 절·어디가 각주 인용�
   assert.ok(quote, '인용 블록이 없다');
   assert.equal(quote.querySelectorAll('p').length, 4, '어디가 각주 네 줄');
   assert.match(quote.text, /50% cut : 최종등록자 중 수능 환산점수 순으로 상위 50%에 해당하는 점수/u);
+});
+
+// ---------------------------------------------------------------- 전형 (FRAME §11)
+// 지금 생성 데이터에는 `types[]`가 없어 고를 수 있는 전형이 `일반` 하나뿐이다. 데이터가 들어왔을 때를
+// 위해 한 모집단위에만 농어촌 행을 얹고, 엔진이 `{ type }`을 읽는 것처럼 흉내 내어 화면을 본다
+// (docs/MODEL.md §1.1-2 · docs/FRAME.md §11).
+const TYPE_FIXTURE = { universityId: 'kookmin', typeName: '수능(농어촌학생전형)' };
+
+// 그 대학에서 컷이 공개된 평범한 모집단위 하나에 general·rural 두 전형 행을 얹는다.
+function addRuralType(data) {
+  const university = data.universities.find((row) => row.id === TYPE_FIXTURE.universityId);
+  const dept = university.departments.find((row) => typeof row.jeongsi?.['2026']?.cut70 === 'number'
+    && row.track !== '예체능' && !/의예|약학/u.test(row.name));
+  assert.ok(dept, '전형 픽스처를 얹을 모집단위가 없다');
+  const row = dept.jeongsi['2026'];
+  const base = {
+    period: row.period, group: row.group, quota: row.quota, rate: row.rate, fill: row.fill,
+    score: row.score, student: row.student, aggregation: row.aggregation, consistent: row.consistent,
+    cut50: row.cut50, cut70: row.cut70, score70: row.score70,
+  };
+  row.types = [
+    { ...base, kind: 'general', label: '일반', typeName: row.typeName },
+    {
+      ...base, kind: 'rural', label: '농어촌', typeName: TYPE_FIXTURE.typeName,
+      quota: 3, rate: 4.2, fill: 1, cut50: 73, cut70: 71.5, score70: 612.5, score: { p50: 615, p70: 612.5 },
+    },
+  ];
+  return { university, dept };
+}
+
+// 엔진이 아직 옵션을 안 읽으므로, 읽는 엔진을 흉내 낸다: 없는 전형이면 `no-type`,
+// 특별전형이면 `type-formula-assumed` 깃발과 그 전형명을 단다.
+// filters 는 객체이거나, 농어촌 행을 얹은 자리를 받아 필터를 짓는 함수다.
+function bootTypes(filters = {}) {
+  const built = buildContext();
+  const place = addRuralType(built.context.IPSI_DATA);
+  built.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
+  built.context.localStorage.setItem('jr.filters', JSON.stringify(typeof filters === 'function' ? filters(place) : filters));
+  const real = built.context.IPSI_ENGINE;
+  const kindsOf = (dept) => new Set((dept?.jeongsi?.['2026']?.types || [{ kind: 'general' }]).map((row) => row.kind));
+  const dress = (result, dept, type) => {
+    if (!type || type === 'general') return result;
+    if (!kindsOf(dept).has(type)) return { ...result, status: 'no-type' };
+    return {
+      ...result,
+      flags: [...(result.flags || []), 'type-formula-assumed'],
+      apply: { ...(result.apply || {}), typeName: TYPE_FIXTURE.typeName },
+    };
+  };
+  built.context.IPSI_ENGINE = {
+    ...real,
+    diagnose: (profile, data, options = {}, extra = {}) => real.diagnose(profile, data, options)
+      .map((row) => ({ ...row, jeongsi: dress(row.jeongsi, row.dept, options.type || extra.type) })),
+    analyzeTarget: (profile, university, dept, rule, spread, ctx, options = {}) => dress(
+      real.analyzeTarget(profile, university, dept, rule, spread, ctx), dept, options.type),
+    evaluateJeongsi: (profile, university, dept, rule, spread, ctx, options = {}) => dress(
+      real.evaluateJeongsi(profile, university, dept, rule, spread, ctx), dept, options.type),
+  };
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
+  return { ...built, ...place };
+}
+
+const radioNamed = (panel, name) => panel.querySelectorAll('[role="radio"]')
+  .find((node) => node.querySelector('.seed-list-item__title')?.text.trim() === name);
+const tableWith = (panel, column) => panel.querySelectorAll('.jr-table')
+  .find((node) => node.querySelectorAll('th').some((cell) => cell.text.trim() === column));
+// 흉내 DOM 은 자손 선택자('tbody tr')를 모른다 — tbody 를 먼저 잡고 그 안의 행을 센다.
+const bodyRows = (table) => table.querySelectorAll('tbody')[0].querySelectorAll('tr');
+
+test('데이터에 types[]가 없으면 전형은 일반 하나뿐이다', () => {
+  const built = boot(FULL_SCORES);
+  const panel = openDiagnose(built);
+  const chip = chipNamed(panel, '일반');
+  assert.ok(chip, '전형 칩이 없다');
+  assert.equal(chip.getAttribute('data-sheet-opener'), 'type');
+  chip.dispatch('click');
+  const group = panel.querySelectorAll('[role="radiogroup"]').find((node) => node.getAttribute('aria-label') === '전형');
+  assert.ok(group, '전형 단일 선택 목록이 펼쳐져야 한다');
+  const rows = group.querySelectorAll('[role="radio"]');
+  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반']);
+  assert.equal(rows[0].getAttribute('aria-checked'), 'true');
+  // 부제는 그 전형으로 컷이 공개된 모집단위 수다.
+  assert.match(rows[0].querySelector('.seed-list-item__detail').text.trim(), /^\d+곳$/u);
+});
+
+test('전형 목록은 켜진 행만 체크하고 고르면 칩 글자·스탯 라벨이 함께 바뀐다', () => {
+  const built = bootTypes();
+  const panel = openDiagnose(built);
+  chipNamed(panel, '일반').dispatch('click');
+  const rows = panel.querySelectorAll('[role="radio"]');
+  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반', '농어촌']);
+  assert.equal(radioNamed(panel, '농어촌').querySelector('.seed-list-item__detail').text.trim(), '1곳');
+  radioNamed(panel, '농어촌').dispatch('click');
+  // 단일 선택 — 켜진 행 하나만 체크다.
+  const checked = panel.querySelectorAll('[role="radio"]').filter((node) => node.getAttribute('aria-checked') === 'true');
+  assert.deepEqual(checked.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['농어촌']);
+  assert.ok(chipNamed(panel, '농어촌'), '칩 글자가 고른 전형 라벨이어야 한다');
+  assert.match(panel.text, /지원 가능 · 농어촌/u);
+  assert.equal(JSON.parse(built.context.localStorage.getItem('jr.filters')).type, 'rural');
+});
+
+test('농어촌을 고르면 그 전형이 없는 모집단위는 목록에서 빠진다', () => {
+  const built = bootTypes({ type: 'rural' });
+  const panel = openDiagnose(built);
+  const titles = rowTitles(panel);
+  assert.ok(titles.length > 0, '농어촌 행이 하나는 남아야 한다');
+  assert.ok(titles.every((title) => title.startsWith('국민대')), titles.slice(0, 3).join(' / '));
+  // 산식 가정 뱃지는 근사·참고 앞에 neutral 로 선다 (FRAME §11).
+  const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
+  const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
+  assert.ok(badges.includes('산식 가정'), `산식 가정 뱃지가 없다: ${badges.join(' / ')}`);
+  for (const later of ['근사', '참고']) {
+    if (badges.includes(later)) assert.ok(badges.indexOf('산식 가정') < badges.indexOf(later), badges.join(' / '));
+  }
+});
+
+test('목표 화면은 전형 셀렉트를 따로 한 줄로 두고 진단에서 고른 전형을 기본으로 쓴다', () => {
+  const built = bootTypes({ type: 'rural', universities: ['kookmin'] });
+  const panel = openDiagnose(built);
+  panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap')).dispatch('click');
+  const typeSelect = panel.querySelectorAll('.jr-select').find((node) => node.getAttribute('aria-label') === '전형');
+  assert.ok(typeSelect, '목표 화면에 전형 셀렉트가 없다');
+  assert.deepEqual(typeSelect.querySelectorAll('option').map((node) => node.text.trim()), ['일반', '농어촌']);
+  assert.equal(typeSelect.querySelectorAll('option').find((node) => node.getAttribute('selected') !== null).text.trim(), '농어촌');
+  // 대학·모집단위 셀렉트와 같은 줄에 끼우지 않는다 (FRAME §11).
+  const lines = panel.querySelector('.jr-screen-head').querySelectorAll('.jr-filters');
+  assert.equal(lines.length, 2, '셀렉트가 두 줄이어야 한다');
+  assert.equal(lines[1].querySelectorAll('.jr-select').length, 1);
+  // 근거 `지원` 행이 그 전형명을 적는다.
+  assert.match(panel.text, /수능\(농어촌학생전형\)/u);
+  // 일반으로 되돌리면 전형명도 돌아온다.
+  typeSelect.dispatch('change', { target: { value: 'general' } });
+  assert.ok(!panel.text.includes('농어촌학생전형'), '일반으로 바꿨는데 농어촌 전형명이 남아 있다');
+});
+
+test('기준 숫자 표에 전형 열이 생기고 전 전형 행이 다 실린다', () => {
+  const built = bootTypes((place) => ({ universities: ['kookmin'], query: place.dept.name }));
+  const panel = openDiagnose(built);
+  panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap')).dispatch('click');
+  const table = tableWith(panel, '환산 70');
+  assert.ok(table, '어디가 열 표가 없다');
+  const head = table.querySelectorAll('th').map((cell) => cell.text.trim());
+  assert.equal(head[1], '전형', `전형 열이 연도 다음이어야 한다: ${head.join(' ')}`);
+  const kinds = bodyRows(table).map((row) => row.querySelectorAll('td')[0].text.trim());
+  assert.deepEqual(kinds, ['일반', '농어촌']);
+  // 농어촌 행은 그 전형의 값이다.
+  assert.match(table.text, /71\.5/u);
+});
+
+test('정보 탭 전형 분류 절이 kind·라벨·모집단위 수·전형명 예 둘을 적는다', () => {
+  const built = bootTypes();
+  built.tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
+  const section = built.panel.querySelector('#jr-about-types');
+  assert.ok(section, '전형 분류 절이 없다');
+  const head = section.querySelector('.jr-table').querySelectorAll('th').map((cell) => cell.text.trim());
+  assert.deepEqual(head.slice(0, 4), ['kind', '라벨', '모집단위', '전형명 예']);
+  const rows = bodyRows(section.querySelector('.jr-table'))
+    .map((row) => [row.querySelector('th').text.trim(), ...row.querySelectorAll('td').map((cell) => cell.text.trim())]);
+  assert.deepEqual(rows.map((row) => row[0]), ['general', 'rural']);
+  assert.deepEqual(rows[1].slice(1, 3), ['농어촌', '1곳']);
+  assert.match(rows[1][3], /수능\(농어촌학생전형\)/u);
+});
+
+test('공유 링크가 t=<kind>로 전형을 싣고 되읽는다', () => {
+  // 되읽기: 주소에 t=rural 만 있어도 그 전형으로 진단이 열린다.
+  const again = buildContext();
+  addRuralType(again.context.IPSI_DATA);
+  again.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
+  again.context.location.search = '?t=rural';
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), again.context, { filename: 'assets/app.js' });
+  assert.equal(JSON.parse(again.context.localStorage.getItem('jr.filters')).type, 'rural');
+  assert.equal(again.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').getAttribute('aria-selected'), 'true');
+  assert.ok(chipNamed(again.panel, '농어촌'), '되읽은 전형이 칩에 없다');
+
+  // 모르는 kind 는 무시하고 일반으로 둔다.
+  const bad = buildContext();
+  bad.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
+  bad.context.location.search = '?t=nope';
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), bad.context, { filename: 'assets/app.js' });
+  bad.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  assert.ok(chipNamed(bad.panel, '일반'), '모르는 kind 인데 일반으로 돌아오지 않았다');
 });

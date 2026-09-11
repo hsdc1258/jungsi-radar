@@ -56,6 +56,8 @@ if (!existsSync(seedCache)) {
 const seedCss = readFileSync(seedCache, 'utf8');
 
 const problems = [];
+// 데이터가 아직 없어 건너뛴 시나리오. 실패는 아니지만 마지막에 반드시 적는다.
+const notes = [];
 const web = serve(ROOT, PORT);
 await web.ready;
 const browser = await chromium.launch(CHROME ? { executablePath: CHROME } : {});
@@ -103,7 +105,8 @@ function sheetShape() {
   return {
     open: Boolean(content) && content.getBoundingClientRect().height > 0,
     title: content?.querySelector('.seed-bottom-sheet__title')?.textContent.trim() || '',
-    rows: content ? content.querySelectorAll('[role="checkbox"]').length : 0,
+    // 다중 선택(라인·대학)은 checkbox, 단일 선택(전형)은 radio다 (FRAME §11).
+    rows: content ? content.querySelectorAll('[role="checkbox"], [role="radio"]').length : 0,
     focusInside: Boolean(content && active && content.contains(active)),
     locked: getComputedStyle(document.documentElement).overflow === 'hidden',
   };
@@ -192,6 +195,85 @@ async function walk(page, tag, mode) {
   await page.waitForSelector('#panel #jr-about-basis');
   await look(page, `${tag}/정보`);
   if (await page.getAttribute('#infoButton', 'hidden') === null) problems.push(`${tag}/정보: 정보 탭인데 ⓘ 가 남아 있다`);
+}
+
+// 전형 고르기 (FRAME §11). 768px 미만은 시트, 이상은 인라인 단일 선택 목록이다.
+// 데이터에 `types[]`가 없으면 고를 수 있는 전형이 `일반` 하나뿐이라 농어촌 판은 건너뛰고 그 사실만 적는다.
+async function typeRun(page, tag) {
+  await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+  await page.waitForSelector('.jr-chips');
+  const opener = page.locator('[data-sheet-opener="type"]');
+  if (await opener.count() === 0) { problems.push(`${tag}/전형: 전형 칩이 없다`); return; }
+  const label = (await opener.textContent()).trim();
+  if (label !== '일반') problems.push(`${tag}/전형: 기본 칩 글자가 '${label}' 이다`);
+  const narrow = (page.viewportSize()?.width || 0) < 768;
+  await opener.click();
+  await page.waitForTimeout(240);
+  const shape = await page.evaluate(sheetShape);
+  if (narrow && !shape.open) { problems.push(`${tag}/전형: 전형 시트가 열리지 않았다`); return; }
+  if (narrow && shape.title !== '전형') problems.push(`${tag}/전형: 시트 제목이 ${shape.title}`);
+  if (!narrow && shape.open) problems.push(`${tag}/전형: 768px 이상인데 시트가 떴다`);
+
+  const scope = narrow ? '.jr-sheet' : '#panel';
+  const rows = page.locator(`${scope} [role="radio"]`);
+  const labels = (await rows.locator('.seed-list-item__title').allTextContents()).map((text) => text.trim());
+  if (labels.length === 0) { problems.push(`${tag}/전형: 단일 선택 목록이 없다`); return; }
+  if (labels[0] !== '일반') problems.push(`${tag}/전형: 첫 행이 '${labels[0]}' 이다`);
+  const checked = await rows.evaluateAll((nodes) => nodes.filter((node) => node.getAttribute('aria-checked') === 'true').length);
+  if (checked !== 1) problems.push(`${tag}/전형: 단일 선택인데 켜진 행이 ${checked}개다`);
+
+  const index = labels.indexOf('농어촌');
+  if (index === -1) {
+    notes.push(`${tag}/전형: 데이터에 types[]가 없어 고를 수 있는 전형이 ${labels.join('·')} 뿐 — 농어촌 판 건너뜀`);
+    if (narrow) await page.locator('.jr-sheet-footer button:has-text("완료")').click();
+    else await opener.click();
+    await page.waitForTimeout(200);
+    return;
+  }
+
+  await rows.nth(index).click();
+  await page.waitForTimeout(220);
+  if (narrow) {
+    await page.locator('.jr-sheet-footer button:has-text("완료")').click();
+    await page.waitForTimeout(240);
+  }
+  const chip = (await page.locator('[data-sheet-opener="type"]').textContent()).trim();
+  if (chip !== '농어촌') problems.push(`${tag}/전형: 고른 뒤 칩이 '${chip}' 이다`);
+  const stats = await page.locator('#panel .jr-stat-label').allTextContents();
+  if (!stats.some((text) => text.trim() === '지원 가능 · 농어촌')) {
+    problems.push(`${tag}/전형: 스탯 라벨이 ${stats.map((text) => text.trim()).join(' / ')}`);
+  }
+  const listed = await page.locator('#panel .jr-row .jr-gap').count();
+  if (listed === 0) problems.push(`${tag}/전형: 농어촌 판정 행이 하나도 없다`);
+  await look(page, `${tag}/전형`);
+
+  // 목표 탭에도 같은 전형이 실려 있어야 한다.
+  await page.locator('#panel .jr-row').filter({ has: page.locator('.jr-gap') }).first().click();
+  await page.waitForSelector('#panel .jr-verdict, #panel .seed-inline-banner__root');
+  const typeSelect = page.locator('#panel select[aria-label="전형"]');
+  if (await typeSelect.count() === 0) problems.push(`${tag}/전형: 목표 화면에 전형 셀렉트가 없다`);
+  else {
+    const value = await typeSelect.inputValue();
+    if (value !== 'rural') problems.push(`${tag}/전형: 목표 전형 셀렉트가 ${value} 다`);
+    const options = await typeSelect.locator('option').allTextContents();
+    if (!options.map((text) => text.trim()).includes('농어촌')) problems.push(`${tag}/전형: 목표 셀렉트에 농어촌이 없다`);
+  }
+  await look(page, `${tag}/전형 목표`);
+
+  // 다음 판을 위해 일반으로 되돌린다.
+  await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+  await page.waitForSelector('.jr-chips');
+  await page.locator('[data-sheet-opener="type"]').click();
+  await page.waitForTimeout(220);
+  await page.locator(`${narrow ? '.jr-sheet' : '#panel'} [role="radio"]`).first().click();
+  await page.waitForTimeout(200);
+  if (narrow) {
+    await page.locator('.jr-sheet-footer button:has-text("완료")').click();
+    await page.waitForTimeout(220);
+  } else {
+    await page.locator('[data-sheet-opener="type"]').click();
+    await page.waitForTimeout(200);
+  }
 }
 
 // 768px 미만에서 시트를 열고 골라 '완료'로 닫는다. 패널 스크롤 자리는 그대로여야 한다.
@@ -288,6 +370,7 @@ try {
     for (const mode of ['pct', 'grade', 'std']) {
       await walk(page, `${tag}/${CASES[mode].label}`, mode);
     }
+    await typeRun(page, tag);
     if (width < 768) {
       await sheetRun(page, tag);
       await widenRun(page, tag);
@@ -331,7 +414,9 @@ try {
   await web.close();
 }
 
+if (notes.length > 0) console.log(`건너뜀 ${notes.length}건\n${notes.join('\n')}`);
 console.log(problems.length
   ? `문제 ${problems.length}건\n${problems.join('\n')}`
-  : `문제 없음 — 폭 ${VIEWPORTS.length / 2}종 × 2테마 × 입력 기준 3종 전 흐름 + 시트 2판 + 넓히기 2판 + 공유 링크 1판 통과`);
+  : `문제 없음 — 폭 ${VIEWPORTS.length / 2}종 × 2테마 × 입력 기준 3종 전 흐름 + 전형 ${VIEWPORTS.length}판`
+    + ' + 시트 2판 + 넓히기 2판 + 공유 링크 1판 통과');
 process.exit(problems.length ? 1 : 0);

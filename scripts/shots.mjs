@@ -167,7 +167,8 @@ try {
             problems.push(`${tag}: 칩 묶음이 가로 스크롤한다 (overflow-x: ${fit.overflowX})`);
           }
           if (fit.marginLeft.startsWith('-')) problems.push(`${tag}: 칩 묶음에 음수 마진이 남아 있다 (${fit.marginLeft})`);
-          if (fit.count !== 7) problems.push(`${tag}: 칩이 ${fit.count}개다 (계열 칩은 셀렉트로 갔다)`);
+          // §9.1 의 일곱 개 + §11 의 전형 칩 하나. 계열은 칩이 아니라 셀렉트다.
+          if (fit.count !== 8) problems.push(`${tag}: 칩이 ${fit.count}개다 (계열 칩은 셀렉트로 갔다)`);
         }
       }
       await page.close();
