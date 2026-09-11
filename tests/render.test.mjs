@@ -923,8 +923,15 @@ const TYPE_ORDER = [
 const TYPE_NAME = Object.fromEntries(TYPE_ORDER);
 // 컷이 공개된 행인가 — 화면이 전형을 목록에 올릴지 정하는 기준과 같다 (app.js hasTypeCut).
 const hasTypeCut = (row) => typeof row?.cut70 === 'number' || typeof row?.score70 === 'number'
-  || typeof row?.score?.p70 === 'number';
+  || typeof row?.score?.p70 === 'number' || typeof row?.student?.p70?.avg === 'number';
+// 기준 숫자 표에 적히는 행인가 — 컷이 있거나 최종 모집인원이 남아 있어야 한다 (FRAME §11).
+const typeQuotaOf = (row) => (typeof row?.quota === 'number' ? row.quota
+  : typeof row?.quotaDetail?.final === 'number' ? row.quotaDetail.final : 0);
+const hasTypeValues = (row) => hasTypeCut(row) || typeQuotaOf(row) > 0;
 const typeRowsOf = (yearRow) => (Array.isArray(yearRow?.types) && yearRow.types.length > 0 ? yearRow.types : [yearRow]);
+// 표에 남는 행. 대표(일반) 행은 비어 있어도 남는다.
+const shownTypeRowsOf = (yearRow) => typeRowsOf(yearRow)
+  .filter((row) => kindOf(row) === 'general' || hasTypeValues(row));
 const yearRowsOf = (dept) => Object.entries(dept?.jeongsi || {})
   .filter(([year]) => year !== 'alts').map(([, row]) => row);
 // 그 모집단위에서 컷이 공개된 kind 집합. types[] 가 없는 해의 행은 `일반` 으로 센다
@@ -988,6 +995,23 @@ function ruralPlace(data) {
     }
   }
   throw new Error('농어촌 컷이 공개된 모집단위를 찾지 못했다');
+}
+
+// 컷도 최종 모집인원도 없는 전형 행을 가진 모집단위 하나. 그 kind 가 어느 해에도 값을 갖지
+// 않아야 표에서 통째로 사라진 것을 셀 수 있다. 고르는 조건은 ruralPlace 와 같다.
+function emptyTypePlace(data) {
+  const skip = new Set(['snu', 'yonsei', 'korea']);
+  for (const university of data.universities) {
+    if (skip.has(university.id) || /여자대학교|여대/u.test(university.name)) continue;
+    for (const dept of university.departments || []) {
+      if (dept.track === '예체능' || dept.track === '의약') continue;
+      if (!deptKinds(dept).has('general')) continue;
+      const shown = new Set(yearRowsOf(dept).flatMap(shownTypeRowsOf).map(kindOf));
+      const gone = yearRowsOf(dept).flatMap(typeRowsOf).map(kindOf).find((kind) => !shown.has(kind));
+      if (gone) return { university, dept, gone };
+    }
+  }
+  throw new Error('빈 전형 행을 가진 모집단위를 찾지 못했다');
 }
 
 const radioNamed = (panel, name) => panel.querySelectorAll('[role="radio"]')
@@ -1100,7 +1124,7 @@ test('목표 화면은 전형 셀렉트를 따로 한 줄로 두고 진단에서
   assert.ok(panel.text.includes(generalName), `일반 전형명 '${generalName}' 이 없다`);
 });
 
-test('기준 숫자 표에 전형 열이 생기고 전 전형 행이 다 실린다', () => {
+test('기준 숫자 표에 전형 열이 생기고 값이 있는 전형 행이 실린다', () => {
   const data = buildContext().context.IPSI_DATA;
   const place = ruralPlace(data);
   const built = bootWith(FULL_SCORES, { universities: [place.university.id], query: place.dept.name });
@@ -1110,9 +1134,9 @@ test('기준 숫자 표에 전형 열이 생기고 전 전형 행이 다 실린�
   assert.ok(table, '어디가 열 표가 없다');
   const head = table.querySelectorAll('th').map((cell) => cell.text.trim());
   assert.equal(head[1], '전형', `전형 열이 연도 다음이어야 한다: ${head.join(' ')}`);
-  // 연도 내림차순 × 그 해의 전 전형 행.
+  // 연도 내림차순 × 그 해의 값이 있는 전형 행.
   const expected = Object.entries(place.dept.jeongsi).filter(([year]) => year !== 'alts').sort().reverse()
-    .flatMap(([, yearRow]) => typeRowsOf(yearRow).map((row) => TYPE_NAME[row.kind] || '일반'));
+    .flatMap(([, yearRow]) => shownTypeRowsOf(yearRow).map((row) => TYPE_NAME[kindOf(row)]));
   const kinds = bodyRows(table).map((row) => row.querySelectorAll('td')[0].text.trim());
   assert.deepEqual(kinds, expected);
   // 농어촌 행은 그 전형의 값이다 — 일반 행의 값을 옮겨 적지 않는다.
@@ -1121,6 +1145,32 @@ test('기준 숫자 표에 전형 열이 생기고 전 전형 행이 다 실린�
   const cells = bodyRows(table).find((row) => row.querySelectorAll('td')[0].text.trim() === '농어촌').querySelectorAll('td');
   assert.equal(cells[2].text.trim(), ruralRow.score.p70.toFixed(1), '환산 70 이 농어촌 행 값이어야 한다');
   assert.equal(cells[4].text.trim(), ruralRow.cut70.toFixed(1), '평균 70 이 농어촌 행 값이어야 한다');
+});
+
+test('기준 숫자 표는 컷도 최종 모집인원도 없는 전형 행을 적지 않는다', () => {
+  const data = buildContext().context.IPSI_DATA;
+  const place = emptyTypePlace(data);
+  const built = bootWith(FULL_SCORES, { universities: [place.university.id], query: place.dept.name });
+  const panel = openDiagnose(built);
+  const target = panel.querySelectorAll('.jr-row')
+    .find((node) => node.querySelector('.seed-list-item__title')?.text.trim() === rowTitleOf(place.university, place.dept));
+  assert.ok(target, `${rowTitleOf(place.university, place.dept)} 행이 진단 목록에 없다`);
+  target.dispatch('click');
+  const table = tableWith(panel, '환산 70');
+  assert.ok(table, '어디가 열 표가 없다');
+  const kinds = bodyRows(table).map((row) => row.querySelectorAll('td')[0].text.trim());
+  // 값이 없던 전형은 표에서 통째로 빠진다.
+  assert.ok(!kinds.includes(TYPE_NAME[place.gone]),
+    `빈 전형 '${TYPE_NAME[place.gone]}' 행이 남아 있다: ${kinds.join(' / ')}`);
+  // 남은 행은 하나도 빠짐없이 컷이나 최종 모집인원을 갖는다. 대표(일반) 행은 언제나 남는다.
+  const shown = Object.entries(place.dept.jeongsi).filter(([year]) => year !== 'alts').sort().reverse()
+    .flatMap(([, yearRow]) => shownTypeRowsOf(yearRow));
+  assert.deepEqual(kinds, shown.map((row) => TYPE_NAME[kindOf(row)]));
+  for (const row of shown) {
+    if (kindOf(row) === 'general') continue;
+    assert.ok(hasTypeValues(row), `값 없는 행이 남았다: ${row.typeName}`);
+  }
+  assert.ok(kinds.includes('일반'), '대표 행은 언제나 남아야 한다');
 });
 
 test('정보 탭 전형 분류 절이 kind·라벨·모집단위 수·전형명 예 둘을 적는다', () => {

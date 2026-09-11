@@ -333,7 +333,13 @@
     : [{ ...yearRow, kind: TYPE_LABEL[yearRow?.kind] ? yearRow.kind : DEFAULT_TYPE }]);
   // 컷이 공개된 행인가. 환산점수 70%든 평균 백분위 70%든 하나만 있으면 센다.
   const hasTypeCut = (row) => typeof row?.cut70 === 'number' || typeof row?.score70 === 'number'
-    || typeof row?.score?.p70 === 'number';
+    || typeof row?.score?.p70 === 'number' || typeof row?.student?.p70?.avg === 'number';
+  // 그 행의 최종 모집인원. 전형 행은 `quota`(빌드가 이미 final 만 싣는다), types[] 없는 해의
+  // 대표 행은 `quotaDetail.final` 도 함께 본다 (scripts/build-data.mjs typeRowsOf).
+  const typeQuota = (row) => (typeof row?.quota === 'number' ? row.quota
+    : typeof row?.quotaDetail?.final === 'number' ? row.quotaDetail.final : 0);
+  // 표에 적을 값이 하나라도 있는 행인가 — 컷도 최종 모집인원도 없으면 소음이다 (FRAME §11).
+  const hasTypeValues = (row) => hasTypeCut(row) || typeQuota(row) > 0;
   // 그 모집단위에 컷이 공개된 전형 kind 집합. types[]가 없으면 `일반` 하나다.
   function deptTypeKinds(dept) {
     const kinds = new Set();
@@ -1975,8 +1981,9 @@
         row.lastWait ?? '—', row.group ? `${row.group}군` : '—',
       ]);
       const changed = (changedYears.get(String(year)) || []).length > 0;
-      // 표에는 그 모집단위의 **전 전형 행**을 다 적는다 (FRAME §11). types[]가 없으면 그 행 하나가 일반이다.
-      for (const entry of typeRowsOf(row)) {
+      // 표에는 **값이 있는 전형 행**만 적는다 — 컷도 최종 모집인원도 없는 행은 칸이 전부 `—`라
+      // 소음이다 (FRAME §11). 대표(일반) 행은 비어 있어도 남긴다. types[]가 없으면 그 행 하나가 일반이다.
+      for (const entry of typeRowsOf(row).filter((item) => item.kind === DEFAULT_TYPE || hasTypeValues(item))) {
         const scoreCell = (key) => {
           const value = scoreOf(entry, key);
           const text = value === null ? '—' : fmt(value, 1);
