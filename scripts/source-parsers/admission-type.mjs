@@ -16,9 +16,9 @@ export const TYPE_RULES = Object.freeze([
   { kind: 'disability', label: '특수교육', match: /특수교육|장애인/u },
   { kind: 'overseas', label: '재외국민', match: /재외국민|북한이탈|외국인|새터민/u },
   { kind: 'regional', label: '지역인재', match: /지역인재|지역균형/u },
-  { kind: 'equal', label: '기회균형', match: /기회균형|기초생활|차상위|한부모|저소득|사회배려|교육기회|고른기회|한마음|사회통합/u },
+  { kind: 'equal', label: '기회균형', match: /기회균형|기초생활|차상위|한부모|저소득|사회배려|경제배려|이웃사랑|교육기회|고른기회|한마음|사회통합/u },
   { kind: 'practical', label: '실기·특기', match: /실기|특기자|체육특기|예능/u },
-  { kind: 'other', label: '기타', match: /군사|계약|조기취업|성인학습자|만학도|재직자|평생|부사관|해군|육군/u },
+  { kind: 'other', label: '기타', match: /군사|국방|국가안보|안보융합|계약|조기취업|성인학습자|만학도|재직자|평생|부사관|해군|육군|신학특별|항공시스템공학 특별/u },
 ]);
 
 export const GENERAL = Object.freeze({ kind: 'general', label: '일반' });

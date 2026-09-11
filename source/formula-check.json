@@ -1623,7 +1623,7 @@
    "label": "기회균형",
    "match": 61,
    "mismatch": 55,
-   "unchecked": 1404,
+   "unchecked": 1442,
    "comparable": 116,
    "rate": 52.6
   },
@@ -1639,20 +1639,20 @@
   {
    "kind": "other",
    "label": "기타",
-   "match": 4,
-   "mismatch": 6,
-   "unchecked": 6,
-   "comparable": 10,
-   "rate": 40
+   "match": 6,
+   "mismatch": 14,
+   "unchecked": 14,
+   "comparable": 20,
+   "rate": 30
   },
   {
    "kind": "general",
    "label": "일반",
-   "match": 1878,
-   "mismatch": 1598,
-   "unchecked": 1044,
-   "comparable": 3476,
-   "rate": 54
+   "match": 1876,
+   "mismatch": 1590,
+   "unchecked": 998,
+   "comparable": 3466,
+   "rate": 54.1
   }
  ],
  "samples": {
