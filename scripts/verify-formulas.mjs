@@ -14,6 +14,7 @@ import path from 'node:path';
 import { loadEngine } from './engine-node.mjs';
 import { buildRules2026 } from './merge-rules.mjs';
 import { classifyTrack, overrideTrack } from './build-data.mjs';
+import { TYPE_KINDS, TYPE_LABEL, classifyType } from './source-parsers/admission-type.mjs';
 
 const ROOT = process.cwd();
 const SOURCE = path.join(ROOT, 'source');
@@ -111,15 +112,19 @@ export function verifyFormulas({ engine, rules, rows, std, conv }) {
   const tracks = new Map();
   const details = [];
   const skipped = new Map();
+  // 전형별 재현(§1.1-2) — 특별전형 행이 일반 산식으로 재현되면 "동일 산식" 가정이 사실이다.
+  const kinds = new Map(TYPE_KINDS.map((kind) => [kind, { kind, label: TYPE_LABEL[kind], match: 0, mismatch: 0, unchecked: 0 }]));
   for (const row of rows || []) {
     const universityId = row.universityId || row.university || row.id || null;
     if (!universityId) continue;
     const dept = deptOf(universityId, row.dept);
-    const track = engine.pickModelTrack(rules, universityId, dept);
+    const kind = classifyType(row.typeName).kind;
+    const track = engine.pickModelTrack(rules, universityId, dept, kind);
     if (!track || !engine.trackHasFormula(track)) {
       const reason = !track ? '산식 트랙 없음' : '요강이 정규화 상수·배점을 밝히지 않음';
       const key = `${universityId}::${reason}`;
       skipped.set(key, { university: universityId, reason, rows: (skipped.get(key)?.rows || 0) + 1 });
+      kinds.get(kind).unchecked += 2;
       continue;
     }
     const key = trackKey(universityId, track.name);
@@ -132,7 +137,8 @@ export function verifyFormulas({ engine, rules, rows, std, conv }) {
     for (const point of ['p70', 'p50']) {
       const result = checkPoint(engine, track, row.student?.[point], row.score?.[point], ctx);
       counts[result.status] += 1;
-      details.push({ university: universityId, dept: row.dept, track: track.name, year: row.year ?? null, point, ...result });
+      kinds.get(kind)[result.status] += 1;
+      details.push({ university: universityId, dept: row.dept, track: track.name, year: row.year ?? null, point, kind, typeName: row.typeName || '', ...result });
     }
   }
   const out = {};
@@ -146,7 +152,11 @@ export function verifyFormulas({ engine, rules, rows, std, conv }) {
       .slice(0, 2)
       .map((one) => ({ dept: one.dept, point: one.point, adiga: one.target, min: one.min, max: one.max, off: one.off, reason: one.reason ?? null }));
   }
-  return { tolerance: TOLERANCE, tracks: out, samples, skipped: [...skipped.values()], rows: details };
+  const byKind = [...kinds.values()].map((row) => {
+    const comparable = row.match + row.mismatch;
+    return { ...row, comparable, rate: comparable > 0 ? Math.round((row.match / comparable) * 1000) / 10 : null };
+  });
+  return { tolerance: TOLERANCE, tracks: out, byKind, samples, skipped: [...skipped.values()], rows: details };
 }
 
 export function readAdigaRows() {

@@ -12,6 +12,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { computeAccuracy } from './accuracy-report.mjs';
 import { normalizeDept } from './source-parsers/dept-name.mjs';
+import { TYPE_KINDS, TYPE_LABEL, classifyType, compareTypeRows } from './source-parsers/admission-type.mjs';
 
 const ROOT = process.cwd();
 const SOURCE = path.join(ROOT, 'source');
@@ -340,6 +341,22 @@ export function preferAdigaRow(left, right) {
   return (right.quota?.final ?? 0) > (left.quota?.final ?? 0) ? right : left;
 }
 
+// 어디가가 컷을 공개한 행인가 (§1.1 — 선발인원 3명 이하면 공개하지 않는다).
+export const hasAdigaCut = (row) => typeof row?.score?.p70 === 'number' || typeof row?.student?.p70?.avg === 'number';
+
+// 같은 모집단위·학년도의 전 행 중 **대표 행**(dept.jeongsi[year] 자체)을 고른다 (§1.1-2).
+//   컷이 있는 general 행(가군 우선) > 컷이 있는 첫 행(kind 우선순위·모집시기 순) >
+//   컷이 아예 없으면 종전 순위(preferAdigaRow — 영역별 값 > 모집인원 > 큰 모집인원).
+// 순서가 이미 compareTypeRows(kind 우선순위 → 모집시기 → 모집인원 많은 순)로 정렬된 배열을 받는다.
+export function pickRepresentative(sorted) {
+  if (!Array.isArray(sorted) || sorted.length === 0) return null;
+  const general = sorted.find((row) => row.typeKind === 'general' && hasAdigaCut(row));
+  if (general) return general;
+  const withCut = sorted.find((row) => hasAdigaCut(row));
+  if (withCut) return withCut;
+  return sorted.reduce((best, row) => (best ? preferAdigaRow(best, row) : row), null);
+}
+
 export function indexAdiga(files) {
   const index = new Map();
   const years = new Set();
@@ -352,7 +369,17 @@ export function indexAdiga(files) {
       const key = `${row.university}::${normalizeDept(row.dept)}`;
       if (!index.has(key)) index.set(key, new Map());
       const byYear = index.get(key);
-      byYear.set(year, byYear.has(year) ? preferAdigaRow(byYear.get(year), row) : row);
+      if (!byYear.has(year)) byYear.set(year, []);
+      // 분류는 여기서 한 번만 하고 아래 전부가 그 값을 쓴다 (§1.1-2).
+      const { kind, label } = classifyType(row.typeName);
+      byYear.get(year).push({ ...row, typeKind: kind, typeLabel: label });
+    }
+  }
+  // 학년도마다 kind 우선순위·모집시기 순으로 세우고 대표 행을 정해 둔다.
+  for (const byYear of index.values()) {
+    for (const [year, list] of byYear) {
+      const sorted = [...list].sort(compareTypeRows);
+      byYear.set(year, { rows: sorted, best: pickRepresentative(sorted) });
     }
   }
   return { index, years: [...years].sort(), rows };
@@ -426,6 +453,40 @@ export function mergeAdigaRow(base, hit) {
   };
 }
 
+// 같은 모집단위·학년도의 **전 전형 행**(§1.1-2). 대표 행 하나만 남기던 것을 여기서 되살린다.
+// 필드는 MODEL §1.1-2 그대로이고, 끝에 대표 행과 같은 눈금의 요약(cut70·cut50·score70)을 붙인다.
+// 값이 없는 칸은 키째 뺀다 — 5천 행이 생성물에 들어가므로 빈 키 하나가 곧 수십 KB다.
+export function typeRowsOf(sorted) {
+  const out = [];
+  for (const row of sorted || []) {
+    const disclosed = hasAdigaCut(row);
+    const student = row.student || {};
+    const quota = (row.quota?.final ?? 0) > 0 ? row.quota.final : null;
+    const entry = {
+      kind: row.typeKind || classifyType(row.typeName).kind,
+      label: row.typeLabel || classifyType(row.typeName).label,
+      typeName: row.typeName || '',
+      period: row.period || null,
+      group: PERIOD_GROUP[row.period] ?? null,
+      quota,
+      quotaDetail: compact(row.quota),
+      rate: row.rate ?? null,
+      fill: row.fill ?? null,
+      score: compact(row.score),
+      student: disclosed ? compact(student) : null,
+      aggregation: disclosed ? 'adiga-score-rank' : 'unknown',
+      consistent: disclosed ? row.consistent ?? null : null,
+      // 대표 행(dept.jeongsi[year])과 같은 이름·같은 눈금의 요약값.
+      cut70: disclosed ? student.p70?.avg ?? null : null,
+      cut50: disclosed ? student.p50?.avg ?? null : null,
+      score70: row.score?.p70 ?? null,
+    };
+    for (const [key, value] of Object.entries(entry)) if (value === null || value === undefined) delete entry[key];
+    out.push(entry);
+  }
+  return out;
+}
+
 function buildUniversities(adiga, rules, anomalies = new Map(), adigaRows = indexAdiga([])) {
   const byId = new Map(adiga.map((row) => [row.id, row]));
   const used = new Set();
@@ -457,7 +518,8 @@ function buildUniversities(adiga, rules, anomalies = new Map(), adigaRows = inde
 
           const jeongsi = {};
           for (const year of [...years].sort()) {
-            const merged = mergeAdigaRow(dept.jeongsi?.[year] || null, adigaYears?.get(year) || null);
+            const bucket = adigaYears?.get(year) || null;
+            const merged = mergeAdigaRow(dept.jeongsi?.[year] || null, bucket?.best || null);
             if (!merged) continue;
             const { row, extra } = merged;
             const before = dept.jeongsi?.[year] || null;
@@ -500,6 +562,13 @@ function buildUniversities(adiga, rules, anomalies = new Map(), adigaRows = inde
               typeName: row.typeName || '', note: row.note || '', source: row.source, url: row.url,
               sourceGrade: row.sourceGrade || 'E',
             };
+            // 같은 모집단위·학년도의 전 전형 행(§1.1-2). general 을 포함하고, 대표 행도 이 안에 있다.
+            // 어디가 행이 없는 해(학점나비 전사값만 있는 해)는 types 를 만들지 않는다.
+            const typeRows = typeRowsOf(bucket?.rows);
+            if (typeRows.length > 0) {
+              jeongsi[year].types = typeRows;
+              jeongsi[year].typeKind = bucket.best?.typeKind || classifyType(row.typeName).kind;
+            }
           }
           const official = dept.official || {};
           const series = buildSeries(jeongsi, official);
@@ -536,7 +605,9 @@ function buildUniversities(adiga, rules, anomalies = new Map(), adigaRows = inde
   const adigaOnly = [];
   for (const [key, byYear] of adigaRows.index) {
     if (used.has(key)) continue;
-    const sample = [...byYear.values()].sort((left, right) => rankAdigaRow(right) - rankAdigaRow(left))[0];
+    const sample = [...byYear.values()].map((bucket) => bucket.best).filter(Boolean)
+      .sort((left, right) => rankAdigaRow(right) - rankAdigaRow(left))[0];
+    if (!sample) continue;
     adigaOnly.push({
       id: key.split('::')[0], dept: sample.dept, years: [...byYear.keys()].sort(),
       period: sample.period, typeName: sample.typeName, score70: sample.score?.p70 ?? null,
@@ -563,6 +634,43 @@ function writeUnmatched(unmatched, adigaRows) {
     adigaOnly: unmatched.adigaOnly,
     oursOnly: unmatched.oursOnly,
     moved: unmatched.compare,
+  }, null, 1)}\n`);
+}
+
+// 전형 분류 표(§1.1-2). 어디가 전형명 전부를 kind 로 접어 학년도별 개수와 이름을 남긴다.
+// **수동 검토용**이다 — `general` 목록에 일반전형이 아닌 이름이 보이면 분류 표를 고칠 자리다.
+function writeTypes(adigaRows) {
+  if (adigaRows.rows === 0) return;
+  const perYear = new Map();
+  for (const byYear of adigaRows.index.values()) {
+    for (const [year, bucket] of byYear) {
+      if (!perYear.has(year)) perYear.set(year, new Map());
+      const names = perYear.get(year);
+      for (const row of bucket.rows) {
+        const name = row.typeName || '';
+        if (!names.has(name)) names.set(name, { kind: row.typeKind, rows: 0 });
+        names.get(name).rows += 1;
+      }
+    }
+  }
+  const years = {};
+  for (const year of [...perYear.keys()].sort()) {
+    const names = perYear.get(year);
+    const counts = {};
+    const byKind = {};
+    for (const kind of TYPE_KINDS) { counts[kind] = { label: TYPE_LABEL[kind], names: 0, rows: 0 }; byKind[kind] = []; }
+    for (const [name, info] of names) {
+      counts[info.kind].names += 1;
+      counts[info.kind].rows += info.rows;
+      byKind[info.kind].push({ name, rows: info.rows });
+    }
+    for (const kind of TYPE_KINDS) byKind[kind].sort((left, right) => right.rows - left.rows || left.name.localeCompare(right.name, 'ko'));
+    years[year] = { typeNames: names.size, counts, byKind, general: byKind.general };
+  }
+  writeFileSync(path.join(SOURCE, 'adiga/types.json'), `${JSON.stringify({
+    note: '어디가 전형명을 docs/MODEL.md §1.1-2 우선순위 표로 접은 결과. scripts/build-data.mjs 가 만든다. general 목록은 사람이 훑어 분류 표를 고치는 자리다.',
+    kinds: TYPE_KINDS.map((kind) => ({ kind, label: TYPE_LABEL[kind] })),
+    years,
   }, null, 1)}\n`);
 }
 
@@ -616,6 +724,7 @@ export function buildData() {
   const built = buildUniversities(adiga, rules, readAnomalies(), adigaRows);
   const { universities } = built;
   writeUnmatched(built.unmatched, adigaRows);
+  writeTypes(adigaRows);
   // 라인 표에 없는 대학만 생성물에서 빠진다. 여자대학교는 표에 있고, 화면이 토글로 숨긴다.
   const listed = new Set(LINES.flatMap((line) => line.ids));
   const ruleMap = {};

@@ -18,6 +18,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { checkPoint, deptOf as adigaDeptOf, readAdigaRows } from './verify-formulas.mjs';
+import { TYPE_KINDS, TYPE_LABEL, classifyType } from './source-parsers/admission-type.mjs';
 
 const ROOT = process.cwd();
 const OUTPUT = path.join(ROOT, 'docs/ACCURACY-AUDIT.md');
@@ -80,9 +81,15 @@ export function cutYearOf(dept) {
 }
 
 // 한 모집단위 × 한 지점(p70·p50)의 자기 위치 판정. 테스트가 직접 부른다.
-export function selfPlacement(engine, data, university, dept, point = 'p70') {
-  const year = cutYearOf(dept);
-  const row = year ? dept.jeongsi[year] : null;
+// options = { type, group } — 전형을 지정하면 그 전형 행의 70%(50%) 학생으로 그 전형을 판정한다
+// (§1.1-2). 지정이 없으면 종전대로 대표 행(= 일반)이다.
+export function selfPlacement(engine, data, university, dept, point = 'p70', options = {}) {
+  const kind = options.type || null;
+  // 성적표는 **그 전형 행**의 것을 읽는다 — 판정은 사용자 경로(evaluateJeongsi + 전형 옵션)다.
+  const view = kind && kind !== 'general' ? engine.typeView(dept, kind, options.group || null) : dept;
+  if (!view) return { year: null, student: null, result: null, reason: '그 전형 행 없음' };
+  const year = cutYearOf(view);
+  const row = year ? view.jeongsi[year] : null;
   const student = engine.normalizeCutStudent(row?.student?.[point]);
   if (!student || !isNumber(student.kor) || !isNumber(student.math) || student.inq.length === 0) {
     return { year, student: null, result: null, reason: '영역별 백분위 없음' };
@@ -92,6 +99,7 @@ export function selfPlacement(engine, data, university, dept, point = 'p70') {
   const result = engine.evaluateJeongsi(
     profile, university, dept, data.rules?.[university.id],
     university.volatility ?? data.volatility, engine.layerContext(data),
+    kind ? { type: kind, group: options.group || null } : {},
   );
   return { year, student, profile, result, reason: null };
 }
@@ -106,6 +114,8 @@ export function auditReproduction(engine, data, levelOf) {
   const byUniversity = new Map();
   const byPoint = new Map([['p70', { match: 0, mismatch: 0, unchecked: 0 }], ['p50', { match: 0, mismatch: 0, unchecked: 0 }]]);
   const byConversion = new Map([['official', { match: 0, mismatch: 0 }], ['approx', { match: 0, mismatch: 0 }], ['none', { match: 0, mismatch: 0 }]]);
+  // 전형별(§1.1-2). 특별전형 행이 일반 산식으로 재현되는 비율이 "동일 산식" 가정의 검증이다.
+  const byKind = new Map(TYPE_KINDS.map((kind) => [kind, { match: 0, mismatch: 0, unchecked: 0 }]));
   const buckets = new Map();
   const reasons = new Map();
   const misses = new Map(); // 모집단위 단위 mismatch 목록 (상위 원인용)
@@ -118,7 +128,8 @@ export function auditReproduction(engine, data, levelOf) {
     const universityId = row.universityId || row.university || row.id || null;
     if (!universityId) continue;
     const dept = adigaDeptOf(universityId, row.dept);
-    const track = engine.pickModelTrack(data.rules2026, universityId, dept);
+    const kind = classifyType(row.typeName).kind;
+    const track = engine.pickModelTrack(data.rules2026, universityId, dept, kind);
     const level = levelOf.get(`${universityId}::${row.dept}`) || '—';
     const conversion = engine.conversionTable(data.conv, universityId);
     const usesConv = String(track?.areas?.inq?.metric || '') === 'conv';
@@ -134,6 +145,7 @@ export function auditReproduction(engine, data, levelOf) {
       counts[outcome.status] += 1;
       bump(byLevel, level, outcome.status);
       bump(byUniversity, universityId, outcome.status);
+      byKind.get(kind)[outcome.status] += 1;
       byPoint.get(point)[outcome.status] += 1;
       if (outcome.status !== 'unchecked' && byConversion.has(convKind)) byConversion.get(convKind)[outcome.status] += 1;
       if (outcome.status === 'unchecked') {
@@ -169,6 +181,10 @@ export function auditReproduction(engine, data, levelOf) {
     rate: rate(counts.match, counts.match + counts.mismatch),
     byLevel: shape(byLevel).sort((left, right) => right.comparable - left.comparable),
     byUniversity: shape(byUniversity).sort((left, right) => (left.rate ?? 101) - (right.rate ?? 101)),
+    byKind: TYPE_KINDS.map((kind) => {
+      const value = byKind.get(kind);
+      return { kind, label: TYPE_LABEL[kind], ...value, comparable: value.match + value.mismatch, rate: rate(value.match, value.match + value.mismatch) };
+    }),
     byPoint: shape(byPoint),
     byConversion: [...byConversion].map(([key, value]) => ({
       key, ...value, comparable: value.match + value.mismatch, rate: rate(value.match, value.match + value.mismatch),
@@ -340,6 +356,49 @@ export function auditSelfPlacement(engine, data) {
     worst: worst.slice(0, 20),
     levelOf,
   };
+}
+
+// ---------------------------------------------------------------- B-2. 전형별 자기 위치
+// 그 모집단위에 실린 전 전형 행(§1.1-2)을 각각 **그 전형으로 골라** 판정하고, 그 행의 70% 학생이
+// 제자리에 서는지 본다. 전형을 고르는 사용자 경로를 그대로 밟으므로 A(검산기 경로)와 짝이 된다.
+// 특별전형이 일반 산식으로 재현되는지가 여기서도 그대로 드러난다.
+export function auditSelfPlacementByType(engine, data) {
+  const kinds = new Map(TYPE_KINDS.map((kind) => [kind, {
+    kind, label: TYPE_LABEL[kind], rows: 0, judged: 0, correct: 0, rangeCorrect: 0, unjudged: 0,
+    order: 0, orderKept: 0, assumed: 0, levels: { L1: 0, L2: 0, L3: 0, L0: 0 },
+  }]));
+  for (const university of data.universities || []) {
+    for (const dept of university.departments || []) {
+      const year = cutYearOf(dept);
+      const types = year ? dept.jeongsi?.[year]?.types : null;
+      if (!Array.isArray(types)) continue;
+      // 같은 kind 가 여럿이어도(가군·나군 일반) 엔진이 고르는 한 행만 센다 — 화면과 같은 길이다.
+      for (const kind of new Set(types.map((row) => row.kind || 'general'))) {
+        const bucket = kinds.get(kind);
+        if (!bucket) continue;
+        bucket.rows += 1;
+        const entry = selfPlacement(engine, data, university, dept, 'p70', { type: kind });
+        const result = entry.result;
+        if (result) bucket.levels[result.level] = (bucket.levels[result.level] || 0) + 1;
+        if (result?.flags?.includes('type-formula-assumed')) bucket.assumed += 1;
+        if (!result || result.status !== 'ok' || !isNumber(result.gap)) { bucket.unjudged += 1; continue; }
+        bucket.judged += 1;
+        if (result.level === 'L1' ? Math.abs(result.gap) <= SELF_BAND : Math.abs(result.gap) <= SELF_ZERO) bucket.correct += 1;
+        if (selfRangeOk(result)) bucket.rangeCorrect += 1;
+        const fifty = selfPlacement(engine, data, university, dept, 'p50', { type: kind });
+        if (fifty.result?.status === 'ok' && isNumber(fifty.result.gap)) {
+          bucket.order += 1;
+          if (fifty.result.gap >= result.gap - SELF_ZERO) bucket.orderKept += 1;
+        }
+      }
+    }
+  }
+  return [...kinds.values()].map((row) => ({
+    ...row,
+    rate: rate(row.correct, row.judged),
+    rangeRate: rate(row.rangeCorrect, row.judged),
+    orderRate: rate(row.orderKept, row.order),
+  }));
 }
 
 // ---------------------------------------------------------------- C. 교차 검수
@@ -551,6 +610,7 @@ export function buildAudit(engine = loadBrowser('assets/engine.js', 'IPSI_ENGINE
   const reproduction = auditReproduction(engine, data, self.levelOf);
   const cross = auditCross(engine, data);
   const wobble = auditWobble(engine, data, cross);
+  const byType = auditSelfPlacementByType(engine, data);
   const { levelOf, ...selfOut } = self;
   return {
     generatedAt: data.generatedAt,
@@ -558,7 +618,7 @@ export function buildAudit(engine = loadBrowser('assets/engine.js', 'IPSI_ENGINE
     departments: (data.universities || []).reduce((sum, one) => sum + one.departments.length, 0),
     // 표는 대학 id 대신 화면과 같은 짧은 이름으로 적는다.
     names: (data.universities || []).map((one) => [one.id, one.short || one.name]),
-    reproduction, self: selfOut, cross, wobble,
+    reproduction, self: selfOut, cross, wobble, byType,
   };
 }
 
@@ -760,6 +820,38 @@ export function renderMarkdown(audit) {
   for (const row of self.worst) {
     lines.push(`| ${uni(row.university)} | ${row.dept} | ${row.level} | ${gapCell(row.gap)} | ${row.cause} |`);
   }
+  lines.push('');
+
+  // ------------------------------------------------------------- 전형별
+  const byType = audit.byType || [];
+  lines.push('## 2-6. 전형별 — 특별전형이 일반 산식으로 재현되는가');
+  lines.push('');
+  lines.push('MODEL §1.1-2. 어디가 행의 전형명을 kind 아홉 가지로 접고, A(검산기 경로)와 B(사용자 경로)를');
+  lines.push('전형별로 따로 센다. **정원외 특별전형(농어촌·특성화고·기회균형·특수교육)은 요강이 대개');
+  lines.push('"일반전형과 동일하게 수능 성적 반영"이라 적는다** — 그 말이 사실이면 일반전형 트랙의 산식으로');
+  lines.push('그 행의 환산점수가 그대로 재현돼야 한다. 아래 A 열이 그 가정의 검증이고, 일반과 비슷하면');
+  lines.push('가정이 맞는 것, 크게 낮으면 그 전형은 반영 방법이 다른 것이다.');
+  lines.push('');
+  lines.push('| kind | 라벨 | A 대조한 지점 | A 재현 | B 전형 행 | B 판정 | B 제자리(중앙·구간) | B 순서 보존 | 산식 가정 |');
+  lines.push('|---|---|---:|---:|---:|---:|---|---:|---:|');
+  for (const kind of TYPE_KINDS) {
+    const a = (repro.byKind || []).find((one) => one.kind === kind) || { comparable: 0, rate: null };
+    const b = byType.find((one) => one.kind === kind) || { rows: 0, judged: 0, rate: null, rangeRate: null, orderRate: null, assumed: 0 };
+    lines.push(`| \`${kind}\` | ${TYPE_LABEL[kind]} | ${a.comparable} | ${pct(a.rate)} | ${b.rows} | ${b.judged} `
+      + `| ${pct(b.rate)}·${pct(b.rangeRate)} | ${pct(b.orderRate)} | ${b.assumed} |`);
+  }
+  lines.push('');
+  const general = (repro.byKind || []).find((one) => one.kind === 'general');
+  const special = (repro.byKind || []).filter((one) => ['rural', 'vocational', 'disability', 'equal'].includes(one.kind));
+  const specialMatch = special.reduce((sum, one) => sum + one.match, 0);
+  const specialComparable = special.reduce((sum, one) => sum + one.comparable, 0);
+  lines.push(`- **핵심 숫자**: 정원외 특별전형(농어촌·특성화고·특수교육·기회균형) 재현 `
+    + `${specialMatch}/${specialComparable} (${pct(rate(specialMatch, specialComparable))}) vs 일반 `
+    + `${general ? general.match : 0}/${general ? general.comparable : 0} (${pct(general?.rate)}).`);
+  lines.push('- `산식 가정` 열은 그 전형으로 판정할 때 `type-formula-assumed` 플래그가 붙은 모집단위 수다.');
+  lines.push('  산식 트랙이 `appliesTo.types`로 그 전형을 명시하면 0이 된다 — 지금 요강 자료에는 그 항목이 없다.');
+  lines.push('- `B 전형 행`은 그 전형 행이 실린 모집단위 수, `B 판정`은 그 중 판정이 선 곳이다. 어디가는');
+  lines.push('  선발인원 3명 이하면 컷을 공개하지 않아(§1.1) 특별전형은 대부분 컷 자체가 없다.');
   lines.push('');
 
   // ------------------------------------------------------------- C

@@ -8,7 +8,7 @@
   "adigaRows": 5390,
   "adigaOnly": 114,
   "oursOnly": 33,
-  "moved": 347
+  "moved": 335
  },
  "adigaOnly": [
   {
@@ -88,7 +88,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -168,7 +168,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -178,7 +178,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(특성화고교졸업자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -188,7 +188,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(장애인등대상자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -198,7 +198,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(기초생활수급자및차상위계층,한부모가족 지원대상자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -208,7 +208,7 @@
     "2026"
    ],
    "period": "정시(나)",
-   "typeName": "수능(기회균형전형(기초생활수급자및차상위계층,한부모가족 지원대상자))",
+   "typeName": "수능(기회균형전형(농어촌학생))",
    "score70": null
   },
   {
@@ -228,7 +228,7 @@
     "2026"
    ],
    "period": "정시(가)",
-   "typeName": "수능(기회균형전형(장애인등대상자-실기))",
+   "typeName": "수능(기회균형전형(농어촌학생-실기))",
    "score70": null
   },
   {
@@ -4648,34 +4648,6 @@
    }
   },
   {
-   "id": "hansung",
-   "dept": "글로벌패션산업학부",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 72,
-    "score70": 833.3,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 70,
-    "score70": 796.1
-   }
-  },
-  {
-   "id": "hansung",
-   "dept": "사회과학부",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 71,
-    "score70": 827.35,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 68,
-    "score70": 794.3
-   }
-  },
-  {
    "id": "inha",
    "dept": "의예과",
    "year": "2026",
@@ -5049,8 +5021,8 @@
     "source": "adiga-hakjum"
    },
    "adiga": {
-    "pct70": 82,
-    "score70": 545.75
+    "pct70": 84,
+    "score70": 560.75
    }
   },
   {
@@ -5105,8 +5077,8 @@
     "source": "adiga-hakjum"
    },
    "adiga": {
-    "pct70": 79,
-    "score70": 545.25
+    "pct70": 88,
+    "score70": 560
    }
   },
   {
@@ -5657,48 +5629,6 @@
   },
   {
    "id": "pnu",
-   "dept": "약학부",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 96,
-    "score70": 749.65,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 96,
-    "score70": 747.24
-   }
-  },
-  {
-   "id": "pnu",
-   "dept": "간호학과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 77,
-    "score70": 678.13,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 77,
-    "score70": 677.49
-   }
-  },
-  {
-   "id": "pnu",
-   "dept": "치의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 97,
-    "score70": 607.49,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 95,
-    "score70": 596.35
-   }
-  },
-  {
-   "id": "pnu",
    "dept": "원예생명과학과",
    "year": "2026",
    "hakjum": {
@@ -5740,115 +5670,17 @@
    }
   },
   {
-   "id": "knu",
-   "dept": "간호학과",
+   "id": "jejunu",
+   "dept": "경영학과",
    "year": "2026",
    "hakjum": {
-    "pct70": 86,
-    "score70": 680.47,
+    "pct70": 69,
+    "score70": 762.9,
     "source": "adiga-hakjum"
    },
    "adiga": {
-    "pct70": 87,
-    "score70": 680.43
-   }
-  },
-  {
-   "id": "knu",
-   "dept": "의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 99,
-    "score70": 739.91,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 98,
-    "score70": 736.34
-   }
-  },
-  {
-   "id": "jnu",
-   "dept": "의학과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 97,
-    "score70": 976.27,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 98,
-    "score70": 969.2
-   }
-  },
-  {
-   "id": "jnu",
-   "dept": "치의학과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 98,
-    "score70": 968.25,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 98,
-    "score70": 961.19
-   }
-  },
-  {
-   "id": "cnu",
-   "dept": "의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 94,
-    "score70": 202.7,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 94,
-    "score70": 200.34
-   }
-  },
-  {
-   "id": "cbnu",
-   "dept": "수의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 94,
-    "score70": 989.94,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 94,
-    "score70": 986.01
-   }
-  },
-  {
-   "id": "cbnu",
-   "dept": "의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 96,
-    "score70": 990.87,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 96,
-    "score70": 989.28
-   }
-  },
-  {
-   "id": "gnu",
-   "dept": "의예과",
-   "year": "2026",
-   "hakjum": {
-    "pct70": 97,
-    "score70": 977.71,
-    "source": "adiga-hakjum"
-   },
-   "adiga": {
-    "pct70": 96,
-    "score70": 959.97
+    "pct70": 48,
+    "score70": 602.73
    }
   },
   {
