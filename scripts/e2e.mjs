@@ -205,7 +205,8 @@ async function typeRun(page, tag) {
   const opener = page.locator('[data-sheet-opener="type"]');
   if (await opener.count() === 0) { problems.push(`${tag}/전형: 전형 칩이 없다`); return; }
   const label = (await opener.textContent()).trim();
-  if (label !== '일반') problems.push(`${tag}/전형: 기본 칩 글자가 '${label}' 이다`);
+  // 칩 글자는 손잡이 이름 `전형`이다 — 고른 뒤에만 그 라벨로 바뀐다 (FRAME §12.1).
+  if (label !== '전형') problems.push(`${tag}/전형: 기본 칩 글자가 '${label}' 이다`);
   const narrow = (page.viewportSize()?.width || 0) < 768;
   await opener.click();
   await page.waitForTimeout(240);

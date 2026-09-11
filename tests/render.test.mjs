@@ -162,8 +162,8 @@ test('성적이 있으면 진단·목표 화면이 판정을 낸다', () => {
   assert.ok(/안정|적정|소신|상향|위험/u.test(diagnose), '판정 뱃지가 없다');
   // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다 (FRAME §8.2).
   assert.ok(!/컷 \d+\.\d ±/u.test(diagnose), '± 표기가 남아 있다');
-  // L2 행의 부제는 컷과 내가 **같은 눈금**(지수)이다 (FRAME §10.4).
-  assert.match(diagnose, /지수 컷 \d+\.\d · 내 \d+\.\d · [가나다]군 · 반영비율/u);
+  // 부제는 층위와 무관하게 `컷 · 내 · 군` 셋뿐이다 (FRAME §12.2).
+  assert.match(diagnose, /컷 \d+\.\d · 내 \d+\.\d · [가나다]군/u);
   const target = view('target');
   assert.match(target, /필요한 상승|정시 결과가 없습니다/u);
   const rules = view('rules');
@@ -310,6 +310,31 @@ test('진단 목록의 차이 숫자와 뱃지가 판정 정의대로 맞는다'
   }
 });
 
+// FRAME §12.2 — 진단 행 다이어트. 한 행이라도 어기면 목록 전체가 다시 빽빽해진다.
+test('진단 행은 값 하나·뱃지 셋·부제 세 조각을 넘지 않는다', () => {
+  const { panel, tabs } = bootWith(FULL_SCORES, { sort: 'cut', limit: 40 });
+  tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
+  const rows = panel.querySelectorAll('.jr-row').filter((row) => row.querySelector('.jr-gap'));
+  assert.ok(rows.length >= 20, `판정 행이 20개 이상이어야 한다 (${rows.length})`);
+  for (const row of rows) {
+    const title = row.querySelector('.seed-list-item__title').text.trim();
+    const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
+    assert.ok(badges.length <= 3, `${title}: 뱃지가 ${badges.length}개다 — ${badges.join(' / ')}`);
+    // 값 자리는 백분위 상당 차이 하나다 — 환산점수 차(`−6.7점`)를 나란히 적지 않는다.
+    const gap = row.querySelector('.jr-gap').text.trim();
+    assert.ok(!gap.includes('점'), `${title}: 값 자리에 점수가 남아 있다 — ${gap}`);
+    assert.ok(!gap.includes('('), `${title}: 값 자리에 괄호가 남아 있다 — ${gap}`);
+    const detail = row.querySelector('.seed-list-item__detail')?.text.trim() || '';
+    // 보류·불가 행의 부제는 사유 한 조각이다 (FRAME §8.1) — 판정한 행만 아래 규칙을 본다.
+    if (!detail || !detail.startsWith('컷 ')) continue;
+    // 부제는 `컷 · 내 · 군` 셋뿐이다 — 눈금 이름·연도·구간·가정은 목표 화면이 말한다.
+    assert.ok(detail.split(' · ').length <= 3, `${title}: 부제 조각이 넷 이상이다 — ${detail}`);
+    for (const gone of ['(', '지수', '반영비율', '산식', '평균', '가정', '관측', '70%']) {
+      assert.ok(!detail.includes(gone), `${title}: 부제에 '${gone}' 이 남아 있다 — ${detail}`);
+    }
+  }
+});
+
 test('더 보기를 누르면 목록이 늘고 다시 그려도 느려지지 않는다', () => {
   const { panel, tabs } = bootWith(FULL_SCORES, { sort: 'cut' });
   const open = () => tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
@@ -353,7 +378,8 @@ test('반영 지표가 진단 부제·목표 카드·반영 탭에 적힌다', (
     tabs.find((tab) => tab.getAttribute('data-view') === name).dispatch('click');
     return panel.text;
   };
-  assert.ok(/표점|백분위|미확인/u.test(view('diagnose')), '진단 부제에 반영 지표가 없다');
+  // 반영 지표는 진단 부제에서 빠졌다 — 목표 카드와 반영 탭이 말한다 (FRAME §12.2).
+  assert.ok(!/반영비율|산식/u.test(view('diagnose')), '진단 부제에 반영 지표가 남아 있다');
   const target = view('target');
   assert.match(target, /반영 지표/u);
   assert.match(view('rules'), /반영 지표/u);
@@ -491,9 +517,9 @@ test('계열은 셀렉트로, 나머지 필터는 줄바꿈하는 칩으로 나�
   const { panel, tabs } = boot(FULL_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   // 칩 목록은 FRAME §9.1 의 일곱 개에 §11 의 전형 칩 하나뿐이다 — 계열 칩은 없다.
-  // 전형 칩의 글자는 고른 전형 라벨이라 기본값에서는 `일반`이고, 자리는 `대학` 다음이다.
+  // 전형 칩의 글자는 손잡이 이름 `전형`이고, 자리는 `대학` 다음이다 (FRAME §12.1).
   const chips = panel.querySelector('.jr-chips').querySelectorAll('.seed-chip-tabs__trigger').map((node) => node.text.trim());
-  assert.deepEqual(chips, ['라인', '대학', '일반', '관심 학과', '관심 대학', '예체능 제외', '말도 안되는거 제외', '여대 제외']);
+  assert.deepEqual(chips, ['라인', '대학', '전형', '관심 학과', '관심 대학', '예체능 제외', '말도 안되는거 제외', '여대 제외']);
   for (const gone of ['인문', '자연', '자유전공']) {
     assert.ok(!chips.includes(gone), `계열 칩 '${gone}' 이 남아 있다`);
   }
@@ -533,7 +559,7 @@ const GRADE_SCORES = {
   eng: '2', hist: '4', inq1Subject: '정치와법', inq1: '3', inq2Subject: '사회문화', inq2: '3',
 };
 
-test('등급만 넣으면 진단 화면이 추정 뱃지와 가정값·구간을 보여 준다', () => {
+test('등급만 넣으면 진단 화면이 추정 뱃지와 컷·내 두 값을 보여 준다', () => {
   const { panel, tabs } = boot(GRADE_SCORES);
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   const text = panel.text;
@@ -543,13 +569,12 @@ test('등급만 넣으면 진단 화면이 추정 뱃지와 가정값·구간을
   // 등급 입력은 보류하지 않는다 — 구간 중앙 백분위로 판정하고 '추정'이라 적는다.
   assert.ok(!/보류\s*\d+곳/u.test(text), '등급 입력에 보류 묶음이 남아 있다');
   assert.match(text, /추정/u);
-  // 부제는 값만 — 가정값과 구간이 숫자로만 실린다.
-  // 부제는 한 줄 — 구간은 가정값 괄호로 붙는다.
-  assert.match(text, /가정 78\.2 \(71\.3~84\.0\)/u);
-  assert.ok(!/·\s*구간 71\.3~84\.0/u.test(text), '구간이 따로 떨어진 조각으로 남아 있다');
+  // 부제는 등급 입력에서도 `컷 · 내 · 군` 셋뿐이다 — 가정·구간은 목표 화면 근거 카드가 말한다 (FRAME §12.2).
+  assert.match(text, /컷 \d+\.\d · 내 \d+\.\d · [가나다]군/u);
+  assert.ok(!/가정 \d+\.\d/u.test(text), '진단 부제에 가정값이 남아 있다');
+  assert.ok(!/\(\d+\.\d~\d+\.\d\)/u.test(text), '진단 부제에 구간이 남아 있다');
   // 컷 옆 숫자는 관측 범위이지 신뢰구간이 아니다 — ± 를 쓰지 않는다.
   assert.ok(!/컷 \d+\.\d ±/u.test(text), '± 표기가 남아 있다');
-  // 추정 행에는 컷의 연도 관측 범위를 적지 않는다 — 내 구간이 훨씬 넓어 줄만 밀린다.
   assert.ok(!/관측 \d+\.\d~\d+\.\d/u.test(text), '추정 행에 관측 범위가 남아 있다');
   // 판정 셀렉트에는 보류·기준 불일치가 그대로 남는다(성적이 비면 쓰인다).
   assert.match(text, /기준 불일치/u);
@@ -698,8 +723,11 @@ const L1 = (result) => ({
   gap: -1.9,
   gapDetail: { points: -6.7, pctEq: -1.9, min: -3, max: -1, avgGap: 0.3, basisChanged: false, gap2026: -1.9, gap2027: null },
   mineDetail: { score: 652.3, min: 648.1, max: 655, parts: [], adjustments: [], assumptions: [], unit: 'points' },
+  // 엔진은 L1에서도 `내 − 컷 = 차이`가 서게 컷을 **백분위 상당**으로 적는다(engine decorateLayer).
+  // 환산점수 원값은 score70·score50에 그대로 있고, 근거 카드가 그것을 쓴다.
+  mine: 94.2,
   cut: {
-    ...result.cut, year: '2026', value: 654.2, aggregation: 'adiga-score-rank',
+    ...result.cut, year: '2026', value: 96.1, aggregation: 'adiga-score-rank',
     score70: 659, score50: 660.5, verified: true,
   },
   apply: {
@@ -750,6 +778,26 @@ const L2 = (result) => ({
   sources: [{ title: 'adiga-hakjum', url: 'https://hakjum.school/', year: '2026' }],
 });
 
+const L3 = (result) => ({
+  level: 'L3',
+  status: 'ok',
+  group: '가',
+  estimated: false,
+  band: { key: 'reach', label: '소신', uncertainty: 2, note: '70% 지점 대비' },
+  gap: -0.8,
+  gapDetail: { points: null, pctEq: -0.8, min: -0.8, max: -0.8, avgGap: -0.8, basisChanged: false, gap2026: -0.8, gap2027: null },
+  mine: 78.3,
+  avgMine: 78.3,
+  mineDetail: { score: 78.3, min: 78.3, max: 78.3, parts: [], adjustments: [], assumptions: [], unit: 'pct' },
+  cut: { ...result.cut, year: '2026', value: 79.1, score70: null, score50: null, index70: null, index50: null, verified: false },
+  apply: { year: 2027, typeName: '수능(일반학생전형)', group: '가', formula: null },
+  areas: [],
+  sensitivity: null,
+  uncertainty: 2,
+  flags: ['mock'],
+  sources: [],
+});
+
 const L0 = (result) => ({
   level: 'L0',
   status: 'ok',
@@ -770,13 +818,13 @@ const openFixture = (built) => {
   return row;
 };
 
-test('L1 진단 행은 점수 차와 괄호 백분위 상당, 값만 부제를 적는다', () => {
+test('L1 진단 행은 백분위 상당 차이 하나와 컷·내·군 부제를 적는다', () => {
   const built = bootLayered(FULL_SCORES, L1);
   const row = openFixture(built);
-  assert.equal(row.querySelector('.jr-gap').text.trim(), '−6.7점 (−1.9)');
-  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(),
-    '2026 70% 659.0 · 내 652.3 (648~655) · 가군 · 2026 산식');
-  // 뱃지는 판정 하나뿐이다 — 실제 수능 성적이고 L1이라 모의·근사·참고가 붙지 않는다.
+  // 값 자리는 백분위 상당 차이 하나다 — 환산점수 차는 목표 화면 근거 카드로 갔다 (FRAME §12.2).
+  assert.equal(row.querySelector('.jr-gap').text.trim(), '−1.9');
+  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(), '컷 96.1 · 내 94.2 · 가군');
+  // 뱃지는 판정 하나뿐이다 — 실제 수능 성적이고 L1이라 근거 등급 뱃지가 없다.
   assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['상향']);
 });
 
@@ -787,15 +835,17 @@ test('L1 목표 화면은 근거 카드에 라벨·값 행을 고정 순서로 �
     .find((node) => node.querySelector('.seed-list-header')?.text.trim() === '근거');
   assert.ok(evidence, '근거 그룹이 없다');
   const labels = evidence.querySelectorAll('.seed-list-item__title').map((node) => node.text.trim());
-  assert.deepEqual(labels, ['지원', '산식', '내 환산점수', '비교 입결', '차이', '판정', '유리·불리', '불확실성', '출처']);
+  // `불확실성` 행은 `판정` 행으로 접혔다 (FRAME §12.3).
+  assert.deepEqual(labels, ['지원', '산식', '내 환산점수', '비교 입결', '차이', '판정', '유리·불리', '출처']);
   const text = evidence.text;
   assert.match(text, /2027 · 수능\(일반학생전형\) · 가군/u);
   // 산식은 요강 학년도 · 반영점수 · 눈금 · 검산 순이다(대조 행이 아직 없으면 '미대조').
   assert.match(text, /2026 요강 · 국400 수300 영100 탐200 · 표준점수 · (검산 일치|미대조)/u);
   assert.match(text, /652\.3 \(648\.1~655\.0\)/u);
   assert.match(text, /2026 70% 지점 659\.0 · 50% 660\.5 · 환산점수 순/u);
-  assert.match(text, /−6\.7점 · 백분위 상당 −1\.9 · 평균 백분위로는 \+0\.3/u);
-  assert.match(text, /70% 지점 대비 · 불확실성 ±0\.5/u);
+  assert.match(text, /−6\.7점 \(−1\.9\) · 평균 백분위 \+0\.3/u);
+  // 판정·불확실성·깃발이 한 행이다 (FRAME §12.3).
+  assert.match(text, /70% 지점 대비 ±0\.5 · 2027 시행계획/u);
   assert.match(text, /국어 \+6\.2 · 수학 −9\.0/u);
   assert.match(text, /2027 시행계획/u);
   // 출처 링크 글자는 대학명·학년도·문서 종류·쪽만 남긴 짧은 이름이다 (FRAME §10.4).
@@ -810,8 +860,8 @@ test('L2 행은 백분위 차 하나와 근사 뱃지를 붙인다', () => {
   const row = openFixture(built);
   assert.equal(row.querySelector('.jr-gap').text.trim(), '−1.2');
   assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['근사', '소신']);
-  // 부제는 컷·내가 같은 지수 눈금이다 (FRAME §10.1·§10.4).
-  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(), '지수 컷 80.6 · 내 79.4 · 가군 · 반영비율');
+  // 부제는 눈금 이름 없이 컷·내·군 셋이다 (FRAME §12.2).
+  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(), '컷 80.6 · 내 79.4 · 가군');
   row.dispatch('click');
   const evidence = built.panel.querySelectorAll('.jr-section')
     .find((node) => node.querySelector('.seed-list-header')?.text.trim() === '근거');
@@ -820,15 +870,26 @@ test('L2 행은 백분위 차 하나와 근사 뱃지를 붙인다', () => {
   assert.match(evidence.text, /2026 70% 학생 지수 80\.6 · 50% 83\.1 · 반영비율/u);
 });
 
-test('L3 행은 참고 뱃지를 붙이고 컷의 통계 정의를 부제 끝에 적는다', () => {
+test('L3 행은 참고 뱃지를 붙이고 부제는 컷·내·군 셋이다', () => {
+  const built = bootLayered(FULL_SCORES, L3);
+  const row = openFixture(built);
+  assert.equal(row.querySelector('.jr-gap').text.trim(), '−0.8');
+  // 성적 출처(모의) → 근거 등급(참고) → 판정, 셋뿐이다 (FRAME §12.2).
+  assert.deepEqual(row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim()), ['모의', '참고', '소신']);
+  // 부제 끝은 군이다 — 컷의 통계 정의 이름은 정보 탭으로 갔다.
+  assert.equal(row.querySelector('.seed-list-item__detail').text.trim(), '컷 79.1 · 내 78.3 · 가군');
+});
+
+test('실기 모집단위는 근거 등급 자리를 실기가 대신한다', () => {
   // 어디가 원값이 들어오면서 목록 첫 행은 L1·L2가 됐다. 진짜 L3 행(영역별 성적표가 없거나
   // consistent:false 라 지수·환산으로 못 올라간 곳)을 엔진에게 물어 그 행만 남기고 본다.
   const probe = buildContext();
   const { IPSI_ENGINE: engine, IPSI_DATA: data } = probe.context;
   const profile = engine.normalizeProfile(FULL_SCORES, data.scales, data.std);
-  const l3 = engine.diagnose(profile, data).find((entry) => entry.jeongsi.status === 'ok' && entry.jeongsi.level === 'L3');
-  assert.ok(l3, '생성 데이터에 L3 행이 없다');
-  // 남은 L3는 실기 모집단위라 기본 필터(예체능·특수대학 제외)에 걸린다 — 그 둘만 열어 준다.
+  const l3 = engine.diagnose(profile, data)
+    .find((entry) => entry.jeongsi.status === 'ok' && entry.jeongsi.level === 'L3' && entry.dept.practical === true);
+  assert.ok(l3, '생성 데이터에 실기 L3 행이 없다');
+  // 실기 모집단위는 기본 필터(예체능·특수대학 제외)에 걸린다 — 그 둘만 열어 준다.
   const { panel, tabs } = bootWith(FULL_SCORES,
     { universities: [l3.universityId], query: l3.dept.name, noArts: false, noDream: false });
   tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
@@ -836,11 +897,10 @@ test('L3 행은 참고 뱃지를 붙이고 컷의 통계 정의를 부제 끝에
     .find((node) => node.querySelector('.jr-gap') && node.text.includes(l3.dept.name));
   assert.ok(row, `${l3.universityName} ${l3.dept.name} 행이 없다`);
   const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
-  // 성적 출처 기본값(모의고사) → 모의, 층위 L3 → 참고, 그리고 판정.
-  assert.equal(badges[0], '모의');
-  assert.equal(badges[1], '참고');
-  assert.match(row.querySelector('.seed-list-item__detail').text,
-    /(평균 백분위|과목별 평균|상위 2영역|국·탐 평균|국·수·탐1 평균)$/u);
+  // 가운데 자리는 하나뿐이라 실기가 참고를 밀어낸다 (FRAME §12.2).
+  assert.deepEqual(badges.slice(0, 2), ['모의', '실기']);
+  assert.ok(!badges.includes('참고'), `실기와 참고가 함께 붙었다: ${badges.join(' / ')}`);
+  assert.match(row.querySelector('.seed-list-item__detail').text, /^컷 \d+\.\d · 내 \d+\.\d · [가나다]군$/u);
 });
 
 test('L0 행은 차이를 적지 않고 미확인 뱃지를 붙인다', () => {
@@ -949,7 +1009,12 @@ const deptLabel = (name) => String(name || '').trim()
   .replace(/^\(([^)]+)\)\s*(.+)$/u, '$2 ($1)')
   .replace(/(\S)([([])/gu, '$1 $2')
   .replace(/\s+/gu, ' ');
-const rowTitleOf = (university, dept) => `${university.short || university.name} ${deptLabel(dept.name)}`;
+// app.js rowTitle 과 같은 규칙 — 제목이 길면 대학명의 본교 표시를 뗀다 (FRAME §12.2).
+const rowTitleOf = (university, dept) => {
+  const name = university.short || university.name;
+  const full = `${name} ${deptLabel(dept.name)}`;
+  return full.length <= 12 ? full : `${name.replace(/\s*서울$/u, '')} ${deptLabel(dept.name)}`;
+};
 
 // 데이터가 말하는 전형 목록: { kind, label, count, samples }. 전 대학을 한 번만 훑는다.
 let typeFactCache = null;
@@ -1027,7 +1092,7 @@ test('전형 목록은 컷이 공개된 kind만 싣고 부제에 모집단위 �
   const built = boot(FULL_SCORES);
   const panel = openDiagnose(built);
   const { options, counts } = typeFacts(built.context.IPSI_DATA);
-  const chip = chipNamed(panel, '일반');
+  const chip = chipNamed(panel, '전형');
   assert.ok(chip, '전형 칩이 없다');
   assert.equal(chip.getAttribute('data-sheet-opener'), 'type');
   chip.dispatch('click');
@@ -1052,7 +1117,7 @@ test('전형 목록은 켜진 행만 체크하고 고르면 칩 글자·스탯 �
   const built = boot(FULL_SCORES);
   const panel = openDiagnose(built);
   const { options } = typeFacts(built.context.IPSI_DATA);
-  chipNamed(panel, '일반').dispatch('click');
+  chipNamed(panel, '전형').dispatch('click');
   assert.deepEqual(radioTitles(panel), options.map((option) => option.label));
   const rural = options.find((option) => option.kind === 'rural');
   assert.ok(rural, '생성 데이터에 농어촌 컷이 있어야 한다');
@@ -1083,13 +1148,12 @@ test('농어촌을 고르면 그 전형이 없는 모집단위는 목록에서 �
   // 일반으로 볼 때보다 목록이 짧다 — 농어촌이 없는 모집단위가 빠졌기 때문이다.
   const general = bootWith(FULL_SCORES, { limit: 60 });
   assert.ok(rowTitles(openDiagnose(general)).length > titles.length, '일반보다 짧아야 한다');
-  // 산식 가정 뱃지는 근사·참고 앞에 neutral 로 선다 (FRAME §11).
+  // 산식 가정은 따로 된 뱃지가 아니라 근거 등급 자리의 `근사`로 말한다 (FRAME §12.2).
   const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
   const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
-  assert.ok(badges.includes('산식 가정'), `산식 가정 뱃지가 없다: ${badges.join(' / ')}`);
-  for (const later of ['근사', '참고']) {
-    if (badges.includes(later)) assert.ok(badges.indexOf('산식 가정') < badges.indexOf(later), badges.join(' / '));
-  }
+  assert.ok(!badges.includes('산식 가정'), `산식 가정 뱃지가 남아 있다: ${badges.join(' / ')}`);
+  assert.ok(badges.includes('근사'), `근거 등급 자리가 근사여야 한다: ${badges.join(' / ')}`);
+  assert.ok(badges.length <= 3, `뱃지가 넷 이상이다: ${badges.join(' / ')}`);
 });
 
 test('목표 화면은 전형 셀렉트를 따로 한 줄로 두고 진단에서 고른 전형을 기본으로 쓴다', () => {
@@ -1142,9 +1206,10 @@ test('기준 숫자 표에 전형 열이 생기고 값이 있는 전형 행이 �
   // 농어촌 행은 그 전형의 값이다 — 일반 행의 값을 옮겨 적지 않는다.
   const latest = Object.keys(place.dept.jeongsi).filter((year) => year !== 'alts').sort().at(-1);
   const ruralRow = typeRowsOf(place.dept.jeongsi[latest]).find((row) => row.kind === 'rural');
+  // 열은 전형 · 환산 70 · 평균 70 · 국 · 수 · 탐 · 영 · 경쟁률 · 충원이다 (FRAME §12.3).
   const cells = bodyRows(table).find((row) => row.querySelectorAll('td')[0].text.trim() === '농어촌').querySelectorAll('td');
-  assert.equal(cells[2].text.trim(), ruralRow.score.p70.toFixed(1), '환산 70 이 농어촌 행 값이어야 한다');
-  assert.equal(cells[4].text.trim(), ruralRow.cut70.toFixed(1), '평균 70 이 농어촌 행 값이어야 한다');
+  assert.equal(cells[1].text.trim(), ruralRow.score.p70.toFixed(1), '환산 70 이 농어촌 행 값이어야 한다');
+  assert.equal(cells[2].text.trim(), ruralRow.cut70.toFixed(1), '평균 70 이 농어촌 행 값이어야 한다');
 });
 
 test('기준 숫자 표는 컷도 최종 모집인원도 없는 전형 행을 적지 않는다', () => {
@@ -1205,7 +1270,7 @@ test('공유 링크가 t=<kind>로 전형을 싣고 되읽는다', () => {
   bad.context.location.search = '?t=nope';
   vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), bad.context, { filename: 'assets/app.js' });
   bad.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
-  assert.ok(chipNamed(bad.panel, '일반'), '모르는 kind 인데 일반으로 돌아오지 않았다');
+  assert.ok(chipNamed(bad.panel, '전형'), '모르는 kind 인데 일반으로 돌아오지 않았다');
 });
 
 // types[] 는 어디가 행이 있는 해에만 실린다 — 없는 해는 그 행 하나가 곧 `일반` 이다 (MODEL §1.1-2).
@@ -1225,7 +1290,7 @@ test('데이터에서 types[]를 걷어내면 전형은 일반 하나뿐이다',
   built.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
   vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
   const panel = openDiagnose(built);
-  chipNamed(panel, '일반').dispatch('click');
+  chipNamed(panel, '전형').dispatch('click');
   const group = panel.querySelectorAll('[role="radiogroup"]').find((node) => node.getAttribute('aria-label') === '전형');
   assert.ok(group, '전형 목록이 펼쳐져야 한다');
   assert.deepEqual(group.querySelectorAll('[role="radio"]')

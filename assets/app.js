@@ -305,6 +305,16 @@
     .replace(/(\S)([([])/gu, '$1 $2')
     .replace(/\s+/gu, ' ');
   const deptKey = (universityId, deptName) => `${universityId}::${deptName}`;
+  // 진단 행 제목은 두 줄까지다 (FRAME §12.2). 뱃지 셋과 값 하나가 오른쪽 폭을 정하므로, 제목이
+  // 길면 대학명에서 본교 표시(`한양대 서울` → `한양대`)를 뗀다. `ERICA`·`글로벌`은 캠퍼스를
+  // 가르는 말이라 떼면 두 곳이 같은 이름이 되므로 남긴다.
+  const TITLE_BUDGET = 12;
+  const rowTitle = (universityName, deptName) => {
+    const label = deptLabel(deptName);
+    const full = `${universityName} ${label}`;
+    if (full.length <= TITLE_BUDGET) return full;
+    return `${String(universityName).replace(/\s*서울$/u, '')} ${label}`;
+  };
   // 컷의 통계 정의마다 **내 성적을 같은 정의로** 만드는 산식. 정보 탭의 '비교 기준' 표가 그대로 적는다.
   const SCALE_FORMULA = Object.freeze({
     ksi: '(국어 + 수학 + 탐구2평균) / 3',
@@ -381,6 +391,9 @@
   };
   const typeNow = () => (typeOptions().some(([kind]) => kind === state.filters.type) ? state.filters.type : DEFAULT_TYPE);
   const typeLabelNow = () => TYPE_LABEL[typeNow()];
+  // 칩 글자는 라인·대학과 같은 어법으로 **손잡이 이름**(`전형`)이다. 일반이 아닌 전형을 고르면
+  // 그때만 그 라벨(`농어촌`)로 바뀐다 — `일반`만 보여서는 고를 것이 있는지 알 수 없다 (FRAME §12.1).
+  const typeChipLabel = () => (typeNow() === DEFAULT_TYPE ? '전형' : typeLabelNow());
   // 일반이 아닐 때만 라벨을 덧붙인다 — `지원 가능 · 농어촌` (FRAME §11).
   const withTypeLabel = (text) => (typeNow() === DEFAULT_TYPE ? text : `${text} · ${typeLabelNow()}`);
 
@@ -597,14 +610,9 @@
     return seen.join(' · ');
   };
 
-  // 값 자리: L1은 점수 차 + 괄호 백분위 상당, L2·L3은 백분위 차 하나 (FRAME §10.1).
-  const gapText = (result) => {
-    const detail = result?.gapDetail;
-    if (result?.level === 'L1' && typeof detail?.points === 'number') {
-      return `${signed(detail.points, 1)}점 (${signed(detail.pctEq, 1)})`;
-    }
-    return signed(result?.gap, 1);
-  };
+  // 값 자리는 **백분위 상당 차이 하나**다 — 층위와 무관하게 눈금이 같다 (FRAME §12.2).
+  // 환산점수 차(`−6.7점`)는 목표 화면 근거 카드의 `차이` 행에만 적는다.
+  const gapText = (result) => signed(result?.gap, 1);
   // 차이 숫자를 적을 수 있는 행인가. 보류·기준 불일치는 판정한 것처럼 보이므로 '—'다.
   const hasGap = (result) => (result?.status === 'ok' || result?.status === 'blocked') && typeof result?.gap === 'number';
   // 성적 출처·등급 추정 뱃지 하나 (FRAME §10.1). 셋 중 하나만 선다.
@@ -619,20 +627,26 @@
   // 판정 뱃지 자리에 세울 띠 하나. 띠가 없으면 `미확인`이다.
   const rowBand = (result) => bandOf(result) || UNKNOWN_BAND;
   // 특별전형을 일반전형 산식으로 판정했음을 밝히는 뱃지 (MODEL §1.1-2 · FRAME §11).
+  // §12.2에서 이 사실은 따로 된 `산식 가정` 뱃지가 아니라 근거 등급 자리의 `근사`로 말한다.
   const assumedFormula = (result) => (result?.flags || []).includes('type-formula-assumed');
   const assumedBadge = (result) => (assumedFormula(result) ? badge('산식 가정', 'neutral') : null);
-  // 뱃지 순서: 모의/목표/추정 → 산식 가정 → 근사(L2) → 참고(L3) → 실기 → 이상 → 판정 (FRAME §10.1·§11).
-  // 판정 띠가 없는 L0은 그 자리에 `미확인`이 선다.
+  // 근거 등급 글자 하나 (FRAME §12.2): L1은 없음, L2·산식 가정은 `근사`, L3은 `참고`, L0은 `미확인`.
+  const gradeLabel = (result) => {
+    if (assumedFormula(result)) return '근사';
+    if (result?.status === 'ok') return LEVEL_BADGE[result.level] || null;
+    return result?.level === 'L0' ? '미확인' : null;
+  };
+  // 진단 행 뱃지는 **최대 셋**이다: [성적 출처][근거 등급][판정] (FRAME §12.2).
+  // 가운데 자리는 하나뿐이라 이상 > 실기 > 근거 등급 순으로 하나만 선다.
   const resultBadges = (result, dept) => {
     const band = rowBand(result);
-    return [
-      sourceBadge(result),
-      assumedBadge(result),
-      result?.status === 'ok' && LEVEL_BADGE[result.level] ? badge(LEVEL_BADGE[result.level], 'neutral') : null,
-      dept?.practical === true ? badge('실기', 'neutral') : null,
-      isFlaggedAnomaly(dept) ? badge('이상', 'critical') : null,
-      badge(band.label, BAND_TONE[band.key]),
-    ].filter(Boolean);
+    const grade = gradeLabel(result);
+    const middle = isFlaggedAnomaly(dept) ? badge('이상', 'critical')
+      : dept?.practical === true ? badge('실기', 'neutral')
+        // L0의 `미확인`은 판정 자리에 이미 서 있다 — 같은 글자를 두 번 적지 않는다.
+        : grade && grade !== band.label ? badge(grade, 'neutral')
+          : null;
+    return [sourceBadge(result), middle, badge(band.label, BAND_TONE[band.key])].filter(Boolean);
   };
   // 컷 한 조각. L1은 어디가 환산점수 70%, L2는 같은 반영비율로 매긴 **지수** 컷(FRAME §10.4),
   // 그 밖은 백분위 컷(추정 행은 관측 범위를 뺀다).
@@ -645,26 +659,13 @@
     }
     return result?.estimated ? `컷 ${fmt(result.cut?.value, 1)}` : spreadText(result);
   };
-  // 내 값 한 조각. L1은 환산점수와 그 구간, L2는 지수다 — 컷과 눈금이 같아야 한다.
-  const mineChip = (result) => {
-    const mine = result?.mineDetail;
-    if (result?.level === 'L1' && typeof mine?.score === 'number') {
-      const range = typeof mine.min === 'number' && typeof mine.max === 'number' && mine.max > mine.min
-        ? ` (${fmt(mine.min, 0)}~${fmt(mine.max, 0)})` : '';
-      return `내 ${fmt(mine.score, 1)}${range}`;
-    }
-    if (result?.level === 'L2' && typeof mine?.score === 'number') return `내 ${fmt(mine.score, 1)}`;
-    return result?.estimated ? mineWithRange(result) : `내 ${fmt(result?.mine, 1)}`;
-  };
-  // 어느 눈금으로 뺐는지. L1은 산식 학년도, L2는 반영비율, L3은 컷의 통계 정의다.
-  const basisChip = (result) => (result?.level === 'L1'
-    ? `${result.apply?.formula?.year ?? result.cut?.year ?? ''} 산식`.trim()
-    : result?.level === 'L2' ? '반영비율' : defShort(result));
-  // 진단 행 부제. 한 줄, 값만 (FRAME §10.1).
+  // 진단 행 부제는 `컷 81.5 · 내 83.5 · 나군` 한 줄이다 (FRAME §12.2).
+  // 엔진이 `내 − 컷 = 차이`를 모든 층위에서 지키므로(engine decorateLayer) 층위와 무관하게
+  // `cut.value`·`mine` 둘이면 된다 — 눈금 이름·연도·구간·가정은 목표 화면 근거 카드가 말한다.
   const detailLine = (result) => [
-    cutChip(result), mineChip(result),
-    result.group ? `${result.group}군` : null,
-    basisChip(result),
+    typeof result?.cut?.value === 'number' ? `컷 ${fmt(result.cut.value, 1)}` : null,
+    typeof result?.mine === 'number' ? `내 ${fmt(result.mine, 1)}` : null,
+    result?.group ? `${result.group}군` : null,
   ].filter(Boolean).join(' · ');
 
   const saveScores = () => writeStore(STORE.scores, state.scores);
@@ -1467,8 +1468,8 @@
       chip(uniCount > 0 ? `대학 ${uniCount}` : '대학', state.filterPanel === 'university' || uniCount > 0,
         (event) => openPanel('university', event.currentTarget || event.target),
         { 'aria-expanded': String(state.filterPanel === 'university'), 'data-sheet-opener': 'university' }),
-      // 전형 칩의 글자는 고른 전형 라벨이다 — 기본은 `일반` (FRAME §11).
-      chip(typeLabelNow(), state.filterPanel === 'type' || typeNow() !== DEFAULT_TYPE,
+      // 전형 칩의 글자는 `전형`이고, 고르면 그 라벨로 바뀐다 (FRAME §12.1).
+      chip(typeChipLabel(), state.filterPanel === 'type' || typeNow() !== DEFAULT_TYPE,
         (event) => openPanel('type', event.currentTarget || event.target),
         {
           'aria-expanded': String(state.filterPanel === 'type'),
@@ -1543,7 +1544,7 @@
           ? result.score.blockers[0]
           : detailLine(result);
       return listItem({
-        title: `${row.universityName} ${deptLabel(row.dept.name)}`,
+        title: rowTitle(row.universityName, row.dept.name),
         detail,
         // 부제가 뱃지 아래 행 전체 폭을 쓴다 — 값을 줄이지 않고 한 줄에 담는다.
         stack: true,
@@ -1894,12 +1895,12 @@
       byScore ? AGGREGATION_LABEL[cut.aggregation] || AGGREGATION_LABEL.unknown : byIndex ? '반영비율' : defShort(target),
     ]));
 
-    // 차이 — 점수 차·백분위 상당·평균 백분위. 2027 산식으로 판정이 바뀌면 두 줄이다.
+    // 차이 — `−5.0점 (−0.9) · 평균 백분위 +0.3`. 설명어('백분위 상당'·'…로는')는 빼고
+    // 백분위 상당을 괄호로 붙인다 (FRAME §12.3). 2027 산식으로 판정이 바뀌면 두 줄이다.
     const gap = target.gapDetail || {};
     const gapValue = (pctEq) => join([
-      typeof gap.points === 'number' ? `${signed(gap.points, 1)}점` : null,
-      typeof gap.points === 'number' ? `백분위 상당 ${signed(pctEq, 1)}` : signed(pctEq, 1),
-      typeof gap.avgGap === 'number' && gap.avgGap !== pctEq ? `평균 백분위로는 ${signed(gap.avgGap, 1)}` : null,
+      typeof gap.points === 'number' ? `${signed(gap.points, 1)}점 (${signed(pctEq, 1)})` : signed(pctEq, 1),
+      typeof gap.avgGap === 'number' && gap.avgGap !== pctEq ? `평균 백분위 ${signed(gap.avgGap, 1)}` : null,
     ]);
     if (target.basisChanged && typeof gap.gap2026 === 'number' && typeof gap.gap2027 === 'number') {
       add('차이', `2026 산식 ${signed(gap.gap2026, 1)}`);
@@ -1908,14 +1909,15 @@
       add('차이', gapValue(gap.pctEq));
     }
 
-    // 판정 — 뱃지 옆에 '70% 지점 대비'와 불확실성 폭을 값으로 (FRAME §10.2).
+    // 판정 — `상향 · 70% 지점 대비 ±0.5 · 변환표 근사`. 판정·불확실성·깃발이 한 행이다 (FRAME §12.3).
     const band = bandOf(target);
-    if (band) {
-      add('판정', join([
-        target.band?.note || '70% 지점 대비',
-        typeof target.uncertainty === 'number' ? `불확실성 ±${fmt(target.uncertainty, 1)}` : null,
-      ]), badge(band.label, BAND_TONE[band.key]));
-    }
+    const flagText = (target.flags || []).map((flag) => FLAG_LABEL[flag]).filter(Boolean).join(' · ');
+    const aboutText = [
+      target.band?.note || '70% 지점 대비',
+      typeof target.uncertainty === 'number' ? `±${fmt(target.uncertainty, 1)}` : null,
+    ].filter(Boolean).join(' ');
+    if (band) add('판정', join([aboutText, flagText]), badge(band.label, BAND_TONE[band.key]));
+    else add('불확실성', flagText);
 
     // 유리·불리 — 절댓값이 큰 두 영역 (MODEL §3).
     const areas = (target.areas || []).filter((row) => typeof row.contrib === 'number').slice(0, 2);
@@ -1929,9 +1931,6 @@
         `${signed(sensitivity.deltaPoints, 1)}점${typeof sensitivity.deltaPctEq === 'number' ? ` (${signed(sensitivity.deltaPctEq, 1)})` : ''}`,
       ]));
     }
-
-    // 불확실성 — 깃발을 두세 단어로.
-    add('불확실성', (target.flags || []).map((flag) => FLAG_LABEL[flag]).filter(Boolean).join(' · '));
 
     // 출처 — 링크 행 하나 (FRAME §10.2).
     const sources = [];
@@ -1961,8 +1960,9 @@
       row.kind,
       row.basis === 'derived' ? '대학 공식값의 연도 변화량으로 환산' : (row.basis === 'official' ? '대학 공식 발표' : '어디가 공개값'),
     ]);
-    // 어디가 열 그대로: 연도 · 환산 50/70 · 평균백분위 50/70 · 국·수·탐1·탐2 · 영·한 · 경쟁률 · 충원
-    // (FRAME §10.2). 선발 조건이 바뀐 해(`changed`)의 환산점수는 회색으로 적고 `참고` 뱃지를 단다.
+    // 열은 연도 · 전형 · 환산 70 · 평균 70 · 국 · 수 · 탐 · 영 · 경쟁률 · 충원이다 (FRAME §12.3).
+    // 50%컷·한국사는 빼고 탐구 둘은 `86·52` 한 칸으로 접는다 — 375px에서 열 열넷은 밀린다.
+    // 선발 조건이 바뀐 해(`changed`)의 환산점수는 회색으로 적고 `참고` 뱃지를 단다.
     const changedYears = new Map((target.history || []).map((row) => [String(row.year), row.changed || []]));
     const scoreOf = (row, key) => (typeof row?.score?.[key] === 'number' ? row.score[key]
       : typeof row?.[key === 'p70' ? 'score70' : 'score50'] === 'number' ? row[key === 'p70' ? 'score70' : 'score50'] : null);
@@ -1971,6 +1971,13 @@
         ? (typeof student?.[key] === 'object' ? student[key]?.pct : student?.[key])
         : student?.[key];
       return typeof value === 'number' ? fmt(value, 0) : '—';
+    };
+    // 탐구 둘은 한 칸에 `86·52`로 적는다. 둘 다 없으면 빈 칸이다 (FRAME §12.3).
+    const inquiryCell = (student) => {
+      const first = studentCell(student, 'inq1');
+      const second = studentCell(student, 'inq2');
+      if (first === '—' && second === '—') return '—';
+      return second === '—' ? first : `${first}·${second}`;
     };
     const meta = [];
     const adiga = [];
@@ -1993,11 +2000,9 @@
         adiga.push([
           el('span', {}, [`${year}학년도`, changed ? badge('참고', 'neutral') : null].filter(Boolean)),
           TYPE_LABEL[entry.kind] || TYPE_LABEL[DEFAULT_TYPE],
-          scoreCell('p50'), scoreCell('p70'),
-          fmt(entry.cut50, 1), fmt(entry.cut70, 1),
+          scoreCell('p70'), fmt(entry.cut70, 1),
           studentCell(student, 'kor'), studentCell(student, 'math'),
-          studentCell(student, 'inq1'), studentCell(student, 'inq2'),
-          studentCell(student, 'eng'), studentCell(student, 'hist'),
+          inquiryCell(student), studentCell(student, 'eng'),
           entry.rate ?? '—',
           entry.fill === null || entry.fill === undefined ? '—'
             : `${entry.fill}명${entry.fillRate === null || entry.fillRate === undefined ? '' : ` (${fmt(entry.fillRate, 0)}%)`}`,
@@ -2016,7 +2021,7 @@
         suffix: el('span', { class: 'jr-gap num', text: `${ANOMALY_LABEL[anomaly.kind]} · ${signed(-anomalyGap(anomaly), 1)}` }),
       })]) : null,
       adiga.length > 0
-        ? table(['연도', '전형', '환산 50', '환산 70', '평균 50', '평균 70', '국', '수', '탐1', '탐2', '영', '한', '경쟁률', '충원'], adiga)
+        ? table(['연도', '전형', '환산 70', '평균 70', '국', '수', '탐', '영', '경쟁률', '충원'], adiga)
         : null,
       yearRows.length > 0 ? table(['연도', '컷', '종류', '출처'], yearRows) : muted('연도별 컷 자료 없음'),
       meta.length > 0 ? table(['연도', '모집인원', '예비번호', '군'], meta) : null,

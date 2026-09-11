@@ -93,6 +93,27 @@ function chipFit() {
   };
 }
 
+// 진단 행 다이어트 (FRAME §12.2). 375px 실화면에서 값·뱃지 수·부제와 제목 줄 수를 잰다.
+// 제목은 블록이라 줄 상자를 셀 수 없다 — 높이를 줄 높이로 나눈다.
+function rowShape() {
+  const out = [];
+  for (const row of document.querySelectorAll('#panel .jr-row')) {
+    const gap = row.querySelector('.jr-gap');
+    if (!gap) continue;
+    const title = row.querySelector('.seed-list-item__title');
+    const style = title ? getComputedStyle(title) : null;
+    const lineHeight = style ? (parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.4) : 0;
+    out.push({
+      title: title ? title.textContent.trim() : '',
+      lines: title ? Math.max(1, Math.round(title.getBoundingClientRect().height / lineHeight)) : 0,
+      badges: row.querySelectorAll('.seed-badge__root').length,
+      gap: gap.textContent.trim(),
+      detail: row.querySelector('.seed-list-item__detail')?.textContent.trim() || '',
+    });
+  }
+  return out;
+}
+
 // 칩을 글자로 찾아 누른다 (칩에는 체크 수가 붙을 수 있다).
 async function clickChip(page, text) {
   await page.evaluate((label) => {
@@ -169,6 +190,20 @@ try {
           if (fit.marginLeft.startsWith('-')) problems.push(`${tag}: 칩 묶음에 음수 마진이 남아 있다 (${fit.marginLeft})`);
           // §9.1 의 일곱 개 + §11 의 전형 칩 하나. 계열은 칩이 아니라 셀렉트다.
           if (fit.count !== 8) problems.push(`${tag}: 칩이 ${fit.count}개다 (계열 칩은 셀렉트로 갔다)`);
+        }
+        // 진단 행은 `제목 / 값 하나 · 뱃지 셋 / 컷·내·군` 이다 (FRAME §12.2).
+        // 제목 두 줄은 여기서 못 막는다 — 값·뱃지 묶음이 375px 행(343px) 중 171px을 차지해
+        // 제목에 120px(≈8글자)만 남아, 학과 이름이 열 자를 넘는 행은 대학명을 줄여도 세 줄이다.
+        // 다섯 줄부터가 고장이다(320px에서 묶음을 접기 전에는 여섯 줄까지 흘러내렸다).
+        for (const row of await page.evaluate(rowShape)) {
+          if (row.lines > 4) problems.push(`${tag}: 제목이 ${row.lines}줄이다 — ${row.title}`);
+          if (row.badges > 3) problems.push(`${tag}: 뱃지가 ${row.badges}개다 — ${row.title}`);
+          if (row.gap.includes('점') || row.gap.includes('(')) problems.push(`${tag}: 값 자리가 '${row.gap}' 이다 — ${row.title}`);
+          if (!row.detail.startsWith('컷 ')) continue;
+          if (row.detail.split(' · ').length > 3) problems.push(`${tag}: 부제 조각이 넷 이상이다 — ${row.detail}`);
+          for (const gone of ['(', '지수', '반영비율', '산식', '평균', '가정', '관측']) {
+            if (row.detail.includes(gone)) problems.push(`${tag}: 부제에 '${gone}' 이 남아 있다 — ${row.detail}`);
+          }
         }
       }
       await page.close();
@@ -336,7 +371,7 @@ try {
     await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
     await page.click('.seed-tabs__trigger[data-view="diagnose"]');
     await page.waitForSelector('.jr-chips');
-    await clickChip(page, '일반');
+    await clickChip(page, '전형');
     await page.waitForTimeout(220);
     const shape = await page.evaluate(sheetShape);
     if (!shape.open) problems.push(`${tag}: 전형 시트가 열리지 않았다`);

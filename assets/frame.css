@@ -400,6 +400,16 @@ button.jr-row {
 .jr-row-head > * {
   min-width: 0;
 }
+/* 제목이 설 자리를 지킨다 (FRAME §12.2). 375px 이상에서는 값·뱃지 묶음이 지금 그대로 한 줄이다 —
+   접으면 판정 뱃지만 둘째 줄로 떨어져 `모의 근사 안정` 한 줄이 깨진다. 그보다 좁은 폭에서만 묶음을
+   두 줄로 접어 제목에 자리를 내준다: 320px에서 제목이 대여섯 줄로 흘러내리던 것을 막는다. */
+@media (max-width: 374px) {
+  .jr-row-head .seed-list-item__suffix {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: calc(100% - 8.5em);
+  }
+}
 .jr-row--stack .seed-list-item__detail {
   display: block;
 }
