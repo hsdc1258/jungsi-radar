@@ -323,6 +323,46 @@ try {
     await page.close();
   }
 
+  // 전형 시트 한 판 (FRAME §11). 단일 선택 목록이 어떻게 보이는지 캡처 하나로 남긴다.
+  {
+    const page = await browser.newPage({ viewport: { width: 375, height: 812 }, colorScheme: 'light' });
+    const tag = '전형 시트/375px';
+    watch(page, tag);
+    await page.route(SEED_CDN, (route) => route.fulfill({ status: 200, contentType: 'text/css', body: seedCss }));
+    await page.addInitScript((scores) => {
+      localStorage.setItem('jr.scores', JSON.stringify(scores));
+      localStorage.setItem('jr.theme', JSON.stringify('light-only'));
+    }, SCORES);
+    await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'load' });
+    await page.click('.seed-tabs__trigger[data-view="diagnose"]');
+    await page.waitForSelector('.jr-chips');
+    await clickChip(page, '일반');
+    await page.waitForTimeout(220);
+    const shape = await page.evaluate(sheetShape);
+    if (!shape.open) problems.push(`${tag}: 전형 시트가 열리지 않았다`);
+    if (shape.title !== '전형') problems.push(`${tag}: 시트 제목이 '${shape.title}' 이다`);
+    const labels = await page.locator('.jr-sheet [role="radio"] .seed-list-item__title').allTextContents();
+    const names = labels.map((text) => text.trim());
+    if (names[0] !== '일반') problems.push(`${tag}: 첫 행이 '${names[0]}' 이다`);
+    if (!names.includes('농어촌')) problems.push(`${tag}: 목록에 농어촌이 없다 (${names.join('·')})`);
+    if (shape.checked !== 1) problems.push(`${tag}: 단일 선택인데 켜진 행이 ${shape.checked}개다`);
+    await page.screenshot({ path: path.join(OUT, 'sheet-type.png') });
+    // 농어촌을 고르고 닫으면 칩 글자와 스탯 라벨이 함께 바뀐다.
+    await page.evaluate(() => [...document.querySelectorAll('.jr-sheet [role="radio"]')]
+      .find((node) => node.querySelector('.seed-list-item__title')?.textContent.trim() === '농어촌')?.click());
+    await page.waitForTimeout(180);
+    await page.evaluate(() => [...document.querySelectorAll('.jr-sheet-footer button')]
+      .find((node) => node.textContent.trim() === '완료')?.click());
+    await page.waitForTimeout(240);
+    const chipLabel = await page.evaluate(() => document.querySelector('[data-sheet-opener="type"]')?.textContent.trim() || '');
+    if (chipLabel !== '농어촌') problems.push(`${tag}: 닫은 뒤 칩이 '${chipLabel}' 이다`);
+    const stats = await page.locator('#panel .jr-stat-label').allTextContents();
+    if (!stats.some((text) => text.trim() === '지원 가능 · 농어촌')) {
+      problems.push(`${tag}: 스탯 라벨이 ${stats.map((text) => text.trim()).join(' / ')}`);
+    }
+    await page.close();
+  }
+
   // 단일 파일 번들. 호스트가 감싼 문서 안에서(테마를 찍은 경우와 아닌 경우) 같은 점검을 한다.
   const bundleFile = path.join(ROOT, 'dist', 'jungsi-radar.html');
   if (existsSync(bundleFile)) {
@@ -365,5 +405,5 @@ try {
   await web.close();
 }
 
-console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 등급모드 2판 + 체크목록 6판 + 시트 1판 + 번들 4판 통과 (${OUT})`);
+console.log(problems.length ? `문제 ${problems.length}건\n${problems.join('\n')}` : `문제 없음 — 폭 ${WIDTHS.length}종 × 2테마 × ${VIEWS.length}탭 + 표점모드 3판 + 등급모드 2판 + 체크목록 6판 + 시트 1판 + 전형 시트 1판 + 번들 4판 통과 (${OUT})`);
 process.exit(problems.length ? 1 : 0);

@@ -1441,7 +1441,8 @@
       period: picked.period ?? null,
       group: picked.group ?? null,
       quota,
-      quotaDetail: picked.quotaDetail ?? null,
+      // 모집인원 내역은 types[] 에 싣지 않는다(읽는 쪽이 없다) — 대표 행 값을 물려받지 않도록 지운다.
+      quotaDetail: null,
       rate: isNumber(picked.rate) ? picked.rate : null,
       fill,
       fillRate: isNumber(fill) && isNumber(quota) && quota > 0 ? Math.round((fill / quota) * 1000) / 10 : null,

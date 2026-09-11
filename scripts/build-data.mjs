@@ -403,6 +403,19 @@ const compact = (value) => {
   return Object.keys(out).length > 0 ? out : null;
 };
 
+// types[] 는 한 모집단위·학년도마다 여러 행이라 생성물에서 가장 무거운 덩어리다(4900행 남짓).
+// 그래서 대표 행과 달리 **읽는 쪽이 실제로 쓰는 지점만** 싣는다.
+//   - 학생 성적표: 50·70% 지점(표·판정)과 100% 지점(engine cut100 의 바닥선)만.
+//   - 환산점수: 50·70% 지점만. 총점(total)은 화면도 엔진도 읽지 않는다.
+const TYPE_STUDENT_KEYS = ['p50', 'p70', 'p100'];
+const TYPE_SCORE_KEYS = ['p50', 'p70'];
+const pickKeys = (value, keys) => {
+  if (!value) return null;
+  const out = {};
+  for (const key of keys) if (value[key] !== null && value[key] !== undefined) out[key] = value[key];
+  return Object.keys(out).length > 0 ? out : null;
+};
+
 // 어디가 행을 results.json 의 정시 행 모양으로 옮긴다. 아래 매핑 코드가 한 갈래만 보도록,
 // 어디가 값도 학점나비 값도 같은 모양으로 만들어 넘긴다.
 export function mergeAdigaRow(base, hit) {
@@ -456,6 +469,8 @@ export function mergeAdigaRow(base, hit) {
 // 같은 모집단위·학년도의 **전 전형 행**(§1.1-2). 대표 행 하나만 남기던 것을 여기서 되살린다.
 // 필드는 MODEL §1.1-2 그대로이고, 끝에 대표 행과 같은 눈금의 요약(cut70·cut50·score70)을 붙인다.
 // 값이 없는 칸은 키째 뺀다 — 5천 행이 생성물에 들어가므로 빈 키 하나가 곧 수십 KB다.
+// 같은 이유로 읽는 쪽이 없는 칸도 싣지 않는다: 모집인원 내역(quotaDetail)·환산점수 총점·
+// 80·90% 지점 학생·원문 raw. 집계 방식은 'adiga-score-rank' 일 때만 적고, 없으면 unknown 이다.
 export function typeRowsOf(sorted) {
   const out = [];
   for (const row of sorted || []) {
@@ -469,12 +484,11 @@ export function typeRowsOf(sorted) {
       period: row.period || null,
       group: PERIOD_GROUP[row.period] ?? null,
       quota,
-      quotaDetail: compact(row.quota),
       rate: row.rate ?? null,
       fill: row.fill ?? null,
-      score: compact(row.score),
-      student: disclosed ? compact(student) : null,
-      aggregation: disclosed ? 'adiga-score-rank' : 'unknown',
+      score: pickKeys(row.score, TYPE_SCORE_KEYS),
+      student: disclosed ? pickKeys(student, TYPE_STUDENT_KEYS) : null,
+      aggregation: disclosed ? 'adiga-score-rank' : null,
       consistent: disclosed ? row.consistent ?? null : null,
       // 대표 행(dept.jeongsi[year])과 같은 이름·같은 눈금의 요약값.
       cut70: disclosed ? student.p70?.avg ?? null : null,

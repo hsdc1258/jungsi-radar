@@ -912,75 +912,97 @@ test('정보 탭에 층위 네 줄·산식 검산 절·어디가 각주 인용�
 });
 
 // ---------------------------------------------------------------- 전형 (FRAME §11)
-// 지금 생성 데이터에는 `types[]`가 없어 고를 수 있는 전형이 `일반` 하나뿐이다. 데이터가 들어왔을 때를
-// 위해 한 모집단위에만 농어촌 행을 얹고, 엔진이 `{ type }`을 읽는 것처럼 흉내 내어 화면을 본다
+// 생성 데이터가 `jeongsi[year].types[]`를 싣고 엔진이 `{ type }`을 읽는다 — 픽스처를 얹지 않고
+// 그 데이터를 그대로 본다. 기대값은 아래 typeFacts()·ruralPlace()가 data.js 를 훑어 만든다
 // (docs/MODEL.md §1.1-2 · docs/FRAME.md §11).
-const TYPE_FIXTURE = { universityId: 'kookmin', typeName: '수능(농어촌학생전형)' };
+const TYPE_ORDER = [
+  ['general', '일반'], ['rural', '농어촌'], ['vocational', '특성화고'], ['equal', '기회균형'],
+  ['disability', '특수교육'], ['regional', '지역인재'], ['overseas', '재외국민'],
+  ['practical', '실기·특기'], ['other', '기타'],
+];
+const TYPE_NAME = Object.fromEntries(TYPE_ORDER);
+// 컷이 공개된 행인가 — 화면이 전형을 목록에 올릴지 정하는 기준과 같다 (app.js hasTypeCut).
+const hasTypeCut = (row) => typeof row?.cut70 === 'number' || typeof row?.score70 === 'number'
+  || typeof row?.score?.p70 === 'number';
+const typeRowsOf = (yearRow) => (Array.isArray(yearRow?.types) && yearRow.types.length > 0 ? yearRow.types : [yearRow]);
+const yearRowsOf = (dept) => Object.entries(dept?.jeongsi || {})
+  .filter(([year]) => year !== 'alts').map(([, row]) => row);
+// 그 모집단위에서 컷이 공개된 kind 집합. types[] 가 없는 해의 행은 `일반` 으로 센다
+// — 그 행의 `kind` 는 전형이 아니라 컷 종류('70%컷')라 전형 이름이 아니면 일반이다.
+const kindOf = (row) => (TYPE_NAME[row?.kind] ? row.kind : 'general');
+const deptKinds = (dept) => {
+  const kinds = new Set();
+  for (const yearRow of yearRowsOf(dept)) {
+    for (const row of typeRowsOf(yearRow)) if (hasTypeCut(row)) kinds.add(kindOf(row));
+  }
+  return kinds;
+};
+// app.js deptLabel 과 같은 표시 규칙 — 진단 행 제목이 `대학 약칭 + 모집단위` 이기 때문이다.
+const deptLabel = (name) => String(name || '').trim()
+  .replace(/^\(([^)]+)\)\s*(.+)$/u, '$2 ($1)')
+  .replace(/(\S)([([])/gu, '$1 $2')
+  .replace(/\s+/gu, ' ');
+const rowTitleOf = (university, dept) => `${university.short || university.name} ${deptLabel(dept.name)}`;
 
-// 그 대학에서 컷이 공개된 평범한 모집단위 하나에 general·rural 두 전형 행을 얹는다.
-function addRuralType(data) {
-  const university = data.universities.find((row) => row.id === TYPE_FIXTURE.universityId);
-  const dept = university.departments.find((row) => typeof row.jeongsi?.['2026']?.cut70 === 'number'
-    && row.track !== '예체능' && !/의예|약학/u.test(row.name));
-  assert.ok(dept, '전형 픽스처를 얹을 모집단위가 없다');
-  const row = dept.jeongsi['2026'];
-  const base = {
-    period: row.period, group: row.group, quota: row.quota, rate: row.rate, fill: row.fill,
-    score: row.score, student: row.student, aggregation: row.aggregation, consistent: row.consistent,
-    cut50: row.cut50, cut70: row.cut70, score70: row.score70,
+// 데이터가 말하는 전형 목록: { kind, label, count, samples }. 전 대학을 한 번만 훑는다.
+let typeFactCache = null;
+function typeFacts(data) {
+  if (typeFactCache) return typeFactCache;
+  const counts = new Map(TYPE_ORDER.map(([kind]) => [kind, 0]));
+  const samples = new Map(TYPE_ORDER.map(([kind]) => [kind, []]));
+  for (const university of data.universities) {
+    for (const dept of university.departments || []) {
+      const seen = new Set();
+      for (const yearRow of yearRowsOf(dept)) {
+        for (const row of typeRowsOf(yearRow)) {
+          if (!hasTypeCut(row)) continue;
+          const kind = kindOf(row);
+          seen.add(kind);
+          const list = samples.get(kind);
+          const name = String(row.typeName || '').trim();
+          if (name && list.length < 2 && !list.includes(name)) list.push(name);
+        }
+      }
+      for (const kind of seen) counts.set(kind, counts.get(kind) + 1);
+    }
+  }
+  typeFactCache = {
+    // 고를 수 있는 전형 — 일반은 언제나, 나머지는 컷이 공개된 모집단위가 있을 때만 (FRAME §11).
+    options: TYPE_ORDER.filter(([kind]) => kind === 'general' || counts.get(kind) > 0)
+      .map(([kind, label]) => ({ kind, label, count: counts.get(kind), samples: samples.get(kind) })),
+    counts,
   };
-  row.types = [
-    { ...base, kind: 'general', label: '일반', typeName: row.typeName },
-    {
-      ...base, kind: 'rural', label: '농어촌', typeName: TYPE_FIXTURE.typeName,
-      quota: 3, rate: 4.2, fill: 1, cut50: 73, cut70: 71.5, score70: 612.5, score: { p50: 615, p70: 612.5 },
-    },
-  ];
-  return { university, dept };
+  return typeFactCache;
 }
 
-// 엔진이 아직 옵션을 안 읽으므로, 읽는 엔진을 흉내 낸다: 없는 전형이면 `no-type`,
-// 특별전형이면 `type-formula-assumed` 깃발과 그 전형명을 단다.
-// filters 는 객체이거나, 농어촌 행을 얹은 자리를 받아 필터를 짓는 함수다.
-function bootTypes(filters = {}) {
-  const built = buildContext();
-  const place = addRuralType(built.context.IPSI_DATA);
-  built.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
-  built.context.localStorage.setItem('jr.filters', JSON.stringify(typeof filters === 'function' ? filters(place) : filters));
-  const real = built.context.IPSI_ENGINE;
-  const kindsOf = (dept) => new Set((dept?.jeongsi?.['2026']?.types || [{ kind: 'general' }]).map((row) => row.kind));
-  const dress = (result, dept, type) => {
-    if (!type || type === 'general') return result;
-    if (!kindsOf(dept).has(type)) return { ...result, status: 'no-type' };
-    return {
-      ...result,
-      flags: [...(result.flags || []), 'type-formula-assumed'],
-      apply: { ...(result.apply || {}), typeName: TYPE_FIXTURE.typeName },
-    };
-  };
-  built.context.IPSI_ENGINE = {
-    ...real,
-    diagnose: (profile, data, options = {}, extra = {}) => real.diagnose(profile, data, options)
-      .map((row) => ({ ...row, jeongsi: dress(row.jeongsi, row.dept, options.type || extra.type) })),
-    analyzeTarget: (profile, university, dept, rule, spread, ctx, options = {}) => dress(
-      real.analyzeTarget(profile, university, dept, rule, spread, ctx), dept, options.type),
-    evaluateJeongsi: (profile, university, dept, rule, spread, ctx, options = {}) => dress(
-      real.evaluateJeongsi(profile, university, dept, rule, spread, ctx), dept, options.type),
-  };
-  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
-  return { ...built, ...place };
+// 농어촌 컷이 공개된 평범한 모집단위 하나. 기본 토글(예체능·서연고·의약 최상위·여대 제외)에
+// 걸리지 않는 곳에서 고른다 — 진단 목록에 그 행이 실제로 보여야 하기 때문이다.
+function ruralPlace(data) {
+  const skip = new Set(['snu', 'yonsei', 'korea']);
+  for (const university of data.universities) {
+    if (skip.has(university.id) || /여자대학교|여대/u.test(university.name)) continue;
+    for (const dept of university.departments || []) {
+      if (dept.track === '예체능' || dept.track === '의약') continue;
+      const kinds = deptKinds(dept);
+      if (kinds.has('rural') && kinds.has('general')) return { university, dept };
+    }
+  }
+  throw new Error('농어촌 컷이 공개된 모집단위를 찾지 못했다');
 }
 
 const radioNamed = (panel, name) => panel.querySelectorAll('[role="radio"]')
   .find((node) => node.querySelector('.seed-list-item__title')?.text.trim() === name);
+const radioTitles = (panel) => panel.querySelectorAll('[role="radio"]')
+  .map((node) => node.querySelector('.seed-list-item__title').text.trim());
 const tableWith = (panel, column) => panel.querySelectorAll('.jr-table')
   .find((node) => node.querySelectorAll('th').some((cell) => cell.text.trim() === column));
 // 흉내 DOM 은 자손 선택자('tbody tr')를 모른다 — tbody 를 먼저 잡고 그 안의 행을 센다.
 const bodyRows = (table) => table.querySelectorAll('tbody')[0].querySelectorAll('tr');
 
-test('데이터에 types[]가 없으면 전형은 일반 하나뿐이다', () => {
+test('전형 목록은 컷이 공개된 kind만 싣고 부제에 모집단위 수를 적는다', () => {
   const built = boot(FULL_SCORES);
   const panel = openDiagnose(built);
+  const { options, counts } = typeFacts(built.context.IPSI_DATA);
   const chip = chipNamed(panel, '일반');
   assert.ok(chip, '전형 칩이 없다');
   assert.equal(chip.getAttribute('data-sheet-opener'), 'type');
@@ -988,19 +1010,29 @@ test('데이터에 types[]가 없으면 전형은 일반 하나뿐이다', () =>
   const group = panel.querySelectorAll('[role="radiogroup"]').find((node) => node.getAttribute('aria-label') === '전형');
   assert.ok(group, '전형 단일 선택 목록이 펼쳐져야 한다');
   const rows = group.querySelectorAll('[role="radio"]');
-  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반']);
-  assert.equal(rows[0].getAttribute('aria-checked'), 'true');
+  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__title').text.trim()),
+    options.map((option) => option.label));
+  // 단일 선택 — 기본은 일반 하나뿐이다.
+  const checked = rows.filter((node) => node.getAttribute('aria-checked') === 'true');
+  assert.deepEqual(checked.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반']);
   // 부제는 그 전형으로 컷이 공개된 모집단위 수다.
-  assert.match(rows[0].querySelector('.seed-list-item__detail').text.trim(), /^\d+곳$/u);
+  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__detail').text.trim()),
+    options.map((option) => `${option.count}곳`));
+  // 행은 있어도 컷이 한 곳도 공개되지 않은 kind(특수교육)는 목록에 없다 — 선발 3명 이하 비공개다.
+  const empty = TYPE_ORDER.filter(([kind]) => counts.get(kind) === 0).map(([, label]) => label);
+  assert.ok(empty.includes('특수교육'), `특수교육 컷이 생겼으면 이 테스트를 고친다: ${empty.join(' ')}`);
+  for (const label of empty) assert.ok(!radioNamed(panel, label), `컷이 없는 ${label} 이 목록에 있다`);
 });
 
 test('전형 목록은 켜진 행만 체크하고 고르면 칩 글자·스탯 라벨이 함께 바뀐다', () => {
-  const built = bootTypes();
+  const built = boot(FULL_SCORES);
   const panel = openDiagnose(built);
+  const { options } = typeFacts(built.context.IPSI_DATA);
   chipNamed(panel, '일반').dispatch('click');
-  const rows = panel.querySelectorAll('[role="radio"]');
-  assert.deepEqual(rows.map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반', '농어촌']);
-  assert.equal(radioNamed(panel, '농어촌').querySelector('.seed-list-item__detail').text.trim(), '1곳');
+  assert.deepEqual(radioTitles(panel), options.map((option) => option.label));
+  const rural = options.find((option) => option.kind === 'rural');
+  assert.ok(rural, '생성 데이터에 농어촌 컷이 있어야 한다');
+  assert.equal(radioNamed(panel, '농어촌').querySelector('.seed-list-item__detail').text.trim(), `${rural.count}곳`);
   radioNamed(panel, '농어촌').dispatch('click');
   // 단일 선택 — 켜진 행 하나만 체크다.
   const checked = panel.querySelectorAll('[role="radio"]').filter((node) => node.getAttribute('aria-checked') === 'true');
@@ -1011,11 +1043,22 @@ test('전형 목록은 켜진 행만 체크하고 고르면 칩 글자·스탯 �
 });
 
 test('농어촌을 고르면 그 전형이 없는 모집단위는 목록에서 빠진다', () => {
-  const built = bootTypes({ type: 'rural' });
+  const built = bootWith(FULL_SCORES, { type: 'rural', limit: 60 });
   const panel = openDiagnose(built);
   const titles = rowTitles(panel);
   assert.ok(titles.length > 0, '농어촌 행이 하나는 남아야 한다');
-  assert.ok(titles.every((title) => title.startsWith('국민대')), titles.slice(0, 3).join(' / '));
+  // 남은 행은 모두 농어촌 컷이 공개된 모집단위다 — 행이 아예 없는 곳은 `no-type` 으로 빠진다.
+  const allowed = new Set();
+  for (const university of built.context.IPSI_DATA.universities) {
+    for (const dept of university.departments || []) {
+      if (deptKinds(dept).has('rural')) allowed.add(rowTitleOf(university, dept));
+    }
+  }
+  const strays = titles.filter((title) => !allowed.has(title));
+  assert.deepEqual(strays, [], `농어촌 컷이 없는 행이 남았다: ${strays.slice(0, 3).join(' / ')}`);
+  // 일반으로 볼 때보다 목록이 짧다 — 농어촌이 없는 모집단위가 빠졌기 때문이다.
+  const general = bootWith(FULL_SCORES, { limit: 60 });
+  assert.ok(rowTitles(openDiagnose(general)).length > titles.length, '일반보다 짧아야 한다');
   // 산식 가정 뱃지는 근사·참고 앞에 neutral 로 선다 (FRAME §11).
   const row = panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap'));
   const badges = row.querySelectorAll('.seed-badge__label').map((node) => node.text.trim());
@@ -1026,40 +1069,63 @@ test('농어촌을 고르면 그 전형이 없는 모집단위는 목록에서 �
 });
 
 test('목표 화면은 전형 셀렉트를 따로 한 줄로 두고 진단에서 고른 전형을 기본으로 쓴다', () => {
-  const built = bootTypes({ type: 'rural', universities: ['kookmin'] });
+  const data = buildContext().context.IPSI_DATA;
+  const place = ruralPlace(data);
+  const built = bootWith(FULL_SCORES, { type: 'rural', universities: [place.university.id] });
   const panel = openDiagnose(built);
-  panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap')).dispatch('click');
+  const target = panel.querySelectorAll('.jr-row')
+    .find((node) => node.querySelector('.seed-list-item__title')?.text.trim() === rowTitleOf(place.university, place.dept));
+  assert.ok(target, `${rowTitleOf(place.university, place.dept)} 행이 진단 목록에 없다`);
+  target.dispatch('click');
   const typeSelect = panel.querySelectorAll('.jr-select').find((node) => node.getAttribute('aria-label') === '전형');
   assert.ok(typeSelect, '목표 화면에 전형 셀렉트가 없다');
-  assert.deepEqual(typeSelect.querySelectorAll('option').map((node) => node.text.trim()), ['일반', '농어촌']);
+  // 셀렉트에는 그 모집단위에 컷이 공개된 전형만 담긴다.
+  const kinds = deptKinds(place.dept);
+  assert.deepEqual(typeSelect.querySelectorAll('option').map((node) => node.text.trim()),
+    TYPE_ORDER.filter(([kind]) => kinds.has(kind)).map(([, label]) => label));
   assert.equal(typeSelect.querySelectorAll('option').find((node) => node.getAttribute('selected') !== null).text.trim(), '농어촌');
   // 대학·모집단위 셀렉트와 같은 줄에 끼우지 않는다 (FRAME §11).
   const lines = panel.querySelector('.jr-screen-head').querySelectorAll('.jr-filters');
   assert.equal(lines.length, 2, '셀렉트가 두 줄이어야 한다');
   assert.equal(lines[1].querySelectorAll('.jr-select').length, 1);
   // 근거 `지원` 행이 그 전형명을 적는다.
-  assert.match(panel.text, /수능\(농어촌학생전형\)/u);
+  const ruralName = yearRowsOf(place.dept).flatMap(typeRowsOf)
+    .find((row) => row.kind === 'rural' && hasTypeCut(row)).typeName;
+  const generalName = yearRowsOf(place.dept).flatMap(typeRowsOf)
+    .find((row) => (row.kind || 'general') === 'general' && hasTypeCut(row)).typeName;
+  assert.ok(panel.text.includes(ruralName), `근거에 전형명 '${ruralName}' 이 없다`);
   // 일반으로 되돌리면 전형명도 돌아온다.
   typeSelect.dispatch('change', { target: { value: 'general' } });
-  assert.ok(!panel.text.includes('농어촌학생전형'), '일반으로 바꿨는데 농어촌 전형명이 남아 있다');
+  assert.ok(!panel.text.includes(ruralName), `일반으로 바꿨는데 '${ruralName}' 이 남아 있다`);
+  assert.ok(panel.text.includes(generalName), `일반 전형명 '${generalName}' 이 없다`);
 });
 
 test('기준 숫자 표에 전형 열이 생기고 전 전형 행이 다 실린다', () => {
-  const built = bootTypes((place) => ({ universities: ['kookmin'], query: place.dept.name }));
+  const data = buildContext().context.IPSI_DATA;
+  const place = ruralPlace(data);
+  const built = bootWith(FULL_SCORES, { universities: [place.university.id], query: place.dept.name });
   const panel = openDiagnose(built);
   panel.querySelectorAll('.jr-row').find((node) => node.querySelector('.jr-gap')).dispatch('click');
   const table = tableWith(panel, '환산 70');
   assert.ok(table, '어디가 열 표가 없다');
   const head = table.querySelectorAll('th').map((cell) => cell.text.trim());
   assert.equal(head[1], '전형', `전형 열이 연도 다음이어야 한다: ${head.join(' ')}`);
+  // 연도 내림차순 × 그 해의 전 전형 행.
+  const expected = Object.entries(place.dept.jeongsi).filter(([year]) => year !== 'alts').sort().reverse()
+    .flatMap(([, yearRow]) => typeRowsOf(yearRow).map((row) => TYPE_NAME[row.kind] || '일반'));
   const kinds = bodyRows(table).map((row) => row.querySelectorAll('td')[0].text.trim());
-  assert.deepEqual(kinds, ['일반', '농어촌']);
-  // 농어촌 행은 그 전형의 값이다.
-  assert.match(table.text, /71\.5/u);
+  assert.deepEqual(kinds, expected);
+  // 농어촌 행은 그 전형의 값이다 — 일반 행의 값을 옮겨 적지 않는다.
+  const latest = Object.keys(place.dept.jeongsi).filter((year) => year !== 'alts').sort().at(-1);
+  const ruralRow = typeRowsOf(place.dept.jeongsi[latest]).find((row) => row.kind === 'rural');
+  const cells = bodyRows(table).find((row) => row.querySelectorAll('td')[0].text.trim() === '농어촌').querySelectorAll('td');
+  assert.equal(cells[2].text.trim(), ruralRow.score.p70.toFixed(1), '환산 70 이 농어촌 행 값이어야 한다');
+  assert.equal(cells[4].text.trim(), ruralRow.cut70.toFixed(1), '평균 70 이 농어촌 행 값이어야 한다');
 });
 
 test('정보 탭 전형 분류 절이 kind·라벨·모집단위 수·전형명 예 둘을 적는다', () => {
-  const built = bootTypes();
+  const built = boot(FULL_SCORES);
+  const { options } = typeFacts(built.context.IPSI_DATA);
   built.tabs.find((tab) => tab.getAttribute('data-view') === 'about').dispatch('click');
   const section = built.panel.querySelector('#jr-about-types');
   assert.ok(section, '전형 분류 절이 없다');
@@ -1067,15 +1133,15 @@ test('정보 탭 전형 분류 절이 kind·라벨·모집단위 수·전형명 
   assert.deepEqual(head.slice(0, 4), ['kind', '라벨', '모집단위', '전형명 예']);
   const rows = bodyRows(section.querySelector('.jr-table'))
     .map((row) => [row.querySelector('th').text.trim(), ...row.querySelectorAll('td').map((cell) => cell.text.trim())]);
-  assert.deepEqual(rows.map((row) => row[0]), ['general', 'rural']);
-  assert.deepEqual(rows[1].slice(1, 3), ['농어촌', '1곳']);
-  assert.match(rows[1][3], /수능\(농어촌학생전형\)/u);
+  assert.deepEqual(rows.map((row) => row[0]), options.map((option) => option.kind));
+  assert.deepEqual(rows.map((row) => row[1]), options.map((option) => option.label));
+  assert.deepEqual(rows.map((row) => row[2]), options.map((option) => `${option.count}곳`));
+  assert.deepEqual(rows.map((row) => row[3]), options.map((option) => option.samples.join(' · ') || '—'));
 });
 
 test('공유 링크가 t=<kind>로 전형을 싣고 되읽는다', () => {
   // 되읽기: 주소에 t=rural 만 있어도 그 전형으로 진단이 열린다.
   const again = buildContext();
-  addRuralType(again.context.IPSI_DATA);
   again.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
   again.context.location.search = '?t=rural';
   vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), again.context, { filename: 'assets/app.js' });
@@ -1090,4 +1156,29 @@ test('공유 링크가 t=<kind>로 전형을 싣고 되읽는다', () => {
   vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), bad.context, { filename: 'assets/app.js' });
   bad.tabs.find((tab) => tab.getAttribute('data-view') === 'diagnose').dispatch('click');
   assert.ok(chipNamed(bad.panel, '일반'), '모르는 kind 인데 일반으로 돌아오지 않았다');
+});
+
+// types[] 는 어디가 행이 있는 해에만 실린다 — 없는 해는 그 행 하나가 곧 `일반` 이다 (MODEL §1.1-2).
+test('데이터에서 types[]를 걷어내면 전형은 일반 하나뿐이다', () => {
+  const built = buildContext();
+  let stripped = 0;
+  for (const university of built.context.IPSI_DATA.universities) {
+    for (const dept of university.departments || []) {
+      for (const [year, yearRow] of Object.entries(dept.jeongsi || {})) {
+        if (year === 'alts' || !Array.isArray(yearRow.types)) continue;
+        delete yearRow.types;
+        stripped += 1;
+      }
+    }
+  }
+  assert.ok(stripped > 0, '걷어낼 types 가 있어야 한다');
+  built.context.localStorage.setItem('jr.scores', JSON.stringify(FULL_SCORES));
+  vm.runInContext(readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), built.context, { filename: 'assets/app.js' });
+  const panel = openDiagnose(built);
+  chipNamed(panel, '일반').dispatch('click');
+  const group = panel.querySelectorAll('[role="radiogroup"]').find((node) => node.getAttribute('aria-label') === '전형');
+  assert.ok(group, '전형 목록이 펼쳐져야 한다');
+  assert.deepEqual(group.querySelectorAll('[role="radio"]')
+    .map((node) => node.querySelector('.seed-list-item__title').text.trim()), ['일반']);
+  assert.match(group.querySelector('.seed-list-item__detail').text.trim(), /^\d+곳$/u);
 });

@@ -198,7 +198,7 @@ async function walk(page, tag, mode) {
 }
 
 // 전형 고르기 (FRAME §11). 768px 미만은 시트, 이상은 인라인 단일 선택 목록이다.
-// 데이터에 `types[]`가 없으면 고를 수 있는 전형이 `일반` 하나뿐이라 농어촌 판은 건너뛰고 그 사실만 적는다.
+// 생성 데이터에 농어촌 컷이 96곳 실려 있다 — 농어촌 판은 건너뛰지 않고 끝까지 돈다.
 async function typeRun(page, tag) {
   await page.click('.seed-tabs__trigger[data-view="diagnose"]');
   await page.waitForSelector('.jr-chips');
@@ -224,7 +224,7 @@ async function typeRun(page, tag) {
 
   const index = labels.indexOf('농어촌');
   if (index === -1) {
-    notes.push(`${tag}/전형: 데이터에 types[]가 없어 고를 수 있는 전형이 ${labels.join('·')} 뿐 — 농어촌 판 건너뜀`);
+    problems.push(`${tag}/전형: 고를 수 있는 전형이 ${labels.join('·')} 뿐 — 농어촌이 없다`);
     if (narrow) await page.locator('.jr-sheet-footer button:has-text("완료")').click();
     else await opener.click();
     await page.waitForTimeout(200);
@@ -258,14 +258,35 @@ async function typeRun(page, tag) {
     const options = await typeSelect.locator('option').allTextContents();
     if (!options.map((text) => text.trim()).includes('농어촌')) problems.push(`${tag}/전형: 목표 셀렉트에 농어촌이 없다`);
   }
+  // 근거 `지원` 행이 그 전형명을 적고, 판정 뱃지에 `산식 가정` 이 선다 (FRAME §11).
+  const applyRow = (await page.locator('#panel .jr-evidence .seed-list-item__root')
+    .filter({ hasText: '지원' }).first().textContent() || '').trim();
+  if (!/농[·\s]?어촌/u.test(applyRow)) problems.push(`${tag}/전형: 근거 지원 행이 '${applyRow}'`);
+  const badges = (await page.locator('#panel .jr-verdict-badges .seed-badge__label').allTextContents())
+    .map((text) => text.trim());
+  if (!badges.includes('산식 가정')) problems.push(`${tag}/전형: 목표 판정에 산식 가정 뱃지가 없다 (${badges.join(' / ')})`);
+  // 비교 입결·판정 숫자가 그 전형 행의 값이다 — 일반으로 되돌리면 달라져야 한다.
+  const ruralCard = (await page.locator('#panel .jr-verdict').first().textContent() || '').trim();
   await look(page, `${tag}/전형 목표`);
+  await typeSelect.selectOption('general');
+  await page.waitForSelector('#panel .jr-verdict, #panel .seed-inline-banner__root');
+  const generalCard = (await page.locator('#panel .jr-verdict').first().textContent() || '').trim();
+  if (ruralCard && ruralCard === generalCard) {
+    problems.push(`${tag}/전형: 일반과 농어촌의 판정 카드가 같다 (${ruralCard.slice(0, 80)})`);
+  }
+  const backRow = (await page.locator('#panel .jr-evidence .seed-list-item__root')
+    .filter({ hasText: '지원' }).first().textContent() || '').trim();
+  if (/농[·\s]?어촌/u.test(backRow)) problems.push(`${tag}/전형: 일반으로 바꿨는데 지원 행이 '${backRow}'`);
 
-  // 다음 판을 위해 일반으로 되돌린다.
+  // 다음 판을 위해 일반으로 되돌린다. 넓은 폭에서는 인라인 목록이 열린 채로 남아 있으므로
+  // (FRAME §9.4 — 칩은 열림 상태를 잇는다) 닫힌 때만 칩을 누른다.
   await page.click('.seed-tabs__trigger[data-view="diagnose"]');
   await page.waitForSelector('.jr-chips');
-  await page.locator('[data-sheet-opener="type"]').click();
-  await page.waitForTimeout(220);
-  await page.locator(`${narrow ? '.jr-sheet' : '#panel'} [role="radio"]`).first().click();
+  if (await page.locator(`${scope} [role="radio"]`).count() === 0) {
+    await page.locator('[data-sheet-opener="type"]').click();
+    await page.waitForTimeout(220);
+  }
+  await page.locator(`${scope} [role="radio"]`).first().click();
   await page.waitForTimeout(200);
   if (narrow) {
     await page.locator('.jr-sheet-footer button:has-text("완료")').click();

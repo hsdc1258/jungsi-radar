@@ -35,9 +35,11 @@
   화면 위에는 숫자 세 칸(국·수·탐 평균 · 지원 가능 N곳 · 관심 N곳, 보류가 있으면 관심 대신 보류)만 둡니다.
   기본 정렬은 **라인 순위**(서연고 → 서성한 → …)가 1차, 예상 컷 내림차순이 2차이고 라인 이름이 목록
   머리글입니다. 정렬 셀렉트로 판정별 묶음 보기로 바꿀 수 있습니다.
-  **전형**은 `대학` 다음 칩에서 하나만 고릅니다(기본 `일반` · 농어촌 · 특성화고 · 기회균형 · 특수교육 ·
-  지역인재 · 재외국민 · 실기·특기 · 기타) — 칩 글자가 곧 고른 전형이고, 행 부제는 그 전형으로 컷이 공개된
-  모집단위 수이며, 고른 전형이 없는 모집단위는 목록에서 빠지고 스탯 줄도 `지원 가능 · 농어촌`이 됩니다.
+  **전형**은 `대학` 다음 칩에서 하나만 고릅니다. 어디가 전형명 177종을 kind 아홉 가지로 접었고,
+  목록에는 **컷이 공개된 kind만** 올라옵니다 — 지금은 기본 `일반` 1,942곳 · 농어촌 96 · 기회균형 58 ·
+  지역인재 38 · 특성화고 33 · 실기·특기 2 · 기타 1곳입니다(특수교육·재외국민은 컷 0행이라 빠집니다).
+  칩 글자가 곧 고른 전형이고, 행 부제는 그 전형으로 컷이 공개된 모집단위 수이며,
+  고른 전형이 없는 모집단위는 목록에서 빠지고 스탯 줄도 `지원 가능 · 농어촌`이 됩니다.
   특별전형을 일반전형 산식으로 판정한 행에는 `산식 가정` 뱃지가 `근사` 앞에 붙습니다. 고른 전형은
   localStorage(`jr.filters.type`)와 공유 링크(`t=rural`)에 남습니다.
   필터는 **줄바꿈하는 칩 묶음**(라인 · 대학 · 전형 · 관심 학과 · 관심 대학 · 예체능 제외 · 말도 안되는거 제외 ·
@@ -207,9 +209,14 @@ npm run rules   # → source/rules-2026.json (조각난 요강 산식을 합칩�
 npm run verify  # → source/formula-check.json (어디가 공시 환산점수로 산식을 검산합니다)
 npm run build   # rules → verify → anomalies → assets/data.js
 npm run report  # → docs/MODEL-REPORT.md (옛 모델과 v3의 판정 차이)
-npm run accuracy # → docs/ACCURACY-AUDIT.md (재현·자기 위치·교차 검수·흔들림 전수검사)
-npm test        # 엔진·데이터 불변식·렌더러 스모크 (node --test, 의존성 없음)
+npm run accuracy # → docs/ACCURACY-AUDIT.md (재현·자기 위치·교차 검수·흔들림 전수검사, 전형 kind별 포함)
+npm run audit   # → docs/AUDIT.md §14 산식 검산 절만 다시 씁니다
+npm test        # 엔진·데이터 불변식·전형 분류·렌더러 스모크 174개 (node --test, 의존성 없음)
 ```
+
+`npm run build`는 어디가 원자료에서 전형명을 kind 아홉 가지로 접어 같은 모집단위·학년도의
+전 전형 행을 `jeongsi[year].types[]`에 싣습니다(`scripts/source-parsers/admission-type.mjs`).
+그 행에는 읽는 쪽이 있는 칸만 넣습니다 — 모집인원 내역·환산점수 총점·80·90% 지점 학생은 뺍니다.
 
 브라우저 확인(Playwright가 있는 환경에서):
 
@@ -217,9 +224,11 @@ npm test        # 엔진·데이터 불변식·렌더러 스모크 (node --test,
 npm run bundle  # dist/jungsi-radar.html — 한 파일짜리 사본(어디에나 붙여 넣는 조각)
 npm run check   # 320·375·414·768·1024·1280 × 라이트/다크 × 다섯 탭 + 번들 두 판을 실제로 열어
                 # 가로 넘침·고정바 겹침·잘린 텍스트·콘솔 오류·실패한 요청이 있으면 실패로 끝난다
+                # 라인 시트 한 판과 전형 시트 한 판(_shots/sheet-line.png · sheet-type.png)도 함께 연다
                 # (스크린샷은 _shots/ 에 남는다)
 npm run e2e     # 성적 입력 → 진단 → 목표 → 반영 → 정보 전 흐름을 실제 클릭·타이핑으로 걷는다
                 # 375·768·1280 × 라이트/다크 × 백분위·등급·표점, 공유 링크 복원, 바텀시트 열기·완료
+                # 전형 6판: 농어촌을 골라 칩·스탯·목록·목표 셀렉트·근거 `지원` 행·산식 가정 뱃지까지 본다
 ```
 
 ## 배포
@@ -338,15 +347,27 @@ npm run audit                      # docs/AUDIT.md §14 산식 검산 다시 쓰
 ```
 index.html          골격(상단바·탭·패널·푸터). 테마 복원 스크립트만 인라인입니다.
 assets/frame.css    배치와 간격만. 색·컴포넌트 모양은 Seed Design(@seed-design/css@2.7.0)이 맡습니다.
-assets/data.js      생성물
+assets/data.js      생성물 (5.7MB · gzip 392KB) — 대학·모집단위·전형 행·산식·도수분포를 한 파일에
 assets/engine.js    순수 계산 (globalThis.IPSI_ENGINE) — 화면과 테스트가 같은 파일을 씁니다
 assets/app.js       화면
-docs/FRAME.md       화면 틀. 여기 없는 패턴은 만들지 않습니다.
-docs/MODEL.md       판정 계약(층위·산식·검산·결과 객체). 계산과 화면이 어긋나면 이 문서가 이깁니다.
+
+source/adiga/        어디가 원값 직접 수집 (2026·2025 원행 · types 전형 분류표 · unmatched)
+scripts/build-data.mjs           source/*.json → assets/data.js
+scripts/source-parsers/admission-type.mjs  전형명 177종 → kind 아홉 가지 (MODEL §1.1-2)
+scripts/verify-formulas.mjs      산식 검산 → source/formula-check.json
+scripts/accuracy-audit.mjs       전수검사 → docs/ACCURACY-AUDIT.md
+scripts/shots.mjs                폭·테마·탭 전수 + 시트 두 판 캡처 (npm run check)
+scripts/e2e.mjs                  실제 클릭·타이핑 전 흐름 + 전형 6판 (npm run e2e)
+tests/                           engine·data·model·render·admission-type·anomalies·slope·accuracy-audit
+
+docs/FRAME.md       화면 틀. 여기 없는 패턴은 만들지 않습니다. §11이 전형 어법입니다.
+docs/MODEL.md       판정 계약(층위·산식·검산·전형·결과 객체). 계산과 화면이 어긋나면 이 문서가 이깁니다.
 docs/ACCURACY.md    정확도 정량 분석 (생성물 — scripts/accuracy-report.mjs가 씁니다)
+docs/ACCURACY-AUDIT.md 재현·자기 위치·교차 검수·흔들림 전수검사 (생성물 — npm run accuracy)
 docs/AUDIT.md       독립 검수 기록 (생성물 — scripts/audit-report.mjs + formula-check-report.mjs)
 docs/HANDOFF.md     지금 어디까지 왔고 무엇이 남았는가
 docs/MODEL-REPORT.md 옛 모델(평균 백분위)과 v3의 판정 차이 (생성물 — scripts/model-report.mjs가 씁니다)
+_shots/             npm run check 가 남기는 캡처 (sheet-type.png = 전형 시트, 커밋하지 않습니다)
 ```
 
 배포는 `main`에 push하면 GitHub Actions가 테스트를 돌린 뒤 GitHub Pages로 올립니다.
