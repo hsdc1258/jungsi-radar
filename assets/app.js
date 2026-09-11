@@ -412,6 +412,7 @@
   const FLAG_LABEL = {
     'approx-conversion': '변환표 근사', 'plan-formula': '2027 시행계획', 'year-bridge': '백분위 동등 가정',
     'ratio-from-2026': '2026 요강 계수', estimated: '등급 구간', mock: '모의 성적', target: '목표 성적',
+    'slope-unstable': '환산 기울기 불안정',
   };
   // 출처 링크 글자 (FRAME §10.4). 원문 제목을 그대로 쓰지 않고 **대학명·학년도·문서 종류·쪽**만
   // 뽑아 `어디가 2026` · `국민대 2026 정시 요강 p.53`처럼 짧게 적는다.

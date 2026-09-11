@@ -188,7 +188,8 @@ test('§8-5 2027 산식이 2026과 다르면 basisChanged 와 두 판정이 함�
     },
   };
   // 국어가 세고 수학이 약한 성적 — 국400인 2026에서는 적정, 수400인 2027에서는 소신이다.
-  const tilted = profileOf({ kor: 99, math: 67, inq1: 86, inq2: 52 });
+  // (국어 100은 대칭 차분의 위쪽 경계이기도 하다 — 위로 못 올리면 아래쪽만 쓴다, MODEL §3.)
+  const tilted = profileOf({ kor: 100, math: 60, inq1: 86, inq2: 52 });
   const result = judge(tilted, DEPT_A, { rules2027 });
   assert.equal(result.level, 'L1');
   assert.equal(result.basisChanged, true, `2026 ${result.gapDetail.gap2026} / 2027 ${result.gapDetail.gap2027}`);

@@ -1412,6 +1412,9 @@
   //   L0 없음 : 집계 방식 unknown · 컷 없음 · 자격 미충족.
   const APPLY_YEAR = 2027;
   const LAYER_UNCERTAINTY = Object.freeze({ L1: 0.5, L2: 1, L3: 2, L0: null });
+  // 국소 기울기를 재는 폭과, 그 폭에서 요구하는 최소 점수 변화 (MODEL §3 · 2026-09-11 정정).
+  const SLOPE_STEPS = Object.freeze([1, 2, 3, 5]);
+  const SLOPE_MIN_RISE = 2;
   const INQ_KIND_ALIAS = Object.freeze({
     사탐: 'social', 과탐: 'science', 직탐: 'vocational',
     social: 'social', science: 'science', vocational: 'vocational',
@@ -1559,6 +1562,43 @@
       for (const row of rows.slice(0, count)) out.push({ key: row.slot, label: inquiryLabel(row), current: row.pct });
     }
     return out;
+  }
+
+  // 국소 기울기 — **대칭 차분**으로 잰다(MODEL §3, 2026-09-11 정정).
+  //   k = 1, 2, 3, 5 순으로 `(score(p+k) − score(p−k)) ÷ (올린 폭 + 내린 폭)`을 구하고,
+  //   두 점수의 차가 2점 이상이 되는 첫 k 를 쓴다(`stable: true`).
+  //   백분위→표준점수 되읽기 표는 눈금이 성기다 — 낮은 백분위에서는 +1이 표준점수를 아예
+  //   안 바꾸거나 한 계단만 바꿔 한쪽 차분이 0.3~0.5점/백분위로 무너지고, 그 기울기로 나눈
+  //   점수 차가 백분위 상당을 몇 배로 부풀린다. 위·아래를 함께 보면 그 왜곡이 사라진다.
+  //   백분위가 0·100에 닿아 한쪽으로 못 움직이면 그쪽 폭은 0이다(= 한쪽 차분).
+  //   어느 k 에서도 2점을 못 넘기면 가장 넓은 폭에서 잰 값을 `stable: false` 로 돌려준다 —
+  //   L1은 이때 판정을 접고 L2로 내려가고(`slope-unstable`), 영역별 기울기는 그 값을 쓴다.
+  //
+  //   scoreAtDelta(delta) : 백분위를 delta 만큼 옮긴 환산점수(숫자) 또는 null.
+  //   percentiles         : 그 기울기가 움직이는 영역들의 지금 백분위 — 0·100 경계를 여기서 본다.
+  function localSlope(scoreAtDelta, percentiles, options = {}) {
+    const values = (percentiles || []).filter(isNumber);
+    if (values.length === 0) return null;
+    const minRise = isNumber(options.minRise) ? options.minRise : SLOPE_MIN_RISE;
+    const headroom = Math.max(0, Math.min(...values.map((pct) => 100 - pct)));
+    const legroom = Math.max(0, Math.min(...values));
+    let widest = null;
+    for (const step of SLOPE_STEPS) {
+      const up = Math.min(step, headroom);
+      const down = Math.min(step, legroom);
+      const span = up + down;
+      if (!(span > 0)) break;
+      const high = scoreAtDelta(up);
+      const low = scoreAtDelta(-down);
+      if (!isNumber(high) || !isNumber(low)) break;
+      const rise = high - low;
+      const slope = rise / span;
+      if (rise >= minRise) return { slope, rise, span, step, stable: true };
+      if (slope > 0) widest = { slope, rise, span, step, stable: false };
+      // 양쪽 다 경계에 막혀 더 넓힐 수 없으면 여기서 멈춘다.
+      if (up < step && down < step) break;
+    }
+    return widest;
   }
 
   const rulesFor = (rules, universityId) => (rules ? (rules.universities?.[universityId] || rules[universityId] || null) : null);
@@ -1835,34 +1875,33 @@
       const ctx = { std, conv: context.conv, universityId, year: cutYear };
       const inputs = myFormulaInputs(profile, std, { sameYear });
       const mineScore = formulaScore2(track, inputs, ctx);
-      const bumpedFirst = mineScore ? formulaScore2(track, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx) : null;
-      // 국소 기울기를 못 구하면 점수 차를 백분위로 옮길 수 없다 — L1로 올리지 않고 L2·L3로 내려간다.
-      if (mineScore && bumpedFirst && bumpedFirst.value > mineScore.value) {
-        const bumped = bumpedFirst;
-        const slope = bumped.value - mineScore.value;
+      // 산식의 국소 기울기. 위·아래 양쪽을 같은 되읽기 표(tabular)로 재야 차이에 기울기만 남는다.
+      const scoreAtDelta = (delta) => {
+        const one = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true, bump: delta }), ctx);
+        return one ? one.value : null;
+      };
+      const planRows = planAreaRows(profile, track);
+      const slopeInfo = mineScore ? localSlope(scoreAtDelta, planRows.map((row) => row.current)) : null;
+      // 기울기를 못 구하거나 불안정하면 점수 차를 백분위로 옮길 수 없다 — L1을 접고 L2·L3로 내려간다.
+      if (!slopeInfo || !slopeInfo.stable) {
+        if (mineScore && !base.flags.includes('slope-unstable')) base.flags.push('slope-unstable');
+      } else if (mineScore) {
+        const slope = slopeInfo.slope;
         const toPct = (points) => (isNumber(points) && isNumber(slope) ? round(points / slope, VERDICT_DIGITS) : null);
 
-        // 영역별 국소 기울기 — 그 영역 백분위만 +1 했을 때의 환산점수 변화(점).
+        // 영역별 국소 기울기 — 그 영역 백분위 1점당 환산점수 변화(점). 같은 대칭 차분이다.
         // 목표 화면의 '필요한 상승'이 이것으로 비중과 영역별 백분위 상승을 만든다 (MODEL §3).
-        // 기준점도 bump 쪽과 같은 되읽기 표(tabular)로 잡아야 차이에 기울기만 남는다.
-        // 백분위→표준점수 되읽기는 눈금이 성기다 — 백분위 69와 70이 같은 표준점수인 자리가 있어
-        // +1 만으로는 기울기가 0으로 나온다. 값이 움직일 때까지 폭을 넓히고 그 폭으로 나눈다.
-        // 그래도 0이면 그 영역은 이 산식이 반영하지 않는 것이다(수학 미반영 트랙 등).
-        const slopeBase = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true }), ctx);
+        // 한 영역만 흔드는 기울기는 2점을 못 넘기는 일이 흔하다 — 여기서는 L1을 접지 않고
+        // 가장 넓은 폭에서 잰 값을 쓴다. 그래도 안 움직이면 그 영역은 이 산식이 반영하지 않는
+        // 것이다(수학 미반영 트랙 등) — 0으로 둔다.
         const areaSlopes = [];
-        if (slopeBase) {
-          for (const row of planAreaRows(profile, track)) {
-            let slope = 0;
-            for (const step of [1, 2, 3, 5]) {
-              const span = Math.min(100, row.current + step) - row.current;
-              if (!(span > 0)) break;
-              const one = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true, bump: step, bumpKey: row.key }), ctx);
-              if (!one) break;
-              const rise = one.value - slopeBase.value;
-              if (rise > 0) { slope = rise / span; break; }
-            }
-            areaSlopes.push({ ...row, slope: round(slope, 4) });
-          }
+        for (const row of planRows) {
+          const areaAt = (delta) => {
+            const one = formulaScore2(track, myFormulaInputs(profile, std, { sameYear, tabular: true, bump: delta, bumpKey: row.key }), ctx);
+            return one ? one.value : null;
+          };
+          const info = localSlope(areaAt, [row.current]);
+          areaSlopes.push({ ...row, slope: round(info && info.slope > 0 ? info.slope : 0, 4) });
         }
         const points = round(mineScore.value - score70, 4);
         const flags = [];
@@ -1898,8 +1937,12 @@
           const mineRescored = formulaScore2(track2027, inputs, ctx);
           if (cutRescored && mineRescored) {
             cut2027 = { score: cutRescored.value, track: track2027.name, status: track2027.status || null };
-            const bumped2027 = formulaScore2(track2027, myFormulaInputs(profile, std, { sameYear, bump: 1 }), ctx);
-            const slope2027 = bumped2027 && bumped2027.value > mineRescored.value ? bumped2027.value - mineRescored.value : null;
+            const at2027 = (delta) => {
+              const one = formulaScore2(track2027, myFormulaInputs(profile, std, { sameYear, tabular: true, bump: delta }), ctx);
+              return one ? one.value : null;
+            };
+            const info2027 = localSlope(at2027, planAreaRows(profile, track2027).map((row) => row.current));
+            const slope2027 = info2027 && info2027.stable ? info2027.slope : null;
             gap2027 = isNumber(slope2027) ? round((mineRescored.value - cutRescored.value) / slope2027, VERDICT_DIGITS) : null;
             const left = bandOf(toPct(points), VERDICT_BANDS);
             const right = bandOf(gap2027, VERDICT_BANDS);
@@ -1993,7 +2036,8 @@
         const highIndex = atBound('high');
         const gapMin = lowIndex ? round(lowIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
         const gapMax = highIndex ? round(highIndex.value - cutIndex.value, VERDICT_DIGITS) : gap;
-        const flags = [];
+        // L1을 기울기 불안정으로 접고 내려온 자리면 그 사실을 그대로 달고 간다(§3).
+        const flags = [...base.flags];
         if (weights.basis === 'ratio-from-2026') flags.push('ratio-from-2026');
         else if (ratioTrack?.status === 'plan') flags.push('plan-formula');
         return {

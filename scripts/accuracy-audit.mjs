@@ -43,6 +43,9 @@ export const SELF_BAND = 0.7;
 export const SELF_ZERO = 0.05;
 // A의 판정 허용폭. verify-formulas.TOLERANCE 와 같은 값이다.
 export const REPRO_TOLERANCE = 1.0;
+// L1 오답을 되읽기 폭 탓으로 보는 구간 폭(환산점수 점)과, 기울기가 무너졌다고 보는 값(점/백분위).
+export const WIDE_READBACK = 6;
+export const WEAK_SLOPE = 1;
 
 // ---------------------------------------------------------------- 성적표 → 사용자 입력
 // 어디가 70%(50%) 지점 학생 한 명의 성적표를 화면 입력 형식으로 옮긴다.
@@ -195,22 +198,64 @@ function selfCause(engine, result, entry) {
   return `층위 ${result.level}`;
 }
 
+// **구간 기준** — 어디가 70% 학생은 탐구 *과목*이 공개되지 않아 종류(사탐·과탐) 전체를 되읽는다.
+// 그래서 이 검사에서만 되읽기 구간이 넓고, 구간의 **중앙**으로 판정하면 틀리는 곳이 생긴다.
+// 실사용자는 과목을 넣으므로 폭이 좁다 — 검사가 사용자보다 불리한 조건으로 재는 셈이다.
+// 구간 기준은 그 조건을 걷어낸다: 공시 환산점수가 재현 구간 `[min, max] ± 1` 안에 들고,
+// 구간 하한·상한이 만드는 판정의 폭이 **소신**을 품으면 맞음으로 센다.
+// L2·L3은 되읽기가 끼지 않는 눈금(지수·평균 백분위)이라 중앙 기준 그대로다.
+export function selfRangeOk(result) {
+  if (!result || result.status !== 'ok') return false;
+  if (result.level !== 'L1') return isNumber(result.gap) && Math.abs(result.gap) <= SELF_ZERO;
+  const score70 = result.cut?.score70;
+  const low = result.mineDetail?.min;
+  const high = result.mineDetail?.max;
+  if (!isNumber(score70) || !isNumber(low) || !isNumber(high)) return false;
+  if (score70 < low - REPRO_TOLERANCE || score70 > high + REPRO_TOLERANCE) return false;
+  const gapMin = isNumber(result.gapDetail?.min) ? result.gapDetail.min : result.gap;
+  const gapMax = isNumber(result.gapDetail?.max) ? result.gapDetail.max : result.gap;
+  if (!isNumber(gapMin) || !isNumber(gapMax)) return false;
+  // 소신 띠는 −0.7 이상 +0.7 미만이다(engine VERDICT_BANDS). 구간이 그 띠와 겹치면 된다.
+  return Math.min(gapMin, gapMax) < SELF_BAND && Math.max(gapMin, gapMax) >= -SELF_BAND;
+}
+
+// L1 오답만 다시 가른다 — 되읽기 폭 / 기울기 불안정 / 산식 불일치 / 자격.
+// 판정에 쓰는 국소 기울기는 `점수 차 ÷ 백분위 상당`으로 되돌려 잰다(engine 이 둘 다 돌려준다).
+export function l1MissCause(result) {
+  if (!result || result.status === 'blocked') return '자격 미충족(선택과목 미상)';
+  const score70 = result.cut?.score70;
+  const low = result.mineDetail?.min;
+  const high = result.mineDetail?.max;
+  const inside = isNumber(score70) && isNumber(low) && isNumber(high)
+    && score70 >= low - REPRO_TOLERANCE && score70 <= high + REPRO_TOLERANCE;
+  if (!inside) return '산식 불일치 — 재현 구간이 공시값을 못 담음';
+  const width = isNumber(low) && isNumber(high) ? high - low : null;
+  if (isNumber(width) && width > WIDE_READBACK) return `되읽기 폭 — 구간 ${WIDE_READBACK}점 초과(탐구 과목 미공시)`;
+  const points = result.gapDetail?.points;
+  const pctEq = result.gapDetail?.gap2026 ?? result.gapDetail?.pctEq;
+  const slope = isNumber(points) && isNumber(pctEq) && Math.abs(pctEq) > 0.05 ? Math.abs(points / pctEq) : null;
+  if (isNumber(slope) && slope < WEAK_SLOPE) return `기울기 불안정 — 국소 기울기 ${WEAK_SLOPE}점/백분위 미만`;
+  return '좁은 구간인데 중앙이 어긋남';
+}
+
 export function auditSelfPlacement(engine, data) {
   const levels = { L1: 0, L2: 0, L3: 0, L0: 0 };
   const byLevel = new Map();
   const byUniversity = new Map();
   const causes = new Map();
   const causesByLevel = new Map();
+  const l1Causes = new Map();
   const levelOf = new Map();
   const worst = [];
   let departments = 0;
   let judged = 0;
   let correct = 0;
+  let rangeCorrect = 0;
   let inBand = 0;
   let order = 0;
   let orderKept = 0;
   const bump = (map, key) => {
-    if (!map.has(key)) map.set(key, { judged: 0, correct: 0, inBand: 0, order: 0, orderKept: 0, unjudged: 0 });
+    if (!map.has(key)) map.set(key, { judged: 0, correct: 0, rangeCorrect: 0, inBand: 0, order: 0, orderKept: 0, unjudged: 0 });
     return map.get(key);
   };
 
@@ -232,6 +277,11 @@ export function auditSelfPlacement(engine, data) {
         const perLevel = causesByLevel.get(level) || new Map();
         perLevel.set(cause, (perLevel.get(cause) || 0) + 1);
         causesByLevel.set(level, perLevel);
+        // L1 산식이 있는데 자격으로 막힌 자리도 L1 갈래에 남긴다(2-5).
+        if (result && result.status === 'blocked' && isNumber(result.gapDetail?.points)) {
+          const key = l1MissCause(result);
+          l1Causes.set(key, (l1Causes.get(key) || 0) + 1);
+        }
         continue;
       }
       judged += 1;
@@ -240,6 +290,7 @@ export function auditSelfPlacement(engine, data) {
       const gap = result.gap;
       const ok = level === 'L1' ? Math.abs(gap) <= SELF_BAND : Math.abs(gap) <= SELF_ZERO;
       if (ok) { correct += 1; levelRow.correct += 1; uniRow.correct += 1; }
+      if (selfRangeOk(result)) { rangeCorrect += 1; levelRow.rangeCorrect += 1; uniRow.rangeCorrect += 1; }
       if (result.band?.key === 'reach' || Math.abs(gap) <= SELF_BAND) { inBand += 1; levelRow.inBand += 1; uniRow.inBand += 1; }
       if (!ok) {
         const cause = selfCause(engine, result, entry);
@@ -248,6 +299,10 @@ export function auditSelfPlacement(engine, data) {
         perLevel.set(cause, (perLevel.get(cause) || 0) + 1);
         causesByLevel.set(level, perLevel);
         worst.push({ university: university.id, dept: dept.name, level, gap, cause });
+        if (level === 'L1') {
+          const key = l1MissCause(result);
+          l1Causes.set(key, (l1Causes.get(key) || 0) + 1);
+        }
       }
       // 50% 지점 학생은 환산점수 순으로 위에 선 학생이다 — 차이가 70% 학생보다 크거나 같아야 한다.
       const fifty = selfPlacement(engine, data, university, dept, 'p50');
@@ -264,18 +319,21 @@ export function auditSelfPlacement(engine, data) {
   const shape = (map) => [...map].map(([key, value]) => ({
     key, ...value,
     rate: rate(value.correct, value.judged),
+    rangeRate: rate(value.rangeCorrect, value.judged),
     bandRate: rate(value.inBand, value.judged),
     orderRate: rate(value.orderKept, value.order),
   }));
   return {
-    departments, judged, correct, inBand,
+    departments, judged, correct, rangeCorrect, inBand,
     rate: rate(correct, judged),
+    rangeRate: rate(rangeCorrect, judged),
     bandRate: rate(inBand, judged),
     order, orderKept, orderRate: rate(orderKept, order),
     levels,
     byLevel: shape(byLevel).sort((left, right) => String(left.key).localeCompare(String(right.key))),
     byUniversity: shape(byUniversity).sort((left, right) => (left.rate ?? 101) - (right.rate ?? 101)),
     causes: [...causes].sort((left, right) => right[1] - left[1]),
+    l1Causes: [...l1Causes].sort((left, right) => right[1] - left[1]),
     causesByLevel: [...causesByLevel].map(([level, map]) => ({
       level, rows: [...map].sort((left, right) => right[1] - left[1]),
     })).sort((left, right) => String(left.level).localeCompare(String(right.level))),
@@ -514,9 +572,15 @@ export function renderMarkdown(audit) {
   const { reproduction: repro, self, cross, wobble } = audit;
   const names = new Map(audit.names || []);
   const uni = (id) => names.get(id) || id;
+  const levelRow = (key) => self.byLevel.find((one) => one.key === key) || null;
   const levelRate = (key) => {
-    const row = self.byLevel.find((one) => one.key === key);
+    const row = levelRow(key);
     return row ? pct(row.rate) : '—';
+  };
+  // 중앙 기준 / 구간 기준을 한 칸에 나란히.
+  const levelBoth = (key) => {
+    const row = levelRow(key);
+    return row ? `${pct(row.rate)}·${pct(row.rangeRate)}` : '—';
   };
 
   lines.push('# 정확도 전수검사 — 재현·자기 위치·교차 검수·흔들림');
@@ -532,13 +596,14 @@ export function renderMarkdown(audit) {
   lines.push('## 한 줄 요약');
   lines.push('');
   lines.push(`> 재현 A: ${repro.counts.match}/${repro.comparable} (${pct(repro.rate)}) · `
-    + `자기 위치 B: L1 ${levelRate('L1')} · L2 ${levelRate('L2')} · L3 ${levelRate('L3')} · `
+    + `자기 위치 B (중앙 기준·구간 기준): L1 ${levelBoth('L1')} · L2 ${levelBoth('L2')} · L3 ${levelBoth('L3')} · `
     + `교차 검수 C: ${cross.ownTotal}벌 중 자기 모집단위 소신 ${cross.ownCorrect}/${cross.ownTotal}, 단조 위반 ${pct(cross.violationRate)}`);
   lines.push('');
   lines.push('| 지표 | 분모 | 맞음 | 비율 |');
   lines.push('|---|---:|---:|---:|');
   lines.push(`| A 재현 (지점) | ${repro.comparable} | ${repro.counts.match} | ${pct(repro.rate)} |`);
-  lines.push(`| B 자기 위치 (모집단위) | ${self.judged} | ${self.correct} | ${pct(self.rate)} |`);
+  lines.push(`| B 자기 위치 · 중앙 기준 (모집단위) | ${self.judged} | ${self.correct} | ${pct(self.rate)} |`);
+  lines.push(`| B 자기 위치 · 구간 기준 (모집단위) | ${self.judged} | ${self.rangeCorrect} | ${pct(self.rangeRate)} |`);
   lines.push(`| B 순서 보존 (50% ≥ 70%) | ${self.order} | ${self.orderKept} | ${pct(self.orderRate)} |`);
   lines.push(`| C 자기 모집단위 (여섯 벌) | ${cross.ownTotal} | ${cross.ownCorrect} | ${pct(rate(cross.ownCorrect, cross.ownTotal))} |`);
   lines.push(`| C 단조 (같은 대학 안 짝) | ${cross.pairs} | ${cross.pairs - cross.violations} | ${pct(rate(cross.pairs - cross.violations, cross.pairs))} |`);
@@ -620,16 +685,24 @@ export function renderMarkdown(audit) {
   lines.push('종류(사탐·과탐)만 공시하므로 종류로 넣고, 국어·수학 선택과목은 공시되지 않아 기본값이라');
   lines.push('미적분·기하 가산은 붙지 않는다.');
   lines.push('');
-  lines.push(`- **L1**: 백분위 상당 차이가 소신 폭(±${SELF_BAND}) 안이면 맞음.`);
-  lines.push(`- **L2·L3**: 같은 값을 같은 비율로 매기므로 차이가 0(±${SELF_ZERO})이어야 맞음.`);
+  lines.push('판정이 맞았는지는 **두 기준**으로 잰다.');
   lines.push('');
-  lines.push('| 층위 | 판정 | 맞음 | 비율 | 소신 띠 | 순서 보존(50%≥70%) |');
-  lines.push('|---|---:|---:|---:|---:|---:|');
+  lines.push(`- **중앙 기준** — L1은 백분위 상당 차이가 소신 폭(±${SELF_BAND}) 안, L2·L3는 차이가 0(±${SELF_ZERO})이면 맞음.`);
+  lines.push(`- **구간 기준** — L1은 공시 환산점수가 재현 구간 \`[min, max] ± ${REPRO_TOLERANCE.toFixed(1)}\` 안에 들고,`);
+  lines.push('  구간 하한·상한이 만드는 판정의 폭이 **소신**을 품으면 맞음. L2·L3는 중앙 기준 그대로다.');
+  lines.push('');
+  lines.push('두 기준이 갈리는 까닭은 이 검사에만 있는 조건이다. 어디가는 70% 학생의 탐구 **과목**을');
+  lines.push('공개하지 않아 종류(사탐·과탐) 전체를 되읽어야 하고, 그래서 되읽기 구간이 넓다. 실사용자는');
+  lines.push('과목을 넣으므로 그 폭이 좁다 — 중앙 기준은 사용자보다 불리한 조건으로 재는 셈이고,');
+  lines.push('구간 기준은 그 조건을 걷어낸 값이다. 실제 정확도는 두 값 사이에 있다.');
+  lines.push('');
+  lines.push('| 층위 | 판정 | 맞음(중앙) | 중앙 기준 % | 맞음(구간) | 구간 기준 % | 소신 띠 | 순서 보존(50%≥70%) |');
+  lines.push('|---|---:|---:|---:|---:|---:|---:|---:|');
   for (const row of self.byLevel) {
     if (row.key === '판정 없음') continue;
-    lines.push(`| ${row.key} | ${row.judged} | ${row.correct} | ${pct(row.rate)} | ${pct(row.bandRate)} | ${row.orderKept}/${row.order} (${pct(row.orderRate)}) |`);
+    lines.push(`| ${row.key} | ${row.judged} | ${row.correct} | ${pct(row.rate)} | ${row.rangeCorrect} | ${pct(row.rangeRate)} | ${pct(row.bandRate)} | ${row.orderKept}/${row.order} (${pct(row.orderRate)}) |`);
   }
-  lines.push(`| 전체 | ${self.judged} | ${self.correct} | ${pct(self.rate)} | ${pct(self.bandRate)} | ${self.orderKept}/${self.order} (${pct(self.orderRate)}) |`);
+  lines.push(`| 전체 | ${self.judged} | ${self.correct} | ${pct(self.rate)} | ${self.rangeCorrect} | ${pct(self.rangeRate)} | ${pct(self.bandRate)} | ${self.orderKept}/${self.order} (${pct(self.orderRate)}) |`);
   lines.push('');
   lines.push('**순서 보존**은 50% 지점 학생의 차이가 70% 지점 학생보다 크거나 같은가다. 두 지점은');
   lines.push('**환산점수 순**으로 뽑은 학생이라(MODEL §0) 환산 눈금인 L1에서만 순서가 보장된다 —');
@@ -664,7 +737,23 @@ export function renderMarkdown(audit) {
   lines.push('- **산식 재현 불일치** — 구간 자체가 공시값을 담지 못한다(A도 mismatch).');
   lines.push('- **반올림 차** — L3의 컷은 공시된 정수 평균백분위이고 내 값은 영역별 값으로 다시 계산한 평균이라 ±0.6 안에서 어긋난다.');
   lines.push('');
-  lines.push('### 2-4. 가장 크게 어긋난 모집단위 20곳');
+  lines.push('### 2-4. L1 오답을 다시 가른다');
+  lines.push('');
+  lines.push('위 갈래는 층위를 가리지 않는다. L1의 중앙 기준 오답만 따로 네 갈래로 다시 센다.');
+  lines.push('');
+  lines.push('| 갈래 | 모집단위 |');
+  lines.push('|---|---:|');
+  for (const [key, count] of self.l1Causes) lines.push(`| ${key} | ${count} |`);
+  lines.push('');
+  lines.push(`- **되읽기 폭** — 재현 구간이 ${WIDE_READBACK}점보다 넓다. 탐구 과목이 공시되지 않아 종류 전체를`);
+  lines.push('  되읽은 결과이고, 과목을 넣는 실사용자에게는 생기지 않는 폭이다(구간 기준이 걷어내는 갈래).');
+  lines.push('- **기울기 불안정** — 국소 기울기가 아직 1점/백분위에 못 미치는 자리다. 대칭 차분(MODEL §3)으로');
+  lines.push(`  ${WEAK_SLOPE}점/백분위 아래로는 잘 내려가지 않지만, 남은 자리는 여기에 모인다.`);
+  lines.push('- **산식 불일치** — 재현 구간 자체가 공시값을 못 담는다(A도 mismatch). 산식·계수를 다시 읽어야 한다.');
+  lines.push('- **자격** — 선택과목이 공시되지 않아 확률과통계로 넣었고 미적분·기하를 요구하는 곳에서 걸린 자리다.');
+  lines.push('- **좁은 구간인데 중앙이 어긋남** — 위 넷이 아닌 나머지. 되읽기 표의 계단 자리다.');
+  lines.push('');
+  lines.push('### 2-5. 가장 크게 어긋난 모집단위 20곳');
   lines.push('');
   lines.push('| 대학 | 모집단위 | 층위 | 차이(백분위 상당) | 갈래 |');
   lines.push('|---|---|---|---:|---|');

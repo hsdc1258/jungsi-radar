@@ -8,7 +8,7 @@ import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 import {
-  SELF_BAND, buildAudit, cutYearOf, profileInput, renderMarkdown, selfPlacement,
+  SELF_BAND, buildAudit, cutYearOf, l1MissCause, profileInput, renderMarkdown, selfPlacement, selfRangeOk,
 } from '../scripts/accuracy-audit.mjs';
 
 const ROOT = process.cwd();
@@ -109,12 +109,42 @@ test('B 자기 위치: 국민대 자유전공(A)의 70% 학생은 자기 모집�
   assert.ok(fifty.result.gap >= seventy.result.gap, `50% ${fifty.result.gap} < 70% ${seventy.result.gap}`);
 });
 
+test('B 구간 기준: 되읽기 구간이 공시값을 담고 구간이 소신을 품으면 맞음이다', () => {
+  const university = DATA.universities[0];
+  const seventy = selfPlacement(engine, DATA, university, DEPT, 'p70');
+  // 중앙 기준이 맞는 자리는 구간 기준으로도 맞다 — 구간 기준이 더 느슨한 조건이다.
+  assert.ok(selfRangeOk(seventy.result));
+
+  // 공시 환산점수가 재현 구간 밖으로 나가면 구간 기준도 아니다.
+  const off = { ...seventy.result, cut: { ...seventy.result.cut, score70: seventy.result.mineDetail.max + 50 } };
+  assert.equal(selfRangeOk(off), false);
+  assert.match(l1MissCause(off), /^산식 불일치/u);
+
+  // 구간이 공시값을 담아도 하한·상한이 만드는 판정 폭이 소신에서 완전히 비켜나면 아니다.
+  const away = { ...seventy.result, gapDetail: { ...seventy.result.gapDetail, min: 2.5, max: 4.5 } };
+  assert.equal(selfRangeOk(away), false);
+});
+
+test('L1 오답 갈래는 되읽기 폭·기울기 불안정·산식 불일치·자격으로 갈린다', () => {
+  const base = selfPlacement(engine, DATA, DATA.universities[0], DEPT, 'p70').result;
+  assert.equal(l1MissCause({ ...base, status: 'blocked' }), '자격 미충족(선택과목 미상)');
+  const wide = { ...base, mineDetail: { ...base.mineDetail, min: base.mineDetail.score - 1, max: base.mineDetail.score + 9 } };
+  assert.match(l1MissCause(wide), /^되읽기 폭/u);
+  const weak = { ...base, gapDetail: { ...base.gapDetail, points: -10, gap2026: -25 } };
+  assert.match(l1MissCause(weak), /^기울기 불안정/u);
+});
+
 test('보고서는 결정론이다 — 두 번 만들면 같은 파일이다', () => {
   const first = renderMarkdown(buildAudit());
   const second = renderMarkdown(buildAudit());
   assert.equal(first, second);
   assert.match(first, /^# 정확도 전수검사/u);
   assert.match(first, /## 한 줄 요약\n\n> 재현 A: \d+\/\d+ /u);
+  // 한 줄 요약과 표가 중앙 기준·구간 기준을 나란히 적는다.
+  assert.match(first, /자기 위치 B \(중앙 기준·구간 기준\): L1 [\d.]+%·[\d.]+%/u);
+  assert.match(first, /\| B 자기 위치 · 중앙 기준 \(모집단위\) \|/u);
+  assert.match(first, /\| B 자기 위치 · 구간 기준 \(모집단위\) \|/u);
+  assert.match(first, /### 2-4\. L1 오답을 다시 가른다/u);
   // 합격 확률 숫자는 어디에도 만들지 않는다 (§9) — 확률·합격률에 붙은 수치가 없어야 한다.
   assert.doesNotMatch(first, /(합격 ?확률|합격률)[^\n]*\d/u);
 });
