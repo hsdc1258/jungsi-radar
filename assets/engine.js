@@ -1402,6 +1402,87 @@
     return bands.find((band) => gap >= band.min) || bands[bands.length - 1];
   }
 
+  // ------------------------------------------------------------- §1.1-2 전형
+  // 빌드가 같은 모집단위·학년도의 전 전형 행을 `jeongsi[year].types[]`에 실었다(kind 우선순위·
+  // 모집시기 순). 여기서 하는 일은 **그 중 한 행을 골라 판정의 입력으로 세우는 것**뿐이다.
+  //
+  // 기본값 `general` 은 행을 바꾸지 않는다. 빌드의 대표 행 규칙이 이미 "컷이 있는 general 행
+  // (가군 우선, 같은 군이면 크게 뽑는 전형)"이라 둘이 같은 행이고, general 행이 아예 없는
+  // 모집단위·학년도(6곳)에서 판정을 통째로 지우는 대신 대표 행 그대로 판정한다 — 그 행의 실제
+  // kind 는 `jeongsi[year].typeKind`에 있으니 화면이 그것으로 목록에서 뺄지 정한다.
+  // 덕분에 `옵션 없음 === {type:'general'}` 이 전 모집단위에서 성립한다.
+  const TYPE_LABEL = Object.freeze({
+    rural: '농어촌', vocational: '특성화고', disability: '특수교육', overseas: '재외국민',
+    regional: '지역인재', equal: '기회균형', practical: '실기·특기', other: '기타', general: '일반',
+  });
+  const typeRowHasCut = (row) => isNumber(row?.score70) || isNumber(row?.cut70);
+
+  // 그 kind 의 행 하나. 같은 kind 가 여럿이면 group 이 맞는 것, 없으면 첫 행이다(§1.1-2).
+  // 같은 조건 안에서는 컷이 공개된 행이 먼저다 — 빌드의 대표 행 규칙과 같은 순서다.
+  function pickTypeRow(types, kind, group) {
+    const rows = (Array.isArray(types) ? types : []).filter((row) => (row.kind || 'general') === kind);
+    if (rows.length === 0) return null;
+    const matched = group ? rows.filter((row) => (row.group || null) === group) : [];
+    const pool = matched.length > 0 ? matched : rows;
+    return pool.find(typeRowHasCut) || pool[0];
+  }
+
+  // 고른 전형 행을 그 해의 정시 행 모양으로 세운다. 행과 무관한 값(컷 정의·출처·눈금)은
+  // 대표 행에서 그대로 물려받고, 행마다 다른 값만 갈아 끼운다.
+  function typeRowToJeongsi(base, picked) {
+    const quota = isNumber(picked.quota) ? picked.quota : null;
+    const fill = isNumber(picked.fill) ? picked.fill : null;
+    const cut70 = isNumber(picked.cut70) ? picked.cut70 : null;
+    return {
+      ...base,
+      typeName: picked.typeName || '',
+      typeKind: picked.kind || 'general',
+      typeLabel: picked.label || TYPE_LABEL[picked.kind] || '',
+      period: picked.period ?? null,
+      group: picked.group ?? null,
+      quota,
+      quotaDetail: picked.quotaDetail ?? null,
+      rate: isNumber(picked.rate) ? picked.rate : null,
+      fill,
+      fillRate: isNumber(fill) && isNumber(quota) && quota > 0 ? Math.round((fill / quota) * 1000) / 10 : null,
+      lastWait: null,
+      score: picked.score ?? null,
+      student: picked.student ?? null,
+      aggregation: picked.aggregation || 'unknown',
+      consistent: picked.consistent ?? null,
+      cut70,
+      cut50: isNumber(picked.cut50) ? picked.cut50 : null,
+      cut100: isNumber(picked.student?.p100?.avg) ? picked.student.p100.avg : null,
+      score70: isNumber(picked.score70) ? picked.score70 : null,
+      // 학점나비 전사값은 대표(일반) 행의 것이다 — 다른 전형 행에는 짝이 없다.
+      adigaCut70: null,
+      metric: cut70 === null ? 'score' : 'pct',
+    };
+  }
+
+  // 모집단위를 그 전형의 눈으로 다시 세운다. 고를 행이 한 해도 없으면 null(= status 'no-type').
+  function typeView(dept, kind, group) {
+    if (!kind || kind === 'general') return dept || null;
+    const years = Object.keys(dept?.jeongsi || {}).filter((year) => year !== 'alts');
+    const jeongsi = {};
+    for (const year of years) {
+      const base = dept.jeongsi[year];
+      const picked = pickTypeRow(base?.types, kind, group);
+      if (picked) jeongsi[year] = typeRowToJeongsi(base, picked);
+    }
+    if (Object.keys(jeongsi).length === 0) return null;
+    const view = { ...dept, jeongsi };
+    // 연도 계열(series)은 빌드가 대표 행으로 만든 것이라 이 눈금에 맞지 않는다 —
+    // 지우면 jeongsiReference 가 이 전형의 행들로 다시 만든다.
+    delete view.series;
+    delete view.official;
+    return view;
+  }
+
+  // 트랙이 이 전형을 명시하지 않으면 "일반전형과 같은 산식"이라는 **가정**이다(§1.1-2).
+  const typeFormulaAssumed = (track, kind) => Boolean(kind) && kind !== 'general'
+    && !(Array.isArray(track?.appliesTo?.types) && track.appliesTo.types.includes(kind));
+
   // ---------------------------------------------------------------- §3 네 층위
   // 합격선 비교의 중심은 **대학 환산점수**다(docs/MODEL.md). 평균 백분위는 보조로 내린다.
   //   L1 환산 : 컷 학년도 산식이 formula-check 에서 verified 이고 어디가 환산점수 70%가 있을 때.
@@ -1604,7 +1685,7 @@
   const rulesFor = (rules, universityId) => (rules ? (rules.universities?.[universityId] || rules[universityId] || null) : null);
 
   // 모집단위에 맞는 산식 트랙. 모집단위를 못박은 트랙(appliesTo.depts)이 먼저다.
-  function pickModelTrack(rules, universityId, dept) {
+  function pickModelTrack(rules, universityId, dept, typeKind = null) {
     const rule = rulesFor(rules, universityId);
     const tracks = Array.isArray(rule?.tracks) ? rule.tracks : [];
     if (tracks.length === 0) return null;
@@ -1625,6 +1706,14 @@
       const family = tracks.filter((row) => row.pickBest === true && match(row)).map(stamp);
       return family.length > 1 ? { ...chosen, siblings: family } : chosen;
     };
+    // 전형을 명시한 트랙(appliesTo.types)이 있으면 그것이 이긴다 (§1.1-2). 없으면 아래로 내려가
+    // 일반전형과 같은 트랙을 쓰고, 결과에 'type-formula-assumed' 를 단다.
+    if (typeKind && typeKind !== 'general') {
+      const byType = tracks.find((track) => Array.isArray(track.appliesTo?.types)
+        && track.appliesTo.types.includes(typeKind)
+        && (!Array.isArray(track.appliesTo?.depts) || track.appliesTo.depts.includes(name)));
+      if (byType) return stamp(byType);
+    }
     const byDept = tracks.find((track) => Array.isArray(track.appliesTo?.depts) && track.appliesTo.depts.includes(name));
     if (byDept) return withSiblings(byDept, (row) => Array.isArray(row.appliesTo?.depts) && row.appliesTo.depts.includes(name));
     const wanted = [dept?.ruleTrack, dept?.track].filter(Boolean);
@@ -1869,7 +1958,7 @@
     };
 
     // ---------------------------------------------------------------- L1 환산
-    const track = pickModelTrack(context.rules2026, universityId, dept);
+    const track = pickModelTrack(context.rules2026, universityId, dept, context.type);
     if (std && track && trackHasFormula(track) && isNumber(score70)
       && formulaVerified(context.formulaCheck, universityId, track.name)) {
       const ctx = { std, conv: context.conv, universityId, year: cutYear };
@@ -1931,7 +2020,7 @@
         let basisChanged = false;
         let gap2027 = null;
         let cut2027 = null;
-        const track2027 = pickModelTrack(context.rules2027, universityId, dept);
+        const track2027 = pickModelTrack(context.rules2027, universityId, dept, context.type);
         if (track2027 && trackHasFormula(track2027) && JSON.stringify(track2027.areas) + JSON.stringify(track2027.scale || {}) !== JSON.stringify(track.areas) + JSON.stringify(track.scale || {})) {
           const cutRescored = student70?.consistent ? formulaScore2(track2027, studentFormulaInputs(student70, std), ctx) : null;
           const mineRescored = formulaScore2(track2027, inputs, ctx);
@@ -1982,7 +2071,7 @@
     }
 
     // ---------------------------------------------------------------- L2 지수
-    const planTrack = pickModelTrack(context.rules2027, universityId, dept) || pickTrack(rule, dept?.track, dept?.ruleTrack);
+    const planTrack = pickModelTrack(context.rules2027, universityId, dept, context.type) || pickTrack(rule, dept?.track, dept?.ruleTrack);
     let ratioTrack = planTrack;
     let weights = ratioWeights(planTrack);
     let ratioFormulaTrack = null;
@@ -2193,7 +2282,51 @@
   //           no-cut(백분위 컷 없음) · no-profile(성적 미입력)
   // 등급 입력은 보류하지 않는다 — 구간 중앙 백분위로 판정하고 estimated·gapRange로 폭을 알린다.
   // context = { std, conv, rules2026, rules2027, formulaCheck } — 없으면 L3까지만 간다.
-  function evaluateJeongsi(profile, university, dept, rule, fallbackSpread, context = {}) {
+  // 전형 선택 (§1.1-2). 여기서 모집단위를 그 전형의 행으로 다시 세운 뒤 아래 판정기에 넘긴다.
+  // 기본 'general' 은 행을 바꾸지 않으므로 `옵션 없음`과 `{type:'general'}`의 결과가 같다.
+  function evaluateJeongsi(profile, university, dept, rule, fallbackSpread, context = {}, options = {}) {
+    const typeKind = options.type || context.type || 'general';
+    const typeGroup = options.group || context.group || null;
+    const view = typeView(dept, typeKind, typeGroup);
+    if (!view) {
+      // 그 전형의 행이 한 해도 없다. 화면은 이 모집단위를 목록에서 뺀다(FRAME §11).
+      const label = TYPE_LABEL[typeKind] || typeKind;
+      return {
+        status: 'no-type', level: 'L0',
+        universityId: university?.id ?? null,
+        universityName: university?.short || university?.name || null,
+        dept: dept?.name ?? null, track: dept?.track ?? null,
+        reference: null, score: null, compare: null, mine: null,
+        def: COMPARE_BASIS, defLabel: cutDefInfo(COMPARE_BASIS).label, index: null,
+        group: null, cut: null, gap: null, gapRange: null, band: null, estimateBand: null,
+        hold: { reason: `${label} 전형 없음`, need: '그 전형의 입시결과' },
+        apply: { year: APPLY_YEAR, type: typeKind, typeLabel: label, typeName: '', group: null, formula: null },
+        type: typeKind, typeLabel: label,
+        areas: [], areaSlopes: null, ratioWeightsUsed: null, sensitivity: null,
+        history: [], flags: [], sources: [], assumptions: [],
+        mineDetail: null, gapDetail: null, uncertainty: null, basisChanged: false, cut2027: null,
+        model: null,
+      };
+    }
+    const ctx = typeKind === 'general' ? context : { ...context, type: typeKind, group: typeGroup };
+    const result = evaluateJeongsiRow(profile, university, view, rule, fallbackSpread, ctx);
+    result.type = typeKind;
+    result.typeLabel = TYPE_LABEL[typeKind] || typeKind;
+    if (result.apply) {
+      result.apply = { ...result.apply, type: typeKind, typeLabel: result.typeLabel };
+      if (result.model) result.model = { ...result.model, apply: result.apply };
+    }
+    // 정원외 특별전형은 요강이 대개 "일반전형과 동일"이라 적지만, 트랙이 전형을 명시하지
+    // 않으면 그것은 **가정**이다 (§1.1-2). 화면이 `산식 가정` 뱃지를 단다.
+    const track = pickModelTrack(ctx.rules2026, university?.id ?? null, view, typeKind);
+    if (Array.isArray(result.flags) && typeFormulaAssumed(track, typeKind) && !result.flags.includes('type-formula-assumed')) {
+      result.flags = [...result.flags, 'type-formula-assumed'];
+      if (result.model) result.model = { ...result.model, flags: result.flags };
+    }
+    return result;
+  }
+
+  function evaluateJeongsiRow(profile, university, dept, rule, fallbackSpread, context = {}) {
     const reference = jeongsiReference(dept, isNumber(fallbackSpread) ? fallbackSpread : university?.volatility);
     // 반영비율 가중값은 지원 자격(blockers)과 화면 표시에만 쓴다. 컷과 비교하지 않는다.
     const score = universityScore(profile, rule, dept.track, dept.ruleTrack);
@@ -2378,20 +2511,26 @@
   // filters: { track, universities:Set, group, sort: 'cut' | 'gap' }
   // 생성 데이터에서 층위 판정에 필요한 것만 뽑아 둔다. 없는 항목은 그냥 없다 —
   // rules2026·formulaCheck가 아직 없으면 판정은 지금까지처럼 L3에서 난다.
-  function layerContext(data) {
-    if (!data) return {};
-    return { std: data.std || null, conv: data.conv || null, rules2026: data.rules2026 || null, rules2027: data.rules2027 || null, formulaCheck: data.formulaCheck || null };
+  // options = { type, group } — 고른 전형(§1.1-2)을 판정기까지 실어 나른다. 기본은 general.
+  function layerContext(data, options = {}) {
+    if (!data) return options.type ? { type: options.type, group: options.group || null } : {};
+    const context = { std: data.std || null, conv: data.conv || null, rules2026: data.rules2026 || null, rules2027: data.rules2027 || null, formulaCheck: data.formulaCheck || null };
+    if (options.type) context.type = options.type;
+    if (options.group) context.group = options.group;
+    return context;
   }
 
   function diagnose(profile, data, filters = {}) {
     const rows = [];
-    const context = layerContext(data);
+    const context = layerContext(data, { type: filters.type, group: filters.typeGroup });
     for (const university of data.universities || []) {
       if (filters.universities && filters.universities.size > 0 && !filters.universities.has(university.id)) continue;
       const rule = data.rules?.[university.id];
       for (const dept of university.departments || []) {
         if (filters.track && filters.track !== '전체' && dept.track !== filters.track) continue;
         const result = evaluateJeongsi(profile, university, dept, rule, university.volatility ?? data.volatility, context);
+        // 고른 전형의 행이 없는 모집단위는 목록에서 뺀다 (FRAME §11).
+        if (result.status === 'no-type') continue;
         if (filters.group && filters.group !== '전체' && result.group && result.group !== filters.group) continue;
         rows.push({
           universityId: university.id,
@@ -2415,9 +2554,9 @@
   //   L2 — 컷도 나도 **반영비율 지수**라 눈금은 백분위이고, 비중은 그 반영비율이다.
   //   L3 — 컷이 비교 기준(국·수·탐(2) 평균)이라 세 영역이 각각 1/3이다(종전 그대로).
   // 영어·한국사는 어느 층위에서도 이 목록에 없다 — 백분위로 올릴 수 있는 영역이 아니다.
-  function analyzeTarget(profile, university, dept, rule, fallbackSpread, context = {}) {
-    const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility, context);
-    if (['no-profile', 'no-cut', 'basis-mismatch', 'hold'].includes(result.status)) return { ...result, plan: null };
+  function analyzeTarget(profile, university, dept, rule, fallbackSpread, context = {}, options = {}) {
+    const result = evaluateJeongsi(profile, university, dept, rule, fallbackSpread ?? university?.volatility, context, options);
+    if (['no-profile', 'no-cut', 'basis-mismatch', 'hold', 'no-type'].includes(result.status)) return { ...result, plan: null };
     const { score } = result;
 
     // 한 영역의 한 줄. gain = 그 영역을 targetPct 까지 올렸을 때 얻는 값(눈금은 plan.unit).
@@ -2551,6 +2690,8 @@
     myFormulaInputs, studentFormulaInputs, profileFormulaInputs, normalizeCutStudent,
     pickModelTrack, ratioWeights, formulaRatioWeights, ratioIndex, trackHasFormula, layerContext,
     APPLY_YEAR, LAYER_UNCERTAINTY,
+    // 전형 (MODEL §1.1-2)
+    TYPE_LABEL, pickTypeRow, typeView, typeFormulaAssumed,
   });
   globalThis.IPSI_ENGINE = api;
 })();
