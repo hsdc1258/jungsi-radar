@@ -249,25 +249,32 @@
   });
 
   // list-item 한 줄. suffix에는 뱃지·버튼이 들어간다.
-  // stack: 부제를 뱃지 아래 **행 전체 폭**으로 깐다. 값이 넷을 넘는 진단 목록에서
-  // 375px 한 줄에 들어가게 하려는 것이다 — 부제를 줄이지 않고 자리를 넓힌다 (FRAME §8.1).
+  // stack: 진단 목록 행의 두 줄 고정 배치 (FRAME §12.5).
+  //   1행 = 제목이 행 전체 폭(최대 두 줄, 넘치면 말줄임), 2행 = 왼쪽 부제 + 오른쪽 값·뱃지.
+  //   값·뱃지 묶음(171px)을 제목 옆에 세우면 375px에서 제목에 여덟 글자만 남아 세 줄로 접힌다.
+  //   부제가 없으면 둘째 줄에 적을 것이 없으므로 종전 한 줄 위계 그대로 그린다(근거 카드).
   const listItem = ({ title, detail, suffix, onclick, prefix, attrs = {}, stack = false }) => {
     const tag = onclick ? 'button' : 'div';
     const detailNode = detail ? el('span', { class: 'seed-list-item__detail', text: detail }) : null;
-    const head = [
-      prefix ? el('span', { class: 'seed-list-item__prefix' }, [prefix]) : null,
-      el('span', { class: 'seed-list-item__content' }, [
-        el('span', { class: 'seed-list-item__title', text: title }),
-        stack ? null : detailNode,
-      ].filter(Boolean)),
-      suffix ? el('span', { class: 'seed-list-item__suffix' }, [].concat(suffix)) : null,
-    ].filter(Boolean);
+    const stacked = stack && Boolean(detailNode);
+    const prefixNode = prefix ? el('span', { class: 'seed-list-item__prefix' }, [prefix]) : null;
+    const contentNode = el('span', { class: 'seed-list-item__content' }, [
+      el('span', { class: 'seed-list-item__title', text: title }),
+      stacked ? null : detailNode,
+    ].filter(Boolean));
+    const suffixNode = suffix ? el('span', { class: 'seed-list-item__suffix' }, [].concat(suffix)) : null;
+    const body = stacked
+      ? [
+        el('span', { class: 'jr-row-head' }, [prefixNode, contentNode].filter(Boolean)),
+        el('span', { class: 'jr-row-foot' }, [detailNode, suffixNode].filter(Boolean)),
+      ]
+      : [prefixNode, contentNode, suffixNode].filter(Boolean);
     const node = el(tag, {
-      class: `seed-list-item__root jr-row${stack ? ' jr-row--stack' : ''}`,
+      class: `seed-list-item__root jr-row${stacked ? ' jr-row--stack' : ''}`,
       type: onclick ? 'button' : null,
       onclick,
       ...attrs,
-    }, stack ? [el('span', { class: 'jr-row-head' }, head), detailNode].filter(Boolean) : head);
+    }, body);
     return node;
   };
 

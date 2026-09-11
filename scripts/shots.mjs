@@ -106,6 +106,8 @@ function rowShape() {
     out.push({
       title: title ? title.textContent.trim() : '',
       lines: title ? Math.max(1, Math.round(title.getBoundingClientRect().height / lineHeight)) : 0,
+      // 두 줄 말줄임(-webkit-line-clamp)에 걸렸는지 — 그린 높이는 두 줄이어도 글은 더 길다.
+      clipped: Boolean(title && title.scrollHeight > title.clientHeight + 1),
       badges: row.querySelectorAll('.seed-badge__root').length,
       gap: gap.textContent.trim(),
       detail: row.querySelector('.seed-list-item__detail')?.textContent.trim() || '',
@@ -192,11 +194,13 @@ try {
           if (fit.count !== 8) problems.push(`${tag}: 칩이 ${fit.count}개다 (계열 칩은 셀렉트로 갔다)`);
         }
         // 진단 행은 `제목 / 값 하나 · 뱃지 셋 / 컷·내·군` 이다 (FRAME §12.2).
-        // 제목 두 줄은 여기서 못 막는다 — 값·뱃지 묶음이 375px 행(343px) 중 171px을 차지해
-        // 제목에 120px(≈8글자)만 남아, 학과 이름이 열 자를 넘는 행은 대학명을 줄여도 세 줄이다.
-        // 다섯 줄부터가 고장이다(320px에서 묶음을 접기 전에는 여섯 줄까지 흘러내렸다).
+        // 제목은 1행 전체 폭을 쓰므로 두 줄이 상한이다 — 그 뒤는 말줄임이다 (FRAME §12.5).
+        // 세 줄이 잡히면 값·뱃지 묶음이 다시 제목 옆으로 올라온 것이다.
         for (const row of await page.evaluate(rowShape)) {
-          if (row.lines > 4) problems.push(`${tag}: 제목이 ${row.lines}줄이다 — ${row.title}`);
+          if (row.lines > 2) problems.push(`${tag}: 제목이 ${row.lines}줄이다 — ${row.title}`);
+          // 375px에서는 두 줄 안에 다 들어가야 한다. 말줄임이 생겼다면 제목 자리가 다시 좁아진 것이다
+          // (320px에서는 값·뱃지가 내려가고도 긴 이름 몇 개가 말줄임된다 — 그것은 §12.5대로다).
+          if (width === 375 && row.clipped) problems.push(`${tag}: 제목이 두 줄을 넘겨 말줄임됐다 — ${row.title}`);
           if (row.badges > 3) problems.push(`${tag}: 뱃지가 ${row.badges}개다 — ${row.title}`);
           if (row.gap.includes('점') || row.gap.includes('(')) problems.push(`${tag}: 값 자리가 '${row.gap}' 이다 — ${row.title}`);
           if (!row.detail.startsWith('컷 ')) continue;
